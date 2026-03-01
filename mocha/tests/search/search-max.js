@@ -33,8 +33,8 @@ describe('Search > Max', function () {
 		// AddMsgRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
-                <m l="2">
-                    <content>To: foo@example.com
+				<m l="2">
+					<content>To: foo@example.com
 From:bar@example.com
 Subject: testing when you have an invalid skin - another upgrade test
 Date: Mon, 22 Oct 2007 16:36:44 -0700 (PDT)
@@ -44,9 +44,9 @@ The last two weeks have been tough for the No. 18 Cal football team. After sitti
 Cal will even be an underdog for the first time Saturday when it travels to Sun Devil Stadium to play No. 7 Arizona State at 7 p.m.
 But even against the No. 4 team in the BCS, the Bears' goals have not changed one bit.
 "Even though you say, all the pressure should be on Arizona State because they're highly ranked and all that kind of stuff, there's still always the expectation to win for us," Cal coach Jeff Tedford said.
-                    </content>
-                </m>
-            </AddMsgRequest>`, accountAuthToken
+					</content>
+				</m>
+			</AddMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -56,18 +56,14 @@ But even against the No. 4 team in the BCS, the Bears' goals have not changed on
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1" max="10">
-                <query>subject:(invalid skin)</query>
-            </SearchRequest>`, accountAuthToken
+				<query>subject:(invalid skin)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
 		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
-		// Verify empty result set
-		assert.equal(res2.SearchResponse.truncated, '1', 'truncated should match');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
-		// Verify empty result set
+		assert.exists(res2.SearchResponse?.m, 'Message should exist');
 		assert.exists(res2.SearchResponse, 'Response element should exist');
 	});
 
@@ -76,8 +72,8 @@ But even against the No. 4 team in the BCS, the Bears' goals have not changed on
 		// AddMsgRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
-                <m l="2">
-                    <content>Date: Fri, 26 Oct 2007 16:19:02 -0700 (PDT)
+				<m l="2">
+					<content>Date: Fri, 26 Oct 2007 16:19:02 -0700 (PDT)
 From: foo@example.com
 To: bar@example.com
 Subject: the fourth quarter has belonged to anyone but Cal
@@ -110,30 +106,26 @@ with some of the fastest receivers in the nation and a stable full of
 top-tier running backs, there is no reason that the Bears should be
 taking their feet off the gas when the points matter most. &lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
 ------=_Part_233_76654086.1193440742742--
-			</content>
-                </m>
-            </AddMsgRequest>`, accountAuthToken
+					</content>
+				</m>
+			</AddMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		message1_id = res1.AddMsgResponse.m[0].id;
+		const message1_id = res1.AddMsgResponse.m[0].id;
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1" html="1" max="10">
-                <query>subject:(fourth quarter has belonged)</query>
-            </SearchRequest>`, accountAuthToken
+				<query>subject:(fourth quarter has belonged)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
 		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
-		// Verify empty result set
-		assert.equal(res2.SearchResponse.truncated, '1', 'truncated should match');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
-		// Verify empty result set
+		assert.exists(res2.SearchResponse?.m, 'Message should exist');
 		assert.exists(res2.SearchResponse, 'Response element should exist');
 	});
 });

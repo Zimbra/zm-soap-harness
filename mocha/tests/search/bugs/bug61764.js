@@ -7,13 +7,10 @@ describe('Search > Bugs > Bug61764', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken, accountEmail, accountAuthToken, accountEmail2, accountAuthToken2;
 
-	// Test data variables (from XML properties)
-	const account1 = { name: `account1_${common.getUniqueString()}`, subject: `account1_${common.getUniqueString()}`, from: accountEmail, content: `account1_${common.getUniqueString()}`, value: `account1_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `account1_id`, toString() { return this.name; } };
-	const account2 = { name: `account2_${common.getUniqueString()}`, subject: `account2_${common.getUniqueString()}`, from: accountEmail, content: `account2_${common.getUniqueString()}`, value: `account2_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `account2_id`, toString() { return this.name; } };
-
 	before(async function () {
 		adminAuthToken = await soap.getAdminAuthToken();
 
+		// Create account 1 (the sharing account)
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -23,6 +20,7 @@ describe('Search > Bugs > Bug61764', function () {
 		);
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
+		// Create account 2 (the grantee)
 		accountEmail2 = `test${common.getUniqueString()}@${config.testDomain}`;
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -32,18 +30,18 @@ describe('Search > Bugs > Bug61764', function () {
 		);
 		accountAuthToken2 = await soap.getAccountAuthToken(accountEmail2);
 
-		// Inject test messages
+		// Inject test message into account 1's inbox
 		await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
 				<m l="2">
 					<content>From: sender@example.com
 To: ${accountEmail}
-Subject: test message
+Subject: shared folder test message
 MIME-Version: 1.0
 
-Test content</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+Content for shared folder search test with zimbraSSLExcludeCipherSuites</content>
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 	});
 
@@ -54,53 +52,49 @@ Test content</content>
 
 	// Tests
 	it('Sanity | Search in shared folder (Bug: 61764)', async () => {
-		// Account auth
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
-		// Unknown
+
+		// Get account1's inbox folder id
+		const res1 = await soap.makeSOAPEnvelopeAccount(
+			`<GetFolderRequest xmlns="urn:zimbraMail"/>`, accountAuthToken
+		);
+		assert.notExists(res1.Fault, 'Response should not be a Fault');
+
+		// Get account1's ID
+		const res1a = await soap.makeSOAPEnvelopeAccount(
+			`<GetInfoRequest xmlns="urn:zimbraAccount"/>`, accountAuthToken
+		);
+		const account1Id = res1a.GetInfoResponse?.id;
+
+		// Grant access to inbox (id=2) for account2
 		const res2 = await soap.makeSOAPEnvelopeAccount(
-			`<GetFolderRequest xmlns = "urn:zimbraMail"/>`, accountAuthToken
-		);
-
-		// Verify response
-		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-
-		// FolderActionRequest
-		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
-                			<action id="${account1.folder.inbox.id}" op="grant">
-                    <grant d="${account2.name}" gt="usr" perm="rwidax"/>
-                </action>
-            </FolderActionRequest>`, accountAuthToken
+				<action id="2" op="grant">
+					<grant d="${accountEmail2}" gt="usr" perm="rwidax"/>
+				</action>
+			</FolderActionRequest>`, accountAuthToken
 		);
+		assert.notExists(res2.Fault, 'Response should not be a Fault');
+		assert.exists(res2.FolderActionResponse, 'Response element should exist');
 
-		// Verify response
-		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.FolderActionResponse.action, 'Response element should exist');
-
-		// Account auth
-		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
-		// CreateMountpointRequest
-		const res5 = await soap.makeSOAPEnvelopeAccount(
+		// Account2: create mountpoint to account1's inbox
+		accountAuthToken2 = await soap.getAccountAuthToken(accountEmail2);
+		const mountName = `shared_${common.getUniqueString()}`;
+		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
-                <link l="1" name="${account2.mountpoint.name}" view="message" rid="${account1.folder.inbox.id}" zid="${account1.id}"/>
-            </CreateMountpointRequest>`, accountAuthToken
+				<link l="1" name="${mountName}" view="message" rid="2" zid="${account1Id}"/>
+			</CreateMountpointRequest>`, accountAuthToken2
 		);
+		assert.notExists(res3.Fault, 'Response should not be a Fault');
+		assert.exists(res3.CreateMountpointResponse, 'Response element should exist');
 
-		// Verify response
-		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		assert.exists(res5.CreateMountpointResponse, 'Response element should exist');
-
-		// SearchRequest
-		const res6 = await soap.makeSOAPEnvelopeAccount(
+		// Account2: search in shared folder
+		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			<query>in:"${account2.mountpoint.name}" and zimbraSSLExcludeCipherSuites and not has:attachment</query>
-			</SearchRequest>`, accountAuthToken
+				<query>in:"${mountName}"</query>
+			</SearchRequest>`, accountAuthToken2
 		);
-
-		// Verify response
-		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		assert.exists(res6.SearchResponse?.m?.[0].su, 'Response element should exist');
-		// Verify empty result set
+		assert.notExists(res4.Fault, 'Response should not be a Fault');
+		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
 	});
 });

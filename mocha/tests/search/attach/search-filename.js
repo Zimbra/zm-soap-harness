@@ -30,8 +30,8 @@ Subject: test message
 MIME-Version: 1.0
 
 Test content</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 	});
 
@@ -45,7 +45,7 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			<query>filename:(filename)</query>
+				<query>filename:(filename)</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -59,7 +59,7 @@ Test content</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			<query>filename:(capitalletters)</query>
+				<query>filename:(capitalletters)</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -70,7 +70,7 @@ Test content</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			<query>filename:(CapitalLetters)</query>
+				<query>filename:(CapitalLetters)</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -84,7 +84,7 @@ Test content</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			<query>filename:(Spaces In Name)</query>
+				<query>filename:(Spaces In Name)</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -95,7 +95,7 @@ Test content</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			<query>filename:(spaces)</query>
+				<query>filename:(spaces)</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -106,7 +106,7 @@ Test content</content>
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			<query>filename:(Spaces In Name.txt)</query>
+				<query>filename:(Spaces In Name.txt)</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -117,7 +117,7 @@ Test content</content>
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			<query>filename:("Spaces In Name.txt")</query>
+				<query>filename:("Spaces In Name.txt")</query>
 			</SearchRequest>`, accountAuthToken
 		);
 

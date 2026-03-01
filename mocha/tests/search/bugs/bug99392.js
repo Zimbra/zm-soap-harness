@@ -32,6 +32,7 @@ describe('Search > Bugs > Bug99392', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		accountAuthToken2 = await soap.getAccountAuthToken(accountEmail2);
+		account1.name = accountEmail;
 	});
 
 	// Applicable zimbra versions
@@ -46,13 +47,13 @@ describe('Search > Bugs > Bug99392', function () {
 		// SendMsgRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-			<m>
-			<e t="t" a="${account1.name}"/>
-			<su> ${subject}</su>
-			<mp ct="text/plain">
-			<content> ${message.content1}</content>
-			</mp>
-			</m>
+				<m>
+					<e t="t" a="${account1.name}"/>
+					<su> ${subject}</su>
+					<mp ct="text/plain">
+						<content> ${message.content}</content>
+					</mp>
+				</m>
 			</SendMsgRequest>`, accountAuthToken
 		);
 
@@ -65,8 +66,8 @@ describe('Search > Bugs > Bug99392', function () {
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>subject:${subject}</query>
-            </SearchRequest>`, accountAuthToken
+				<query>subject:${subject}</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response

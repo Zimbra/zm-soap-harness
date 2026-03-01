@@ -78,8 +78,8 @@ Subject: ${mail1.subject}
 MIME-Version: 1.0
 
 Content for ${mail1.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -91,8 +91,8 @@ Subject: ${mail10.subject}
 MIME-Version: 1.0
 
 Content for ${mail10.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -104,8 +104,8 @@ Subject: ${mail11.subject}
 MIME-Version: 1.0
 
 Content for ${mail11.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -117,8 +117,8 @@ Subject: ${mail12.subject}
 MIME-Version: 1.0
 
 Content for ${mail12.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -130,8 +130,8 @@ Subject: ${mail13.subject}
 MIME-Version: 1.0
 
 Content for ${mail13.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -143,8 +143,8 @@ Subject: ${mail14.subject}
 MIME-Version: 1.0
 
 Content for ${mail14.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -156,8 +156,8 @@ Subject: ${mail15.subject}
 MIME-Version: 1.0
 
 Content for ${mail15.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -169,8 +169,8 @@ Subject: ${mail16.subject}
 MIME-Version: 1.0
 
 Content for ${mail16.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -182,8 +182,8 @@ Subject: ${mail17.subject}
 MIME-Version: 1.0
 
 Content for ${mail17.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -195,8 +195,8 @@ Subject: ${mail18.subject}
 MIME-Version: 1.0
 
 Content for ${mail18.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -208,8 +208,8 @@ Subject: ${mail19.subject}
 MIME-Version: 1.0
 
 Content for ${mail19.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -221,8 +221,8 @@ Subject: ${mail2.subject}
 MIME-Version: 1.0
 
 Content for ${mail2.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -234,8 +234,8 @@ Subject: ${mail20.subject}
 MIME-Version: 1.0
 
 Content for ${mail20.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -247,8 +247,8 @@ Subject: ${mail21.subject}
 MIME-Version: 1.0
 
 Content for ${mail21.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -260,8 +260,8 @@ Subject: ${mail22.subject}
 MIME-Version: 1.0
 
 Content for ${mail22.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -273,8 +273,8 @@ Subject: ${mail23.subject}
 MIME-Version: 1.0
 
 Content for ${mail23.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -286,8 +286,8 @@ Subject: ${mail24.subject}
 MIME-Version: 1.0
 
 Content for ${mail24.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -299,8 +299,8 @@ Subject: ${mail3.subject}
 MIME-Version: 1.0
 
 Content for ${mail3.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -312,8 +312,8 @@ Subject: ${mail4.subject}
 MIME-Version: 1.0
 
 Content for ${mail4.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -325,8 +325,8 @@ Subject: ${mail5.subject}
 MIME-Version: 1.0
 
 Content for ${mail5.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -338,8 +338,8 @@ Subject: ${mail6.subject}
 MIME-Version: 1.0
 
 Content for ${mail6.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -351,8 +351,8 @@ Subject: ${mail7.subject}
 MIME-Version: 1.0
 
 Content for ${mail7.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -364,8 +364,8 @@ Subject: ${mail8.subject}
 MIME-Version: 1.0
 
 Content for ${mail8.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -377,8 +377,8 @@ Subject: ${mail9.subject}
 MIME-Version: 1.0
 
 Content for ${mail9.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 	});
 
@@ -394,13 +394,12 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail1.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail1.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res2.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id1 = res2.SearchResponse?.m?.[0].id;
 		message.sender1 = res2.SearchResponse?.m?.[0]?.e?.[0]?.a;
@@ -409,13 +408,12 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail2.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail2.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res3.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id2 = res3.SearchResponse?.m?.[0].id;
 		message.sender2 = res3.SearchResponse?.m?.[0]?.e?.[0]?.a;
@@ -424,13 +422,12 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail3.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail3.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res4.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id3 = res4.SearchResponse?.m?.[0].id;
 		message.sender3 = res4.SearchResponse?.m?.[0]?.e?.[0]?.a;
@@ -439,13 +436,12 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail4.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail4.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		assert.exists(res5.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res5.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id4 = res5.SearchResponse?.m?.[0].id;
 		message.sender4 = res5.SearchResponse?.m?.[0]?.e?.[0]?.a;
@@ -454,13 +450,12 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail5.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail5.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		assert.exists(res6.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res6.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id5 = res6.SearchResponse?.m?.[0].id;
 		message.sender5 = res6.SearchResponse?.m?.[0]?.e?.[0]?.a;
@@ -469,13 +464,12 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail6.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail6.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		assert.exists(res7.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res7.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id6 = res7.SearchResponse?.m?.[0].id;
 		message.sender6 = res7.SearchResponse?.m?.[0]?.e?.[0]?.a;
@@ -484,13 +478,12 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail7.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail7.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
-		assert.exists(res8.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res8.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id7 = res8.SearchResponse?.m?.[0].id;
 		message.sender7 = res8.SearchResponse?.m?.[0]?.e?.[0]?.a;
@@ -499,13 +492,12 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail8.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail8.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
-		assert.exists(res9.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res9.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id8 = res9.SearchResponse?.m?.[0].id;
 		message.sender8 = res9.SearchResponse?.m?.[0]?.e?.[0]?.a;
@@ -514,13 +506,12 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail9.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail9.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res10.Fault, 'Response should not be a Fault');
-		assert.exists(res10.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res10.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id9 = res10.SearchResponse?.m?.[0].id;
 		message.sender9 = res10.SearchResponse?.m?.[0]?.e?.[0]?.a;
@@ -529,13 +520,12 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail10.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail10.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res11.Fault, 'Response should not be a Fault');
-		assert.exists(res11.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res11.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id10 = res11.SearchResponse?.m?.[0].id;
 		message.sender10 = res11.SearchResponse?.m?.[0]?.e?.[0]?.a;
@@ -544,13 +534,12 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail11.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail11.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res12.Fault, 'Response should not be a Fault');
-		assert.exists(res12.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res12.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id11 = res12.SearchResponse?.m?.[0].id;
 		message.sender11 = res12.SearchResponse?.m?.[0]?.e?.[0]?.a;
@@ -559,13 +548,12 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res13 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail12.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail12.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res13.Fault, 'Response should not be a Fault');
-		assert.exists(res13.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res13.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id12 = res13.SearchResponse?.m?.[0].id;
 		message.sender12 = res13.SearchResponse?.m?.[0]?.e?.[0]?.a;
@@ -574,13 +562,12 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res14 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail13.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail13.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res14.Fault, 'Response should not be a Fault');
-		assert.exists(res14.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res14.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id13 = res14.SearchResponse?.m?.[0].id;
 		message.sender13 = res14.SearchResponse?.m?.[0]?.e?.[0]?.a;
@@ -589,13 +576,12 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res15 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail14.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail14.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res15.Fault, 'Response should not be a Fault');
-		assert.exists(res15.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res15.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id14 = res15.SearchResponse?.m?.[0].id;
 		message.sender14 = res15.SearchResponse?.m?.[0]?.e?.[0]?.a;
@@ -604,13 +590,12 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res16 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail15.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail15.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res16.Fault, 'Response should not be a Fault');
-		assert.exists(res16.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res16.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id15 = res16.SearchResponse?.m?.[0].id;
 		message.sender15 = res16.SearchResponse?.m?.[0]?.e?.[0]?.a;
@@ -619,13 +604,12 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res17 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail16.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail16.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res17.Fault, 'Response should not be a Fault');
-		assert.exists(res17.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res17.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id16 = res17.SearchResponse?.m?.[0].id;
 		message.sender16 = res17.SearchResponse?.m?.[0]?.e?.[0]?.a;
@@ -634,13 +618,12 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res18 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail17.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail17.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res18.Fault, 'Response should not be a Fault');
-		assert.exists(res18.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res18.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id17 = res18.SearchResponse?.m?.[0].id;
 		message.sender17 = res18.SearchResponse?.m?.[0]?.e?.[0]?.a;
@@ -649,13 +632,12 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res19 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail18.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail18.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res19.Fault, 'Response should not be a Fault');
-		assert.exists(res19.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res19.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id18 = res19.SearchResponse?.m?.[0].id;
 		message.sender18 = res19.SearchResponse?.m?.[0]?.e?.[0]?.a;
@@ -664,13 +646,12 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res20 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail19.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail19.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res20.Fault, 'Response should not be a Fault');
-		assert.exists(res20.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res20.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id19 = res20.SearchResponse?.m?.[0].id;
 		message.sender19 = res20.SearchResponse?.m?.[0]?.e?.[0]?.a;
@@ -679,13 +660,12 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res21 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail20.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail20.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res21.Fault, 'Response should not be a Fault');
-		assert.exists(res21.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res21.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id20 = res21.SearchResponse?.m?.[0].id;
 		message.sender20 = res21.SearchResponse?.m?.[0]?.e?.[0]?.a;
@@ -694,13 +674,12 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res22 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail21.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail21.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res22.Fault, 'Response should not be a Fault');
-		assert.exists(res22.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res22.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id21 = res22.SearchResponse?.m?.[0].id;
 		message.sender21 = res22.SearchResponse?.m?.[0]?.e?.[0]?.a;
@@ -709,13 +688,12 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res23 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail22.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail22.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res23.Fault, 'Response should not be a Fault');
-		assert.exists(res23.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res23.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id22 = res23.SearchResponse?.m?.[0].id;
 		message.sender22 = res23.SearchResponse?.m?.[0]?.e?.[0]?.a;
@@ -724,13 +702,12 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res24 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail23.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail23.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res24.Fault, 'Response should not be a Fault');
-		assert.exists(res24.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res24.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id23 = res24.SearchResponse?.m?.[0].id;
 		message.sender23 = res24.SearchResponse?.m?.[0]?.e?.[0]?.a;
@@ -739,13 +716,12 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res25 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail24.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail24.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res25.Fault, 'Response should not be a Fault');
-		assert.exists(res25.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res25.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id24 = res25.SearchResponse?.m?.[0].id;
 		message.sender24 = res25.SearchResponse?.m?.[0]?.e?.[0]?.a;
@@ -754,295 +730,271 @@ Content for ${mail9.name}</content>
 
 
 	it('Functional | Adding flag to the 12 messages', async () => {
-		// Unknown
+		// MsgActionRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns = "urn:zimbraMail">
-                <action id = "${message.id1}" op = "${op.flag}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id = "${message.id1}" op = "${op.flag}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
 		assert.exists(res1.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res1.MsgActionResponse, 'MsgActionResponse should exist');
 
-		// Unknown
+		// MsgActionRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns = "urn:zimbraMail">
-                <action id = "${message.id3}" op = "${op.flag}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id = "${message.id3}" op = "${op.flag}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 		assert.exists(res2.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res2.MsgActionResponse, 'MsgActionResponse should exist');
 
-		// Unknown
+		// MsgActionRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns = "urn:zimbraMail">
-                <action id = "${message.id5}" op = "${op.flag}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id = "${message.id5}" op = "${op.flag}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
 		assert.exists(res3.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res3.MsgActionResponse, 'MsgActionResponse should exist');
 
-		// Unknown
+		// MsgActionRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns = "urn:zimbraMail">
-                <action id = "${message.id7}" op = "${op.flag}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id = "${message.id7}" op = "${op.flag}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
 		assert.exists(res4.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res4.MsgActionResponse, 'MsgActionResponse should exist');
 
-		// Unknown
+		// MsgActionRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns = "urn:zimbraMail">
-                <action id = "${message.id9}" op = "${op.flag}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id = "${message.id9}" op = "${op.flag}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
 		assert.exists(res5.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res5.MsgActionResponse, 'MsgActionResponse should exist');
 
-		// Unknown
+		// MsgActionRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns = "urn:zimbraMail">
-                <action id = "${message.id11}" op = "${op.flag}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id = "${message.id11}" op = "${op.flag}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
 		assert.exists(res6.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res6.MsgActionResponse, 'MsgActionResponse should exist');
 
-		// Unknown
+		// MsgActionRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns = "urn:zimbraMail">
-                <action id = "${message.id13}" op = "${op.flag}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id = "${message.id13}" op = "${op.flag}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
 		assert.exists(res7.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res7.MsgActionResponse, 'MsgActionResponse should exist');
 
-		// Unknown
+		// MsgActionRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns = "urn:zimbraMail">
-                <action id = "${message.id15}" op = "${op.flag}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id = "${message.id15}" op = "${op.flag}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
 		assert.exists(res8.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res8.MsgActionResponse, 'MsgActionResponse should exist');
 
-		// Unknown
+		// MsgActionRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns = "urn:zimbraMail">
-                <action id = "${message.id17}" op = "${op.flag}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id = "${message.id17}" op = "${op.flag}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
 		assert.exists(res9.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res9.MsgActionResponse, 'MsgActionResponse should exist');
 
-		// Unknown
+		// MsgActionRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns = "urn:zimbraMail">
-                <action id = "${message.id19}" op = "${op.flag}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id = "${message.id19}" op = "${op.flag}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res10.Fault, 'Response should not be a Fault');
 		assert.exists(res10.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res10.MsgActionResponse, 'MsgActionResponse should exist');
 
-		// Unknown
+		// MsgActionRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns = "urn:zimbraMail">
-                <action id = "${message.id21}" op = "${op.flag}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id = "${message.id21}" op = "${op.flag}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res11.Fault, 'Response should not be a Fault');
 		assert.exists(res11.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res11.MsgActionResponse, 'MsgActionResponse should exist');
 
-		// Unknown
+		// MsgActionRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns = "urn:zimbraMail">
-                <action id = "${message.id23}" op = "${op.flag}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id = "${message.id23}" op = "${op.flag}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res12.Fault, 'Response should not be a Fault');
-		assert.exists(res12.MsgActionResponse, 'MsgActionResponse should exist');
 		assert.exists(res12.MsgActionResponse, 'MsgActionResponse should exist');
 	});
 
 
 	it('Functional | Mark 12 messages as read', async () => {
-		// Unknown
+		// MsgActionRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns = "urn:zimbraMail">
-                <action id = "${message.id1}" op = "${op.read}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id = "${message.id1}" op = "${op.read}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
 		assert.exists(res1.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res1.MsgActionResponse, 'MsgActionResponse should exist');
 
-		// Unknown
+		// MsgActionRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns = "urn:zimbraMail">
-                <action id = "${message.id3}" op = "${op.read}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id = "${message.id3}" op = "${op.read}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 		assert.exists(res2.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res2.MsgActionResponse, 'MsgActionResponse should exist');
 
-		// Unknown
+		// MsgActionRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns = "urn:zimbraMail">
-                <action id = "${message.id5}" op = "${op.read}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id = "${message.id5}" op = "${op.read}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
 		assert.exists(res3.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res3.MsgActionResponse, 'MsgActionResponse should exist');
 
-		// Unknown
+		// MsgActionRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns = "urn:zimbraMail">
-                <action id = "${message.id7}" op = "${op.read}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id = "${message.id7}" op = "${op.read}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
 		assert.exists(res4.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res4.MsgActionResponse, 'MsgActionResponse should exist');
 
-		// Unknown
+		// MsgActionRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns = "urn:zimbraMail">
-                <action id = "${message.id9}" op = "${op.read}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id = "${message.id9}" op = "${op.read}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
 		assert.exists(res5.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res5.MsgActionResponse, 'MsgActionResponse should exist');
 
-		// Unknown
+		// MsgActionRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns = "urn:zimbraMail">
-                <action id = "${message.id11}" op = "${op.read}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id = "${message.id11}" op = "${op.read}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
 		assert.exists(res6.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res6.MsgActionResponse, 'MsgActionResponse should exist');
 
-		// Unknown
+		// MsgActionRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns = "urn:zimbraMail">
-                <action id = "${message.id13}" op = "${op.read}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id = "${message.id13}" op = "${op.read}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
 		assert.exists(res7.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res7.MsgActionResponse, 'MsgActionResponse should exist');
 
-		// Unknown
+		// MsgActionRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns = "urn:zimbraMail">
-                <action id = "${message.id15}" op = "${op.read}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id = "${message.id15}" op = "${op.read}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
 		assert.exists(res8.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res8.MsgActionResponse, 'MsgActionResponse should exist');
 
-		// Unknown
+		// MsgActionRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns = "urn:zimbraMail">
-                <action id = "${message.id17}" op = "${op.read}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id = "${message.id17}" op = "${op.read}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
 		assert.exists(res9.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res9.MsgActionResponse, 'MsgActionResponse should exist');
 
-		// Unknown
+		// MsgActionRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns = "urn:zimbraMail">
-                <action id = "${message.id19}" op = "${op.read}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id = "${message.id19}" op = "${op.read}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res10.Fault, 'Response should not be a Fault');
 		assert.exists(res10.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res10.MsgActionResponse, 'MsgActionResponse should exist');
 
-		// Unknown
+		// MsgActionRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns = "urn:zimbraMail">
-                <action id = "${message.id21}" op = "${op.read}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id = "${message.id21}" op = "${op.read}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res11.Fault, 'Response should not be a Fault');
 		assert.exists(res11.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res11.MsgActionResponse, 'MsgActionResponse should exist');
 
-		// Unknown
+		// MsgActionRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns = "urn:zimbraMail">
-                <action id = "${message.id23}" op = "${op.read}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id = "${message.id23}" op = "${op.read}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res12.Fault, 'Response should not be a Fault');
-		assert.exists(res12.MsgActionResponse, 'MsgActionResponse should exist');
 		assert.exists(res12.MsgActionResponse, 'MsgActionResponse should exist');
 	});
 
@@ -1051,14 +1003,14 @@ Content for ${mail9.name}</content>
 		// SendMsgRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-                <m origid="${message.id1}" rt="r">
-                    <e t="t" a="${message.sender1}"/>
-                    <su>${mail1.subject} </su>
-                    <mp ct="text/plain">
-                        <content>This is a reply to ${message.sender1}</content>
-                    </mp>
-                </m>
-            </SendMsgRequest>`, accountAuthToken
+				<m origid="${message.id1}" rt="r">
+					<e t="t" a="${message.sender1}"/>
+					<su>${mail1.subject} </su>
+					<mp ct="text/plain">
+						<content>This is a reply to ${message.sender1}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1068,14 +1020,14 @@ Content for ${mail9.name}</content>
 		// SendMsgRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-                <m origid="${message.id3}" rt="r">
-                    <e t="t" a="${message.sender3}"/>
-                    <su>${mail3.subject} </su>
-                    <mp ct="text/plain">
-                        <content>This is a reply to ${message.sender3}</content>
-                    </mp>
-                </m>
-            </SendMsgRequest>`, accountAuthToken
+				<m origid="${message.id3}" rt="r">
+					<e t="t" a="${message.sender3}"/>
+					<su>${mail3.subject} </su>
+					<mp ct="text/plain">
+						<content>This is a reply to ${message.sender3}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1085,14 +1037,14 @@ Content for ${mail9.name}</content>
 		// SendMsgRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-                <m origid="${message.id5}" rt="r">
-                    <e t="t" a="${message.sender5}"/>
-                    <su>${mail5.subject} </su>
-                    <mp ct="text/plain">
-                        <content>This is a reply to ${message.sender5} </content>
-                    </mp>
-                </m>
-            </SendMsgRequest>`, accountAuthToken
+				<m origid="${message.id5}" rt="r">
+					<e t="t" a="${message.sender5}"/>
+					<su>${mail5.subject} </su>
+					<mp ct="text/plain">
+						<content>This is a reply to ${message.sender5} </content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1102,14 +1054,14 @@ Content for ${mail9.name}</content>
 		// SendMsgRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-                <m origid="${message.id7}" rt="r">
-                    <e t="t" a="${message.sender7}"/>
-                    <su>${mail7.subject} </su>
-                    <mp ct="text/plain">
-                        <content>This is a reply to ${message.sender7} </content>
-                    </mp>
-                </m>
-            </SendMsgRequest>`, accountAuthToken
+				<m origid="${message.id7}" rt="r">
+					<e t="t" a="${message.sender7}"/>
+					<su>${mail7.subject} </su>
+					<mp ct="text/plain">
+						<content>This is a reply to ${message.sender7} </content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1119,14 +1071,14 @@ Content for ${mail9.name}</content>
 		// SendMsgRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-                <m origid="${message.id9}" rt="r">
-                    <e t="t" a="${message.sender9}"/>
-                    <su>${mail9.subject} </su>
-                    <mp ct="text/plain">
-                        <content>This is a reply to ${message.sender9}</content>
-                    </mp>
-                </m>
-            </SendMsgRequest>`, accountAuthToken
+				<m origid="${message.id9}" rt="r">
+					<e t="t" a="${message.sender9}"/>
+					<su>${mail9.subject} </su>
+					<mp ct="text/plain">
+						<content>This is a reply to ${message.sender9}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1136,14 +1088,14 @@ Content for ${mail9.name}</content>
 		// SendMsgRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-                <m origid="${message.id11}" rt="r">
-                    <e t="t" a="${message.sender11}"/>
-                    <su>${mail11.subject} </su>
-                    <mp ct="text/plain">
-                        <content>This is a reply to ${message.sender11}</content>
-                    </mp>
-                </m>
-            </SendMsgRequest>`, accountAuthToken
+				<m origid="${message.id11}" rt="r">
+					<e t="t" a="${message.sender11}"/>
+					<su>${mail11.subject} </su>
+					<mp ct="text/plain">
+						<content>This is a reply to ${message.sender11}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1153,14 +1105,14 @@ Content for ${mail9.name}</content>
 		// SendMsgRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-                <m origid="${message.id13}" rt="r">
-                    <e t="t" a="${message.sender13}"/>
-                    <su>${mail13.subject} </su>
-                    <mp ct="text/plain">
-                        <content>This is a reply to ${message.sender13} </content>
-                    </mp>
-                </m>
-            </SendMsgRequest>`, accountAuthToken
+				<m origid="${message.id13}" rt="r">
+					<e t="t" a="${message.sender13}"/>
+					<su>${mail13.subject} </su>
+					<mp ct="text/plain">
+						<content>This is a reply to ${message.sender13} </content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1170,14 +1122,14 @@ Content for ${mail9.name}</content>
 		// SendMsgRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-                <m origid="${message.id15}" rt="r">
-                    <e t="t" a="${message.sender15}"/>
-                    <su>${mail15.subject} </su>
-                    <mp ct="text/plain">
-                        <content>This is a reply to ${message.sender15}</content>
-                    </mp>
-                </m>
-            </SendMsgRequest>`, accountAuthToken
+				<m origid="${message.id15}" rt="r">
+					<e t="t" a="${message.sender15}"/>
+					<su>${mail15.subject} </su>
+					<mp ct="text/plain">
+						<content>This is a reply to ${message.sender15}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1187,14 +1139,14 @@ Content for ${mail9.name}</content>
 		// SendMsgRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-                <m origid="${message.id17}" rt="r">
-                    <e t="t" a="${message.sender17}"/>
-                    <su>${mail17.subject} </su>
-                    <mp ct="text/plain">
-                        <content>This is a reply to ${message.sender17} </content>
-                    </mp>
-                </m>
-            </SendMsgRequest>`, accountAuthToken
+				<m origid="${message.id17}" rt="r">
+					<e t="t" a="${message.sender17}"/>
+					<su>${mail17.subject} </su>
+					<mp ct="text/plain">
+						<content>This is a reply to ${message.sender17} </content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1204,14 +1156,14 @@ Content for ${mail9.name}</content>
 		// SendMsgRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-                <m origid="${message.id19}" rt="r">
-                    <e t="t" a="${message.sender19}"/>
-                    <su>${mail19.subject} </su>
-                    <mp ct="text/plain">
-                        <content>This is a reply to ${message.sender19}</content>
-                    </mp>
-                </m>
-            </SendMsgRequest>`, accountAuthToken
+				<m origid="${message.id19}" rt="r">
+					<e t="t" a="${message.sender19}"/>
+					<su>${mail19.subject} </su>
+					<mp ct="text/plain">
+						<content>This is a reply to ${message.sender19}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1221,14 +1173,14 @@ Content for ${mail9.name}</content>
 		// SendMsgRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-                <m origid="${message.id21}" rt="r">
-                    <e t="t" a="${message.sender21}"/>
-                    <su>${mail21.subject} </su>
-                    <mp ct="text/plain">
-                        <content>This is a reply to ${message.sender21} </content>
-                    </mp>
-                </m>
-            </SendMsgRequest>`, accountAuthToken
+				<m origid="${message.id21}" rt="r">
+					<e t="t" a="${message.sender21}"/>
+					<su>${mail21.subject} </su>
+					<mp ct="text/plain">
+						<content>This is a reply to ${message.sender21} </content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1238,14 +1190,14 @@ Content for ${mail9.name}</content>
 		// SendMsgRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-                <m origid="${message.id23}" rt="r">
-                    <e t="t" a="${message.sender23}"/>
-                    <su>${mail23.subject} </su>
-                    <mp ct="text/plain">
-                        <content>This is a reply to ${message.sender23}</content>
-                    </mp>
-                </m>
-            </SendMsgRequest>`, accountAuthToken
+				<m origid="${message.id23}" rt="r">
+					<e t="t" a="${message.sender23}"/>
+					<su>${mail23.subject} </su>
+					<mp ct="text/plain">
+						<content>This is a reply to ${message.sender23}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1258,14 +1210,14 @@ Content for ${mail9.name}</content>
 		// SendMsgRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-                <m origid="${message.id2}" rt="w">
-                    <e t="t" a="${message.sender2}"/>
-                    <su>${mail2.subject} </su>
-                    <mp ct="text/plain">
-                        <content>This is a forwarded to ${message.sender2} </content>
-                    </mp>
-                </m>
-            </SendMsgRequest>`, accountAuthToken
+				<m origid="${message.id2}" rt="w">
+					<e t="t" a="${message.sender2}"/>
+					<su>${mail2.subject} </su>
+					<mp ct="text/plain">
+						<content>This is a forwarded to ${message.sender2} </content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1275,14 +1227,14 @@ Content for ${mail9.name}</content>
 		// SendMsgRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-                <m origid="${message.id4}" rt="w">
-                    <e t="t" a="${message.sender4}"/>
-                    <su>${mail4.subject} </su>
-                    <mp ct="text/plain">
-                        <content>This is a forwarded to ${message.sender4}</content>
-                    </mp>
-                </m>
-            </SendMsgRequest>`, accountAuthToken
+				<m origid="${message.id4}" rt="w">
+					<e t="t" a="${message.sender4}"/>
+					<su>${mail4.subject} </su>
+					<mp ct="text/plain">
+						<content>This is a forwarded to ${message.sender4}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1292,14 +1244,14 @@ Content for ${mail9.name}</content>
 		// SendMsgRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-                <m origid="${message.id6}" rt="w">
-                    <e t="t" a="${message.sender6}"/>
-                    <su>${mail6.subject} </su>
-                    <mp ct="text/plain">
-                        <content>This is a forwarded to ${message.sender6} </content>
-                    </mp>
-                </m>
-            </SendMsgRequest>`, accountAuthToken
+				<m origid="${message.id6}" rt="w">
+					<e t="t" a="${message.sender6}"/>
+					<su>${mail6.subject} </su>
+					<mp ct="text/plain">
+						<content>This is a forwarded to ${message.sender6} </content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1309,14 +1261,14 @@ Content for ${mail9.name}</content>
 		// SendMsgRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-                <m origid="${message.id8}" rt="w">
-                    <e t="t" a="${message.sender8}"/>
-                    <su>${mail8.subject} </su>
-                    <mp ct="text/plain">
-                        <content>This is a forwarded to ${message.sender8}</content>
-                    </mp>
-                </m>
-            </SendMsgRequest>`, accountAuthToken
+				<m origid="${message.id8}" rt="w">
+					<e t="t" a="${message.sender8}"/>
+					<su>${mail8.subject} </su>
+					<mp ct="text/plain">
+						<content>This is a forwarded to ${message.sender8}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1326,14 +1278,14 @@ Content for ${mail9.name}</content>
 		// SendMsgRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-                <m origid="${message.id10}" rt="w">
-                    <e t="t" a="${message.sender10}"/>
-                    <su>${mail10.subject} </su>
-                    <mp ct="text/plain">
-                        <content>This is a forwarded to ${message.sender10} </content>
-                    </mp>
-                </m>
-            </SendMsgRequest>`, accountAuthToken
+				<m origid="${message.id10}" rt="w">
+					<e t="t" a="${message.sender10}"/>
+					<su>${mail10.subject} </su>
+					<mp ct="text/plain">
+						<content>This is a forwarded to ${message.sender10} </content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1343,14 +1295,14 @@ Content for ${mail9.name}</content>
 		// SendMsgRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-                <m origid="${message.id12}" rt="w">
-                    <e t="t" a="${message.sender12}"/>
-                    <su>${mail12.subject} </su>
-                    <mp ct="text/plain">
-                        <content>This is a forwarded to ${message.sender12} </content>
-                    </mp>
-                </m>
-            </SendMsgRequest>`, accountAuthToken
+				<m origid="${message.id12}" rt="w">
+					<e t="t" a="${message.sender12}"/>
+					<su>${mail12.subject} </su>
+					<mp ct="text/plain">
+						<content>This is a forwarded to ${message.sender12} </content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1360,14 +1312,14 @@ Content for ${mail9.name}</content>
 		// SendMsgRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-                <m origid="${message.id14}" rt="w">
-                    <e t="t" a="${message.sender14}"/>
-                    <su>${mail14.subject} </su>
-                    <mp ct="text/plain">
-                        <content>This is a forwarded to ${message.sender14}</content>
-                    </mp>
-                </m>
-            </SendMsgRequest>`, accountAuthToken
+				<m origid="${message.id14}" rt="w">
+					<e t="t" a="${message.sender14}"/>
+					<su>${mail14.subject} </su>
+					<mp ct="text/plain">
+						<content>This is a forwarded to ${message.sender14}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1377,14 +1329,14 @@ Content for ${mail9.name}</content>
 		// SendMsgRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-                <m origid="${message.id16}" rt="w">
-                    <e t="t" a="${message.sender16}"/>
-                    <su>${mail16.subject} </su>
-                    <mp ct="text/plain">
-                        <content>This is a forwarded to ${message.sender16} </content>
-                    </mp>
-                </m>
-            </SendMsgRequest>`, accountAuthToken
+				<m origid="${message.id16}" rt="w">
+					<e t="t" a="${message.sender16}"/>
+					<su>${mail16.subject} </su>
+					<mp ct="text/plain">
+						<content>This is a forwarded to ${message.sender16} </content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1394,14 +1346,14 @@ Content for ${mail9.name}</content>
 		// SendMsgRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-                <m origid="${message.id18}" rt="w">
-                    <e t="t" a="${message.sender18}"/>
-                    <su>${mail18.subject} </su>
-                    <mp ct="text/plain">
-                        <content>This is a forwarded to ${message.sender18} </content>
-                    </mp>
-                </m>
-            </SendMsgRequest>`, accountAuthToken
+				<m origid="${message.id18}" rt="w">
+					<e t="t" a="${message.sender18}"/>
+					<su>${mail18.subject} </su>
+					<mp ct="text/plain">
+						<content>This is a forwarded to ${message.sender18} </content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1411,14 +1363,14 @@ Content for ${mail9.name}</content>
 		// SendMsgRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-                <m origid="${message.id20}" rt="w">
-                    <e t="t" a="${message.sender20}"/>
-                    <su>${mail20.subject} </su>
-                    <mp ct="text/plain">
-                        <content>This is a forwarded to ${message.sender20}</content>
-                    </mp>
-                </m>
-            </SendMsgRequest>`, accountAuthToken
+				<m origid="${message.id20}" rt="w">
+					<e t="t" a="${message.sender20}"/>
+					<su>${mail20.subject} </su>
+					<mp ct="text/plain">
+						<content>This is a forwarded to ${message.sender20}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1428,14 +1380,14 @@ Content for ${mail9.name}</content>
 		// SendMsgRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-                <m origid="${message.id22}" rt="w">
-                    <e t="t" a="${message.sender22}"/>
-                    <su>${mail22.subject} </su>
-                    <mp ct="text/plain">
-                        <content>This is a forwarded to ${message.sender22} </content>
-                    </mp>
-                </m>
-            </SendMsgRequest>`, accountAuthToken
+				<m origid="${message.id22}" rt="w">
+					<e t="t" a="${message.sender22}"/>
+					<su>${mail22.subject} </su>
+					<mp ct="text/plain">
+						<content>This is a forwarded to ${message.sender22} </content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1445,14 +1397,14 @@ Content for ${mail9.name}</content>
 		// SendMsgRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-                <m origid="${message.id24}" rt="w">
-                    <e t="t" a="${message.sender24}"/>
-                    <su>${mail24.subject} </su>
-                    <mp ct="text/plain">
-                        <content>This is a forwarded to ${message.sender24}</content>
-                    </mp>
-                </m>
-            </SendMsgRequest>`, accountAuthToken
+				<m origid="${message.id24}" rt="w">
+					<e t="t" a="${message.sender24}"/>
+					<su>${mail24.subject} </su>
+					<mp ct="text/plain">
+						<content>This is a forwarded to ${message.sender24}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1462,21 +1414,13 @@ Content for ${mail9.name}</content>
 
 
 	it('Functional | Creating folders in proper structure', async () => {
-		// Unknown
+		// GetFolderRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<GetFolderRequest xmlns = "urn:zimbraMail"/>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// CreateFolderRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -1493,8 +1437,8 @@ Content for ${mail9.name}</content>
 		// CreateFolderRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
-                <folder name="${folder2.name}" l="${root.id}"/>
-            </CreateFolderRequest>`, accountAuthToken
+				<folder name="${folder2.name}" l="${root.id}"/>
+			</CreateFolderRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1505,8 +1449,8 @@ Content for ${mail9.name}</content>
 		// CreateFolderRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
-                <folder name="${folder3.name}" l="${folder2.id}"/>
-            </CreateFolderRequest>`, accountAuthToken
+				<folder name="${folder3.name}" l="${folder2.id}"/>
+			</CreateFolderRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1517,8 +1461,8 @@ Content for ${mail9.name}</content>
 		// CreateFolderRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
-                <folder name="${folder4.name}" l="${inbox.id}"/>
-            </CreateFolderRequest>`, accountAuthToken
+				<folder name="${folder4.name}" l="${inbox.id}"/>
+			</CreateFolderRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1529,8 +1473,8 @@ Content for ${mail9.name}</content>
 		// CreateFolderRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
-                <folder name="${folder5.name}" l="${contacts.id}"/>
-            </CreateFolderRequest>`, accountAuthToken
+				<folder name="${folder5.name}" l="${contacts.id}"/>
+			</CreateFolderRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -1544,289 +1488,265 @@ Content for ${mail9.name}</content>
 		// MsgActionRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
-                <action id="${message.id1}" op="${op.move}" l="${inbox.id}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id="${message.id1}" op="${op.move}" l="${inbox.id}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
 		assert.exists(res1.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res1.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
-                <action id="${message.id2}" op="${op.move}" l="${inbox.id}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id="${message.id2}" op="${op.move}" l="${inbox.id}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 		assert.exists(res2.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res2.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
-                <action id="${message.id3}" op="${op.move}" l="${drafts.id}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id="${message.id3}" op="${op.move}" l="${drafts.id}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
 		assert.exists(res3.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res3.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
-                <action id="${message.id4}" op="${op.move}" l="${drafts.id}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id="${message.id4}" op="${op.move}" l="${drafts.id}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
 		assert.exists(res4.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res4.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
-                <action id="${message.id5}" op="${op.move}" l="${sent.id}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id="${message.id5}" op="${op.move}" l="${sent.id}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
 		assert.exists(res5.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res5.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
-                <action id="${message.id6}" op="${op.move}" l="${sent.id}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id="${message.id6}" op="${op.move}" l="${sent.id}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
 		assert.exists(res6.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res6.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
-                <action id="${message.id7}" op="${op.move}" l="${spam.id}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id="${message.id7}" op="${op.move}" l="${spam.id}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
 		assert.exists(res7.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res7.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
-                <action id="${message.id8}" op="${op.move}" l="${spam.id}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id="${message.id8}" op="${op.move}" l="${spam.id}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
 		assert.exists(res8.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res8.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
-                <action id="${message.id9}" op="${op.move}" l="${trash.id}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id="${message.id9}" op="${op.move}" l="${trash.id}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
 		assert.exists(res9.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res9.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
-                <action id="${message.id10}" op="${op.move}" l="${trash.id}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id="${message.id10}" op="${op.move}" l="${trash.id}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res10.Fault, 'Response should not be a Fault');
 		assert.exists(res10.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res10.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
-                <action id="${message.id11}" op="${op.move}" l="${folder1.id}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id="${message.id11}" op="${op.move}" l="${folder1.id}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res11.Fault, 'Response should not be a Fault');
 		assert.exists(res11.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res11.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
-                <action id="${message.id12}" op="${op.move}" l="${folder1.id}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id="${message.id12}" op="${op.move}" l="${folder1.id}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res12.Fault, 'Response should not be a Fault');
 		assert.exists(res12.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res12.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res13 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
-                <action id="${message.id13}" op="${op.move}" l="${folder2.id}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id="${message.id13}" op="${op.move}" l="${folder2.id}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res13.Fault, 'Response should not be a Fault');
 		assert.exists(res13.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res13.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res14 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
-                <action id="${message.id14}" op="${op.move}" l="${folder2.id}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id="${message.id14}" op="${op.move}" l="${folder2.id}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res14.Fault, 'Response should not be a Fault');
 		assert.exists(res14.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res14.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res15 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
-                <action id="${message.id15}" op="${op.move}" l="${folder3.id}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id="${message.id15}" op="${op.move}" l="${folder3.id}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res15.Fault, 'Response should not be a Fault');
 		assert.exists(res15.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res15.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res16 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
-                <action id="${message.id16}" op="${op.move}" l="${folder3.id}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id="${message.id16}" op="${op.move}" l="${folder3.id}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res16.Fault, 'Response should not be a Fault');
 		assert.exists(res16.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res16.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res17 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
-                <action id="${message.id17}" op="${op.move}" l="${folder4.id}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id="${message.id17}" op="${op.move}" l="${folder4.id}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res17.Fault, 'Response should not be a Fault');
 		assert.exists(res17.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res17.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res18 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
-                <action id="${message.id18}" op="${op.move}" l="${folder4.id}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id="${message.id18}" op="${op.move}" l="${folder4.id}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res18.Fault, 'Response should not be a Fault');
 		assert.exists(res18.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res18.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res19 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
-                <action id="${message.id19}" op="${op.move}" l="${folder5.id}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id="${message.id19}" op="${op.move}" l="${folder5.id}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res19.Fault, 'Response should not be a Fault');
 		assert.exists(res19.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res19.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res20 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
-                <action id="${message.id20}" op="${op.move}" l="${folder5.id}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id="${message.id20}" op="${op.move}" l="${folder5.id}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res20.Fault, 'Response should not be a Fault');
 		assert.exists(res20.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res20.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res21 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
-                <action id="${message.id21}" op="${op.move}" l="${contacts.id}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id="${message.id21}" op="${op.move}" l="${contacts.id}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res21.Fault, 'Response should not be a Fault');
 		assert.exists(res21.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res21.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res22 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
-                <action id="${message.id22}" op="${op.move}" l="${contacts.id}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id="${message.id22}" op="${op.move}" l="${contacts.id}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res22.Fault, 'Response should not be a Fault');
 		assert.exists(res22.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res22.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res23 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
-                <action id="${message.id23}" op="${op.move}" l="${calendar.id}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id="${message.id23}" op="${op.move}" l="${calendar.id}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res23.Fault, 'Response should not be a Fault');
 		assert.exists(res23.MsgActionResponse, 'MsgActionResponse should exist');
-		assert.exists(res23.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res24 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
-                <action id="${message.id24}" op="${op.move}" l="${calendar.id}"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id="${message.id24}" op="${op.move}" l="${calendar.id}"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res24.Fault, 'Response should not be a Fault');
-		assert.exists(res24.MsgActionResponse, 'MsgActionResponse should exist');
 		assert.exists(res24.MsgActionResponse, 'MsgActionResponse should exist');
 	});
 
@@ -1835,410 +1755,134 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:flagged in:${globals.inbox} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:flagged in:${globals.inbox} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
 		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:flagged in:${globals.drafts} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:flagged in:${globals.drafts} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:flagged in:${globals.sent} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:flagged in:${globals.sent} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:flagged in:${globals.spam} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:flagged in:${globals.spam} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:flagged in:${globals.trash} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:flagged in:${globals.trash} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:flagged in:${folder.folder1} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:flagged in:${folder.folder1} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res6.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:flagged in:${folder.folder2} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:flagged in:${folder.folder2} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:flagged in:${folder.folder3} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:flagged in:${folder.folder3} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res8.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:flagged in:${folder.folder4} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:flagged in:${folder.folder4} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res9.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:flagged in:${folder.folder5} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:flagged in:${folder.folder5} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res10.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res10.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:flagged in:${globals.contacts} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:flagged in:${globals.contacts} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res11.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res11.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:flagged in:${globals.calendar} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:flagged in:${globals.calendar} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res12.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res12.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
 	});
 
 
@@ -2246,419 +1890,143 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:unflagged in:${globals.inbox} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unflagged in:${globals.inbox} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
 		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:unflagged in:${globals.drafts} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unflagged in:${globals.drafts} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:unflagged in:${globals.sent} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unflagged in:${globals.sent} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:unflagged in:${globals.spam} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unflagged in:${globals.spam} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:unflagged in:${globals.trash} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unflagged in:${globals.trash} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:unflagged in:${folder.folder1} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unflagged in:${folder.folder1} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res6.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:unflagged in:${folder.folder2} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unflagged in:${folder.folder2} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:unflagged in:${folder.folder3} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unflagged in:${folder.folder3} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res8.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:unflagged in:${folder.folder4} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unflagged in:${folder.folder4} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res9.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:unflagged in:${folder.folder5} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unflagged in:${folder.folder5} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res10.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res10.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:unflagged in:${globals.contacts} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unflagged in:${globals.contacts} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res11.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res11.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:unflagged in:${globals.calendar} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unflagged in:${globals.calendar} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res12.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res12.SearchResponse, 'SearchResponse should exist');
 	});
 
 
 	it('Functional | Verify that a search for read mail in corresponding folders is successful', async () => {
-		// Unknown
+		// MsgActionRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns = "urn:zimbraMail">
-                <action id = "${message.id10}" op = "!read"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id = "${message.id10}" op = "!read"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -2669,410 +2037,134 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:read in:${globals.inbox} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:read in:${globals.inbox} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:read in:${globals.drafts} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:read in:${globals.drafts} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:read in:${globals.sent} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:read in:${globals.sent} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:read in:${globals.spam} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:read in:${globals.spam} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:read in:${globals.trash} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:read in:${globals.trash} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res6.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:read in:${folder.folder1} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:read in:${folder.folder1} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:read in:${folder.folder2} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:read in:${folder.folder2} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res8.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:read in:${folder.folder3} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:read in:${folder.folder3} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res9.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:read in:${folder.folder4} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:read in:${folder.folder4} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res10.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res10.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:read in:${folder.folder5} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:read in:${folder.folder5} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res11.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res11.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:read in:${globals.contacts} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:read in:${globals.contacts} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res12.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res12.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res13 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:read in:${globals.calendar} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:read in:${globals.calendar} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res13.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res13.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
 	});
 
 
@@ -3080,409 +2172,133 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:unread in:${globals.inbox} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unread in:${globals.inbox} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
 		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:unread in:${globals.drafts} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unread in:${globals.drafts} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:unread in:${globals.sent} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unread in:${globals.sent} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:unread in:${globals.spam} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unread in:${globals.spam} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:unread in:${globals.trash} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unread in:${globals.trash} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:unread in:${folder.folder1} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unread in:${folder.folder1} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res6.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:unread in:${folder.folder2} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unread in:${folder.folder2} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:unread in:${folder.folder3} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unread in:${folder.folder3} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res8.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:unread in:${folder.folder4} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unread in:${folder.folder4} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res9.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:unread in:${folder.folder5} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unread in:${folder.folder5} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res10.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res10.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:unread in:${globals.contacts} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unread in:${globals.contacts} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res11.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res11.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:unread in:${globals.calendar} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unread in:${globals.calendar} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res12.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res12.SearchResponse, 'SearchResponse should exist');
 	});
 
@@ -3491,410 +2307,134 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:replied in:${globals.inbox} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:replied in:${globals.inbox} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
 		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:replied in:${globals.drafts} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:replied in:${globals.drafts} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:replied in:${globals.sent} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:replied in:${globals.sent} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:replied in:${globals.spam} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:replied in:${globals.spam} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:replied in:${globals.trash} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:replied in:${globals.trash} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:replied in:${folder.folder1} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:replied in:${folder.folder1} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res6.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:replied in:${folder.folder2} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:replied in:${folder.folder2} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:replied in:${folder.folder3} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:replied in:${folder.folder3} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res8.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:replied in:${folder.folder4} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:replied in:${folder.folder4} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res9.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:replied in:${folder.folder5} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:replied in:${folder.folder5} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res10.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res10.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:replied in:${globals.contacts} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:replied in:${globals.contacts} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res11.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res11.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:replied in:${globals.calendar} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:replied in:${globals.calendar} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res12.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res12.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
 	});
 
 
@@ -3902,409 +2442,133 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:forwarded in:${globals.inbox} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:forwarded in:${globals.inbox} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
 		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:forwarded in:${globals.drafts} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:forwarded in:${globals.drafts} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:forwarded in:${globals.sent} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:forwarded in:${globals.sent} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:forwarded in:${globals.spam} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:forwarded in:${globals.spam} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:forwarded in:${globals.trash} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:forwarded in:${globals.trash} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:forwarded in:${folder.folder1} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:forwarded in:${folder.folder1} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res6.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:forwarded in:${folder.folder2} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:forwarded in:${folder.folder2} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:forwarded in:${folder.folder3} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:forwarded in:${folder.folder3} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res8.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:forwarded in:${folder.folder4} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:forwarded in:${folder.folder4} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res9.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:forwarded in:${folder.folder5} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:forwarded in:${folder.folder5} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res10.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res10.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:forwarded in:${globals.contacts} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:forwarded in:${globals.contacts} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res11.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res11.SearchResponse, 'SearchResponse should exist');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:forwarded in:${globals.calendar} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:forwarded in:${globals.calendar} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res12.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 		assert.exists(res12.SearchResponse, 'SearchResponse should exist');
 	});
 
@@ -4313,410 +2577,122 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:flagged in:${globals.inbox} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:flagged in:${globals.inbox} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:flagged in:${globals.drafts} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:flagged in:${globals.drafts} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:flagged in:${globals.sent} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:flagged in:${globals.sent} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:flagged in:${globals.spam} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:flagged in:${globals.spam} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:flagged in:${globals.trash} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:flagged in:${globals.trash} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:flagged in:${folder.folder1} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:flagged in:${folder.folder1} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:flagged in:${folder.folder2} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:flagged in:${folder.folder2} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:flagged in:${folder.folder3} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:flagged in:${folder.folder3} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:flagged in:${folder.folder4} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:flagged in:${folder.folder4} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:flagged in:${folder.folder5} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:flagged in:${folder.folder5} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res10.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:flagged in:${globals.contacts} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:flagged in:${globals.contacts} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res11.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:flagged in:${globals.calendar} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:flagged in:${globals.calendar} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res12.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 	});
 
 
@@ -4724,418 +2700,131 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:unflagged in:${globals.inbox} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unflagged in:${globals.inbox} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:unflagged in:${globals.drafts} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unflagged in:${globals.drafts} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:unflagged in:${globals.sent} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unflagged in:${globals.sent} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:unflagged in:${globals.spam} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unflagged in:${globals.spam} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:unflagged in:${globals.trash} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unflagged in:${globals.trash} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:unflagged in:${folder.folder1} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unflagged in:${folder.folder1} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:unflagged in:${folder.folder2} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unflagged in:${folder.folder2} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:unflagged in:${folder.folder3} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unflagged in:${folder.folder3} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:unflagged in:${folder.folder4} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unflagged in:${folder.folder4} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:unflagged in:${folder.folder5} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unflagged in:${folder.folder5} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res10.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:unflagged in:${globals.contacts} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unflagged in:${globals.contacts} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res11.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:unflagged in:${globals.calendar} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unflagged in:${globals.calendar} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res12.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 	});
 
 
 	it('Functional | Verify that a search for read mail in corresponding folders is successful (for conversation)', async () => {
-		// Unknown
+		// MsgActionRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns = "urn:zimbraMail">
-                <action id = "${message.id10}" op = "!read"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id = "${message.id10}" op = "!read"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -5146,409 +2835,122 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:read in:${globals.inbox} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:read in:${globals.inbox} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:read in:${globals.drafts} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:read in:${globals.drafts} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:read in:${globals.sent} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:read in:${globals.sent} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:read in:${globals.spam} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:read in:${globals.spam} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:read in:${globals.trash} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:read in:${globals.trash} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:read in:${folder.folder1} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:read in:${folder.folder1} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:read in:${folder.folder2} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:read in:${folder.folder2} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:read in:${folder.folder3} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:read in:${folder.folder3} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:read in:${folder.folder4} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:read in:${folder.folder4} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res10.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:read in:${folder.folder5} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:read in:${folder.folder5} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res11.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:read in:${globals.contacts} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:read in:${globals.contacts} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res12.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res13 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:read in:${globals.calendar} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:read in:${globals.calendar} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res13.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 	});
 
 
@@ -5556,410 +2958,122 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:unread in:${globals.inbox} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unread in:${globals.inbox} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:unread in:${globals.drafts} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unread in:${globals.drafts} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:unread in:${globals.sent} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unread in:${globals.sent} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:unread in:${globals.spam} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unread in:${globals.spam} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:unread in:${globals.trash} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unread in:${globals.trash} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:unread in:${folder.folder1} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unread in:${folder.folder1} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:unread in:${folder.folder2} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unread in:${folder.folder2} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:unread in:${folder.folder3} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unread in:${folder.folder3} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:unread in:${folder.folder4} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unread in:${folder.folder4} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:unread in:${folder.folder5} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unread in:${folder.folder5} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res10.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:unread in:${globals.contacts} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unread in:${globals.contacts} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res11.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:unread in:${globals.calendar} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:unread in:${globals.calendar} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res12.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 	});
 
 
@@ -5967,410 +3081,122 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:replied in:${globals.inbox} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:replied in:${globals.inbox} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:replied in:${globals.drafts} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:replied in:${globals.drafts} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:replied in:${globals.sent} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:replied in:${globals.sent} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:replied in:${globals.spam} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:replied in:${globals.spam} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:replied in:${globals.trash} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:replied in:${globals.trash} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:replied in:${folder.folder1} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:replied in:${folder.folder1} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:replied in:${folder.folder2} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:replied in:${folder.folder2} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:replied in:${folder.folder3} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:replied in:${folder.folder3} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:replied in:${folder.folder4} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:replied in:${folder.folder4} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:replied in:${folder.folder5} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:replied in:${folder.folder5} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res10.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:replied in:${globals.contacts} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:replied in:${globals.contacts} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res11.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:replied in:${globals.calendar} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:replied in:${globals.calendar} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res12.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 	});
 
 
@@ -6378,409 +3204,121 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:forwarded in:${globals.inbox} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:forwarded in:${globals.inbox} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:forwarded in:${globals.drafts} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:forwarded in:${globals.drafts} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:forwarded in:${globals.sent} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:forwarded in:${globals.sent} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:forwarded in:${globals.spam} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:forwarded in:${globals.spam} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:forwarded in:${globals.trash} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:forwarded in:${globals.trash} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:forwarded in:${folder.folder1} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:forwarded in:${folder.folder1} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:forwarded in:${folder.folder2} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:forwarded in:${folder.folder2} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:forwarded in:${folder.folder3} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:forwarded in:${folder.folder3} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:forwarded in:${folder.folder4} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:forwarded in:${folder.folder4} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:forwarded in:${folder.folder5} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:forwarded in:${folder.folder5} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res10.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:forwarded in:${globals.contacts} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:forwarded in:${globals.contacts} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res11.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 
 		// SearchRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-                <query> is:forwarded in:${globals.calendar} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:forwarded in:${globals.calendar} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res12.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
 	});
 });

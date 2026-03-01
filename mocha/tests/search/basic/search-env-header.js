@@ -20,18 +20,20 @@ describe('Search > Basic > Env Header', function () {
 		);
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
-		// Inject test messages
+		// Inject message with X-Envelope-To and X-Envelope-From headers
 		await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
 				<m l="2">
 					<content>From: sender@example.com
 To: ${accountEmail}
-Subject: test message
+Subject: bug50312
+X-Envelope-To: user1@example.com
+X-Envelope-From: user1@example.com
 MIME-Version: 1.0
 
-Test content</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+Test content for envelope header search</content>
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 	});
 
@@ -45,8 +47,8 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			   <query>envto:"user1"</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>envto:"user1"</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -59,8 +61,8 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			   <query>envfrom:"user1"</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>envfrom:"user1"</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response

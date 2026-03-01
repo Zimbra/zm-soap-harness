@@ -32,8 +32,8 @@ describe('Search > Bugs > Bug39890', function () {
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>after:-1day</query>
-            </SearchRequest>`, accountAuthToken
+				<query>after:-1day</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -43,8 +43,8 @@ describe('Search > Bugs > Bug39890', function () {
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>after:-2day AND before:-0day</query>
-            </SearchRequest>`, accountAuthToken
+				<query>after:-2day AND before:-0day</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -54,8 +54,8 @@ describe('Search > Bugs > Bug39890', function () {
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>after:-1week</query>
-            </SearchRequest>`, accountAuthToken
+				<query>after:-1week</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -65,8 +65,8 @@ describe('Search > Bugs > Bug39890', function () {
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>after:-2week AND before:-0week</query>
-            </SearchRequest>`, accountAuthToken
+				<query>after:-2week AND before:-0week</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -76,8 +76,8 @@ describe('Search > Bugs > Bug39890', function () {
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>after:-1month</query>
-            </SearchRequest>`, accountAuthToken
+				<query>after:-1month</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -87,8 +87,8 @@ describe('Search > Bugs > Bug39890', function () {
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>after:-2month AND before:-0month</query>
-            </SearchRequest>`, accountAuthToken
+				<query>after:-2month AND before:-0month</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -98,8 +98,8 @@ describe('Search > Bugs > Bug39890', function () {
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>after:-2month AND before:-0month</query>
-            </SearchRequest>`, accountAuthToken
+				<query>after:-2month AND before:-0month</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -109,8 +109,8 @@ describe('Search > Bugs > Bug39890', function () {
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>after:-1year</query>
-            </SearchRequest>`, accountAuthToken
+				<query>after:-1year</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -120,8 +120,8 @@ describe('Search > Bugs > Bug39890', function () {
 		// SearchRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>after:-2year AND before:-0year</query>
-            </SearchRequest>`, accountAuthToken
+				<query>after:-2year AND before:-0year</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -131,8 +131,8 @@ describe('Search > Bugs > Bug39890', function () {
 		// SearchRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>before:-0year</query>
-            </SearchRequest>`, accountAuthToken
+				<query>before:-0year</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response

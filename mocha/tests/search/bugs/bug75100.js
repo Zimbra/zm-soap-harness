@@ -7,19 +7,13 @@ describe('Search > Bugs > Bug75100', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken, accountEmail, accountAuthToken, accountEmail2, accountAuthToken2;
 
-	// Test data variables (from XML properties)
-	const COUNTER = { name: `COUNTER_${common.getUniqueString()}`, subject: `COUNTER_${common.getUniqueString()}`, from: accountEmail, content: `COUNTER_${common.getUniqueString()}`, value: `COUNTER_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `COUNTER_id`, toString() { return this.name; } };
-	const TIME = { name: `TIME_${common.getUniqueString()}`, subject: `TIME_${common.getUniqueString()}`, from: accountEmail, content: `TIME_${common.getUniqueString()}`, value: `TIME_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `TIME_id`, toString() { return this.name; } };
-	const account0 = { name: `account0_${common.getUniqueString()}`, subject: `account0_${common.getUniqueString()}`, from: accountEmail, content: `account0_${common.getUniqueString()}`, value: `account0_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `account0_id`, toString() { return this.name; } };
-	const account1 = { name: `account1_${common.getUniqueString()}`, subject: `account1_${common.getUniqueString()}`, from: accountEmail, content: `account1_${common.getUniqueString()}`, value: `account1_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `account1_id`, toString() { return this.name; } };
-	const folder1 = { name: `folder1_${common.getUniqueString()}`, subject: `folder1_${common.getUniqueString()}`, from: accountEmail, content: `folder1_${common.getUniqueString()}`, value: `folder1_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `folder1_id`, toString() { return this.name; } };
-	const folder2 = { name: `folder2_${common.getUniqueString()}`, subject: `folder2_${common.getUniqueString()}`, from: accountEmail, content: `folder2_${common.getUniqueString()}`, value: `folder2_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `folder2_id`, toString() { return this.name; } };
-	const subject1 = { name: `subject1_${common.getUniqueString()}`, subject: `subject1_${common.getUniqueString()}`, from: accountEmail, content: `subject1_${common.getUniqueString()}`, value: `subject1_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `subject1_id`, toString() { return this.name; } };
-	const subject2 = { name: `subject2_${common.getUniqueString()}`, subject: `subject2_${common.getUniqueString()}`, from: accountEmail, content: `subject2_${common.getUniqueString()}`, value: `subject2_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `subject2_id`, toString() { return this.name; } };
+	const subject1 = `subject1_${common.getUniqueString()}`;
+	const subject2 = `subject2_${common.getUniqueString()}`;
 
 	before(async function () {
 		adminAuthToken = await soap.getAdminAuthToken();
 
+		// Account 0 (owner)
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -29,6 +23,7 @@ describe('Search > Bugs > Bug75100', function () {
 		);
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
+		// Account 1 (shared user)
 		accountEmail2 = `test${common.getUniqueString()}@${config.testDomain}`;
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -46,162 +41,124 @@ describe('Search > Bugs > Bug75100', function () {
 
 	// Tests
 	it('Sanity | Search query', async () => {
-		// Account auth
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
-		// Unknown
+
+		// Create folder1 and folder2 under root (id=1)
+		const folder1Name = `folder1_${common.getUniqueString()}`;
+		const folder2Name = `folder2_${common.getUniqueString()}`;
+
+		const res1 = await soap.makeSOAPEnvelopeAccount(
+			`<CreateFolderRequest xmlns="urn:zimbraMail">
+				<folder l="1" name="${folder1Name}"/>
+			</CreateFolderRequest>`, accountAuthToken
+		);
+		assert.notExists(res1.Fault, 'Response should not be a Fault');
+		const folder1Id = res1.CreateFolderResponse?.folder?.[0]?.id;
+
 		const res2 = await soap.makeSOAPEnvelopeAccount(
-			`<GetFolderRequest xmlns = "urn:zimbraMail"/>`, accountAuthToken
+			`<CreateFolderRequest xmlns="urn:zimbraMail">
+				<folder l="1" name="${folder2Name}"/>
+			</CreateFolderRequest>`, accountAuthToken
 		);
-
-		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
+		const folder2Id = res2.CreateFolderResponse?.folder?.[0]?.id;
 
-		// CreateFolderRequest
+		// Add message1 to folder1
 		const res3 = await soap.makeSOAPEnvelopeAccount(
-			`<CreateFolderRequest xmlns="urn:zimbraMail">
-                <folder l="${account0.folder.root.id}" name="${folder1.name}"/>
-            </CreateFolderRequest>`, accountAuthToken
-		);
+			`<AddMsgRequest xmlns="urn:zimbraMail">
+				<m l="${folder1Id}">
+					<content>Date: Wed, 28 Nov 2007 05:15:48 -0800 (PST)
+From: foo@example.com
+To: bar@example.com
+Subject: ${subject1}
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-		// Verify response
+hi This is message1</content>
+					</m>
+				</AddMsgRequest>`, accountAuthToken
+		);
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		const account0_folder1_id = res3.CreateFolderResponse?.folder?.[0].id;
 
-		// CreateFolderRequest
+		// Add message2 to folder2
 		const res4 = await soap.makeSOAPEnvelopeAccount(
-			`<CreateFolderRequest xmlns="urn:zimbraMail">
-                <folder l="${account0.folder.root.id}" name="${folder2.name}"/>
-            </CreateFolderRequest>`, accountAuthToken
-		);
+			`<AddMsgRequest xmlns="urn:zimbraMail">
+				<m l="${folder2Id}">
+					<content>Date: Wed, 28 Nov 2007 05:15:48 -0800 (PST)
+From: foo@example.com
+To: bar@example.com
+Subject: ${subject2}
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-		// Verify response
+hi This is message2</content>
+					</m>
+				</AddMsgRequest>`, accountAuthToken
+		);
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		const account0_folder2_id = res4.CreateFolderResponse?.folder?.[0].id;
 
-		// AddMsgRequest
+		// Grant both folders to account2
 		const res5 = await soap.makeSOAPEnvelopeAccount(
-			`<AddMsgRequest xmlns="urn:zimbraMail">
-                <m l="${account0.folder1.id}">
-                    <content>Date: Wed, 28 Nov 2007 05:15:48 -0800 (PST)
-From: foo@example.com
-To: bar@example.com
-Subject: ${subject1.name}
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-hi This is message1
-                    </content>
-                </m>
-            </AddMsgRequest>`, accountAuthToken
+			`<FolderActionRequest xmlns="urn:zimbraMail">
+				<action id="${folder1Id}" op="grant">
+					<grant gt="usr" d="${accountEmail2}" perm="rw" />
+				</action>
+			</FolderActionRequest>`, accountAuthToken
 		);
-
-		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		const account0_message1_id = res5.AddMsgResponse.m[0].id;
 
-		// AddMsgRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
-			`<AddMsgRequest xmlns="urn:zimbraMail">
-                <m l="${account0.folder2.id}">
-                    <content>Date: Wed, 28 Nov 2007 05:15:48 -0800 (PST)
-From: foo@example.com
-To: bar@example.com
-Subject: ${subject2.name}
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-hi This is message2
-                    </content>
-                </m>
-            </AddMsgRequest>`, accountAuthToken
+			`<FolderActionRequest xmlns="urn:zimbraMail">
+				<action id="${folder2Id}" op="grant">
+					<grant gt="usr" d="${accountEmail2}" perm="rw" />
+				</action>
+			</FolderActionRequest>`, accountAuthToken
 		);
-
-		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		const account0_message2_id = res6.AddMsgResponse.m[0].id;
 
-		// FolderActionRequest
+		// Get account0's ID
 		const res7 = await soap.makeSOAPEnvelopeAccount(
-			`<FolderActionRequest xmlns="urn:zimbraMail">
-                <action id="${account0.folder1.id}" op="grant" >
-                    <grant gt="usr" d="${account1.name}" perm="rw" />
-                </action>
-            </FolderActionRequest>`, accountAuthToken
+			`<GetInfoRequest xmlns="urn:zimbraAccount"/>`, accountAuthToken
 		);
+		const account0Id = res7.GetInfoResponse?.id;
 
-		// Verify response
-		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		assert.exists(res7.FolderActionResponse.action, 'Response element should exist');
+		// Account2: create mountpoints
+		accountAuthToken2 = await soap.getAccountAuthToken(accountEmail2);
+		const mount1Name = `shared1_${common.getUniqueString()}`;
+		const mount2Name = `shared2_${common.getUniqueString()}`;
 
-		// FolderActionRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
-			`<FolderActionRequest xmlns="urn:zimbraMail">
-                <action id="${account0.folder2.id}" op="grant" >
-                    <grant gt="usr" d="${account1.name}" perm="rw" />
-                </action>
-            </FolderActionRequest>`, accountAuthToken
+			`<CreateMountpointRequest xmlns="urn:zimbraMail">
+				<link l="1" name="${mount1Name}" zid="${account0Id}" rid="${folder1Id}" view="message"/>
+			</CreateMountpointRequest>`, accountAuthToken2
 		);
-
-		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
-		assert.exists(res8.FolderActionResponse.action, 'Response element should exist');
 
-		// Account auth
-		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
-		// Unknown
+		const res9 = await soap.makeSOAPEnvelopeAccount(
+			`<CreateMountpointRequest xmlns="urn:zimbraMail">
+				<link l="1" name="${mount2Name}" zid="${account0Id}" rid="${folder2Id}" view="message"/>
+			</CreateMountpointRequest>`, accountAuthToken2
+		);
+		assert.notExists(res9.Fault, 'Response should not be a Fault');
+
+		// Search for message1 via shared folders
 		const res10 = await soap.makeSOAPEnvelopeAccount(
-			`<GetFolderRequest xmlns = "urn:zimbraMail"/>`, accountAuthToken
+			`<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>message1 AND (in:"${mount1Name}" or in:"${mount2Name}")</query>
+			</SearchRequest>`, accountAuthToken2
 		);
-
-		// Verify response
 		assert.notExists(res10.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
+		assert.exists(res10.SearchResponse?.m, 'Response element should exist for message1');
 
-		// CreateMountpointRequest
+		// Search for message2 via shared folders
 		const res11 = await soap.makeSOAPEnvelopeAccount(
-			`<CreateMountpointRequest xmlns="urn:zimbraMail">
-                <link l="${account1.folder.root.id}" name="folder1${TIME}${COUNTER}" zid="${account0.id}" rid="${account0.folder1.id}" view="message"/>
-            </CreateMountpointRequest>`, accountAuthToken
+			`<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>message2 AND (in:"${mount1Name}" or in:"${mount2Name}")</query>
+			</SearchRequest>`, accountAuthToken2
 		);
-
-		// Verify response
 		assert.notExists(res11.Fault, 'Response should not be a Fault');
-		const account1_folder1_shared_id = res11.CreateMountpointResponse.link.id;
-
-		// CreateMountpointRequest
-		const res12 = await soap.makeSOAPEnvelopeAccount(
-			`<CreateMountpointRequest xmlns="urn:zimbraMail">
-                <link l="${account1.folder.root.id}" name="folder2${TIME}${COUNTER}" zid="${account0.id}" rid="${account0.folder2.id}" view="message"/>
-            </CreateMountpointRequest>`, accountAuthToken
-		);
-
-		// Verify response
-		assert.notExists(res12.Fault, 'Response should not be a Fault');
-		const account1_folder2_shared_id = res12.CreateMountpointResponse.link.id;
-
-		// SearchRequest
-		const res13 = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			<query>message1 AND (underid:"${account0.id}:${account0.folder1.id}" or underid:"${account0.id}:${account0.folder2.id}")</query>
-			</SearchRequest>`, accountAuthToken
-		);
-
-		// Verify response
-		assert.notExists(res13.Fault, 'Response should not be a Fault');
-		assert.equal(res13.SearchResponse?.m?.[0].id, '${account0.id}:${account0.message1.id}', 'id should match');
-		// XPath expression removed (not valid JS)
-
-		// SearchRequest
-		const res14 = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			<query>message2 AND (underid:"${account0.id}:${account0.folder1.id}" or underid:"${account0.id}:${account0.folder2.id}")</query>
-			</SearchRequest>`, accountAuthToken
-		);
-
-		// Verify response
-		assert.notExists(res14.Fault, 'Response should not be a Fault');
-		assert.equal(res14.SearchResponse?.m?.[0].id, '${account0.id}:${account0.message2.id}', 'id should match');
-		// XPath expression removed (not valid JS)
+		assert.exists(res11.SearchResponse?.m, 'Response element should exist for message2');
 	});
 });

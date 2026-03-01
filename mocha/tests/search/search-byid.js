@@ -29,8 +29,8 @@ Subject: test message
 MIME-Version: 1.0
 
 Test content</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 	});
 
@@ -46,13 +46,14 @@ Test content</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message" limit="50" offset="0" resultMode="IDS">
- 			<query>in:inbox</query>
-			   			</SearchRequest>`, accountAuthToken
+				<query>in:inbox</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.match(String(res2.SearchResponse.hit.id), /\d+/, 'id should match pattern');
-		assert.match(String(res2.SearchResponse.hit.sf), /\d+/, 'sf should match pattern');
+		const hit = Array.isArray(res2.SearchResponse.hit) ? res2.SearchResponse.hit[0] : res2.SearchResponse.hit;
+		assert.match(String(hit.id), /\d+/, 'id should match pattern');
+		assert.match(String(hit.sf), /\d+/, 'sf should match pattern');
 	});
 });

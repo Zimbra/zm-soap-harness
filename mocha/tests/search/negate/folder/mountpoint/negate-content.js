@@ -78,7 +78,7 @@ Test content for searching
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			<query>inid:${mountpointId} not content:(simple)</query>
+				<query>inid:${mountpointId} not content:(simple)</query>
 			</SearchRequest>`, accountAuthToken2
 		);
 
@@ -89,7 +89,7 @@ Test content for searching
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			<query>inid:${mountpointId} -content:(simple)</query>
+				<query>inid:${mountpointId} -content:(simple)</query>
 			</SearchRequest>`, accountAuthToken2
 		);
 
@@ -103,7 +103,7 @@ Test content for searching
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			<query>inid:"${account1.id}:2" not content:(simple)</query>
+				<query>inid:"${account1.id}:2" not content:(simple)</query>
 			</SearchRequest>`, accountAuthToken2
 		);
 
@@ -114,7 +114,7 @@ Test content for searching
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			<query>inid:"${account1.id}:2" -content:(simple)</query>
+				<query>inid:"${account1.id}:2" -content:(simple)</query>
 			</SearchRequest>`, accountAuthToken2
 		);
 

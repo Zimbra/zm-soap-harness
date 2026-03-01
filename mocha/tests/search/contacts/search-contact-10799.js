@@ -30,8 +30,8 @@ describe('Search > Contacts > Contact 10799', function () {
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-                <query>D'Amico</query>
-            </SearchRequest>`, accountAuthToken
+				<query>D'Amico</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -41,8 +41,8 @@ describe('Search > Contacts > Contact 10799', function () {
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-                <query>D'Amico@zmc.com</query>
-            </SearchRequest>`, accountAuthToken
+				<query>D'Amico@zmc.com</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -52,8 +52,8 @@ describe('Search > Contacts > Contact 10799', function () {
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-                <query>D'Last</query>
-            </SearchRequest>`, accountAuthToken
+				<query>D'Last</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response

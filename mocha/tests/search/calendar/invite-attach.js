@@ -32,7 +32,7 @@ describe('Search > Calendar > Invite Attach', function () {
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			<query>attachment:any</query>
+				<query>attachment:any</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -49,7 +49,7 @@ describe('Search > Calendar > Invite Attach', function () {
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			<query>attachment:none</query>
+				<query>attachment:none</query>
 			</SearchRequest>`, accountAuthToken
 		);
 

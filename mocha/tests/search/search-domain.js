@@ -34,7 +34,7 @@ describe('Search > Domain', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="subjAsc" offset="0" limit="25">
-			       <query>from:${domainname.existing}</query>
+				<query>from:${domainname.existing}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -48,7 +48,7 @@ describe('Search > Domain', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="subjAsc" offset="0" limit="25">
-			       <query>from:${domainname.nonexisting}</query>
+				<query>from:${domainname.nonexisting}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -62,7 +62,7 @@ describe('Search > Domain', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="subjAsc" offset="0" limit="25">
-			        <query>to:${domainname.existing}OR cc:${domainname.existing}</query>
+				<query>to:${domainname.existing}OR cc:${domainname.existing}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -76,7 +76,7 @@ describe('Search > Domain', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="subjAsc" offset="0" limit="25">
-			       <query>(to:(${domainname.nonexisting}) OR cc:(${domainname.nonexisting}))</query>
+				<query>(to:(${domainname.nonexisting}) OR cc:(${domainname.nonexisting}))</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -90,7 +90,7 @@ describe('Search > Domain', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="subjAsc" offset="0" limit="25">
-			       <query>from:${domainname.digits}</query>
+				<query>from:${domainname.digits}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -104,7 +104,7 @@ describe('Search > Domain', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="subjAsc" offset="0" limit="25">
-			       <query>from:${domainname.specialsymbols}</query>
+				<query>from:${domainname.specialsymbols}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -118,7 +118,7 @@ describe('Search > Domain', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="subjAsc" offset="0" limit="25">
-			       <query>from:${domainname.spaces}</query>
+				<query>from:${domainname.spaces}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -132,7 +132,7 @@ describe('Search > Domain', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="subjAsc" offset="0" limit="25">
-			       <query>from: </query>
+				<query>from: </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -145,7 +145,7 @@ describe('Search > Domain', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="subjAsc" offset="0" limit="25">
-			       <query>to:${domainname.digits}OR cc:${domainname.digits}</query>
+				<query>to:${domainname.digits}OR cc:${domainname.digits}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -159,7 +159,7 @@ describe('Search > Domain', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="subjAsc" offset="0" limit="25">
-			       <query>to:${domainname.specialsymbols}OR cc:${domainname.specialsymbols}</query>
+				<query>to:${domainname.specialsymbols}OR cc:${domainname.specialsymbols}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -173,7 +173,7 @@ describe('Search > Domain', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="subjAsc" offset="0" limit="25">
-			       <query>to:${domainname.spaces}OR cc:${domainname.spaces}</query>
+				<query>to:${domainname.spaces}OR cc:${domainname.spaces}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -187,7 +187,7 @@ describe('Search > Domain', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="subjAsc" offset="0" limit="25">
-			       <query>to: OR cc: </query>
+				<query>to: OR cc: </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -200,7 +200,7 @@ describe('Search > Domain', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="subjAsc" offset="0" limit="25">
-			       <query>from:${domainname.existing} OR to:${domainname.existing} OR cc:${domainname.existing}</query>
+				<query>from:${domainname.existing} OR to:${domainname.existing} OR cc:${domainname.existing}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 

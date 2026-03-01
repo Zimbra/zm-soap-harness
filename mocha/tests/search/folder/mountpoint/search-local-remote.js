@@ -128,8 +128,8 @@ Sample Content
 	it('Smoke | Verify is - remote only returns remote items', async () => {
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>is:remote</query>
-            </SearchRequest>`, accountAuthToken2
+				<query>is:remote</query>
+			</SearchRequest>`, accountAuthToken2
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
@@ -140,8 +140,8 @@ Sample Content
 	it('Sanity | Verify is - local only returns local items', async () => {
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>is:local</query>
-            </SearchRequest>`, accountAuthToken2
+				<query>is:local</query>
+			</SearchRequest>`, accountAuthToken2
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
@@ -153,7 +153,7 @@ Sample Content
 		// Search messages
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			<query>(is:remote OR is:local)</query>
+				<query>(is:remote OR is:local)</query>
 			</SearchRequest>`, accountAuthToken2
 		);
 
@@ -163,7 +163,7 @@ Sample Content
 		// Search conversations
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-			<query>(is:remote OR is:local)</query>
+				<query>(is:remote OR is:local)</query>
 			</SearchRequest>`, accountAuthToken2
 		);
 
@@ -175,8 +175,8 @@ Sample Content
 	it('Sanity | Use (is - remote OR is - local) to search for local and shared messages', async () => {
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>(is:remote OR is:local)</query>
-            </SearchRequest>`, accountAuthToken2
+				<query>(is:remote OR is:local)</query>
+			</SearchRequest>`, accountAuthToken2
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
@@ -185,8 +185,8 @@ Sample Content
 		// Search contacts
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-                <query>(is:remote OR is:local)</query>
-            </SearchRequest>`, accountAuthToken2
+				<query>(is:remote OR is:local)</query>
+			</SearchRequest>`, accountAuthToken2
 		);
 
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
@@ -197,8 +197,8 @@ Sample Content
 	it('Sanity | Use (is - remote OR is - local) to search for local and shared appointments', async () => {
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
-                <query>(is:remote OR is:local)</query>
-            </SearchRequest>`, accountAuthToken2
+				<query>(is:remote OR is:local)</query>
+			</SearchRequest>`, accountAuthToken2
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
@@ -213,8 +213,8 @@ Sample Content
 		const folder3Name = `u1f1_${common.getUniqueString()}`;
 		const resF3 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
-                <folder l="2" name="${folder3Name}"/>
-            </CreateFolderRequest>`, accountAuthToken3
+				<folder l="2" name="${folder3Name}"/>
+			</CreateFolderRequest>`, accountAuthToken3
 		);
 		assert.notExists(resF3.Fault, 'Response should not be a Fault');
 		const folder3Id = resF3.CreateFolderResponse.folder[0].id;
@@ -222,32 +222,32 @@ Sample Content
 		// Share it with account4
 		await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
-                <action id="${folder3Id}" op="grant">
-                    <grant d="${accountEmail4}" gt="usr" perm="rwidax"/>
-                </action>
-            </FolderActionRequest>`, accountAuthToken3
+				<action id="${folder3Id}" op="grant">
+					<grant d="${accountEmail4}" gt="usr" perm="rwidax"/>
+				</action>
+			</FolderActionRequest>`, accountAuthToken3
 		);
 
 		// Add message with search term
 		await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
-                <m l="${folder3Id}">
-                    <content>To: foo@example.com
+				<m l="${folder3Id}">
+					<content>To: foo@example.com
 From: bar@example.com
 Subject: SubjectValue
 
 ${searchTerm}
-                    </content>
-                </m>
-            </AddMsgRequest>`, accountAuthToken3
+					</content>
+				</m>
+			</AddMsgRequest>`, accountAuthToken3
 		);
 
 		// Account4: Create folder u2f1 under inbox
 		const folder4Name = `u2f1_${common.getUniqueString()}`;
 		const resF4 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
-                <folder l="2" name="${folder4Name}"/>
-            </CreateFolderRequest>`, accountAuthToken4
+				<folder l="2" name="${folder4Name}"/>
+			</CreateFolderRequest>`, accountAuthToken4
 		);
 		assert.notExists(resF4.Fault, 'Response should not be a Fault');
 		const folder4Id = resF4.CreateFolderResponse.folder[0].id;
@@ -255,48 +255,48 @@ ${searchTerm}
 		// Share it with account3
 		await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
-                <action id="${folder4Id}" op="grant">
-                    <grant d="${accountEmail3}" gt="usr" perm="rwidax"/>
-                </action>
-            </FolderActionRequest>`, accountAuthToken4
+				<action id="${folder4Id}" op="grant">
+					<grant d="${accountEmail3}" gt="usr" perm="rwidax"/>
+				</action>
+			</FolderActionRequest>`, accountAuthToken4
 		);
 
 		// Add message with search term
 		await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
-                <m l="${folder4Id}">
-                    <content>To: foo@example.com
+				<m l="${folder4Id}">
+					<content>To: foo@example.com
 From: bar@example.com
 Subject: SubjectValue
 
 ${searchTerm}
-                    </content>
-                </m>
-            </AddMsgRequest>`, accountAuthToken4
+					</content>
+				</m>
+			</AddMsgRequest>`, accountAuthToken4
 		);
 
 		// Account3: Create mountpoint to account4's folder inside account3's folder (loop)
 		const mp3Name = `u1f2_${common.getUniqueString()}`;
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
-                <link l="${folder3Id}" name="${mp3Name}" view="message" rid="${folder4Id}" zid="${account4.id}"/>
-            </CreateMountpointRequest>`, accountAuthToken3
+				<link l="${folder3Id}" name="${mp3Name}" view="message" rid="${folder4Id}" zid="${account4.id}"/>
+			</CreateMountpointRequest>`, accountAuthToken3
 		);
 
 		// Account4: Create mountpoint to account3's folder inside account4's folder (loop)
 		const mp4Name = `u2f2_${common.getUniqueString()}`;
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
-                <link l="${folder4Id}" name="${mp4Name}" view="message" rid="${folder3Id}" zid="${account3.id}"/>
-            </CreateMountpointRequest>`, accountAuthToken4
+				<link l="${folder4Id}" name="${mp4Name}" view="message" rid="${folder3Id}" zid="${account3.id}"/>
+			</CreateMountpointRequest>`, accountAuthToken4
 		);
 
 		// Account3: Search for remote items - should not hang
 		accountAuthToken3 = await soap.getAccountAuthToken(accountEmail3);
 		const res16 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>is:remote ${searchTerm}</query>
-            </SearchRequest>`, accountAuthToken3
+				<query>is:remote ${searchTerm}</query>
+			</SearchRequest>`, accountAuthToken3
 		);
 
 		assert.notExists(res16.Fault, 'Response should not be a Fault');

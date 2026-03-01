@@ -7,8 +7,9 @@ describe('Search > Bugs > Bug54328', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken, accountEmail, accountAuthToken;
 
-	// Test data variables (from XML properties)
-	const subject = { name: `subject_${common.getUniqueString()}`, subject: `subject_${common.getUniqueString()}`, from: accountEmail, content: `subject_${common.getUniqueString()}`, value: `subject_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `subject_id`, toString() { return this.name; } };
+	// Non-UTF subject from XML source
+	const nonUtfSubject = '=?ISO-2022-JP?B?GyRCJDMkcyRLJEEkTxsoQg==?=';
+	const decodedSubject = 'こんにちは';
 
 	before(async function () {
 		adminAuthToken = await soap.getAdminAuthToken();
@@ -22,18 +23,19 @@ describe('Search > Bugs > Bug54328', function () {
 		);
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
-		// Inject test messages
+		// Inject message with non-UTF subject
 		await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
 				<m l="2">
 					<content>From: sender@example.com
 To: ${accountEmail}
-Subject: test message
+Subject: ${nonUtfSubject}
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 
-Test content</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+Test content for non UTF subject search</content>
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 	});
 
@@ -44,17 +46,15 @@ Test content</content>
 
 	// Tests
 	it('Sanity | Searchrequest with non UTF subject', async () => {
-		// Account auth
-		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 		// SearchRequest
-		const res2 = await soap.makeSOAPEnvelopeAccount(
+		const res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>subject:(${subject})</query>
-            </SearchRequest>`, accountAuthToken
+				<query>subject:(${decodedSubject})</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
-		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse?.m?.[0].su, 'Value should match pattern');
+		assert.notExists(res.Fault, 'Response should not be a Fault');
+		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
 });

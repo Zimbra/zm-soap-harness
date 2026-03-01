@@ -40,15 +40,12 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>a</query>
+				<query>a</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
@@ -57,7 +54,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>an</query>
+				<query>an</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -71,7 +68,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>"and"</query>
+				<query>"and"</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -85,7 +82,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>are</query>
+				<query>are</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -99,7 +96,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>as</query>
+				<query>as</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -113,13 +110,12 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>at</query>
+				<query>at</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
@@ -128,7 +124,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>be</query>
+				<query>be</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -142,7 +138,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>but</query>
+				<query>but</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -156,7 +152,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>by</query>
+				<query>by</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -170,7 +166,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>for</query>
+				<query>for</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -184,7 +180,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>if</query>
+				<query>if</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -198,13 +194,12 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>"in"</query>
+				<query>"in"</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
@@ -213,7 +208,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>into</query>
+				<query>into</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -226,7 +221,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>is</query>
+				<query>is</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -240,7 +235,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>it</query>
+				<query>it</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -254,7 +249,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>"no"</query>
+				<query>"no"</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -268,7 +263,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>"not"</query>
+				<query>"not"</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -282,7 +277,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>of</query>
+				<query>of</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -295,7 +290,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>on</query>
+				<query>on</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -309,7 +304,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>"or"</query>
+				<query>"or"</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -323,7 +318,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>such</query>
+				<query>such</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -337,7 +332,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>that</query>
+				<query>that</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -351,14 +346,12 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>the</query>
+				<query>the</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
@@ -367,7 +360,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>their</query>
+				<query>their</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -381,7 +374,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>then</query>
+				<query>then</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -395,7 +388,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>there</query>
+				<query>there</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -409,7 +402,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>these</query>
+				<query>these</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -423,7 +416,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>they</query>
+				<query>they</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -437,7 +430,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>this</query>
+				<query>this</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -451,7 +444,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>to</query>
+				<query>to</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -465,7 +458,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>was</query>
+				<query>was</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -479,7 +472,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>will</query>
+				<query>will</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -493,7 +486,7 @@ describe('Search > Contacts > Contact Lucene', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			<query>with</query>
+				<query>with</query>
 			</SearchRequest>`, accountAuthToken
 		);
 

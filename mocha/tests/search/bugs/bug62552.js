@@ -7,10 +7,6 @@ describe('Search > Bugs > Bug62552', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken, accountEmail, accountAuthToken;
 
-	// Test data variables (from XML properties)
-	const searchfolder1 = { name: `searchfolder1_${common.getUniqueString()}`, subject: `searchfolder1_${common.getUniqueString()}`, from: accountEmail, content: `searchfolder1_${common.getUniqueString()}`, value: `searchfolder1_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `searchfolder1_id`, toString() { return this.name; } };
-	const searchfolder2 = { name: `searchfolder2_${common.getUniqueString()}`, subject: `searchfolder2_${common.getUniqueString()}`, from: accountEmail, content: `searchfolder2_${common.getUniqueString()}`, value: `searchfolder2_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `searchfolder2_id`, toString() { return this.name; } };
-
 	before(async function () {
 		adminAuthToken = await soap.getAdminAuthToken();
 
@@ -31,54 +27,52 @@ describe('Search > Bugs > Bug62552', function () {
 
 	// Tests
 	it('Sanity | Imported search folder (Bug: 62552)', async () => {
-		// Account auth
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
-		// GetFolder
-		const res2 = await soap.makeSOAPEnvelopeAccount(
-			`<GetFolderRequest xmlns="urn:zimbraMail"/>`, accountAuthToken
+
+		// Create two search folders
+		const sfName1 = `searchfolder1_${common.getUniqueString()}`;
+		const sfName2 = `searchfolder2_${common.getUniqueString()}`;
+
+		const res1 = await soap.makeSOAPEnvelopeAccount(
+			`<CreateSearchFolderRequest xmlns="urn:zimbraMail">
+				<search name="${sfName1}" query="subject:test" l="1"/>
+			</CreateSearchFolderRequest>`, accountAuthToken
 		);
+		assert.notExists(res1.Fault, 'Response should not be a Fault');
+		const sf1Id = res1.CreateSearchFolderResponse?.search?.[0]?.id || res1.CreateSearchFolderResponse?.search?.id;
 
-		// Verify response
+		const res2 = await soap.makeSOAPEnvelopeAccount(
+			`<CreateSearchFolderRequest xmlns="urn:zimbraMail">
+				<search name="${sfName2}" query="subject:hello" l="1"/>
+			</CreateSearchFolderRequest>`, accountAuthToken
+		);
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		searchfolder1_id = res2.GetFolderResponse.id;
-		searchfolder2_id = res2.GetFolderResponse.id;
-		assert.exists(res2.GetFolderResponse, 'Response element should exist');
+		const sf2Id = res2.CreateSearchFolderResponse?.search?.[0]?.id || res2.CreateSearchFolderResponse?.search?.id;
 
-		// FolderActionRequest
+		// Rename search folder 1
+		const newName = `${sfName1}_renamed`;
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
- 			<action  op="rename" id="${searchfolder1.id}" name="${searchfolder1.NewName}"/>
- 			</FolderActionRequest>`, accountAuthToken
+				<action op="rename" id="${sf1Id}" name="${newName}"/>
+			</FolderActionRequest>`, accountAuthToken
 		);
-
-		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
 		assert.exists(res3.FolderActionResponse, 'Response element should exist');
 
-		// FolderActionRequest
+		// Trash search folder 2
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
- 			<action  op="trash" id="${searchfolder2.id}" />
- 			</FolderActionRequest>`, accountAuthToken
+				<action op="trash" id="${sf2Id}"/>
+			</FolderActionRequest>`, accountAuthToken
 		);
-
-		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
 		assert.exists(res4.FolderActionResponse, 'Response element should exist');
 
-		// GetFolder
+		// Verify folders
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<GetFolderRequest xmlns="urn:zimbraMail"/>`, accountAuthToken
 		);
-
-		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		// XPath expression removed (not valid JS)
-		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
 		assert.exists(res5.GetFolderResponse, 'Response element should exist');
 	});
 });

@@ -41,8 +41,8 @@ Subject: ${mail1.subject}
 MIME-Version: 1.0
 
 Content for ${mail1.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -54,8 +54,8 @@ Subject: ${mail2.subject}
 MIME-Version: 1.0
 
 Content for ${mail2.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -67,8 +67,8 @@ Subject: ${mail3.subject}
 MIME-Version: 1.0
 
 Content for ${mail3.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -80,8 +80,8 @@ Subject: ${mail4.subject}
 MIME-Version: 1.0
 
 Content for ${mail4.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -93,8 +93,8 @@ Subject: ${mail5.subject}
 MIME-Version: 1.0
 
 Content for ${mail5.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -106,8 +106,8 @@ Subject: ${mail6.subject}
 MIME-Version: 1.0
 
 Content for ${mail6.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -119,8 +119,8 @@ Subject: ${mail7.subject}
 MIME-Version: 1.0
 
 Content for ${mail7.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 	});
 
@@ -136,13 +136,12 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail1.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail1.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res2.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id1 = res2.SearchResponse?.m?.[0].id;
 		assert.exists(res2.SearchResponse?.m, 'Response element should exist');
@@ -150,13 +149,12 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail2.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail2.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res3.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id2 = res3.SearchResponse?.m?.[0].id;
 		assert.exists(res3.SearchResponse?.m, 'Response element should exist');
@@ -164,13 +162,12 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail3.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail3.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res4.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id3 = res4.SearchResponse?.m?.[0].id;
 		assert.exists(res4.SearchResponse?.m, 'Response element should exist');
@@ -178,8 +175,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail4.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail4.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -190,13 +187,12 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail5.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail5.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		assert.exists(res6.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res6.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id5 = res6.SearchResponse?.m?.[0].id;
 		assert.exists(res6.SearchResponse?.m, 'Response element should exist');
@@ -204,13 +200,12 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail6.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail6.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		assert.exists(res7.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res7.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id6 = res7.SearchResponse?.m?.[0].id;
 		assert.exists(res7.SearchResponse?.m, 'Response element should exist');
@@ -218,8 +213,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail7.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail7.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -233,8 +228,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) from:(@example.com) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) from:(@example.com) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -244,8 +239,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) from:(@rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) from:(@rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -255,20 +250,19 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) from:(@yahoo.co.in OR @rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) from:(@yahoo.co.in OR @rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
 		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) to:(@example.com) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) to:(@example.com) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -278,8 +272,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) to:(@rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) to:(@rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -289,8 +283,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) to:(@yahoo.co.in OR @rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) to:(@yahoo.co.in OR @rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -300,8 +294,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) cc:(@example.com) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) cc:(@example.com) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -311,8 +305,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) cc:(@rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) cc:(@rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -322,8 +316,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) cc:(@yahoo.co.in OR @rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) cc:(@yahoo.co.in OR @rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -336,8 +330,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> to:(foo) from:(@example.com) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> to:(foo) from:(@example.com) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -347,8 +341,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> to:(foo) from:(@rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> to:(foo) from:(@rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -358,20 +352,19 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> to:(foo) from:(@yahoo.co.in OR @rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> to:(foo) from:(@yahoo.co.in OR @rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
 		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> to:(foo) to:(@example.com) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> to:(foo) to:(@example.com) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -381,8 +374,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> to:(foo) to:(@rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> to:(foo) to:(@rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -392,8 +385,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> to:(foo) to:(@yahoo.co.in OR @rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> to:(foo) to:(@yahoo.co.in OR @rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -403,8 +396,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> to:(foo) cc:(@example.com) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> to:(foo) cc:(@example.com) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -414,8 +407,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> to:(foo) cc:(@rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> to:(foo) cc:(@rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -425,8 +418,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> to:(foo) cc:(@yahoo.co.in OR @rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> to:(foo) cc:(@yahoo.co.in OR @rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -439,8 +432,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> cc:(foo) from:(@example.com) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> cc:(foo) from:(@example.com) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -450,8 +443,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> cc:(foo) from:(@rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> cc:(foo) from:(@rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -461,8 +454,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> cc:(foo) from:(@yahoo.co.in OR @rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> cc:(foo) from:(@yahoo.co.in OR @rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -472,8 +465,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> cc:(foo) to:(@example.com) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> cc:(foo) to:(@example.com) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -483,8 +476,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> cc:(foo) to:(@rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> cc:(foo) to:(@rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -494,8 +487,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> cc:(foo) to:(@yahoo.co.in OR @rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> cc:(foo) to:(@yahoo.co.in OR @rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -505,8 +498,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> cc:(foo) cc:(@example.com) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> cc:(foo) cc:(@example.com) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -516,8 +509,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> cc:(foo) cc:(@rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> cc:(foo) cc:(@rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -527,8 +520,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> cc:(foo) cc:(@yahoo.co.in OR @rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> cc:(foo) cc:(@yahoo.co.in OR @rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -541,8 +534,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${subject.text}) from:(@example.com) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${subject.text}) from:(@example.com) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -552,8 +545,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${subject.text}) from:(@rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${subject.text}) from:(@rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -563,8 +556,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${subject.text}) from:(@yahoo.co.in OR @rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${subject.text}) from:(@yahoo.co.in OR @rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -574,8 +567,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${subject.text}) to:(@example.com) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${subject.text}) to:(@example.com) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -585,8 +578,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>subject:(${subject.text}) to:(@rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query>subject:(${subject.text}) to:(@rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -596,8 +589,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${subject.text}) to:(@yahoo.co.in OR @rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${subject.text}) to:(@yahoo.co.in OR @rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -607,8 +600,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${subject.text}) cc:(@example.com) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${subject.text}) cc:(@example.com) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -618,8 +611,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${subject.text}) cc:(@rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${subject.text}) cc:(@rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -629,8 +622,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${subject.text}) cc:(@yahoo.co.in OR @rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${subject.text}) cc:(@yahoo.co.in OR @rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -643,8 +636,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> content:(${content.text}) from:(@example.com) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> content:(${content.text}) from:(@example.com) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -654,8 +647,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> content:(${content.text}) from:(@rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> content:(${content.text}) from:(@rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -665,8 +658,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> content:(${content.text})from:(@yahoo.co.in OR @rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> content:(${content.text})from:(@yahoo.co.in OR @rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -676,8 +669,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> content:(${content.text}) to:(@example.com) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> content:(${content.text}) to:(@example.com) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -687,8 +680,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>content:(${content.text}) to:(@rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query>content:(${content.text}) to:(@rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -698,8 +691,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> content:(${content.text}) to:(@yahoo.co.in OR @rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> content:(${content.text}) to:(@yahoo.co.in OR @rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -709,8 +702,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> content:(${content.text}) cc:(@example.com) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> content:(${content.text}) cc:(@example.com) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -720,8 +713,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> content:(${content.text}) cc:(@rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> content:(${content.text}) cc:(@rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -731,8 +724,8 @@ Content for ${mail7.name}</content>
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> content:(${content.text}) cc:(@yahoo.co.in OR @rediff.com)</query>
-            </SearchRequest>`, accountAuthToken
+				<query> content:(${content.text}) cc:(@yahoo.co.in OR @rediff.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response

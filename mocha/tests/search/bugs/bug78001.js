@@ -23,6 +23,7 @@ describe('Search > Bugs > Bug78001', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
+		test_account.name = accountEmail;
 	});
 
 	// Applicable zimbra versions
@@ -37,14 +38,14 @@ describe('Search > Bugs > Bug78001', function () {
 		// SendMsgRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-                <m>
-                    <e t="t" a='${test_account.name}'/>
-                    <su> ${message.subject1}</su>
-                    <mp ct="text/plain">
-                        <content> ${message.content1}</content>
-                    </mp>
-                </m>
-            </SendMsgRequest>`, accountAuthToken
+				<m>
+					<e t="t" a='${test_account.name}'/>
+					<su> ${message.subject}</su>
+					<mp ct="text/plain">
+						<content> ${message.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -54,14 +55,14 @@ describe('Search > Bugs > Bug78001', function () {
 		// SendMsgRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
-                <m origid="${message.id1}" rt="w">
-                    <e t="t" a='${test_account.name}'/>
-                    <su> ${message.subject2}</su>
-                    <mp ct="text/plain">
-                        <content>${message.content2}</content>
-                    </mp>
-                </m>
-            </SendMsgRequest>`, accountAuthToken
+				<m origid="${message.id1}" rt="w">
+					<e t="t" a='${test_account.name}'/>
+					<su> ${message.subject}</su>
+					<mp ct="text/plain">
+						<content>${message.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -71,7 +72,7 @@ describe('Search > Bugs > Bug78001', function () {
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			<query>${search.string} in:Sent to:${test_account.name}</query>
+				<query>${search.string} in:Sent to:${test_account.name}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 

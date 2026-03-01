@@ -47,8 +47,8 @@ Subject: test message
 MIME-Version: 1.0
 
 Test content</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 	});
 
@@ -62,8 +62,8 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			   <query>xml</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>xml</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -76,8 +76,8 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-			   <query>contributing to xmlbeans</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>contributing to xmlbeans</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -90,8 +90,8 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			    <query>from:${positivenegative.address}</query>
-     </SearchRequest>`, accountAuthToken
+				<query>from:${positivenegative.address}</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		assert.exists(res.Fault, 'Response should be a Fault');
@@ -102,8 +102,8 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			    <query>from:${specialsymbol.address}</query>
-     </SearchRequest>`, accountAuthToken
+				<query>from:${specialsymbol.address}</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -116,8 +116,8 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-    			    <query>from:${digits.address}</query>
-     </SearchRequest>`, accountAuthToken
+				<query>from:${digits.address}</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -130,7 +130,7 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query>from:${specialsymbols.domainname}</query>
+				<query>from:${specialsymbols.domainname}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -144,7 +144,7 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query>from:${digits.domainname}</query>
+				<query>from:${digits.domainname}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -158,7 +158,7 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query>from:${spaces.domainname}</query>
+				<query>from:${spaces.domainname}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -172,7 +172,7 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query>to:${specialsymbol.address} OR cc:${specialsymbol.address}</query>
+				<query>to:${specialsymbol.address} OR cc:${specialsymbol.address}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -186,7 +186,7 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query>to:${digits.address} OR cc:${digits.address}</query>
+				<query>to:${digits.address} OR cc:${digits.address}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -200,7 +200,7 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query>to:${specialsymbols.domainname} OR cc:${specialsymbols.domainname}</query>
+				<query>to:${specialsymbols.domainname} OR cc:${specialsymbols.domainname}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -214,7 +214,7 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query>to:${digits.domainname} OR cc:${digits.domainname}</query>
+				<query>to:${digits.domainname} OR cc:${digits.domainname}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -228,7 +228,7 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query>to:${spaces.domainname} OR cc:${spaces.domainname}</query>
+				<query>to:${spaces.domainname} OR cc:${spaces.domainname}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -242,7 +242,7 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query>from:${space.address}</query>
+				<query>from:${space.address}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -256,7 +256,7 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query>to:${space.address} OR cc:${space.address}</query>
+				<query>to:${space.address} OR cc:${space.address}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -270,7 +270,7 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query>subject:(and)</query>
+				<query>subject:(and)</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -283,7 +283,7 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query>content:(and)</query>
+				<query>content:(and)</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -296,7 +296,7 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			<query>subject:(or)</query>
+				<query>subject:(or)</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -309,7 +309,7 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query>content:(or)</query>
+				<query>content:(or)</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -322,7 +322,7 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query>from :(and)</query>
+				<query>from :(and)</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -335,7 +335,7 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query>to:(and) OR cc:(and)</query>
+				<query>to:(and) OR cc:(and)</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -348,7 +348,7 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query>from:(or)</query>
+				<query>from:(or)</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -361,7 +361,7 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query>to:(or) OR cc:(or)</query>
+				<query>to:(or) OR cc:(or)</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -374,7 +374,7 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query>subject:${specialsymbols}</query>
+				<query>subject:${specialsymbols}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -386,7 +386,7 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query>content:${specialsymbols}</query>
+				<query>content:${specialsymbols}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -398,7 +398,7 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query>from:${specialsymbols}</query>
+				<query>from:${specialsymbols}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -410,7 +410,7 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query>to:${specialsymbols} OR cc:${specialsymbols}</query>
+				<query>to:${specialsymbols} OR cc:${specialsymbols}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -425,9 +425,9 @@ Test content</content>
 		const account36Email = `test${common.getUniqueString()}@${config.testDomain}`;
 		const res2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-			    <name>${account36Email}</name>
-			    <password>${config.accountPassword}</password>
-			  </CreateAccountRequest>`, adminAuthToken
+				<name>${account36Email}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
 		);
 
 		// Verify response
@@ -438,8 +438,8 @@ Test content</content>
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			    <query>Abbate</query>
-			     </SearchRequest>`, account36AuthToken
+				<query>Abbate</query>
+			</SearchRequest>`, account36AuthToken
 		);
 
 		// Verify response
@@ -448,8 +448,8 @@ Test content</content>
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
-			    <query>Abbate</query>
-			     </SearchRequest>`, account36AuthToken
+				<query>Abbate</query>
+			</SearchRequest>`, account36AuthToken
 		);
 
 		// Verify response
@@ -462,9 +462,9 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25" fetch="1">
-			      <header n="From"></header>
-			      <header n="To"></header>
-			<query>Abbate</query>
+				<header n="From"></header>
+				<header n="To"></header>
+				<query>Abbate</query>
 			</SearchRequest>`, accountAuthToken
 		);
 

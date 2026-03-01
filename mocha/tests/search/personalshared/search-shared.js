@@ -47,47 +47,44 @@ describe('Search > PersonalShared > Shared', function () {
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-                <query>${contact1.firstname} (is:local or is:remote)</query>
-            </SearchRequest>`, accountAuthToken
+				<query>${contact1.firstname} (is:local or is:remote)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
 		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 		assert.exists(res2.SearchResponse, 'Response element should exist');
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-                <query>${contact1.firstname} (is:local)</query>
-            </SearchRequest>`, accountAuthToken
+				<query>${contact1.firstname} (is:local)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
 		// Verify empty result set
 		assert.exists(res3.SearchResponse, 'Response element should exist');
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="task">
-                <query>${task1.subject} (is:local or is:remote)</query>
-            </SearchRequest>`, accountAuthToken
+				<query>${task1.subject} (is:local or is:remote)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
 		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
 		assert.exists(res4.SearchResponse, 'Response element should exist');
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="task">
-                <query>${task1.subject} (is:local)</query>
-            </SearchRequest>`, accountAuthToken
+				<query>${task1.subject} (is:local)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -101,19 +98,18 @@ describe('Search > PersonalShared > Shared', function () {
 	it('Functional | Verify \'is:local in:trash\' returns results even if there are entries in the trash folder (Bug: 21532)', async () => {
 		// Account auth
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
-		// Unknown
+		// GetFolderRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<GetFolderRequest xmlns = "urn:zimbraMail"/>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
 
 		// AddMsgRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
-                <m l="${folder_trash.id}">
+                <m l="3">
                     <content>To: foo@example.com
 From: bar@example.com
 Subject: ${subject1}
@@ -131,8 +127,8 @@ Hello how r u?
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> is:local in:trash </query>
-            </SearchRequest>`, accountAuthToken
+				<query> is:local in:trash </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response

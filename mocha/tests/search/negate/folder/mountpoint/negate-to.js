@@ -70,8 +70,8 @@ Test content
 	it('Sanity | Verify a search for not to - (address) in a mountpoint', async () => {
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest limit="100" xmlns="urn:zimbraMail" types="message">
-			   <query>inid:${mountpointId} not to:(origination_address)</query>
-			   </SearchRequest>`, accountAuthToken2
+				<query>inid:${mountpointId} not to:(origination_address)</query>
+			</SearchRequest>`, accountAuthToken2
 		);
 
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
@@ -79,8 +79,8 @@ Test content
 
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest limit="100" xmlns="urn:zimbraMail" types="message">
-			   <query>inid:${mountpointId} not to:(origination_address@origination_domain.com)</query>
-			   </SearchRequest>`, accountAuthToken2
+				<query>inid:${mountpointId} not to:(origination_address@origination_domain.com)</query>
+			</SearchRequest>`, accountAuthToken2
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
@@ -91,7 +91,7 @@ Test content
 	it('Sanity | Verify a search for not to - (address) in a remote folder', async () => {
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest limit="100" xmlns="urn:zimbraMail" types="message">
-			<query>inid:"${account1.id}:2" not to:(origination_address)</query>
+				<query>inid:"${account1.id}:2" not to:(origination_address)</query>
 			</SearchRequest>`, accountAuthToken2
 		);
 
@@ -100,7 +100,7 @@ Test content
 
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest limit="100" xmlns="urn:zimbraMail" types="message">
-			<query>inid:"${account1.id}:2" -to:(origination_address@origination_domain.com)</query>
+				<query>inid:"${account1.id}:2" -to:(origination_address@origination_domain.com)</query>
 			</SearchRequest>`, accountAuthToken2
 		);
 

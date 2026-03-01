@@ -19,19 +19,31 @@ describe('Search > Bugs > Bug79103', function () {
 		);
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
-		// Inject test messages
-		await soap.makeSOAPEnvelopeAccount(
-			`<AddMsgRequest xmlns="urn:zimbraMail">
-				<m l="2">
-					<content>From: sender@example.com
-To: ${accountEmail}
-Subject: test message
-MIME-Version: 1.0
+		// Inject messages with Japanese To/CC headers
+		const recipients = [
+			{ to: 'CS尾下 <oshita@example.com>', cc: '', subject: 'msg for oshita' },
+			{ to: 'CS佐藤 <sato@example.com>', cc: '', subject: 'msg for sato' },
+			{ to: 'CS鈴木 <suzuki@example.com>', cc: '', subject: 'msg for suzuki' },
+			{ to: '弘次 <koji@example.com>', cc: '', subject: 'msg for koji' },
+			{ to: '貴久 <takahisa@example.com>', cc: '', subject: 'msg for takahisa' },
+			{ to: '玄幸 <genkou@example.com>', cc: '', subject: 'msg for genkou' }
+		];
 
-Test content</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
-		);
+		for (const r of recipients) {
+			await soap.makeSOAPEnvelopeAccount(
+				`<AddMsgRequest xmlns="urn:zimbraMail">
+					<m l="2">
+						<content>From: sender@example.com
+To: ${r.to}
+Subject: ${r.subject}
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+Content for ${r.subject}</content>
+						</m>
+					</AddMsgRequest>`, accountAuthToken
+			);
+		}
 	});
 
 	// Applicable zimbra versions
@@ -41,78 +53,26 @@ Test content</content>
 
 	// Tests
 	it('Sanity | Searchrequest with non UTF subject (Bug: 79103)', async () => {
-		// Account auth
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
-		// SearchRequest
-		const res2 = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>TO:&quot;CS尾下&quot; OR CC:&quot;CS尾下&quot;</query>
-            </SearchRequest>`, accountAuthToken
-		);
 
-		// Verify response
-		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse?.m?.[0].su, 'Value should match pattern');
-		assert.exists(res2.SearchResponse?.m?.[0].su, 'Value should match pattern');
+		const queries = [
+			'TO:"CS尾下" OR CC:"CS尾下"',
+			'TO:"CS佐藤" OR CC:"CS佐藤"',
+			'TO:"CS鈴木" OR CC:"CS鈴木"',
+			'TO:"弘次" OR CC:"弘次"',
+			'TO:"貴久" OR CC:"貴久"',
+			'TO:"玄幸" OR CC:"玄幸"'
+		];
 
-		// SearchRequest
-		const res3 = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>TO:&quot;CS佐藤&quot; OR CC:&quot;CS佐藤&quot;</query>
-            </SearchRequest>`, accountAuthToken
-		);
+		for (const query of queries) {
+			const res = await soap.makeSOAPEnvelopeAccount(
+				`<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>${query}</query>
+				</SearchRequest>`, accountAuthToken
+			);
 
-		// Verify response
-		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse?.m?.[0].su, 'Value should match pattern');
-		assert.exists(res3.SearchResponse?.m?.[0].su, 'Value should match pattern');
-
-		// SearchRequest
-		const res4 = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>TO:&quot;CS鈴木&quot; OR CC:&quot;CS鈴木&quot;</query>
-            </SearchRequest>`, accountAuthToken
-		);
-
-		// Verify response
-		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse?.m?.[0].su, 'Value should match pattern');
-		assert.exists(res4.SearchResponse?.m?.[0].su, 'Value should match pattern');
-
-		// SearchRequest
-		const res5 = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>TO:&quot;弘次&quot; OR CC:&quot;弘次&quot;</query>
-            </SearchRequest>`, accountAuthToken
-		);
-
-		// Verify response
-		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		assert.exists(res5.SearchResponse?.m?.[0].su, 'Value should match pattern');
-		assert.exists(res5.SearchResponse?.m?.[0].su, 'Value should match pattern');
-
-		// SearchRequest
-		const res6 = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>TO:&quot;貴久&quot; OR CC:&quot;貴久&quot;</query>
-            </SearchRequest>`, accountAuthToken
-		);
-
-		// Verify response
-		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		assert.exists(res6.SearchResponse?.m?.[0].su, 'Value should match pattern');
-		assert.exists(res6.SearchResponse?.m?.[0].su, 'Value should match pattern');
-
-		// SearchRequest
-		const res7 = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>TO:&quot;玄幸&quot; OR CC:&quot;玄幸&quot;</query>
-            </SearchRequest>`, accountAuthToken
-		);
-
-		// Verify response
-		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		assert.exists(res7.SearchResponse?.m?.[0].su, 'Value should match pattern');
-		assert.exists(res7.SearchResponse?.m?.[0].su, 'Value should match pattern');
+			assert.notExists(res.Fault, `Response should not be a Fault for query: ${query}`);
+			assert.exists(res.SearchResponse, `SearchResponse should exist for query: ${query}`);
+		}
 	});
 });

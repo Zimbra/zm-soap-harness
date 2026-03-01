@@ -7,9 +7,8 @@ describe('Search > Junk > Junk', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken, accountEmail, accountAuthToken;
 
-	// Test data variables (from XML properties)
-	const globals = { name: 'globals', inbox: 'inbox', sent: 'sent', trash: 'trash', spam: 'junk', drafts: 'drafts', calendar: 'calendar', contacts: 'contacts', true: 'TRUE', false: 'FALSE', toString() { return this.name; } };
-	const junkmail = { name: `junkmail_${common.getUniqueString()}`, subject: `junkmail_${common.getUniqueString()}`, from: accountEmail, content: `junkmail_${common.getUniqueString()}`, value: `junkmail_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `junkmail_id`, toString() { return this.name; } };
+	const junkSubject1 = `junkmail1_${common.getUniqueString()}`;
+	const junkSubject2 = `junkmail2_${common.getUniqueString()}`;
 
 	before(async function () {
 		adminAuthToken = await soap.getAdminAuthToken();
@@ -23,18 +22,32 @@ describe('Search > Junk > Junk', function () {
 		);
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
-		// Inject test messages
+		// Inject message into junk folder (folder id=4) from a specific sender
 		await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
-				<m l="2">
-					<content>From: sender@example.com
+				<m l="4">
+					<content>From: spammer@spam.com
 To: ${accountEmail}
-Subject: test message
+Subject: ${junkSubject1}
 MIME-Version: 1.0
 
-Test content</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+Junk content 1</content>
+					</m>
+				</AddMsgRequest>`, accountAuthToken
+		);
+
+		// Inject second junk message
+		await soap.makeSOAPEnvelopeAccount(
+			`<AddMsgRequest xmlns="urn:zimbraMail">
+				<m l="4">
+					<content>From: spammer@spam.com
+To: ${accountEmail}
+Subject: ${junkSubject2}
+MIME-Version: 1.0
+
+Junk content 2</content>
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 	});
 
@@ -45,44 +58,34 @@ Test content</content>
 
 	// Tests
 	it('Sanity | Create setup for the Search Request (Bug: 23573)', async () => {
-		// Account auth
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
-		// Account
+
+		// Set prefs to include spam in search
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyPrefsRequest xmlns="urn:zimbraAccount">
-                <pref name="zimbraPrefIncludeSpamInSearch">${globals.true}</pref>
-                <pref name="zimbraPrefIncludeTrashInSearch">${globals.true}</pref>
-            </ModifyPrefsRequest>`, accountAuthToken
+				<pref name="zimbraPrefIncludeSpamInSearch">TRUE</pref>
+				<pref name="zimbraPrefIncludeTrashInSearch">TRUE</pref>
+			</ModifyPrefsRequest>`, accountAuthToken
 		);
-
-		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 		assert.exists(res2.ModifyPrefsResponse, 'Response element should exist');
 
-		// SearchRequest
+		// Search in junk from specific sender
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>in:junk from:(${junkmail.from})</query>
-            </SearchRequest>`, accountAuthToken
+				<query>in:junk from:(spammer)</query>
+			</SearchRequest>`, accountAuthToken
 		);
-
-		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		// Verify empty result set
-		// Verify empty result set
 		assert.exists(res3.SearchResponse?.m, 'Response element should exist');
 
-		// SearchRequest
+		// Search for second junk subject
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>subject:(${junkmail.subject2})</query>
-            </SearchRequest>`, accountAuthToken
+				<query>subject:(${junkSubject2})</query>
+			</SearchRequest>`, accountAuthToken
 		);
-
-		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		// Verify empty result set
-		// Verify empty result set
 		assert.exists(res4.SearchResponse?.m, 'Response element should exist');
 	});
 });

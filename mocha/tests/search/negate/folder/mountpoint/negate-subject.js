@@ -70,7 +70,7 @@ Test content
 	it('Sanity | Verify a search for not subject - (text) in a mountpoint', async () => {
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			<query>inid:${mountpointId} not subject:(simple)</query>
+				<query>inid:${mountpointId} not subject:(simple)</query>
 			</SearchRequest>`, accountAuthToken2
 		);
 
@@ -79,7 +79,7 @@ Test content
 
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			<query>inid:${mountpointId} -subject:(simple)</query>
+				<query>inid:${mountpointId} -subject:(simple)</query>
 			</SearchRequest>`, accountAuthToken2
 		);
 
@@ -91,7 +91,7 @@ Test content
 	it('Sanity | Verify a search for not subject - (text) in a remote folder', async () => {
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			<query>inid:"${account1.id}:2" not subject:(simple)</query>
+				<query>inid:"${account1.id}:2" not subject:(simple)</query>
 			</SearchRequest>`, accountAuthToken2
 		);
 
@@ -100,7 +100,7 @@ Test content
 
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			<query>inid:"${account1.id}:2" -subject:(simple)</query>
+				<query>inid:"${account1.id}:2" -subject:(simple)</query>
 			</SearchRequest>`, accountAuthToken2
 		);
 

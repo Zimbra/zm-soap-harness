@@ -29,8 +29,8 @@ Subject: test message
 MIME-Version: 1.0
 
 Test content</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 	});
 
@@ -44,31 +44,27 @@ Test content</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest limit="100" xmlns="urn:zimbraMail" types="message">
-			   <query>not from:(origination_address)</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>not from:(origination_address)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
 		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
 		// Verify empty result set
-		assert.exists(res1.SearchResponse, 'Response element should exist');
 		assert.exists(res1.SearchResponse, 'Response element should exist');
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest limit="100" xmlns="urn:zimbraMail" types="message">
-			   <query>not from:(origination_address@origination_domain.com)</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>not from:(origination_address@origination_domain.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
 		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 		// Verify empty result set
-		assert.exists(res2.SearchResponse, 'Response element should exist');
 		assert.exists(res2.SearchResponse, 'Response element should exist');
 	});
 
@@ -77,31 +73,27 @@ Test content</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest limit="100" xmlns="urn:zimbraMail" types="message">
-			   <query>-from:(origination_address)</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>-from:(origination_address)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
 		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
 		// Verify empty result set
-		assert.exists(res1.SearchResponse, 'Response element should exist');
 		assert.exists(res1.SearchResponse, 'Response element should exist');
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest limit="100" xmlns="urn:zimbraMail" types="message">
-			   <query>-from:(origination_address@origination_domain.com)</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>-from:(origination_address@origination_domain.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
 		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 		// Verify empty result set
-		assert.exists(res2.SearchResponse, 'Response element should exist');
 		assert.exists(res2.SearchResponse, 'Response element should exist');
 	});
 });

@@ -31,7 +31,7 @@ describe('Search > Tasks > Bug51391', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="task">
-			<query>priority:high</query>
+				<query>priority:high</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -45,7 +45,7 @@ describe('Search > Tasks > Bug51391', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="task">
-			<query>priority:low</query>
+				<query>priority:low</query>
 			</SearchRequest>`, accountAuthToken
 		);
 

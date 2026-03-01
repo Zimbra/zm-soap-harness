@@ -36,8 +36,8 @@ Subject: ${mail.subject}
 MIME-Version: 1.0
 
 Test content</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 	});
 
@@ -51,8 +51,8 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			   <query>subject:(${mail.subject})</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>subject:(${mail.subject})</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -66,8 +66,8 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-			   <query>subject:(${mail.subject})</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>subject:(${mail.subject})</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -81,10 +81,10 @@ Test content</content>
 		// CreateContactRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
-			     <cn>
-			     			<a n="firstName">${contact1.firstName}</a>
-			     </cn>
-			   </CreateContactRequest>`, accountAuthToken
+				<cn>
+					<a n="firstName">${contact1.firstName}</a>
+				</cn>
+			</CreateContactRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -95,8 +95,8 @@ Test content</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			   <query>${contact1.firstName}</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>${contact1.firstName}</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -110,10 +110,10 @@ Test content</content>
 		// CreateContactRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
-			     <cn>
-			     			<a n="firstName">${contact2.firstName}</a>
-			     </cn>
-			   </CreateContactRequest>`, accountAuthToken
+				<cn>
+					<a n="firstName">${contact2.firstName}</a>
+				</cn>
+			</CreateContactRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -124,8 +124,8 @@ Test content</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation,contact,appointment">
-			   <query>${contact2.firstName}</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>${contact2.firstName}</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -136,8 +136,8 @@ Test content</content>
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message,contact,appointment">
-			   <query>subject:(${mail.subject})</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>subject:(${mail.subject})</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -147,8 +147,8 @@ Test content</content>
 		// SearchRequest with conversation type
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation,contact,appointment">
-			   <query>subject:(${mail.subject})</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>subject:(${mail.subject})</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -158,8 +158,8 @@ Test content</content>
 		// SearchRequest - combined query
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation,contact,appointment">
-			   <query>${contact2.firstName} OR subject:(${mail.subject})</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>${contact2.firstName} OR subject:(${mail.subject})</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -173,8 +173,8 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-			   <query>subject:(${mail.subject})</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>subject:(${mail.subject})</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -187,10 +187,10 @@ Test content</content>
 		// CreateContactRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
-			     <cn>
-			     			<a n="firstName">${contact3.firstName}</a>
-			     </cn>
-			   </CreateContactRequest>`, accountAuthToken
+				<cn>
+					<a n="firstName">${contact3.firstName}</a>
+				</cn>
+			</CreateContactRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -201,8 +201,8 @@ Test content</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			   <query>${contact3.firstName}</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>${contact3.firstName}</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response

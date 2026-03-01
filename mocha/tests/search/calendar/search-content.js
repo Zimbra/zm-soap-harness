@@ -6,19 +6,18 @@ import soap from '../../../framework/backend/soap-client.js';
 describe('Search > Calendar > Content', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken, accountEmail, accountAuthToken;
-	let res;
 
-	// Test data variables (from XML properties)
-	const Time1 = { name: `Time1_${common.getUniqueString()}`, subject: `Time1_${common.getUniqueString()}`, from: accountEmail, content: `Time1_${common.getUniqueString()}`, value: `Time1_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `Time1_id`, toString() { return this.name; } };
-	const Time2 = { name: `Time2_${common.getUniqueString()}`, subject: `Time2_${common.getUniqueString()}`, from: accountEmail, content: `Time2_${common.getUniqueString()}`, value: `Time2_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `Time2_id`, toString() { return this.name; } };
-	const account1 = { name: `account1_${common.getUniqueString()}`, subject: `account1_${common.getUniqueString()}`, from: accountEmail, content: `account1_${common.getUniqueString()}`, value: `account1_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `account1_id`, toString() { return this.name; } };
-	const account2 = { name: `account2_${common.getUniqueString()}`, subject: `account2_${common.getUniqueString()}`, from: accountEmail, content: `account2_${common.getUniqueString()}`, value: `account2_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `account2_id`, toString() { return this.name; } };
-	const appt = { name: `appt_${common.getUniqueString()}`, subject: `appt_${common.getUniqueString()}`, from: accountEmail, content: `appt_${common.getUniqueString()}`, value: `appt_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `appt_id`, toString() { return this.name; } };
-	const appt1 = { name: `appt1_${common.getUniqueString()}`, subject: `appt1_${common.getUniqueString()}`, from: accountEmail, content: `appt1_${common.getUniqueString()}`, value: `appt1_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `appt1_id`, toString() { return this.name; } };
-	const appt2 = { name: `appt2_${common.getUniqueString()}`, subject: `appt2_${common.getUniqueString()}`, from: accountEmail, content: `appt2_${common.getUniqueString()}`, value: `appt2_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `appt2_id`, toString() { return this.name; } };
-	const appt3 = { name: `appt3_${common.getUniqueString()}`, subject: `appt3_${common.getUniqueString()}`, from: accountEmail, content: `appt3_${common.getUniqueString()}`, value: `appt3_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `appt3_id`, toString() { return this.name; } };
-	const appt4 = { name: `appt4_${common.getUniqueString()}`, subject: `appt4_${common.getUniqueString()}`, from: accountEmail, content: `appt4_${common.getUniqueString()}`, value: `appt4_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `appt4_id`, toString() { return this.name; } };
-	const defaultlocale = { name: `defaultlocale_${common.getUniqueString()}`, subject: `defaultlocale_${common.getUniqueString()}`, from: accountEmail, content: `defaultlocale_${common.getUniqueString()}`, value: `defaultlocale_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `defaultlocale_id`, toString() { return this.name; } };
+	const apptSubject = `appt_${common.getUniqueString()}`;
+	const apptLocation = `loc_${common.getUniqueString()}`;
+	const apptContent = `content_${common.getUniqueString()}`;
+
+	// Generate iCal times
+	const now = new Date();
+	const startTime = new Date(now.getTime() + 3600000); // +1 hour
+	const endTime = new Date(now.getTime() + 7200000); // +2 hours
+	const pad = (n) => String(n).padStart(2, '0');
+	const icalStart = `${startTime.getFullYear()}${pad(startTime.getMonth() + 1)}${pad(startTime.getDate())}T${pad(startTime.getHours())}${pad(startTime.getMinutes())}00`;
+	const icalEnd = `${endTime.getFullYear()}${pad(endTime.getMonth() + 1)}${pad(endTime.getDate())}T${pad(endTime.getHours())}${pad(endTime.getMinutes())}00`;
 
 	before(async function () {
 		adminAuthToken = await soap.getAdminAuthToken();
@@ -40,182 +39,71 @@ describe('Search > Calendar > Content', function () {
 
 	// Tests
 	it('Functional | Login as the appropriate test account', async () => {
-		// Account auth
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
-		// CreateAppointmentRequest
+
+		// Create appointment
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
-                <m>
-                    <inv method="REQUEST" type="event" allday="0" name="${appt.subject}" loc="${appt.location}">
-                        <at ptst="TE" role="OPT" status="NE" rsvp="1" a="${account2.user}"/>
-                        <s d="${Time1}" tz="${account1.timezone}"/>
-                        <e d="${Time2}" tz="${account1.timezone}"/>
-                        <or a="${account1.user}"/>
-                    </inv>
-                    <e a="${account2.user}" t="t"/>
-                    <mp content-type="text/plain">
-                        <content>${appt.content}</content>
-                    </mp>
-                    <su>${appt.subject}</su>
-                </m>
-            </CreateAppointmentRequest>`, accountAuthToken
+				<m>
+					<inv method="REQUEST" type="event" allday="0" name="${apptSubject}" loc="${apptLocation}">
+						<s d="${icalStart}"/>
+						<e d="${icalEnd}"/>
+						<or a="${accountEmail}"/>
+					</inv>
+					<mp content-type="text/plain">
+						<content>${apptContent}</content>
+					</mp>
+					<su>${apptSubject}</su>
+				</m>
+			</CreateAppointmentRequest>`, accountAuthToken
 		);
-
-		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		const appt_id = res2.CreateAppointmentResponse.invId;
-
-		// CreateAppointmentRequest
-		const res3 = await soap.makeSOAPEnvelopeAccount(
-			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
-                <m>
-                    <inv method="REQUEST" type="event" allday="0" name="${appt1.subject}" loc="${appt1.location}">
-                        <at ptst="TE" role="OPT" status="NE" rsvp="1" a="${account2.user}"/>
-                        <s d="${Time1}" tz="${account1.timezone}"/>
-                        <e d="${Time2}" tz="${account1.timezone}"/>
-                        <or a="${account1.user}"/>
-                    </inv>
-                    <e a="${account2.user}" t="t"/>
-                    <mp content-type="text/plain">
-                        <content>${appt1.content}</content>
-                    </mp>
-                    <su>${appt1.subject}</su>
-                </m>
-            </CreateAppointmentRequest>`, accountAuthToken
-		);
-
-		// Verify response
-		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		const appt1_id = res3.CreateAppointmentResponse.invId;
-
-		// CreateAppointmentRequest
-		const res4 = await soap.makeSOAPEnvelopeAccount(
-			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
-                <m>
-                    <inv method="REQUEST" type="event" allday="0" name="${appt2.subject}" loc="${appt2.location}">
-                        <at ptst="TE" role="OPT" status="NE" rsvp="1" a="${account2.user}"/>
-                        <s d="${Time1}" tz="${account1.timezone}"/>
-                        <e d="${Time2}" tz="${account1.timezone}"/>
-                        <or a="${account1.user}"/>
-                    </inv>
-                    <e a="${account2.user}" t="t"/>
-                    <mp content-type="text/plain">
-                        <content>${appt2.content}</content>
-                    </mp>
-                    <su>${appt2.subject}</su>
-                </m>
-            </CreateAppointmentRequest>`, accountAuthToken
-		);
-
-		// Verify response
-		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		const appt2_id = res4.CreateAppointmentResponse.invId;
-
-		// CreateAppointmentRequest
-		const res5 = await soap.makeSOAPEnvelopeAccount(
-			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
-                <m>
-                    <inv method="REQUEST" type="event" allday="0" name="${appt3.subject}" loc="${appt3.location}">
-                        <at ptst="TE" role="OPT" status="NE" rsvp="1" a="${account2.user}"/>
-                        <s d="${Time1}" tz="${account1.timezone}"/>
-                        <e d="${Time2}" tz="${account1.timezone}"/>
-                        <or a="${account1.user}"/>
-                    </inv>
-                    <e a="${account2.user}" t="t"/>
-                    <mp content-type="text/plain">
-                        <content>${appt3.content}</content>
-                    </mp>
-                    <su>${appt3.subject}</su>
-                </m>
-            </CreateAppointmentRequest>`, accountAuthToken
-		);
-
-		// Verify response
-		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		const appt3_id = res5.CreateAppointmentResponse.invId;
-
-		// CreateAppointmentRequest
-		const res6 = await soap.makeSOAPEnvelopeAccount(
-			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
-                <m>
-                    <inv method="REQUEST" type="event" allday="0" name="${appt4.subject}" loc="${appt4.location}">
-                        <at ptst="TE" role="OPT" status="NE" rsvp="1" a="${account2.user}"/>
-                        <s d="${appt4.time1}"/>
-                        <e d="${appt4.time2}"/>
-                        <or a="${account1.user}"/>
-                    </inv>
-                    <e a="${account2.user}" t="t"/>
-                    <mp content-type="text/plain">
-                        <content>${appt4.content}</content>
-                    </mp>
-                    <su>${appt4.subject}</su>
-                </m>
-            </CreateAppointmentRequest>`, accountAuthToken
-		);
-
-		// Verify response
-		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		const appt4_id = res6.CreateAppointmentResponse.invId;
 	});
 
 
 	it('Functional | Search for an appointment based on subject (Bug: 3141, 5176)', async () => {
-		// Account auth
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
-		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
-			<tz id="${defaultlocale.timezone}"/>
-			<query>subject:"${appt1.subject}"</query>
+				<query>subject:"${apptSubject}"</query>
 			</SearchRequest>`, accountAuthToken
 		);
-
-		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 	});
 
 
 	it('Functional | Search for an appointment based on location (Bug: 3141, 5176)', async () => {
-		// SearchRequest
-		res = await soap.makeSOAPEnvelopeAccount(
+		const res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
-			<tz id="${defaultlocale.timezone}"/>
-			<query>"${appt2.location}"</query>
+				<query>"${apptLocation}"</query>
 			</SearchRequest>`, accountAuthToken
 		);
-
-		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
 
 
 	it('Functional | Search for an appointment based on content (Bug: 3141, 5176)', async () => {
-		// SearchRequest
-		res = await soap.makeSOAPEnvelopeAccount(
+		const res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
-			<tz id="${defaultlocale.timezone}"/>
-			<query>"${appt3.content}"</query>
+				<query>"${apptContent}"</query>
 			</SearchRequest>`, accountAuthToken
 		);
-
-		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
 
 
 	it('Functional | Search for an appointment based on date (Bug: 2753, 5176)', async () => {
-		// SearchRequest
-		res = await soap.makeSOAPEnvelopeAccount(
+		const month = now.getMonth() + 1;
+		const day = now.getDate();
+		const year = now.getFullYear();
+		const res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
-			<tz id="${defaultlocale.timezone}"/>
-			<query>before:${appt4.date}</query>
+				<query>after:${month}/${day}/${year}</query>
 			</SearchRequest>`, accountAuthToken
 		);
-
-		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});

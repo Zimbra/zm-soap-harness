@@ -5,7 +5,7 @@ import soap from '../../../framework/backend/soap-client.js';
 
 describe('Search > Basic > Priority', function () {
 	this.timeout(60 * 1000);
-	let adminAuthToken, accountEmail, accountAuthToken, accountEmail2, accountAuthToken2;
+	let adminAuthToken, accountEmail, accountAuthToken;
 	let res;
 
 	before(async function () {
@@ -20,27 +20,36 @@ describe('Search > Basic > Priority', function () {
 		);
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
-		accountEmail2 = `test${common.getUniqueString()}@${config.testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
-			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-				<name>${accountEmail2}</name>
-				<password>${config.accountPassword}</password>
-			</CreateAccountRequest>`, adminAuthToken
-		);
-		accountAuthToken2 = await soap.getAccountAuthToken(accountEmail2);
-
-		// Inject test messages
+		// Inject low priority message (X-Priority: 5 = low)
 		await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
 				<m l="2">
 					<content>From: sender@example.com
 To: ${accountEmail}
-Subject: test message
+Subject: low_prioritymail
+X-Priority: 5
+Importance: low
 MIME-Version: 1.0
 
-Test content</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+Low priority test content</content>
+					</m>
+				</AddMsgRequest>`, accountAuthToken
+		);
+
+		// Inject high priority message (X-Priority: 1 = high)
+		await soap.makeSOAPEnvelopeAccount(
+			`<AddMsgRequest xmlns="urn:zimbraMail">
+				<m l="2">
+					<content>From: sender@example.com
+To: ${accountEmail}
+Subject: high_prioritymail
+X-Priority: 1
+Importance: high
+MIME-Version: 1.0
+
+High priority test content</content>
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 	});
 
@@ -54,8 +63,8 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			   <query>priority:low</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>priority:low</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -68,8 +77,8 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			   <query>priority:high</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>priority:high</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response

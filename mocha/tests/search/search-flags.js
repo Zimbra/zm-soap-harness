@@ -45,7 +45,7 @@ describe('Search > Flags', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query> is:flagged</query>
+				<query> is:flagged</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -59,7 +59,7 @@ describe('Search > Flags', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query> is:${nonexistingFlags}</query>
+				<query> is:${nonexistingFlags}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -72,7 +72,7 @@ describe('Search > Flags', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query> is:${blankFlags}</query>
+				<query> is:${blankFlags}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -85,7 +85,7 @@ describe('Search > Flags', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query> is:${spaceFlags}</query>
+				<query> is:${spaceFlags}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -98,7 +98,7 @@ describe('Search > Flags', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query> is:${digitsFlags}</query>
+				<query> is:${digitsFlags}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -111,7 +111,7 @@ describe('Search > Flags', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query> is:${specialsymbolFlags}</query>
+				<query> is:${specialsymbolFlags}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -124,7 +124,7 @@ describe('Search > Flags', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query> is:${capitalletterFlags}</query>
+				<query> is:${capitalletterFlags}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -138,7 +138,7 @@ describe('Search > Flags', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query> is:${capitalsmallletterFlags}</query>
+				<query> is:${capitalsmallletterFlags}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -152,7 +152,7 @@ describe('Search > Flags', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query> is:0 </query>
+				<query> is:0 </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -165,7 +165,7 @@ describe('Search > Flags', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query> is:${positiveFlags}</query>
+				<query> is:${positiveFlags}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -178,7 +178,7 @@ describe('Search > Flags', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query> is:${negativeFlags}</query>
+				<query> is:${negativeFlags}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -191,7 +191,7 @@ describe('Search > Flags', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query> is:${alphanumericFlags}</query>
+				<query> is:${alphanumericFlags}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -204,7 +204,7 @@ describe('Search > Flags', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query> is:${emailidFlags}</query>
+				<query> is:${emailidFlags}</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -217,7 +217,7 @@ describe('Search > Flags', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query> is:unflagged is:read is:replied is:forwarded</query>
+				<query> is:unflagged is:read is:replied is:forwarded</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -231,7 +231,7 @@ describe('Search > Flags', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query> is:unflagged</query>
+				<query> is:unflagged</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -245,7 +245,7 @@ describe('Search > Flags', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query> is:read</query>
+				<query> is:read</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -259,7 +259,7 @@ describe('Search > Flags', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query> is:unread</query>
+				<query> is:unread</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -273,7 +273,7 @@ describe('Search > Flags', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query> is:replied</query>
+				<query> is:replied</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -287,7 +287,7 @@ describe('Search > Flags', function () {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
-			       <query> is:forwarded</query>
+				<query> is:forwarded</query>
 			</SearchRequest>`, accountAuthToken
 		);
 

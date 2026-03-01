@@ -56,7 +56,7 @@ describe('Search > Bugs > SortBy ZCS 3705', function () {
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest types="message" xmlns="urn:zimbraMail">
-			<query xmlns="urn:zimbraMail">is:read</query>
+				<query xmlns="urn:zimbraMail">is:read</query>
 			</SearchRequest>`, accountAuthToken
 		);
 

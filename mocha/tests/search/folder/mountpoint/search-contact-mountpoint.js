@@ -80,8 +80,8 @@ describe('Search > Folder > Mountpoint > Contact Mountpoint', function () {
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-                <query>in:${mountpointName}</query>
-            </SearchRequest>`, accountAuthToken2
+				<query>in:${mountpointName}</query>
+			</SearchRequest>`, accountAuthToken2
 		);
 
 		// Verify response
@@ -91,8 +91,8 @@ describe('Search > Folder > Mountpoint > Contact Mountpoint', function () {
 		// SearchRequest with quotes
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-                <query>in:"${mountpointName}"</query>
-            </SearchRequest>`, accountAuthToken2
+				<query>in:"${mountpointName}"</query>
+			</SearchRequest>`, accountAuthToken2
 		);
 
 		// Verify response
@@ -102,8 +102,8 @@ describe('Search > Folder > Mountpoint > Contact Mountpoint', function () {
 		// SearchRequest with parens
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-                <query>in:(${mountpointName})</query>
-            </SearchRequest>`, accountAuthToken2
+				<query>in:(${mountpointName})</query>
+			</SearchRequest>`, accountAuthToken2
 		);
 
 		// Verify response
@@ -116,8 +116,8 @@ describe('Search > Folder > Mountpoint > Contact Mountpoint', function () {
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact" offset="0"  limit="25">
-                <query>in:${mountpointName}</query>
-            </SearchRequest>`, accountAuthToken2
+				<query>in:${mountpointName}</query>
+			</SearchRequest>`, accountAuthToken2
 		);
 
 		// Verify response
@@ -130,8 +130,8 @@ describe('Search > Folder > Mountpoint > Contact Mountpoint', function () {
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact" sortBy="dateDesc" >
-                <query>in:${mountpointName}</query>
-            </SearchRequest>`, accountAuthToken2
+				<query>in:${mountpointName}</query>
+			</SearchRequest>`, accountAuthToken2
 		);
 
 		// Verify response
@@ -141,8 +141,8 @@ describe('Search > Folder > Mountpoint > Contact Mountpoint', function () {
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact" sortBy="nameAsc" >
-                <query>in:${mountpointName}</query>
-            </SearchRequest>`, accountAuthToken2
+				<query>in:${mountpointName}</query>
+			</SearchRequest>`, accountAuthToken2
 		);
 
 		// Verify response

@@ -7,9 +7,6 @@ describe('Search > Bugs > Bug82489', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken, accountEmail, accountAuthToken;
 
-	// Test data variables (from XML properties)
-	const conv = { name: `conv_${common.getUniqueString()}`, subject: `conv_${common.getUniqueString()}`, from: accountEmail, content: `conv_${common.getUniqueString()}`, value: `conv_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `conv_id`, toString() { return this.name; } };
-
 	before(async function () {
 		adminAuthToken = await soap.getAdminAuthToken();
 
@@ -22,18 +19,18 @@ describe('Search > Bugs > Bug82489', function () {
 		);
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
-		// Inject test messages
+		// Inject message with content "survey" from "perceptyx"
 		await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
 				<m l="2">
-					<content>From: sender@example.com
+					<content>From: perceptyx@example.com
 To: ${accountEmail}
-Subject: test message
+Subject: employee survey results
 MIME-Version: 1.0
 
-Test content</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+Please complete this survey about your experience.</content>
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 	});
 
@@ -44,38 +41,36 @@ Test content</content>
 
 	// Tests
 	it('Sanity | content - is - anywhere from - search does not find correct emails (Bug: 82489)', async () => {
-		// Account auth
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
-		// SearchRequest
+
+		// Search for survey from perceptyx
+		const res1 = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>survey is:anywhere from:perceptyx</query>
+			</SearchRequest>`, accountAuthToken
+		);
+
+		assert.notExists(res1.Fault, 'Response should not be a Fault');
+		assert.exists(res1.SearchResponse?.m, 'Response element should exist');
+		const msgId = res1.SearchResponse?.m?.[0]?.id;
+
+		// Move to trash
 		const res2 = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>survey is:anywhere from:perceptyx</query>
-            </SearchRequest>`, accountAuthToken
-		);
-
-		// Verify response
-		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		const conv_id = res2.SearchResponse?.m?.[0].id;
-
-		// MsgActionRequest
-		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
-                <action id="${conv.id}" op="trash"/>
-            </MsgActionRequest>`, accountAuthToken
+				<action id="${msgId}" op="trash"/>
+			</MsgActionRequest>`, accountAuthToken
 		);
 
-		// Verify response
-		assert.notExists(res3.Fault, 'Response should not be a Fault');
+		assert.notExists(res2.Fault, 'Response should not be a Fault');
 
-		// SearchRequest
-		const res4 = await soap.makeSOAPEnvelopeAccount(
+		// Search again with is:anywhere - should still find it
+		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>survey is:anywhere from:perceptyx</query>
-            </SearchRequest>`, accountAuthToken
+				<query>survey is:anywhere from:perceptyx</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
-		// Verify response
-		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
+		assert.notExists(res3.Fault, 'Response should not be a Fault');
+		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 	});
 });

@@ -139,8 +139,8 @@ Sample Content
 		// SearchRequest by mountpoint1 ID
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>inid:(${account2.mountpoint1.id})</query>
-            </SearchRequest>`, accountAuthToken2
+				<query>inid:(${account2.mountpoint1.id})</query>
+			</SearchRequest>`, accountAuthToken2
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
@@ -150,8 +150,8 @@ Sample Content
 		// SearchRequest by submountpoint1 ID
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>inid:(${account2.submountpoint1.id})</query>
-            </SearchRequest>`, accountAuthToken2
+				<query>inid:(${account2.submountpoint1.id})</query>
+			</SearchRequest>`, accountAuthToken2
 		);
 
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
@@ -164,8 +164,8 @@ Sample Content
 		// SearchRequest by mountpoint1 name
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>in:"/${account2.mountpoint1.name}"</query>
-            </SearchRequest>`, accountAuthToken2
+				<query>in:"/${account2.mountpoint1.name}"</query>
+			</SearchRequest>`, accountAuthToken2
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
@@ -174,8 +174,8 @@ Sample Content
 		// SearchRequest by submountpoint1 name
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>in:"/${account2.submountpoint1.name}"</query>
-            </SearchRequest>`, accountAuthToken2
+				<query>in:"/${account2.submountpoint1.name}"</query>
+			</SearchRequest>`, accountAuthToken2
 		);
 
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
@@ -187,8 +187,8 @@ Sample Content
 		// SearchRequest using mountpoint/subfolder path
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>in:"/${account2.mountpoint1.name}/${account1.folder2.name}"</query>
-            </SearchRequest>`, accountAuthToken2
+				<query>in:"/${account2.mountpoint1.name}/${account1.folder2.name}"</query>
+			</SearchRequest>`, accountAuthToken2
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
@@ -200,8 +200,8 @@ Sample Content
 		// SearchConvRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchConvRequest xmlns="urn:zimbraMail" cid="${account1.id}:${account1.message1.cid}">
-                <query>inid:(${account2.mountpoint1.id})</query>
-            </SearchConvRequest>`, accountAuthToken2
+				<query>inid:(${account2.mountpoint1.id})</query>
+			</SearchConvRequest>`, accountAuthToken2
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
@@ -213,8 +213,8 @@ Sample Content
 		// SearchConvRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchConvRequest xmlns="urn:zimbraMail" cid="${account1.id}:${account1.message1.cid}">
-                <query>in:"${account2.mountpoint1.name}"</query>
-            </SearchConvRequest>`, accountAuthToken2
+				<query>in:"${account2.mountpoint1.name}"</query>
+			</SearchConvRequest>`, accountAuthToken2
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
@@ -226,8 +226,8 @@ Sample Content
 		// SearchConvRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchConvRequest xmlns="urn:zimbraMail" cid="${account1.id}:${account1.message2.cid}">
-                <query>in:"${account2.mountpoint1.name}/${account1.folder2.name}"</query>
-            </SearchConvRequest>`, accountAuthToken2
+				<query>in:"${account2.mountpoint1.name}/${account1.folder2.name}"</query>
+			</SearchConvRequest>`, accountAuthToken2
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
@@ -239,8 +239,8 @@ Sample Content
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>inid:${account2.mountpoint1.id} OR inid:${account2.dupmountpoint1.id}</query>
-            </SearchRequest>`, accountAuthToken2
+				<query>inid:${account2.mountpoint1.id} OR inid:${account2.dupmountpoint1.id}</query>
+			</SearchRequest>`, accountAuthToken2
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');

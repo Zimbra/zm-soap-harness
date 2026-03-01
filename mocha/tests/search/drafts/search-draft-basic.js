@@ -36,14 +36,14 @@ describe('Search > Drafts > DraftBasic', function () {
 		// SaveDraftRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SaveDraftRequest xmlns="urn:zimbraMail">
-                <m>
-                    <e t="t" a="foo@example.com"/>
-                    <su> ${message1.subject} </su>
-                    <mp ct="text/plain">
-                        <content> ${message1.content}</content>
-                    </mp>
-                </m>
-            </SaveDraftRequest>`, accountAuthToken
+				<m>
+					<e t="t" a="foo@example.com"/>
+					<su> ${message1.subject} </su>
+					<mp ct="text/plain">
+						<content> ${message1.content}</content>
+					</mp>
+				</m>
+			</SaveDraftRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -53,8 +53,8 @@ describe('Search > Drafts > DraftBasic', function () {
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:${message1.subject} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:${message1.subject} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -68,14 +68,14 @@ describe('Search > Drafts > DraftBasic', function () {
 		// SaveDraftRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SaveDraftRequest xmlns="urn:zimbraMail">
-                <m>
-                    <e t="t" a="foo@example.com"/>
-                    <su> ${message1.subject} </su>
-                    <mp ct="text/plain">
-                        <content> ${message1.content}</content>
-                    </mp>
-                </m>
-            </SaveDraftRequest>`, accountAuthToken
+				<m>
+					<e t="t" a="foo@example.com"/>
+					<su> ${message1.subject} </su>
+					<mp ct="text/plain">
+						<content> ${message1.content}</content>
+					</mp>
+				</m>
+			</SaveDraftRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -85,8 +85,8 @@ describe('Search > Drafts > DraftBasic', function () {
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> content:${message1.content} </query>
-            </SearchRequest>`, accountAuthToken
+				<query> content:${message1.content} </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response

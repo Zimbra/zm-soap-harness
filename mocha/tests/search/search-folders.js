@@ -35,8 +35,8 @@ describe('Search > Folders', function () {
 		// CreateSearchFolder
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateSearchFolderRequest xmlns="urn:zimbraMail">
-			     <search name="${search.name}" query="${search.query}" l="1"/>
-			   </CreateSearchFolderRequest>`, accountAuthToken
+				<search name="${search.name}" query="${search.query}" l="1"/>
+			</CreateSearchFolderRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -53,8 +53,8 @@ describe('Search > Folders', function () {
 		const searchName2 = `Search_${common.getUniqueString()}`;
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateSearchFolderRequest xmlns="urn:zimbraMail">
-			     <search name="${searchName2}" query="${search.query}" l="1"/>
-			   </CreateSearchFolderRequest>`, accountAuthToken
+				<search name="${searchName2}" query="${search.query}" l="1"/>
+			</CreateSearchFolderRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -65,8 +65,8 @@ describe('Search > Folders', function () {
 		// ModifySearchFolder
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<ModifySearchFolderRequest xmlns="urn:zimbraMail">
-			     <search id="${search.id}" name="${search.newname}" query="${search.newquery}"/>
-			   </ModifySearchFolderRequest>`, accountAuthToken
+				<search id="${search.id}" name="${search.newname}" query="${search.newquery}"/>
+			</ModifySearchFolderRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -82,8 +82,8 @@ describe('Search > Folders', function () {
 		const searchName3 = `Search_${common.getUniqueString()}`;
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateSearchFolderRequest xmlns="urn:zimbraMail">
-			     <search name="${searchName3}" query="${search.query}" l="1"/>
-			   </CreateSearchFolderRequest>`, accountAuthToken
+				<search name="${searchName3}" query="${search.query}" l="1"/>
+			</CreateSearchFolderRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -109,8 +109,8 @@ describe('Search > Folders', function () {
 		const searchName4 = `Search_${common.getUniqueString()}`;
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateSearchFolderRequest xmlns="urn:zimbraMail">
-			     <search name="${searchName4}" query="${search.query}" l="1"/>
-			   </CreateSearchFolderRequest>`, accountAuthToken
+				<search name="${searchName4}" query="${search.query}" l="1"/>
+			</CreateSearchFolderRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -121,8 +121,8 @@ describe('Search > Folders', function () {
 		// FolderActionRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
-			     <action op="move" id="${search.id}" l="3"/>
-			   </FolderActionRequest>`, accountAuthToken
+				<action op="move" id="${search.id}" l="3"/>
+			</FolderActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -132,8 +132,8 @@ describe('Search > Folders', function () {
 		// FolderActionRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
-			     <action op="delete" id="${search.id}"/>
-			   </FolderActionRequest>`, accountAuthToken
+				<action op="delete" id="${search.id}"/>
+			</FolderActionRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -149,8 +149,8 @@ describe('Search > Folders', function () {
 		const searchName5 = `Search_${common.getUniqueString()}`;
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateSearchFolderRequest xmlns="urn:zimbraMail">
-			     <search name="${searchName5}" query="${search.query}" l="1"/>
-			   </CreateSearchFolderRequest>`, accountAuthToken
+				<search name="${searchName5}" query="${search.query}" l="1"/>
+			</CreateSearchFolderRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -161,8 +161,8 @@ describe('Search > Folders', function () {
 		// FolderActionRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
-			     <action op="delete" id="${search.id}"/>
-			   </FolderActionRequest>`, accountAuthToken
+				<action op="delete" id="${search.id}"/>
+			</FolderActionRequest>`, accountAuthToken
 		);
 
 		// Verify response

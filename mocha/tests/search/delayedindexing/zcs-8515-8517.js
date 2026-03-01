@@ -89,8 +89,8 @@ describe('Search > DelayedIndexing > ZCS 8515 8517', function () {
 		// Disable indexing for account2
 		const res2 = await soap.makeSOAPEnvelopeAdmin(
 			`<ManageIndexRequest xmlns="urn:zimbraAdmin" action="disableIndexing">
-               <mbox id="${test_account2.id}"/>
-            </ManageIndexRequest>`, adminAuthToken
+				<mbox id="${test_account2.id}"/>
+			</ManageIndexRequest>`, adminAuthToken
 		);
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 		assert.equal(res2.ManageIndexResponse.status, 'started', 'status should match');
@@ -98,8 +98,8 @@ describe('Search > DelayedIndexing > ZCS 8515 8517', function () {
 		// Disable indexing for account3
 		const res4 = await soap.makeSOAPEnvelopeAdmin(
 			`<ManageIndexRequest xmlns="urn:zimbraAdmin" action="disableIndexing">
-               <mbox id="${test_account3.id}"/>
-            </ManageIndexRequest>`, adminAuthToken
+				<mbox id="${test_account3.id}"/>
+			</ManageIndexRequest>`, adminAuthToken
 		);
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
 		assert.equal(res4.ManageIndexResponse.status, 'started', 'status should match');
@@ -107,8 +107,8 @@ describe('Search > DelayedIndexing > ZCS 8515 8517', function () {
 		// Disable indexing for account4
 		const res6 = await soap.makeSOAPEnvelopeAdmin(
 			`<ManageIndexRequest xmlns="urn:zimbraAdmin" action="disableIndexing">
-               <mbox id="${test_account4.id}"/>
-            </ManageIndexRequest>`, adminAuthToken
+				<mbox id="${test_account4.id}"/>
+			</ManageIndexRequest>`, adminAuthToken
 		);
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
 		assert.equal(res6.ManageIndexResponse.status, 'started', 'status should match');
@@ -120,8 +120,8 @@ describe('Search > DelayedIndexing > ZCS 8515 8517', function () {
 		authToken2 = await soap.getAccountAuthToken(test_account2.name);
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
-                  <query>subject:(test mail)</query>
-            </SearchRequest>`, authToken2
+				<query>subject:(test mail)</query>
+			</SearchRequest>`, authToken2
 		);
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
 		assert.exists(res9.SearchResponse, 'Response element should exist');
@@ -130,8 +130,8 @@ describe('Search > DelayedIndexing > ZCS 8515 8517', function () {
 		authToken3 = await soap.getAccountAuthToken(test_account3.name);
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
-                  <query>subject:(test mail)</query>
-            </SearchRequest>`, authToken3
+				<query>subject:(test mail)</query>
+			</SearchRequest>`, authToken3
 		);
 		assert.notExists(res11.Fault, 'Response should not be a Fault');
 		assert.exists(res11.SearchResponse, 'Response element should exist');
@@ -140,8 +140,8 @@ describe('Search > DelayedIndexing > ZCS 8515 8517', function () {
 		authToken4 = await soap.getAccountAuthToken(test_account4.name);
 		const res13 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
-                  <query>subject:(test mail)</query>
-            </SearchRequest>`, authToken4
+				<query>subject:(test mail)</query>
+			</SearchRequest>`, authToken4
 		);
 		assert.notExists(res13.Fault, 'Response should not be a Fault');
 		assert.exists(res13.SearchResponse, 'Response element should exist');
@@ -154,8 +154,8 @@ describe('Search > DelayedIndexing > ZCS 8515 8517', function () {
 		// Enable indexing for account2
 		const res2 = await soap.makeSOAPEnvelopeAdmin(
 			`<ManageIndexRequest xmlns="urn:zimbraAdmin" action="enableIndexing">
-               <mbox id="${test_account2.id}"/>
-            </ManageIndexRequest>`, adminAuthToken
+				<mbox id="${test_account2.id}"/>
+			</ManageIndexRequest>`, adminAuthToken
 		);
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 		assert.equal(res2.ManageIndexResponse.status, 'started', 'status should match');
@@ -167,8 +167,8 @@ describe('Search > DelayedIndexing > ZCS 8515 8517', function () {
 		authToken2 = await soap.getAccountAuthToken(test_account2.name);
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
-                  <query>subject:(test mail)</query>
-            </SearchRequest>`, authToken2
+				<query>subject:(test mail)</query>
+			</SearchRequest>`, authToken2
 		);
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
 		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
@@ -186,8 +186,8 @@ describe('Search > DelayedIndexing > ZCS 8515 8517', function () {
 		// Search in account3 - should now find the mail
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                  <query>subject:(test mail)</query>
-            </SearchRequest>`, authToken3
+				<query>subject:(test mail)</query>
+			</SearchRequest>`, authToken3
 		);
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
@@ -204,8 +204,8 @@ describe('Search > DelayedIndexing > ZCS 8515 8517', function () {
 		authToken4 = await soap.getAccountAuthToken(test_account4.name);
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                  <query>subject:(test mail)</query>
-            </SearchRequest>`, authToken4
+				<query>subject:(test mail)</query>
+			</SearchRequest>`, authToken4
 		);
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
 
@@ -216,8 +216,8 @@ describe('Search > DelayedIndexing > ZCS 8515 8517', function () {
 		authToken4 = await soap.getAccountAuthToken(test_account4.name);
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                  <query>subject:(test mail)</query>
-            </SearchRequest>`, authToken4
+				<query>subject:(test mail)</query>
+			</SearchRequest>`, authToken4
 		);
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
 		assert.exists(res7.SearchResponse, 'SearchResponse should exist');

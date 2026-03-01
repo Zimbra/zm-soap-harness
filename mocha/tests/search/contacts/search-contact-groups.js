@@ -6,10 +6,8 @@ import soap from '../../../framework/backend/soap-client.js';
 describe('Search > Contacts > Contact Groups', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken, accountEmail, accountAuthToken;
-	let res;
 
-	// Test data variables (from XML properties)
-	const contact = { name: `contact_${common.getUniqueString()}`, subject: `contact_${common.getUniqueString()}`, from: accountEmail, content: `contact_${common.getUniqueString()}`, value: `contact_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `contact_id`, toString() { return this.name; } };
+	const groupName = `group_${common.getUniqueString()}`;
 
 	before(async function () {
 		adminAuthToken = await soap.getAdminAuthToken();
@@ -22,6 +20,17 @@ describe('Search > Contacts > Contact Groups', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
+
+		// Create an empty contact group
+		await soap.makeSOAPEnvelopeAccount(
+			`<CreateContactRequest xmlns="urn:zimbraMail">
+				<cn>
+					<a n="type">group</a>
+					<a n="nickname">${groupName}</a>
+					<a n="fileAs">8:${groupName}</a>
+				</cn>
+			</CreateContactRequest>`, accountAuthToken
+		);
 	});
 
 	// Applicable zimbra versions
@@ -32,10 +41,10 @@ describe('Search > Contacts > Contact Groups', function () {
 	// Tests
 	it('Sanity | Search for a contact group by group name (empty group)', async () => {
 		// SearchRequest
-		res = await soap.makeSOAPEnvelopeAccount(
+		const res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
-                <query>contact:${contact.group1.name}</query>
-            </SearchRequest>`, accountAuthToken
+				<query>${groupName}</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response

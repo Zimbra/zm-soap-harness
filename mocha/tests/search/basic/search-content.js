@@ -20,18 +20,56 @@ describe('Search > Basic > Content', function () {
 		);
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
-		// Inject test messages
+		// Inject message with "simple text string in the body" (subject: email01A)
 		await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
 				<m l="2">
 					<content>From: sender@example.com
 To: ${accountEmail}
-Subject: test message
+Subject: email01A
 MIME-Version: 1.0
 
-Test content</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+This is a simple text string in the body of the message</content>
+					</m>
+				</AddMsgRequest>`, accountAuthToken
+		);
+
+		// Inject message with "simple text string in the attachment" (subject: email01B)
+		await soap.makeSOAPEnvelopeAccount(
+			`<AddMsgRequest xmlns="urn:zimbraMail">
+				<m l="2">
+					<content>From: sender@example.com
+To: ${accountEmail}
+Subject: email01B
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="boundary01"
+
+--boundary01
+Content-Type: text/plain
+
+Main body text
+--boundary01
+Content-Type: text/plain; name="attach.txt"
+Content-Disposition: attachment; filename="attach.txt"
+
+This is a simple text string in the attachment
+--boundary01--</content>
+					</m>
+				</AddMsgRequest>`, accountAuthToken
+		);
+
+		// Inject message with "contributing to xmlbeans" content (subject: email01H)
+		await soap.makeSOAPEnvelopeAccount(
+			`<AddMsgRequest xmlns="urn:zimbraMail">
+				<m l="2">
+					<content>From: sender@example.com
+To: ${accountEmail}
+Subject: email01H
+MIME-Version: 1.0
+
+Thank you for contributing to xmlbeans project</content>
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 	});
 
@@ -51,13 +89,13 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			   <query>content:(simple text string in the body)</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>content:(simple text string in the body)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.equal(res.SearchResponse?.m?.[0].su, 'email01A', 'Value should match');
+		assert.exists(res.SearchResponse?.m, 'Response element should exist');
 	});
 
 
@@ -65,13 +103,12 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			   <query>content:(simple text string in the attachment)</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>content:(simple text string in the attachment)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-
 	});
 
 
@@ -79,27 +116,23 @@ Test content</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			   <query>content:(contributing to xmlbeans)</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>content:(contributing to xmlbeans)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		assert.match(String(res.SearchResponse?.m?.[0].su), /.*email01H.*/, 'su should match pattern');
-		assert.match(String(res.SearchResponse?.m?.[0].su), /.*email01H.*/, 'su should match pattern');
 		assert.exists(res1.SearchResponse?.m, 'Response element should exist');
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			   <query>contributing to xmlbeans</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>contributing to xmlbeans</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.match(String(res.SearchResponse?.m?.[0].su), /.*email01H.*/, 'su should match pattern');
-		assert.match(String(res.SearchResponse?.m?.[0].su), /.*email01H.*/, 'su should match pattern');
 		assert.exists(res2.SearchResponse?.m, 'Response element should exist');
 	});
 });

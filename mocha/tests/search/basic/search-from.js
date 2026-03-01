@@ -20,18 +20,32 @@ describe('Search > Basic > From', function () {
 		);
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
-		// Inject test messages
+		// Inject message with specific From address (subject: email01E)
 		await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
 				<m l="2">
-					<content>From: sender@example.com
+					<content>From: origination_address@origination_domain.com
 To: ${accountEmail}
-Subject: test message
+Subject: email01E
 MIME-Version: 1.0
 
-Test content</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+Test content for from search</content>
+					</m>
+				</AddMsgRequest>`, accountAuthToken
+		);
+
+		// Inject message for Bug 8260 (from first name search)
+		await soap.makeSOAPEnvelopeAccount(
+			`<AddMsgRequest xmlns="urn:zimbraMail">
+				<m l="2">
+					<content>From: fromFirst fromLast &lt;fromFirst.fromLast@from_domain.com&gt;
+To: ${accountEmail}
+Subject: bug8260
+MIME-Version: 1.0
+
+Test content for bug 8260 from search</content>
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 	});
 
@@ -45,27 +59,23 @@ Test content</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			   <query>from:(origination_address)</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>from:(origination_address)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-
-
 		assert.exists(res1.SearchResponse?.m, 'Response element should exist');
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			   <query>from:(origination_address@origination_domain.com)</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>from:(origination_address@origination_domain.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-
-
 		assert.exists(res2.SearchResponse?.m, 'Response element should exist');
 	});
 
@@ -74,14 +84,12 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			   <query>from:(@origination_domain.com)</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>from:(@origination_domain.com)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-
-
 		assert.exists(res.SearchResponse?.m, 'Response element should exist');
 	});
 
@@ -90,14 +98,12 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			   <query>from:(fromFirst)</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>from:(fromFirst)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-
-
 		assert.exists(res.SearchResponse?.m, 'Response element should exist');
 	});
 });

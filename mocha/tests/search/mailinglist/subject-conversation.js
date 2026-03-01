@@ -35,17 +35,17 @@ describe('Search > MailingList > Subject Conversation', function () {
 		// AddMsgRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
-                <m l="2">
-                    <content>From: foo@foo.com
+				<m l="2">
+					<content>From: foo@foo.com
 To: foo@foo.com
 Subject: [${mailinglist.name}] ${message1.subject}
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 simple text string in the body
-</content>
-                </m>
-            </AddMsgRequest>`, accountAuthToken
+					</content>
+				</m>
+			</AddMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -55,17 +55,17 @@ simple text string in the body
 		// AddMsgRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
-                <m l="2">
-                    <content>From: foo@foo.com
+				<m l="2">
+					<content>From: foo@foo.com
 To: foo@foo.com
 Subject: RE: [${mailinglist.name}] ${message1.subject}
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 simple text string in the body
-</content>
-                </m>
-            </AddMsgRequest>`, accountAuthToken
+					</content>
+				</m>
+			</AddMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -75,17 +75,17 @@ simple text string in the body
 		// AddMsgRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
-                <m l="2">
-                    <content>From: foo@foo.com
+				<m l="2">
+					<content>From: foo@foo.com
 To: foo@foo.com
 Subject: FWD: [${mailinglist.name}] ${message1.subject}
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 simple text string in the body
-</content>
-                </m>
-            </AddMsgRequest>`, accountAuthToken
+					</content>
+				</m>
+			</AddMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -96,27 +96,23 @@ simple text string in the body
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-			<query>subject:(${mailinglist.name})</query>
+				<query>subject:(${mailinglist.name})</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		assert.exists(res4.SearchResponse, 'Response element should exist');
 		assert.exists(res4.SearchResponse, 'Response element should exist');
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-			<query>subject:(${message1.subject})</query>
+				<query>subject:(${message1.subject})</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		// XPath expression removed (not valid JS)
-		assert.exists(res5.SearchResponse, 'Response element should exist');
 		assert.exists(res5.SearchResponse, 'Response element should exist');
 	});
 });

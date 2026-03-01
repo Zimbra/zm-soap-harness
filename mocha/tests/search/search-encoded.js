@@ -33,8 +33,8 @@ Subject: test message
 MIME-Version: 1.0
 
 Test content</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 	});
 
@@ -50,8 +50,8 @@ Test content</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			   <query>from:(${SearchEncoded01.from})</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>from:(${SearchEncoded01.from})</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -61,8 +61,8 @@ Test content</content>
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			   <query>subject:(${SearchEncoded01.subject})</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>subject:(${SearchEncoded01.subject})</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -77,8 +77,8 @@ Test content</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			   <query>from:(${SearchEncoded318.from})</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>from:(${SearchEncoded318.from})</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -89,8 +89,8 @@ Test content</content>
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			   <query>content:(Item 3 is £1)</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>content:(Item 3 is £1)</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response

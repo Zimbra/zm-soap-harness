@@ -5,11 +5,10 @@ import soap from '../../../framework/backend/soap-client.js';
 
 describe('Search > Bugs > Bug62605', function () {
 	this.timeout(60 * 1000);
-	let adminAuthToken, accountEmail, accountAuthToken, accountEmail2, accountAuthToken2;
+	let adminAuthToken, accountEmail, accountAuthToken;
 
-	// Test data variables (from XML properties)
-	const msg01 = { name: `msg01_${common.getUniqueString()}`, subject: `msg01_${common.getUniqueString()}`, from: accountEmail, content: `msg01_${common.getUniqueString()}`, value: `msg01_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `msg01_id`, toString() { return this.name; } };
-	const msg02 = { name: `msg02_${common.getUniqueString()}`, subject: `msg02_${common.getUniqueString()}`, from: accountEmail, content: `msg02_${common.getUniqueString()}`, value: `msg02_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `msg02_id`, toString() { return this.name; } };
+	const msg01Subject = `msg01_${common.getUniqueString()}`;
+	const msg02Subject = `msg02_${common.getUniqueString()}`;
 
 	before(async function () {
 		adminAuthToken = await soap.getAdminAuthToken();
@@ -23,27 +22,31 @@ describe('Search > Bugs > Bug62605', function () {
 		);
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
-		accountEmail2 = `test${common.getUniqueString()}@${config.testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
-			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-				<name>${accountEmail2}</name>
-				<password>${config.accountPassword}</password>
-			</CreateAccountRequest>`, adminAuthToken
-		);
-		accountAuthToken2 = await soap.getAccountAuthToken(accountEmail2);
-
-		// Inject test messages
+		// Inject two test messages
 		await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
 				<m l="2">
 					<content>From: sender@example.com
 To: ${accountEmail}
-Subject: test message
+Subject: ${msg01Subject}
 MIME-Version: 1.0
 
-Test content</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+Content for msg01</content>
+					</m>
+				</AddMsgRequest>`, accountAuthToken
+		);
+
+		await soap.makeSOAPEnvelopeAccount(
+			`<AddMsgRequest xmlns="urn:zimbraMail">
+				<m l="2">
+					<content>From: sender@example.com
+To: ${accountEmail}
+Subject: ${msg02Subject}
+MIME-Version: 1.0
+
+Content for msg02</content>
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 	});
 
@@ -54,52 +57,44 @@ Test content</content>
 
 	// Tests
 	it('Sanity | Verify no CPU spike (Bug: 62605)', async () => {
-		// Account auth
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
-		// SearchRequest
+
+		// Search for msg01
+		const res1 = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>${msg01Subject}</query>
+			</SearchRequest>`, accountAuthToken
+		);
+		assert.notExists(res1.Fault, 'Response should not be a Fault');
+		assert.exists(res1.SearchResponse?.m, 'Response element should exist');
+		const msg01Id = res1.SearchResponse?.m?.[0]?.id;
+
+		// Search for msg02
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			<query>${msg01.subject}</query>
+				<query>${msg02Subject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
-
-		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse?.m?.[0].su, 'Response element should exist');
-		const msg01_id = res2.SearchResponse?.m?.[0].id;
+		assert.exists(res2.SearchResponse?.m, 'Response element should exist');
+		const msg02Id = res2.SearchResponse?.m?.[0]?.id;
 
-		// SearchRequest
+		// GetMsgRequest for msg01
 		const res3 = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			<query>${msg02.subject}</query>
-			</SearchRequest>`, accountAuthToken
+			`<GetMsgRequest xmlns="urn:zimbraMail">
+				<m id="${msg01Id}"/>
+			</GetMsgRequest>`, accountAuthToken
 		);
-
-		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse?.m?.[0].su, 'Response element should exist');
-		const msg02_id = res3.SearchResponse?.m?.[0].id;
+		assert.exists(res3.GetMsgResponse, 'Response element should exist');
 
-		// GetMsgRequest
+		// GetMsgRequest for msg02
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
-         			 <m id="${msg01.id}"/>
-        			</GetMsgRequest>`, accountAuthToken
+				<m id="${msg02Id}"/>
+			</GetMsgRequest>`, accountAuthToken
 		);
-
-		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
 		assert.exists(res4.GetMsgResponse, 'Response element should exist');
-
-		// GetMsgRequest
-		const res5 = await soap.makeSOAPEnvelopeAccount(
-			`<GetMsgRequest xmlns="urn:zimbraMail">
-         			 <m id="${msg02.id}"/>
-        			</GetMsgRequest>`, accountAuthToken
-		);
-
-		// Verify response
-		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		assert.exists(res5.GetMsgResponse, 'Response element should exist');
 	});
 });

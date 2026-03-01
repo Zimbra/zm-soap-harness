@@ -39,8 +39,8 @@ Subject: ${mail1.subject}
 MIME-Version: 1.0
 
 Content for ${mail1.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -52,8 +52,8 @@ Subject: ${mail2.subject}
 MIME-Version: 1.0
 
 Content for ${mail2.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -65,8 +65,8 @@ Subject: ${mail3.subject}
 MIME-Version: 1.0
 
 Content for ${mail3.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -78,8 +78,8 @@ Subject: ${mail4.subject}
 MIME-Version: 1.0
 
 Content for ${mail4.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -91,8 +91,8 @@ Subject: ${mail5.subject}
 MIME-Version: 1.0
 
 Content for ${mail5.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 
 		await soap.makeSOAPEnvelopeAccount(
@@ -104,8 +104,8 @@ Subject: ${mail6.subject}
 MIME-Version: 1.0
 
 Content for ${mail6.name}</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 	});
 
@@ -121,13 +121,12 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail1.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail1.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res2.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id1 = res2.SearchResponse?.m?.[0].id;
 		assert.exists(res2.SearchResponse?.m, 'Response element should exist');
@@ -135,13 +134,12 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail2.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail2.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res3.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id2 = res3.SearchResponse?.m?.[0].id;
 		assert.exists(res3.SearchResponse?.m, 'Response element should exist');
@@ -149,13 +147,12 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail3.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail3.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res4.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id3 = res4.SearchResponse?.m?.[0].id;
 		assert.exists(res4.SearchResponse?.m, 'Response element should exist');
@@ -163,13 +160,12 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail4.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail4.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		assert.exists(res5.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res5.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id4 = res5.SearchResponse?.m?.[0].id;
 		assert.exists(res5.SearchResponse?.m, 'Response element should exist');
@@ -177,13 +173,12 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail5.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail5.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		assert.exists(res6.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res6.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id5 = res6.SearchResponse?.m?.[0].id;
 		assert.exists(res6.SearchResponse?.m, 'Response element should exist');
@@ -191,13 +186,12 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail6.subject}) </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail6.subject}) </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		assert.exists(res7.SearchResponse?.m?.[0].su, 'su should match pattern');
 		assert.exists(res7.SearchResponse?.m?.[0].su, 'su should match pattern');
 		message.id6 = res7.SearchResponse?.m?.[0].id;
 		assert.exists(res7.SearchResponse?.m, 'Response element should exist');
@@ -208,8 +202,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) smaller:50b  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) smaller:50b  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -219,8 +213,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) smaller:500b  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) smaller:500b  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -230,80 +224,63 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) larger:50b </query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) larger:50b </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
 		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) larger:500b </query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) larger:500b </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
 		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) smaller:50kb  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) smaller:50kb  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
 		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) larger:50kb </query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) larger:50kb </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
 		assert.exists(res6.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res6.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res6.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) smaller:5mb  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) smaller:5mb  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
 		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) larger:5mb </query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) larger:5mb </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -316,8 +293,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> to:(foo) smaller:50b  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> to:(foo) smaller:50b  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -327,8 +304,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> to:(foo) smaller:500b  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> to:(foo) smaller:500b  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -338,80 +315,63 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> to:(foo) larger:50b </query>
-            </SearchRequest>`, accountAuthToken
+				<query> to:(foo) larger:50b </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
 		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> to:(foo) larger:500b </query>
-            </SearchRequest>`, accountAuthToken
+				<query> to:(foo) larger:500b </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
 		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> to:(foo) smaller:50kb  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> to:(foo) smaller:50kb  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
 		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> to:(foo) larger:50kb </query>
-            </SearchRequest>`, accountAuthToken
+				<query> to:(foo) larger:50kb </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
 		assert.exists(res6.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res6.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res6.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> to:(foo) smaller:5mb  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> to:(foo) smaller:5mb  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
 		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>to:(foo) larger:5mb </query>
-            </SearchRequest>`, accountAuthToken
+				<query>to:(foo) larger:5mb </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -424,8 +384,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> cc:(foo) smaller:50b  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> cc:(foo) smaller:50b  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -435,8 +395,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> cc:(foo) smaller:500b  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> cc:(foo) smaller:500b  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -446,8 +406,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> cc:(foo) larger:50b </query>
-            </SearchRequest>`, accountAuthToken
+				<query> cc:(foo) larger:50b </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -457,8 +417,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> cc:(foo) larger:500b </query>
-            </SearchRequest>`, accountAuthToken
+				<query> cc:(foo) larger:500b </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -468,8 +428,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> cc:(foo) smaller:50kb  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> cc:(foo) smaller:50kb  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -479,8 +439,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> cc:(foo) larger:50kb </query>
-            </SearchRequest>`, accountAuthToken
+				<query> cc:(foo) larger:50kb </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -490,8 +450,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> cc:(foo) smaller:5mb  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> cc:(foo) smaller:5mb  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -501,8 +461,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> cc:(foo) larger:5mb </query>
-            </SearchRequest>`, accountAuthToken
+				<query> cc:(foo) larger:5mb </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -515,8 +475,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail2.subject}) smaller:50b  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail2.subject}) smaller:50b  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -526,8 +486,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail2.subject}) smaller:500b  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail2.subject}) smaller:500b  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -537,8 +497,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail2.subject}) larger:50b </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail2.subject}) larger:50b </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -548,8 +508,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail2.subject}) larger:500b </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail2.subject}) larger:500b </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -559,8 +519,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail2.subject}) smaller:50kb  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail2.subject}) smaller:50kb  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -570,8 +530,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail2.subject}) larger:50kb </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail2.subject}) larger:50kb </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -581,8 +541,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail2.subject}) smaller:5mb  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail2.subject}) smaller:5mb  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -592,8 +552,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail2.subject}) larger:5mb </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail2.subject}) larger:5mb </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -606,8 +566,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> content:${content.text} smaller:50b  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> content:${content.text} smaller:50b  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -617,8 +577,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> content:${content.text} smaller:500b  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> content:${content.text} smaller:500b  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -628,8 +588,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> content:${content.text} larger:50b </query>
-            </SearchRequest>`, accountAuthToken
+				<query> content:${content.text} larger:50b </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -639,8 +599,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> content:${content.text} larger:500b </query>
-            </SearchRequest>`, accountAuthToken
+				<query> content:${content.text} larger:500b </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -650,8 +610,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> content:${content.text} smaller:50kb  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> content:${content.text} smaller:50kb  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -661,8 +621,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> content:${content.text} larger:50kb </query>
-            </SearchRequest>`, accountAuthToken
+				<query> content:${content.text} larger:50kb </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -672,8 +632,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> content:${content.text} smaller:5mb  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> content:${content.text} smaller:5mb  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -683,8 +643,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> content:${content.text} larger:5mb </query>
-            </SearchRequest>`, accountAuthToken
+				<query> content:${content.text} larger:5mb </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -697,8 +657,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) smaller:50b  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) smaller:50b  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -708,8 +668,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) smaller:500b  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) smaller:500b  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -719,80 +679,63 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) larger:50b </query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) larger:50b </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
 		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) larger:500b </query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) larger:500b </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
 		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) smaller:50kb  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) smaller:50kb  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
 		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) larger:50kb </query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) larger:50kb </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
 		assert.exists(res6.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res6.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res6.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) smaller:5mb  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) smaller:5mb  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
 		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) larger:5mb </query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) larger:5mb </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -805,8 +748,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> to:(foo) smaller:10ab  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> to:(foo) smaller:10ab  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		assert.exists(res1.Fault, 'Response should be a Fault');
@@ -815,8 +758,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> to:(foo) larger:10ab </query>
-            </SearchRequest>`, accountAuthToken
+				<query> to:(foo) larger:10ab </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		assert.exists(res2.Fault, 'Response should be a Fault');
@@ -828,8 +771,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) smaller:10ab  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) smaller:10ab  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		assert.exists(res1.Fault, 'Response should be a Fault');
@@ -838,8 +781,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> from:(foo) larger:10ab </query>
-            </SearchRequest>`, accountAuthToken
+				<query> from:(foo) larger:10ab </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		assert.exists(res2.Fault, 'Response should be a Fault');
@@ -851,8 +794,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> cc:(foo) smaller:10ab  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> cc:(foo) smaller:10ab  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		assert.exists(res1.Fault, 'Response should be a Fault');
@@ -861,8 +804,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			            <query> cc:(foo) larger:10ab  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> cc:(foo) larger:10ab  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		assert.exists(res2.Fault, 'Response should be a Fault');
@@ -874,8 +817,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail2.subject}) smaller:50b  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail2.subject}) smaller:50b  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
@@ -884,8 +827,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> subject:(${mail2.subject}) larger:50b </query>
-            </SearchRequest>`, accountAuthToken
+				<query> subject:(${mail2.subject}) larger:50b </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
@@ -897,8 +840,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> content:${content.text} smaller:10ab  </query>
-            </SearchRequest>`, accountAuthToken
+				<query> content:${content.text} smaller:10ab  </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		assert.exists(res1.Fault, 'Response should be a Fault');
@@ -907,8 +850,8 @@ Content for ${mail6.name}</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query> content:${content.text} larger:10ab </query>
-            </SearchRequest>`, accountAuthToken
+				<query> content:${content.text} larger:10ab </query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		assert.exists(res2.Fault, 'Response should be a Fault');

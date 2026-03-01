@@ -20,18 +20,35 @@ describe('Search > Attach', function () {
 		);
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
-		// Inject test messages
+		// Inject test message with JPEG attachment
 		await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
 				<m l="2">
 					<content>From: sender@example.com
 To: ${accountEmail}
-Subject: test message
+Subject: message with jpeg
 MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----=_Part_456"
 
-Test content</content>
-				</m>
-			</AddMsgRequest>`, accountAuthToken
+------=_Part_456
+Content-Type: text/plain; charset=utf-8
+
+Test content with attachment
+
+------=_Part_456
+Content-Type: image/jpeg; name="test.jpg"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="test.jpg"
+
+/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRof
+Hh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwh
+MjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAAR
+CAABAAEDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAFBABAAAA
+AAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA
+/9oADAMBAAIRAxEAPwCwAB//2Q==
+------=_Part_456--</content>
+					</m>
+				</AddMsgRequest>`, accountAuthToken
 		);
 	});
 
@@ -45,8 +62,8 @@ Test content</content>
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-			   <query>attachment:image/jpeg</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>attachment:image/jpeg</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -59,8 +76,8 @@ Test content</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-			   <query>attachment:image/jpeg</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>attachment:image/jpeg</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
@@ -70,8 +87,8 @@ Test content</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-			   <query>attachment:image/jpeg</query>
-			   </SearchRequest>`, accountAuthToken
+				<query>attachment:image/jpeg</query>
+			</SearchRequest>`, accountAuthToken
 		);
 
 		// Verify response
