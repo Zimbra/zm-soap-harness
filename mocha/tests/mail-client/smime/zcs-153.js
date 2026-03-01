@@ -31,21 +31,27 @@ describe('Mail Client > Smime > ZCS-153', function () {
 
 	// Tests
 	it('Sanity | Verify GetMessageRequest and SearchConvRequest have email address of the sender for a message signed with empty email...', async () => {
-		// Source: ZCS-153_CheckEmailAddressForEmptyCertificate from Smime/ZCS-153.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Verify GetMessageRequest and SearchConvRequest have email address of the sender for a message signed with certificate...', async () => {
-		// Source: ZCS-153_CheckEmailAddressForCertificateWithValidEmailAddress from Smime/ZCS-153.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

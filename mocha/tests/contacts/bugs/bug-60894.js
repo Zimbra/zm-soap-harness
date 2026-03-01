@@ -27,7 +27,6 @@ describe('Contacts > Bugs > Bug 60894 - Contact sorting case insensitive', funct
 
 	// Tests
 	it('Sanity | Contact sorting is not case sensitive', async () => {
-		// Create contacts with mixed case
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -37,7 +36,6 @@ describe('Contacts > Bugs > Bug 60894 - Contact sorting case insensitive', funct
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
-
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -47,7 +45,6 @@ describe('Contacts > Bugs > Bug 60894 - Contact sorting case insensitive', funct
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
-
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -58,11 +55,14 @@ describe('Contacts > Bugs > Bug 60894 - Contact sorting case insensitive', funct
 			</CreateContactRequest>`, accountToken
 		);
 
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact" sortBy="nameAsc">
 				<query>in:contacts</query>
 			</SearchRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});

@@ -48,7 +48,7 @@ describe('Filter-To', function () {
 			</ModifyFilterRulesRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'To contains test should not fault');
 		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 	});
@@ -82,7 +82,7 @@ describe('Filter-To', function () {
 			</ModifyFilterRulesRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'To is test should not fault');
 	});
 });

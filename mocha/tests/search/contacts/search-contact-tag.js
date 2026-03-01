@@ -32,7 +32,6 @@ describe('Search > Contacts > Contact Tag', function () {
 
 	// Tests
 	it('Functional | Setup the account fot testing (Bug: 2532)', async () => {
-		// Create 4 contacts
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -42,9 +41,12 @@ describe('Search > Contacts > Contact Tag', function () {
 				</cn>
 			</CreateContactRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
 		contactId1 = res1.CreateContactResponse.cn[0].id;
 
+		// Create a contact
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -54,9 +56,12 @@ describe('Search > Contacts > Contact Tag', function () {
 				</cn>
 			</CreateContactRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 		contactId2 = res2.CreateContactResponse.cn[0].id;
 
+		// Create a contact
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -66,9 +71,12 @@ describe('Search > Contacts > Contact Tag', function () {
 				</cn>
 			</CreateContactRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
 		contactId3 = res3.CreateContactResponse.cn[0].id;
 
+		// Create a contact
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -78,27 +86,34 @@ describe('Search > Contacts > Contact Tag', function () {
 				</cn>
 			</CreateContactRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
 		contactId4 = res4.CreateContactResponse.cn[0].id;
 
-		// Create 2 tags
+		// Create a tag
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tag1Name}" color="0"/>
 			</CreateTagRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
 		tagId1 = res5.CreateTagResponse?.tag?.[0].id;
 
+		// Create a tag
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tag2Name}" color="1"/>
 			</CreateTagRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
 		tagId2 = res6.CreateTagResponse?.tag?.[0].id;
 
-		// Tag contacts: contact1→tag1, contact2→tag2, contact3→tag1+tag2
+		// Send contact action request
 		await soap.makeSOAPEnvelopeAccount(
 			`<ContactActionRequest xmlns="urn:zimbraMail">
 				<action id="${contactId1}" op="tag" tag="${tagId1}"/>
@@ -128,14 +143,19 @@ describe('Search > Contacts > Contact Tag', function () {
 				<query>tag:${tag1Name}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
 		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
 
+		// Search item
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
 				<query>tag:${tag2Name}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 	});
@@ -147,30 +167,41 @@ describe('Search > Contacts > Contact Tag', function () {
 				<query>tag:(${tag1Name} OR ${tag2Name})</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
 		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
 
+		// Search item
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
 				<query>tag:((${tag1Name})(${tag2Name}))</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 
+		// Search item
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
 				<query>NOT tag:(${tag1Name} OR ${tag2Name})</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
 		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 
+		// Search item
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
 				<query>NOT tag:((${tag1Name})(${tag2Name}))</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
 		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
 	});

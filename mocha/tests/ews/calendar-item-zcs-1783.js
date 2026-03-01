@@ -45,8 +45,6 @@ describe('EWS > CalendarItem ZCS-1783', function () {
 	// Tests
 	it('Sanity | Updating an instance of a meeting request should not send cancellation mail for already deleted instances', async () => {
 		const messageSubject = `subject${common.getUniqueString()}`;
-
-		// EWS: CreateItem — recurring daily meeting for 3 days
 		const createRes = await ews.makeEWSRequest(
 			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				MessageDisposition="SaveOnly" SendMeetingInvitations="SendToAllAndSaveCopy">
@@ -115,10 +113,10 @@ describe('EWS > CalendarItem ZCS-1783', function () {
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
 		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+
+		// Verify response
 		assert.equal(createMessage.$.ResponseClass, 'Success', 'CreateItem should succeed');
 		const calId = createMessage.Items.CalendarItem.ItemId.$.Id;
-
-		// EWS: SyncFolderItems for calendar folder (folder 10)
 		const syncRes1 = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -141,8 +139,6 @@ describe('EWS > CalendarItem ZCS-1783', function () {
 		const syncMessage1 = Array.isArray(syncMsg1) ? syncMsg1[0] : syncMsg1;
 		assert.equal(syncMessage1.$.ResponseClass, 'Success',
 			'SyncFolderItems for calendar should succeed');
-
-		// EWS: SyncFolderItems for sent items folder (folder 5)
 		const syncRes1b = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -167,8 +163,6 @@ describe('EWS > CalendarItem ZCS-1783', function () {
 		assert.equal(syncMessage1b.$.ResponseClass, 'Success',
 			'SyncFolderItems for sent items should succeed');
 		const syncState5_1 = syncMessage1b.SyncState;
-
-		// EWS: GetItem for 1st occurrence to cancel
 		const getOccRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -188,8 +182,6 @@ describe('EWS > CalendarItem ZCS-1783', function () {
 		assert.equal(occMsg.$.ResponseClass, 'Success', 'GetItem for occurrence should succeed');
 		const occ1Id = occMsg.Items.CalendarItem.ItemId.$.Id;
 		const occ1Ck = occMsg.Items.CalendarItem.ItemId.$.ChangeKey;
-
-		// EWS: CancelCalendarItem for 1st instance
 		const cancelRes = await ews.makeEWSRequest(
 			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				MessageDisposition="SendAndSaveCopy" SendMeetingInvitations="SendToAllAndSaveCopy">
@@ -207,8 +199,6 @@ describe('EWS > CalendarItem ZCS-1783', function () {
 		const cancelMessage = Array.isArray(cancelMsg) ? cancelMsg[0] : cancelMsg;
 		assert.equal(cancelMessage.$.ResponseClass, 'Success',
 			'CancelCalendarItem should succeed');
-
-		// EWS: SyncFolderItems calendar folder again
 		const syncRes2 = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -230,8 +220,6 @@ describe('EWS > CalendarItem ZCS-1783', function () {
 		assert.equal(syncMessage2.$.ResponseClass, 'Success',
 			'SyncFolderItems after cancel should succeed');
 		const sync10Ck2 = syncMessage2.SyncState;
-
-		// EWS: SyncFolderItems sent folder again
 		const syncRes2b = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -256,8 +244,6 @@ describe('EWS > CalendarItem ZCS-1783', function () {
 		assert.equal(syncMessage2b.$.ResponseClass, 'Success',
 			'SyncFolderItems sent after cancel should succeed');
 		const syncState5_2 = syncMessage2b.SyncState;
-
-		// EWS: UpdateItem — update 2nd instance notes
 		const updateRes = await ews.makeEWSRequest(
 			`<UpdateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				ConflictResolution="AutoResolve"
@@ -295,8 +281,6 @@ describe('EWS > CalendarItem ZCS-1783', function () {
 		assert.equal(updateMessage.$.ResponseClass, 'Success', 'UpdateItem should succeed');
 		const updatedItem = updateMessage.Items.CalendarItem || updateMessage.Items.Message;
 		const updatedCk = updatedItem.ItemId.$.ChangeKey;
-
-		// EWS: DeleteItem — delete 1st instance
 		const deleteRes = await ews.makeEWSRequest(
 			`<DeleteItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				DeleteType="SoftDelete" SendMeetingCancellations="SendToAllAndSaveCopy">
@@ -308,8 +292,6 @@ describe('EWS > CalendarItem ZCS-1783', function () {
 		);
 		const deleteBody = ews.getBody(deleteRes);
 		assert.exists(deleteBody.DeleteItemResponse, 'DeleteItemResponse should exist');
-
-		// EWS: SyncFolderItems calendar folder
 		const syncRes3 = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -332,8 +314,6 @@ describe('EWS > CalendarItem ZCS-1783', function () {
 		const syncMessage3 = Array.isArray(syncMsg3) ? syncMsg3[0] : syncMsg3;
 		assert.equal(syncMessage3.$.ResponseClass, 'Success',
 			'SyncFolderItems after update should succeed');
-
-		// EWS: SyncFolderItems sent folder — verify no cancellation for deleted instance
 		const syncRes3b = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -359,8 +339,6 @@ describe('EWS > CalendarItem ZCS-1783', function () {
 		const syncMessage3b = Array.isArray(syncMsg3b) ? syncMsg3b[0] : syncMsg3b;
 		assert.equal(syncMessage3b.$.ResponseClass, 'Success',
 			'SyncFolderItems sent after update should succeed');
-
-		// Verify: first created item subject matches, no cancellation for deleted instance
 		if (syncMessage3b.Changes && syncMessage3b.Changes.Create) {
 			const sentCreates = Array.isArray(syncMessage3b.Changes.Create)
 				? syncMessage3b.Changes.Create : [syncMessage3b.Changes.Create];
@@ -369,7 +347,6 @@ describe('EWS > CalendarItem ZCS-1783', function () {
 				assert.include(firstSubject, messageSubject,
 					'First sent item should have updated subject');
 			}
-			// Verify no cancellation mail for already deleted 1st instance
 			if (sentCreates.length > 1) {
 				const secondSubject = sentCreates[1]?.Message?.Subject ||
 					sentCreates[1]?.CalendarItem?.Subject || '';

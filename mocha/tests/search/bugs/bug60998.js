@@ -43,40 +43,46 @@ Content for search sequence test</content>
 	it('Sanity | search sequence (Bug: 60998)', async () => {
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
-		// Quoted "four one" should NOT match (wrong sequence)
+		// Search item
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:"four one"</query>
 			</SearchRequest>`, accountAuthToken
 		);
-		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		// Should be empty - "four one" not in sequence in subject
 
-		// Unquoted "four one" should match (both words present)
+		// Verify response
+		assert.notExists(res1.Fault, 'Response should not be a Fault');
+
+		// Search item
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject: four one</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 		assert.exists(res2.SearchResponse?.m, 'Response element should exist for unquoted');
 
-		// Parenthesized (four one) should match (both words)
+		// Search item
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject: (four one)</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
 		assert.exists(res3.SearchResponse?.m, 'Response element should exist for parenthesized');
 
-		// Quoted "one four" should NOT match (wrong sequence)
+		// Search item
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:"one four"</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		// Should be empty - "one four" not adjacent in subject
 	});
 });

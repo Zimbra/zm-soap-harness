@@ -34,8 +34,6 @@ describe('EWS > Remove Attachment ZCS-2622', function () {
 		const apptSubject = `Subj1${common.getUniqueString()}`;
 		const apptLocation = `Location of meeting${common.getUniqueString()}`;
 		const apptContent = `Cont${common.getUniqueString()}`;
-
-		// EWS: Create calendar item
 		const createRes = await ews.makeEWSRequest(
 			`<m:CreateItem xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
 				xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
@@ -59,12 +57,12 @@ describe('EWS > Remove Attachment ZCS-2622', function () {
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
 		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+
+		// Verify response
 		assert.equal(createMessage.$.ResponseClass, 'Success',
 			'CreateItem should succeed');
 		const calItemId = createMessage.Items.CalendarItem.ItemId.$.Id;
 		const calChangeKey = createMessage.Items.CalendarItem.ItemId.$.ChangeKey;
-
-		// EWS: CreateAttachment - add 3 file attachments
 		const createAttachRes = await ews.makeEWSRequest(
 			`<m:CreateAttachment xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
 				xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
@@ -93,8 +91,6 @@ describe('EWS > Remove Attachment ZCS-2622', function () {
 			? createAttachMsg : [createAttachMsg];
 		assert.equal(attachMsgs[0].$.ResponseClass, 'Success',
 			'CreateAttachment should succeed');
-
-		// Get the updated item to find attachment IDs
 		const fileAttach = attachMsgs[attachMsgs.length - 1].Attachments.FileAttachment;
 		const lastAttach = Array.isArray(fileAttach) ? fileAttach[fileAttach.length - 1] : fileAttach;
 		const updatedChangeKey = lastAttach.AttachmentId.$.RootItemChangeKey;
@@ -123,8 +119,6 @@ describe('EWS > Remove Attachment ZCS-2622', function () {
 		const attachArray = Array.isArray(attachments) ? attachments : [attachments];
 		assert.isAtLeast(attachArray.length, 2, 'Should have at least 2 attachments');
 		const attach2Id = attachArray[1].AttachmentId.$.Id;
-
-		// EWS: DeleteAttachment - delete the 2nd attachment
 		const deleteAttachRes = await ews.makeEWSRequest(
 			`<m:DeleteAttachment xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
 				xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">

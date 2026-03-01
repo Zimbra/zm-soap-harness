@@ -43,7 +43,7 @@ describe('ImportYahooContacts', function () {
 			</ImportContactsRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(importRes.Fault, 'ImportContactsRequest Yahoo should not fault');
 		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});
@@ -72,7 +72,7 @@ describe('ImportYahooContacts', function () {
 			</ImportContactsRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(importRes.Fault, 'ImportContactsRequest should not fault');
 		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});
@@ -101,7 +101,7 @@ describe('ImportYahooContacts', function () {
 			</ImportContactsRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(importRes.Fault, 'ImportContactsRequest special chars should not fault');
 		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});
@@ -131,17 +131,17 @@ describe('ImportYahooContacts', function () {
 			</ImportContactsRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(importRes.Fault, 'ImportContactsRequest should not fault');
 
-		// Search for the item
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
 				<query>contact:(${uniqueName})</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
@@ -170,7 +170,7 @@ describe('ImportYahooContacts', function () {
 			</ImportContactsRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(importRes.Fault, 'ImportContactsRequest to folder should not fault');
 		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});
@@ -199,7 +199,7 @@ describe('ImportYahooContacts', function () {
 			</ImportContactsRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(importRes.Fault, 'ImportContactsRequest duplicates should not fault');
 		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});

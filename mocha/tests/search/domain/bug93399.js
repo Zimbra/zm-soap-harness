@@ -28,12 +28,13 @@ describe('Search > Domain > Bug93399', function () {
 
 	// Tests
 	it('Sanity | BrowseRequest regex expression used blindly gives an error (Bug: 93399)', async () => {
-		// BrowseRequest
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<BrowseRequest regex=".*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*822" browseBy="domains" xmlns="urn:zimbraMail"/>`, accountAuthToken
 		);
 
 		if (res.Fault) {
+
+			// Verify response
 			assert.exists(res.Fault, 'Response should be a Fault');
 		} else {
 			assert.exists(res.BrowseResponse, 'BrowseResponse should exist');

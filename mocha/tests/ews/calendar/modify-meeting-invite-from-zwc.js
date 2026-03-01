@@ -54,9 +54,8 @@ describe('EWS > Calendar > Modify Meeting Invite From ZWC', function () {
 		const apptSubject = `subject1.${unique}`;
 		const apptContent = 'Test appointment sent from EWS for time modification test';
 
+		// Authenticate account
 		const account1AuthToken = await soap.getAccountAuthToken(account1Email, accountPassword);
-
-		// EWS organizer creates meeting
 		const createRes = await ews.makeEWSRequest(
 			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				MessageDisposition="SaveOnly"
@@ -92,9 +91,9 @@ describe('EWS > Calendar > Modify Meeting Invite From ZWC', function () {
 		const createBody = ews.getBody(createRes);
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
-		assert.equal(createMsg.$.ResponseClass, 'Success', 'CreateItem should succeed');
 
-		// EWS organizer syncs calendar folder
+		// Verify response
+		assert.equal(createMsg.$.ResponseClass, 'Success', 'CreateItem should succeed');
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems
 				xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
@@ -115,27 +114,32 @@ describe('EWS > Calendar > Modify Meeting Invite From ZWC', function () {
 		const syncMsg = syncBody.SyncFolderItemsResponse
 			.ResponseMessages.SyncFolderItemsResponseMessage;
 		assert.equal(syncMsg.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
-
-		// Attendee verifies invite on ZWC
 		await common.delay(8000);
+
+		// Authenticate account
 		const acct2AuthToken = await soap.getAccountAuthToken(account2Email, accountPassword);
 
+		// Search item
 		const searchRes1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
 				<query>subject:${apptSubject}</query>
 			</SearchRequest>`, acct2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes1.Fault, 'Response should not be a Fault');
 		const appt1 = Array.isArray(searchRes1.SearchResponse.appt)
 			? searchRes1.SearchResponse.appt[0] : searchRes1.SearchResponse.appt;
 		assert.equal(appt1.name, apptSubject, 'Appointment name should match');
 
-		// Organizer searches on ZWC, gets inv, modifies meeting time via ZWC
+		// Search item
 		const searchRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
 				<query>subject:${apptSubject}</query>
 			</SearchRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes2.Fault, 'Response should not be a Fault');
 		const appt2 = Array.isArray(searchRes2.SearchResponse.appt)
 			? searchRes2.SearchResponse.appt[0] : searchRes2.SearchResponse.appt;
@@ -144,6 +148,7 @@ describe('EWS > Calendar > Modify Meeting Invite From ZWC', function () {
 		const newTime1 = common.getICALTime(60);
 		const newTime2 = common.getICALTime(90);
 
+		// Modify the appointment
 		const modifyRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${invId}">
 				<m>
@@ -164,9 +169,9 @@ describe('EWS > Calendar > Modify Meeting Invite From ZWC', function () {
 				</m>
 			</ModifyAppointmentRequest>`, account1AuthToken
 		);
-		assert.notExists(modifyRes.Fault, 'Response should not be a Fault');
 
-		// Verify modified meeting on EWS organizer
+		// Verify response
+		assert.notExists(modifyRes.Fault, 'Response should not be a Fault');
 		const syncRes2 = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -226,8 +231,6 @@ describe('EWS > Calendar > Modify Meeting Invite From ZWC', function () {
 			reqAtt.find(a => a?.Mailbox?.EmailAddress === account2Email),
 			'Account2 should be in RequiredAttendees'
 		);
-
-		// Verify on EWS attendee as well
 		const syncRes3 = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -288,9 +291,8 @@ describe('EWS > Calendar > Modify Meeting Invite From ZWC', function () {
 		const apptSubject = `subject2.${unique}`;
 		const apptContent = 'Test appointment sent from EWS for attendee modification test';
 
+		// Authenticate account
 		const account1AuthToken = await soap.getAccountAuthToken(account1Email, accountPassword);
-
-		// EWS organizer creates meeting with account2 as attendee
 		const createRes = await ews.makeEWSRequest(
 			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				MessageDisposition="SaveOnly"
@@ -326,9 +328,9 @@ describe('EWS > Calendar > Modify Meeting Invite From ZWC', function () {
 		const createBody = ews.getBody(createRes);
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
-		assert.equal(createMsg.$.ResponseClass, 'Success', 'CreateItem should succeed');
 
-		// EWS organizer syncs calendar folder
+		// Verify response
+		assert.equal(createMsg.$.ResponseClass, 'Success', 'CreateItem should succeed');
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems
 				xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
@@ -350,32 +352,38 @@ describe('EWS > Calendar > Modify Meeting Invite From ZWC', function () {
 			.ResponseMessages.SyncFolderItemsResponseMessage;
 		assert.equal(syncMsg.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
 		const syncState = syncMsg.SyncState;
-
-		// Attendee verifies on ZWC
 		await common.delay(8000);
+
+		// Authenticate account
 		const acct2AuthToken = await soap.getAccountAuthToken(account2Email, accountPassword);
 
+		// Search item
 		const searchRes1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
 				<query>subject:${apptSubject}</query>
 			</SearchRequest>`, acct2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes1.Fault, 'Response should not be a Fault');
 		const appt1 = Array.isArray(searchRes1.SearchResponse.appt)
 			? searchRes1.SearchResponse.appt[0] : searchRes1.SearchResponse.appt;
 		assert.equal(appt1.name, apptSubject, 'Appointment name should match');
 
-		// Organizer modifies attendee list on ZWC - replaces account2 with account3
+		// Search item
 		const searchRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
 				<query>subject:${apptSubject}</query>
 			</SearchRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes2.Fault, 'Response should not be a Fault');
 		const appt2 = Array.isArray(searchRes2.SearchResponse.appt)
 			? searchRes2.SearchResponse.appt[0] : searchRes2.SearchResponse.appt;
 		const invId = appt2.invId;
 
+		// Modify the appointment
 		const modifyRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${invId}">
 				<m>
@@ -396,9 +404,9 @@ describe('EWS > Calendar > Modify Meeting Invite From ZWC', function () {
 				</m>
 			</ModifyAppointmentRequest>`, account1AuthToken
 		);
-		assert.notExists(modifyRes.Fault, 'Response should not be a Fault');
 
-		// Verify modified meeting on EWS organizer
+		// Verify response
+		assert.notExists(modifyRes.Fault, 'Response should not be a Fault');
 		const syncRes2 = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -458,8 +466,6 @@ describe('EWS > Calendar > Modify Meeting Invite From ZWC', function () {
 			reqAtt.find(a => a?.Mailbox?.EmailAddress === account3Email),
 			'Account3 should be in RequiredAttendees after modification'
 		);
-
-		// Verify new attendee (account3) received the invite on EWS
 		await common.delay(3000);
 		const syncRes3 = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">

@@ -45,8 +45,6 @@ describe('EWS > CalendarItem ZCS-2497', function () {
 	// Tests
 	it('Sanity | NPE should not be thrown for meeting request with reminder not set', async () => {
 		const messageSubject = `subject1${common.getUniqueString()}`;
-
-		// EWS: CreateItem — single meeting with reminder not set
 		const createRes = await ews.makeEWSRequest(
 			`<CreateItem
 				xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
@@ -86,9 +84,9 @@ describe('EWS > CalendarItem ZCS-2497', function () {
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
 		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
-		assert.equal(createMessage.$.ResponseClass, 'Success', 'CreateItem should succeed');
 
-		// EWS: SyncFolderItems to get the created item
+		// Verify response
+		assert.equal(createMessage.$.ResponseClass, 'Success', 'CreateItem should succeed');
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -113,8 +111,6 @@ describe('EWS > CalendarItem ZCS-2497', function () {
 			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
 		const calItemId = creates[0].CalendarItem.ItemId.$.Id;
 		const calChangeKey = creates[0].CalendarItem.ItemId.$.ChangeKey;
-
-		// EWS: GetItem to verify ReminderIsSet is false
 		const getItemRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -147,8 +143,6 @@ describe('EWS > CalendarItem ZCS-2497', function () {
 
 	it('Sanity | NPE should not be thrown for a recurring meeting request with reminder not set', async () => {
 		const messageSubject = `subject2${common.getUniqueString()}`;
-
-		// EWS: CreateItem — recurring meeting with reminder not set
 		const createRes = await ews.makeEWSRequest(
 			`<CreateItem
 				xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
@@ -197,9 +191,9 @@ describe('EWS > CalendarItem ZCS-2497', function () {
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
 		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
-		assert.equal(createMessage.$.ResponseClass, 'Success', 'CreateItem should succeed');
 
-		// EWS: SyncFolderItems to get the created item
+		// Verify response
+		assert.equal(createMessage.$.ResponseClass, 'Success', 'CreateItem should succeed');
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -224,8 +218,6 @@ describe('EWS > CalendarItem ZCS-2497', function () {
 			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
 		const calItemId = creates[creates.length - 1].CalendarItem.ItemId.$.Id;
 		const calChangeKey = creates[creates.length - 1].CalendarItem.ItemId.$.ChangeKey;
-
-		// EWS: GetItem to verify ReminderIsSet is false
 		const getItemRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>

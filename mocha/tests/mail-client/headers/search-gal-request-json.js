@@ -75,12 +75,14 @@ describe('Mail Client > Headers > JSON > SearchGALRequest JSON', function () {
 	it('Functional | JSON - verify SearchGalRequest supports multi-valued attributes', async () => {
 		const acctAuthToken = await soap.getAccountAuthToken(`${account1Name}@${domainName}`);
 
+		// Send search gal request
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchGalRequest xmlns="urn:zimbraAccount">
 				<name>${account2Name}@${domainName}</name>
 			</SearchGalRequest>`, acctAuthToken
 		);
 
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes.SearchGalResponse, 'SearchGalResponse should exist');
 	});

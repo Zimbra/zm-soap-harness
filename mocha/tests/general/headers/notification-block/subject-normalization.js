@@ -84,7 +84,7 @@ ${content2}
 		// Verify response
 		assert.notExists(addRes2.Fault, 'Second AddMsgRequest should not fault');
 
-		// Search for the item
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:"${subject}"</query>

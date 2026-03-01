@@ -83,6 +83,8 @@ describe('Mail Client > HAB > ZCS-7213 HAB DomainOUList', function () {
 				<domain by="name">${invalidDomainName}</domain>
 			</HABOrgUnitRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.exists(listRes.Fault, 'HABOrgUnitRequest for invalid domain should fault');
 	});
 });

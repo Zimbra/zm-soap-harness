@@ -49,7 +49,6 @@ describe('EWS > EWS Sharing ZCS-1498', function () {
 
 	// Tests
 	it('Sanity | Getting DisplayName of user in GetFolderResponse once the share is created', async () => {
-		// EWS: GetFolder inbox with PermissionSet
 		const getFolderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>
@@ -68,11 +67,11 @@ describe('EWS > EWS Sharing ZCS-1498', function () {
 		const getFolderMsg = getFolderBody.GetFolderResponse
 			.ResponseMessages.GetFolderResponseMessage;
 		const folderMsg = Array.isArray(getFolderMsg) ? getFolderMsg[0] : getFolderMsg;
+
+		// Verify response
 		assert.equal(folderMsg.$.ResponseClass, 'Success', 'GetFolder should succeed');
 		const folderId = folderMsg.Folders.Folder.FolderId.$.Id;
 		const changeKey = folderMsg.Folders.Folder.FolderId.$.ChangeKey;
-
-		// EWS: UpdateFolder to add sharing permission for account2
 		const updateRes = await ews.makeEWSRequest(
 			`<UpdateFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderChanges>
@@ -107,8 +106,6 @@ describe('EWS > EWS Sharing ZCS-1498', function () {
 		const updateMsg = Array.isArray(updateFolderMsg) ? updateFolderMsg[0] : updateFolderMsg;
 		assert.exists(updateMsg, 'UpdateFolderResponseMessage or GetFolderResponseMessage should exist');
 		assert.equal(updateMsg.$.ResponseClass, 'Success', 'UpdateFolder should succeed');
-
-		// EWS: GetFolder again to verify DisplayName is present
 		const getFolder2Res = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>
@@ -136,7 +133,6 @@ describe('EWS > EWS Sharing ZCS-1498', function () {
 
 
 	it('Sanity | Getting DisplayName of multiple users in GetFolderResponse once the share is created', async () => {
-		// EWS: GetFolder sent items with PermissionSet
 		const getFolderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>
@@ -155,11 +151,11 @@ describe('EWS > EWS Sharing ZCS-1498', function () {
 		const getFolderMsg = getFolderBody.GetFolderResponse
 			.ResponseMessages.GetFolderResponseMessage;
 		const folderMsg = Array.isArray(getFolderMsg) ? getFolderMsg[0] : getFolderMsg;
+
+		// Verify response
 		assert.equal(folderMsg.$.ResponseClass, 'Success', 'GetFolder should succeed');
 		const folderId = folderMsg.Folders.Folder.FolderId.$.Id;
 		const changeKey = folderMsg.Folders.Folder.FolderId.$.ChangeKey;
-
-		// EWS: UpdateFolder to add sharing permissions for account2 and account3
 		const updateRes = await ews.makeEWSRequest(
 			`<UpdateFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderChanges>
@@ -201,8 +197,6 @@ describe('EWS > EWS Sharing ZCS-1498', function () {
 		const updateMsg = Array.isArray(updateFolderMsg2) ? updateFolderMsg2[0] : updateFolderMsg2;
 		assert.exists(updateMsg, 'UpdateFolderResponseMessage or GetFolderResponseMessage should exist');
 		assert.equal(updateMsg.$.ResponseClass, 'Success', 'UpdateFolder should succeed');
-
-		// EWS: GetFolder again to verify both DisplayNames
 		const getFolder2Res = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>

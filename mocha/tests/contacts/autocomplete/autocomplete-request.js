@@ -45,6 +45,8 @@ describe('Contacts > AutoComplete > AutoCompleteRequest', function () {
 				<name>Ali</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -56,6 +58,8 @@ describe('Contacts > AutoComplete > AutoCompleteRequest', function () {
 				<name>B</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -67,6 +71,8 @@ describe('Contacts > AutoComplete > AutoCompleteRequest', function () {
 				<name>alice</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -78,6 +84,8 @@ describe('Contacts > AutoComplete > AutoCompleteRequest', function () {
 				<name>zzznomatch${common.getUniqueString()}</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -89,6 +97,8 @@ describe('Contacts > AutoComplete > AutoCompleteRequest', function () {
 				<name>A</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -100,6 +110,8 @@ describe('Contacts > AutoComplete > AutoCompleteRequest', function () {
 				<name>Ch</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -111,6 +123,8 @@ describe('Contacts > AutoComplete > AutoCompleteRequest', function () {
 				<name>ALICE</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -122,6 +136,8 @@ describe('Contacts > AutoComplete > AutoCompleteRequest', function () {
 				<name>Test</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -133,6 +149,8 @@ describe('Contacts > AutoComplete > AutoCompleteRequest', function () {
 				<name>alice</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -144,6 +162,8 @@ describe('Contacts > AutoComplete > AutoCompleteRequest', function () {
 				<name>Bob</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});

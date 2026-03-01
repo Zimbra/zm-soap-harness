@@ -212,7 +212,7 @@ simple message content
 		// Verify response
 		assert.notExists(addRes.Fault, 'AddMsgRequest should not fault');
 
-		// Search for the item
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>in:inbox subject:"${subject}"</query>
@@ -251,7 +251,7 @@ simple message content
 		// Verify response
 		assert.notExists(apptRes.Fault, 'CreateAppointmentRequest should not fault');
 
-		// Search for the item
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${Date.now() - 86400000}"
@@ -774,7 +774,7 @@ ${content}</content>
 		assert.notExists(addRes.Fault, 'AddMsgRequest should not fault');
 		const msgId = addRes.AddMsgResponse.m[0].id;
 
-		// Search for the item
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message"
 				sortBy="dateDesc" offset="0" limit="25">
@@ -824,7 +824,7 @@ ${content}</content>
 		account2AuthToken = await soap.getAccountAuthToken(account2Email);
 		await new Promise(resolve => setTimeout(resolve, 5000));
 
-		// Search for the item
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:"${subject}"</query>

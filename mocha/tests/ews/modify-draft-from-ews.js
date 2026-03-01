@@ -38,8 +38,9 @@ describe('EWS > Modify Draft From EWS', function () {
 
 	// Tests
 	it('Sanity | Create draft with subject in ZWC and sync on EWS Modify same draft using EWS, add content and recipient and sync to ZWC', async () => {
-		// ZWC: Save draft with subject only
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, accountPassword);
+
+		// Save draft
 		const saveDraftRes = await soap.makeSOAPEnvelopeAccount(
 			`<SaveDraftRequest xmlns="urn:zimbraMail">
 				<m>
@@ -50,12 +51,12 @@ describe('EWS > Modify Draft From EWS', function () {
 				</m>
 			</SaveDraftRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(saveDraftRes.Fault, 'SaveDraftRequest should not be a Fault');
 		const draftId = saveDraftRes.SaveDraftResponse.m.id;
 
 		await soap.waitFor(5000);
-
-		// EWS: GetFolder for Drafts
 		const getFolderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>
@@ -80,8 +81,6 @@ describe('EWS > Modify Draft From EWS', function () {
 		assert.equal(draftsId, '6', 'Drafts folder Id should be 6');
 		assert.equal(folderMsg.Folders.Folder.DisplayName, 'Drafts',
 			'DisplayName should be Drafts');
-
-		// EWS: SyncFolderItems on Drafts
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -112,8 +111,6 @@ describe('EWS > Modify Draft From EWS', function () {
 		const mailItemId = matchedItem.Message.ItemId.$.Id;
 		const mailChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
 		const syncState = syncMessage.SyncState;
-
-		// EWS: GetItem to verify draft subject
 		const getItemRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -143,8 +140,6 @@ describe('EWS > Modify Draft From EWS', function () {
 		assert.equal(itemMsg.$.ResponseClass, 'Success', 'GetItem should succeed');
 		assert.equal(itemMsg.Items.Message.Subject, messageSubject,
 			'Subject should match');
-
-		// EWS: UpdateItem - add content and recipient via MimeContent
 		const updateRes = await ews.makeEWSRequest(
 			`<UpdateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				ConflictResolution="AutoResolve" MessageDisposition="SaveOnly">
@@ -191,8 +186,6 @@ describe('EWS > Modify Draft From EWS', function () {
 		const updateMessage = Array.isArray(updateMsg) ? updateMsg[0] : updateMsg;
 		assert.equal(updateMessage.$.ResponseClass, 'Success',
 			'UpdateItem should succeed');
-
-		// EWS: SyncFolderItems to pick up the update
 		const syncRes2 = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -221,13 +214,15 @@ describe('EWS > Modify Draft From EWS', function () {
 		const updatedItemId = updates[0].Message.ItemId.$.Id;
 		const updatedChangeKey = updates[0].Message.ItemId.$.ChangeKey;
 
-		// ZWC: Verify the modified draft
+		// Search for the item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message"
 				sortBy="dateDesc" offset="0" limit="25">
 				<query>subject:${messageSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const su = Array.isArray(searchRes.SearchResponse.m)
@@ -236,11 +231,14 @@ describe('EWS > Modify Draft From EWS', function () {
 		assert.include(su.su, messageSubject, 'Subject should match');
 		const msgId = su.id;
 
+		// Get the message
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${msgId}" />
 			</GetMsgRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not be a Fault');
 		const msg = getMsgRes.GetMsgResponse.m;
 		const msgObj = Array.isArray(msg) ? msg[0] : msg;
@@ -254,8 +252,9 @@ describe('EWS > Modify Draft From EWS', function () {
 
 
 	it('Sanity | Create draft with subject and content in ZWC and sync on EWS Modify content of draft using EWS and sync to ZWC', async () => {
-		// ZWC: Save draft with subject and content
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, accountPassword);
+
+		// Save draft
 		const saveDraftRes = await soap.makeSOAPEnvelopeAccount(
 			`<SaveDraftRequest xmlns="urn:zimbraMail">
 				<m>
@@ -266,11 +265,11 @@ describe('EWS > Modify Draft From EWS', function () {
 				</m>
 			</SaveDraftRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(saveDraftRes.Fault, 'SaveDraftRequest should not be a Fault');
 
 		await soap.waitFor(5000);
-
-		// EWS: GetFolder for Drafts
 		const getFolderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>
@@ -295,8 +294,6 @@ describe('EWS > Modify Draft From EWS', function () {
 		assert.equal(draftsId, '6', 'Drafts folder Id should be 6');
 		assert.equal(folderMsg.Folders.Folder.DisplayName, 'Drafts',
 			'DisplayName should be Drafts');
-
-		// EWS: SyncFolderItems on Drafts (empty SyncState to get all items)
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -326,8 +323,6 @@ describe('EWS > Modify Draft From EWS', function () {
 		const mailItemId = lastCreate.Message.ItemId.$.Id;
 		const mailChangeKey = lastCreate.Message.ItemId.$.ChangeKey;
 		const syncState = syncMessage.SyncState;
-
-		// EWS: GetItem to verify draft subject
 		const getItemRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -357,8 +352,6 @@ describe('EWS > Modify Draft From EWS', function () {
 		assert.equal(itemMsg.$.ResponseClass, 'Success', 'GetItem should succeed');
 		assert.equal(itemMsg.Items.Message.Subject, messageSubject1,
 			'Subject should match');
-
-		// EWS: UpdateItem - modify content via MimeContent
 		const updateRes = await ews.makeEWSRequest(
 			`<UpdateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				ConflictResolution="AutoResolve" MessageDisposition="SaveOnly">
@@ -405,8 +398,6 @@ describe('EWS > Modify Draft From EWS', function () {
 		const updateMessage = Array.isArray(updateMsg) ? updateMsg[0] : updateMsg;
 		assert.equal(updateMessage.$.ResponseClass, 'Success',
 			'UpdateItem should succeed');
-
-		// EWS: SyncFolderItems to pick up the update
 		const syncRes2 = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -431,13 +422,15 @@ describe('EWS > Modify Draft From EWS', function () {
 		assert.equal(syncMessage2.$.ResponseClass, 'Success',
 			'SyncFolderItems should succeed');
 
-		// ZWC: Verify the modified draft
+		// Search for the item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message"
 				sortBy="dateDesc" offset="0" limit="25">
 				<query>subject:${messageSubject1}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const su = Array.isArray(searchRes.SearchResponse.m)
@@ -446,11 +439,14 @@ describe('EWS > Modify Draft From EWS', function () {
 		assert.include(su.su, messageSubject1, 'Subject should match');
 		const msgId = su.id;
 
+		// Get the message
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${msgId}" />
 			</GetMsgRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not be a Fault');
 		const msg = getMsgRes.GetMsgResponse.m;
 		const msgObj = Array.isArray(msg) ? msg[0] : msg;

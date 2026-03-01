@@ -43,7 +43,7 @@ describe('Filters-Fileinto', function () {
 			</CreateFolderRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createFolderRes.Fault, 'CreateFolderRequest should not fault');
 
 		const filterName = `filter${common.getUniqueString()}`;
@@ -64,7 +64,7 @@ describe('Filters-Fileinto', function () {
 			</ModifyFilterRulesRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
 		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 	});
@@ -107,7 +107,7 @@ describe('Filters-Fileinto', function () {
 			`<GetFilterRulesRequest xmlns="urn:zimbraMail"/>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
 		assert.exists(getRes.GetFilterRulesResponse, 'GetFilterRulesResponse should exist');
 	});
@@ -154,7 +154,7 @@ describe('Filters-Fileinto', function () {
 			</ModifyFilterRulesRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest subfolder should not fault');
 	});
 
@@ -191,7 +191,7 @@ describe('Filters-Fileinto', function () {
 			</ModifyFilterRulesRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.isTrue(
 			(modRes.ModifyFilterRulesResponse !== undefined) || (modRes.Fault !== undefined),
 			'Should return a proper response'

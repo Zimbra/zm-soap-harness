@@ -50,6 +50,8 @@ describe('Contacts > AutoComplete > AutoComplete Lucene', function () {
 				<name>Lucene</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -61,6 +63,8 @@ describe('Contacts > AutoComplete > AutoComplete Lucene', function () {
 				<name>Test+</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -72,6 +76,8 @@ describe('Contacts > AutoComplete > AutoComplete Lucene', function () {
 				<name>Query</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});

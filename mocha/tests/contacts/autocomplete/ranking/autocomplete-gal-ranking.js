@@ -51,6 +51,8 @@ describe('Contacts > AutoComplete > Ranking > AutoComplete GAL Ranking', functio
 				<name>test</name>
 			</AutoCompleteRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -69,11 +71,14 @@ describe('Contacts > AutoComplete > Ranking > AutoComplete GAL Ranking', functio
 			</SendMsgRequest>`, account1Token
 		);
 
+		// Send auto complete request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>test</name>
 			</AutoCompleteRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -92,11 +97,14 @@ describe('Contacts > AutoComplete > Ranking > AutoComplete GAL Ranking', functio
 			</SendMsgRequest>`, account1Token
 		);
 
+		// Send auto complete request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>test</name>
 			</AutoCompleteRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -108,6 +116,8 @@ describe('Contacts > AutoComplete > Ranking > AutoComplete GAL Ranking', functio
 				<name>test</name>
 			</AutoCompleteRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -120,11 +130,14 @@ describe('Contacts > AutoComplete > Ranking > AutoComplete GAL Ranking', functio
 			</RankingActionRequest>`, account1Token
 		);
 
+		// Send auto complete request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>test</name>
 			</AutoCompleteRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});

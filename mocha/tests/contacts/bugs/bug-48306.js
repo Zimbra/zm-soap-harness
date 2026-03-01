@@ -29,11 +29,14 @@ describe('Contacts > Bugs > Bug 48306 - CSV import with field delimiter', functi
 	it('Sanity | Import CSV with field delimiter and verify contact details', async () => {
 		const csvContent = 'First Name,Last Name,E-mail Address,Birthday,Custom 1\nScruffy,Dog,scruffy@not.fatkudu.net,2003-08-28,Street Dog';
 
+		// Import contacts
 		const importRes = await soap.makeSOAPEnvelopeAccount(
 			`<ImportContactsRequest xmlns="urn:zimbraMail" ct="csv">
 				<content>${csvContent}</content>
 			</ImportContactsRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(importRes.Fault, 'Import should not be a Fault');
 		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});

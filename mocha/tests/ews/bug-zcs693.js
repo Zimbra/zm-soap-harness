@@ -59,7 +59,6 @@ describe('EWS > Bug ZCS-693', function () {
 
 	// Tests
 	it('Sanity | Execute GeAttachment', async () => {
-		// EWS: GetFolder inbox
 		const getFolderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>
@@ -79,9 +78,9 @@ describe('EWS > Bug ZCS-693', function () {
 		const getFolderMsg = getFolderBody.GetFolderResponse
 			.ResponseMessages.GetFolderResponseMessage;
 		const folderMsg = Array.isArray(getFolderMsg) ? getFolderMsg[0] : getFolderMsg;
-		assert.equal(folderMsg.$.ResponseClass, 'Success', 'GetFolder should succeed');
 
-		// EWS: SyncFolderItems
+		// Verify response
+		assert.equal(folderMsg.$.ResponseClass, 'Success', 'GetFolder should succeed');
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -109,8 +108,6 @@ describe('EWS > Bug ZCS-693', function () {
 		assert.exists(matchedItem, "Should find message matching subject");
 		const mailItemId = matchedItem.Message.ItemId.$.Id;
 		const mailChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
-
-		// EWS: GetItem to get body and attachments
 		const getItemRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>

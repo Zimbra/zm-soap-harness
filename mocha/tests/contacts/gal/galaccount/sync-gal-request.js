@@ -30,6 +30,8 @@ describe('Contacts > GAL > GALAccount > SyncGalRequest', function () {
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<SyncGalRequest xmlns="urn:zimbraAccount"/>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SyncGal should not be a Fault');
 		assert.exists(res.SyncGalResponse, 'SyncGalResponse should exist');
 	});
@@ -44,6 +46,8 @@ describe('Contacts > GAL > GALAccount > SyncGalRequest', function () {
 			const res2 = await soap.makeSOAPEnvelopeAccount(
 				`<SyncGalRequest xmlns="urn:zimbraAccount" token="${token}"/>`, accountToken
 			);
+
+			// Verify response
 			assert.notExists(res2.Fault, 'SyncGal should not be a Fault');
 			assert.exists(res2.SyncGalResponse, 'SyncGalResponse should exist');
 		}
@@ -54,6 +58,8 @@ describe('Contacts > GAL > GALAccount > SyncGalRequest', function () {
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<SyncGalRequest xmlns="urn:zimbraAccount"/>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SyncGal should not be a Fault');
 		assert.exists(res.SyncGalResponse, 'SyncGalResponse should exist');
 	});
@@ -61,6 +67,8 @@ describe('Contacts > GAL > GALAccount > SyncGalRequest', function () {
 
 	it('Sanity | SyncGal after account modification', async () => {
 		const newEmail = `syncacc${common.getUniqueString()}@${config.testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${newEmail}</name>
@@ -68,9 +76,12 @@ describe('Contacts > GAL > GALAccount > SyncGalRequest', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 
+		// Send sync gal request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<SyncGalRequest xmlns="urn:zimbraAccount"/>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SyncGal should not be a Fault');
 		assert.exists(res.SyncGalResponse, 'SyncGalResponse should exist');
 	});

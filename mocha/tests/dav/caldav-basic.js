@@ -69,6 +69,7 @@ describe('CalDav > Basic Folders', function () {
 	}
 
 
+	// Tests
 	it('Sanity | Verify basic Calendar folder', async () => {
 		const res = await propfindRoot();
 

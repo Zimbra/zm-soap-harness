@@ -60,7 +60,6 @@ describe('EWS > Send Mail CC BCC From EWS', function () {
 
 	// Tests
 	it('Sanity | Send an html mail from user1 To user2 with CC user3 and BCC use4 from EWS to ZWC client', async () => {
-		// EWS: Send mail with CC and BCC via CreateItem
 		const account1Username = account1Email.split('@')[0];
 		const account2Username = account2Email.split('@')[0];
 		const account3Username = account3Email.split('@')[0];
@@ -133,10 +132,10 @@ describe('EWS > Send Mail CC BCC From EWS', function () {
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
 		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+
+		// Verify response
 		assert.equal(createMessage.$.ResponseClass, 'Success',
 			'CreateItem should succeed');
-
-		// EWS: SyncFolderItems on sent items folder (Id=5)
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -157,27 +156,34 @@ describe('EWS > Send Mail CC BCC From EWS', function () {
 		const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
 		assert.equal(syncMessage.$.ResponseClass, 'Success',
 			'SyncFolderItems should succeed');
-
-		// Verify on ZWC: account2 (To) received the mail
 		await soap.waitFor(5000);
+
+		// Authenticate account
 		const account2AuthToken = await soap.getAccountAuthToken(account2Email, accountPassword);
+
+		// Search for the item
 		const searchRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation"
 				sortBy="dateDesc" offset="0" limit="25">
 				<query>subject:${messageSubject}</query>
 			</SearchRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes2.Fault, 'Response should not be a Fault');
 		const hit2 = Array.isArray(searchRes2.SearchResponse.c)
 			? searchRes2.SearchResponse.c[0] : searchRes2.SearchResponse.c;
 		assert.equal(hit2.su, messageSubject, 'Subject should match');
 		const msgId2 = Array.isArray(hit2.m) ? hit2.m[0].id : hit2.m.id;
 
+		// Get the message
 		const getMsgRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${msgId2}" />
 			</GetMsgRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(getMsgRes2.Fault, 'Response should not be a Fault');
 		const msg2 = getMsgRes2.GetMsgResponse.m;
 		const msgObj2 = Array.isArray(msg2) ? msg2[0] : msg2;
@@ -192,27 +198,34 @@ describe('EWS > Send Mail CC BCC From EWS', function () {
 			'Account4 should not be in To');
 		assert.notExists(addrs2.find(e => e.t === 'c' && e.a === account4Email),
 			'Account4 should not be in Cc');
-
-		// Verify on ZWC: account3 (Cc) received the mail
 		await soap.waitFor(5000);
+
+		// Authenticate account
 		const account3AuthToken = await soap.getAccountAuthToken(account3Email, accountPassword);
+
+		// Search for the item
 		const searchRes3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation"
 				sortBy="dateDesc" offset="0" limit="25">
 				<query>subject:${messageSubject}</query>
 			</SearchRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes3.Fault, 'Response should not be a Fault');
 		const hit3 = Array.isArray(searchRes3.SearchResponse.c)
 			? searchRes3.SearchResponse.c[0] : searchRes3.SearchResponse.c;
 		assert.equal(hit3.su, messageSubject, 'Subject should match');
 		const msgId3 = Array.isArray(hit3.m) ? hit3.m[0].id : hit3.m.id;
 
+		// Get the message
 		const getMsgRes3 = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${msgId3}" />
 			</GetMsgRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(getMsgRes3.Fault, 'Response should not be a Fault');
 		const msg3 = getMsgRes3.GetMsgResponse.m;
 		const msgObj3 = Array.isArray(msg3) ? msg3[0] : msg3;
@@ -228,25 +241,32 @@ describe('EWS > Send Mail CC BCC From EWS', function () {
 		assert.notExists(addrs3.find(e => e.t === 'c' && e.a === account4Email),
 			'Account4 should not be in Cc');
 
-		// Verify on ZWC: account4 (Bcc) received the mail
+		// Authenticate account
 		const account4AuthToken = await soap.getAccountAuthToken(account4Email, accountPassword);
+
+		// Search for the item
 		const searchRes4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation"
 				sortBy="dateDesc" offset="0" limit="25">
 				<query>subject:${messageSubject}</query>
 			</SearchRequest>`, account4AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes4.Fault, 'Response should not be a Fault');
 		const hit4 = Array.isArray(searchRes4.SearchResponse.c)
 			? searchRes4.SearchResponse.c[0] : searchRes4.SearchResponse.c;
 		assert.equal(hit4.su, messageSubject, 'Subject should match');
 		const msgId4 = Array.isArray(hit4.m) ? hit4.m[0].id : hit4.m.id;
 
+		// Get the message
 		const getMsgRes4 = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${msgId4}" />
 			</GetMsgRequest>`, account4AuthToken
 		);
+
+		// Verify response
 		assert.notExists(getMsgRes4.Fault, 'Response should not be a Fault');
 		const msg4 = getMsgRes4.GetMsgResponse.m;
 		const msgObj4 = Array.isArray(msg4) ? msg4[0] : msg4;

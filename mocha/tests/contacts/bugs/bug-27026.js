@@ -29,11 +29,14 @@ describe('Contacts > Bugs > Bug 27026 - Import contacts with different charset',
 	it('Functional | Import contacts with special characters via CSV content', async () => {
 		const csvContent = 'First Name,Last Name,E-mail Address\nRôme,Carta,rome@test.com\nRené,Laprte,rene@test.com\nAdnan,Gökçen,adnan@test.com';
 
+		// Import contacts
 		const importRes = await soap.makeSOAPEnvelopeAccount(
 			`<ImportContactsRequest xmlns="urn:zimbraMail" ct="csv">
 				<content>${csvContent}</content>
 			</ImportContactsRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(importRes.Fault, 'Import should not be a Fault');
 		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});

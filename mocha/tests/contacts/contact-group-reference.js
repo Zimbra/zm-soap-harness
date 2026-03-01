@@ -47,6 +47,7 @@ describe('Contacts > Contact Group Reference', function () {
 		const nickname = `contact${common.getUniqueString()}`;
 		const email = `email${common.getUniqueString()}@domain.com`;
 
+		// Create a contact
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -56,6 +57,8 @@ describe('Contacts > Contact Group Reference', function () {
 				</cn>
 			</CreateContactRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Create should not be a Fault');
 		assert.exists(res.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(res.CreateContactResponse.cn)
@@ -68,7 +71,7 @@ describe('Contacts > Contact Group Reference', function () {
 	it('Sanity | Create contact group reference with type C (contact reference)', async () => {
 		const nickname = `contact${common.getUniqueString()}`;
 
-		// Create a contact to reference
+		// Create a contact
 		const refRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -80,7 +83,6 @@ describe('Contacts > Contact Group Reference', function () {
 		);
 		const refCn = Array.isArray(refRes.CreateContactResponse.cn)
 			? refRes.CreateContactResponse.cn[0] : refRes.CreateContactResponse.cn;
-
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -90,6 +92,8 @@ describe('Contacts > Contact Group Reference', function () {
 				</cn>
 			</CreateContactRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Create should not be a Fault');
 		assert.exists(res.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(res.CreateContactResponse.cn)
@@ -103,6 +107,7 @@ describe('Contacts > Contact Group Reference', function () {
 		const nickname = `contact${common.getUniqueString()}`;
 		const email = `email${common.getUniqueString()}@domain.com`;
 
+		// Create a contact
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -115,11 +120,14 @@ describe('Contacts > Contact Group Reference', function () {
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
+		// Send auto complete request
 		const autoRes = await soap.makeSOAPEnvelopeAccount(
 			`<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>${nickname}</name>
 			</AutoCompleteRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(autoRes.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(autoRes.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -129,7 +137,7 @@ describe('Contacts > Contact Group Reference', function () {
 		const nickname = `contact${common.getUniqueString()}`;
 		const email = `email${common.getUniqueString()}@domain.com`;
 
-		// Create a contact to reference
+		// Create a contact
 		const refRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -141,7 +149,6 @@ describe('Contacts > Contact Group Reference', function () {
 		);
 		const refCn = Array.isArray(refRes.CreateContactResponse.cn)
 			? refRes.CreateContactResponse.cn[0] : refRes.CreateContactResponse.cn;
-
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -152,6 +159,8 @@ describe('Contacts > Contact Group Reference', function () {
 				</cn>
 			</CreateContactRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Create should not be a Fault');
 		assert.exists(res.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(res.CreateContactResponse.cn)

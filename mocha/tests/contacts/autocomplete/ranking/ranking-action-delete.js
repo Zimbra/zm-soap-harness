@@ -50,11 +50,14 @@ describe('Contacts > AutoComplete > Ranking > RankingActionRequest Delete', func
 			</SendMsgRequest>`, account1Token
 		);
 
+		// Send ranking action request
 		const deleteRes = await soap.makeSOAPEnvelopeAccount(
 			`<RankingActionRequest xmlns="urn:zimbraMail">
 				<action op="delete" email="${account2Email}"/>
 			</RankingActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(deleteRes.Fault, 'Delete should not be a Fault');
 	});
 
@@ -65,13 +68,18 @@ describe('Contacts > AutoComplete > Ranking > RankingActionRequest Delete', func
 				<action op="delete" email="${account2Email}"/>
 			</RankingActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(deleteRes.Fault, 'Delete should not be a Fault');
 
+		// Send auto complete request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>test</name>
 			</AutoCompleteRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -83,12 +91,16 @@ describe('Contacts > AutoComplete > Ranking > RankingActionRequest Delete', func
 				<action op="delete" email="nonexistent${common.getUniqueString()}@nonexist.com"/>
 			</RankingActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(deleteRes.Fault, 'Delete should not be a Fault');
 	});
 
 
 	it('Sanity | Delete ranking with multiple entries', async () => {
 		const account3Email = `test${common.getUniqueString()}@${config.testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account3Email}</name>
@@ -96,6 +108,7 @@ describe('Contacts > AutoComplete > Ranking > RankingActionRequest Delete', func
 			</CreateAccountRequest>`, adminAuthToken
 		);
 
+		// Send the message
 		await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -108,11 +121,14 @@ describe('Contacts > AutoComplete > Ranking > RankingActionRequest Delete', func
 			</SendMsgRequest>`, account1Token
 		);
 
+		// Send ranking action request
 		const deleteRes = await soap.makeSOAPEnvelopeAccount(
 			`<RankingActionRequest xmlns="urn:zimbraMail">
 				<action op="delete" email="${account3Email}"/>
 			</RankingActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(deleteRes.Fault, 'Delete should not be a Fault');
 	});
 
@@ -123,6 +139,8 @@ describe('Contacts > AutoComplete > Ranking > RankingActionRequest Delete', func
 				<action op="reset"/>
 			</RankingActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(resetRes.Fault, 'Reset should not be a Fault');
 	});
 
@@ -140,11 +158,14 @@ describe('Contacts > AutoComplete > Ranking > RankingActionRequest Delete', func
 			</SendMsgRequest>`, account1Token
 		);
 
+		// Send auto complete request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>test</name>
 			</AutoCompleteRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});

@@ -50,7 +50,7 @@ describe('Modify-Identity', function () {
 			</ModifyIdentityRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyIdentityRequest should not fault');
 		assert.exists(modRes.ModifyIdentityResponse, 'ModifyIdentityResponse should exist');
 	});
@@ -86,7 +86,7 @@ describe('Modify-Identity', function () {
 			</ModifyIdentityRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyIdentityRequest should not fault');
 		assert.exists(modRes.ModifyIdentityResponse, 'ModifyIdentityResponse should exist');
 	});
@@ -125,7 +125,7 @@ describe('Modify-Identity', function () {
 			</ModifyIdentityRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyIdentityRequest should not fault');
 		assert.exists(modRes.ModifyIdentityResponse, 'ModifyIdentityResponse should exist');
 	});
@@ -162,7 +162,7 @@ describe('Modify-Identity', function () {
 			</ModifyIdentityRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyIdentityRequest rename should not fault');
 		assert.exists(modRes.ModifyIdentityResponse, 'ModifyIdentityResponse should exist');
 	});
@@ -191,7 +191,7 @@ describe('Modify-Identity', function () {
 			</ModifyIdentityRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.exists(modRes.Fault, 'Modify non-existent identity should fault');
 	});
 
@@ -231,7 +231,7 @@ describe('Modify-Identity', function () {
 			`<GetIdentitiesRequest xmlns="urn:zimbraAccount"/>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(getRes.Fault, 'GetIdentitiesRequest should not fault');
 		assert.exists(getRes.GetIdentitiesResponse, 'GetIdentitiesResponse should exist');
 	});

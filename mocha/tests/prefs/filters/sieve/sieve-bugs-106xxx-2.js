@@ -33,7 +33,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug106900_01_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="contains" value="notify"/></filterTests><filterActions><actionNotify a="alert@test.com" su="Notification" content="New message"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug106900-01 should not fault');
 	});
 
@@ -44,7 +44,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug106900_02_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="contains" value="alert"/></filterTests><filterActions><actionNotify a="alert@test.com" su="Subject: ${common.getUniqueString()}" content="Alert"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug106900-02 should not fault');
 	});
 
@@ -55,7 +55,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug106900_03_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="from" stringComparison="contains" value="vip"/></filterTests><filterActions><actionNotify a="admin@test.com" su="VIP Alert" content="VIP message" maxBodySize="1024"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug106900-03 should not fault');
 	});
 
@@ -69,7 +69,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Get filter rules
 		const getRes = await soap.makeSOAPEnvelopeAccount(`<GetFilterRulesRequest xmlns="urn:zimbraMail"/>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
 	});
 
@@ -80,7 +80,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug106990_01_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="contains" value="autoreply"/></filterTests><filterActions><actionReply content="I am out of office"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug106990-01 should not fault');
 	});
 
@@ -91,7 +91,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug106990_02_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="is" value="ooo"/></filterTests><filterActions><actionReply content="Out of office reply"/><actionKeep/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug106990-02 should not fault');
 	});
 
@@ -105,7 +105,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Get filter rules
 		const getRes = await soap.makeSOAPEnvelopeAccount(`<GetFilterRulesRequest xmlns="urn:zimbraMail"/>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
 	});
 
@@ -116,7 +116,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug106993_01_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="is" value="reject"/></filterTests><filterActions><actionReply content="Message rejected"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug106993-01 should not fault');
 	});
 
@@ -127,7 +127,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug107044_01_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="matches" value="*report*"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug107044-01 should not fault');
 	});
 
@@ -138,7 +138,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug107044_02_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="matches" value="test?pattern"/></filterTests><filterActions><actionFlag flagName="flagged"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug107044-02 should not fault');
 	});
 
@@ -152,7 +152,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Get filter rules
 		const getRes = await soap.makeSOAPEnvelopeAccount(`<GetFilterRulesRequest xmlns="urn:zimbraMail"/>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
 	});
 
@@ -163,7 +163,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug107212_01_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="contains" value="addheader"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug107212-01 should not fault');
 	});
 
@@ -174,7 +174,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug107212_02_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="is" value="exact match"/></filterTests><filterActions><actionFlag flagName="flagged"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug107212-02 should not fault');
 	});
 
@@ -185,7 +185,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug107212_03_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="from" stringComparison="contains" value="sender"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug107212-03 should not fault');
 	});
 
@@ -196,7 +196,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug107212_04_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="to" stringComparison="is" value="recipient@test.com"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug107212-04 should not fault');
 	});
 
@@ -207,7 +207,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug107212_05_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="cc" stringComparison="contains" value="copy"/></filterTests><filterActions><actionDiscard/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug107212-05 should not fault');
 	});
 
@@ -218,7 +218,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug107212_06_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="contains" value="redirect"/></filterTests><filterActions><actionRedirect a="fwd@test.com"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug107212-06 should not fault');
 	});
 
@@ -229,7 +229,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug107212_07_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="is" value="file"/></filterTests><filterActions><actionFileInto folderPath="/Inbox"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug107212-07 should not fault');
 	});
 
@@ -244,7 +244,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug107212_08_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="contains" value="tagging"/></filterTests><filterActions><actionTag tagName="${tagName}"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug107212-08 should not fault');
 	});
 
@@ -255,7 +255,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug107212_09_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="is" value="stop here"/></filterTests><filterActions><actionKeep/><actionStop/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug107212-09 should not fault');
 	});
 
@@ -266,7 +266,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug107212_10a_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="is" value="rule1"/></filterTests><filterActions><actionKeep/></filterActions></filterRule><filterRule name="bug107212_10b_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="is" value="rule2"/></filterTests><filterActions><actionDiscard/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug107212-10 should not fault');
 	});
 
@@ -280,7 +280,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Get filter rules
 		const getRes = await soap.makeSOAPEnvelopeAccount(`<GetFilterRulesRequest xmlns="urn:zimbraMail"/>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
 		assert.exists(getRes.GetFilterRulesResponse, 'Response should exist');
 	});
@@ -292,7 +292,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug107221_01_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="is" caseSensitive="1" value="CaseSensitive"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug107221-01 should not fault');
 	});
 
@@ -303,7 +303,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug107221_02_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="contains" caseSensitive="1" value="UPPER"/></filterTests><filterActions><actionFlag flagName="flagged"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug107221-02 should not fault');
 	});
 
@@ -314,7 +314,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug107221_03_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="matches" caseSensitive="1" value="*Test*"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug107221-03 should not fault');
 	});
 
@@ -325,7 +325,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug107221_04_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="from" stringComparison="is" caseSensitive="1" value="Spam@Test.Com"/></filterTests><filterActions><actionDiscard/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug107221-04 should not fault');
 	});
 
@@ -336,7 +336,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug107221_05_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="is" caseSensitive="0" value="lower"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug107221-05 should not fault');
 	});
 
@@ -347,7 +347,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug107221_06_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="from" stringComparison="contains" caseSensitive="1" value="Admin"/></filterTests><filterActions><actionFlag flagName="flagged"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug107221-06 should not fault');
 	});
 
@@ -361,7 +361,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Get filter rules
 		const getRes = await soap.makeSOAPEnvelopeAccount(`<GetFilterRulesRequest xmlns="urn:zimbraMail"/>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
 	});
 
@@ -372,7 +372,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug107222_01_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="X-Custom-Header" stringComparison="is" value="custom_value"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug107222-01 should not fault');
 	});
 
@@ -383,7 +383,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug107222_02_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="X-Mailer" stringComparison="contains" value="Zimbra"/></filterTests><filterActions><actionFlag flagName="flagged"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug107222-02 should not fault');
 	});
 
@@ -394,7 +394,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="bug107222_03_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="X-Originating-IP" stringComparison="matches" value="192.168.*"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Bug107222-03 should not fault');
 	});
 
@@ -408,7 +408,7 @@ describe('Sieve-Bugs-106xxx-2', function () {
 		// Get filter rules
 		const getRes = await soap.makeSOAPEnvelopeAccount(`<GetFilterRulesRequest xmlns="urn:zimbraMail"/>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
 	});
 });

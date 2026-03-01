@@ -61,7 +61,7 @@ describe('Filters-Tag', function () {
 			</ModifyFilterRulesRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
 		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 	});
@@ -113,7 +113,7 @@ describe('Filters-Tag', function () {
 			`<GetFilterRulesRequest xmlns="urn:zimbraMail"/>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
 		assert.exists(getRes.GetFilterRulesResponse, 'GetFilterRulesResponse should exist');
 	});
@@ -161,7 +161,7 @@ describe('Filters-Tag', function () {
 			</ModifyFilterRulesRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest allof should not fault');
 	});
 
@@ -207,7 +207,7 @@ describe('Filters-Tag', function () {
 			</ModifyFilterRulesRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest inactive should not fault');
 	});
 });

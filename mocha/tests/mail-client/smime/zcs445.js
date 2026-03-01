@@ -31,61 +31,79 @@ describe('Mail Client > Smime > ZCS445', function () {
 
 	// Tests
 	it('Sanity | User1 has uploaded certificate Sends signed mail to user2 and provides certId in request Mail is sent successfully', async () => {
-		// Source: TC1 from Smime/ZCS445.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | User1 has uploaded certificate Sends signed mail to user2 and does not provide certId in request Mail is sent success...', async () => {
-		// Source: TC2 from Smime/ZCS445.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | User1 has uploaded certificate Sends encrypted and signed mail to user2 and does not provide certId in request Mail i...', async () => {
-		// Source: TC2_1 from Smime/ZCS445.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | User1 has uploaded two certificates Sends signed mail to user2 and does not provide certId in request Mail should not...', async () => {
-		// Source: TC3 from Smime/ZCS445.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | User1 has uploaded two certificates Sends signed mail to user2 and provides certId in request Mail should be sent suc...', async () => {
-		// Source: TC4 from Smime/ZCS445.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | User1 has uploaded two certificates Sends signed mail to user2 and provides invalid certId in request Mail should not...', async () => {
-		// Source: TC5 from Smime/ZCS445.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

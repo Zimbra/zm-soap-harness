@@ -43,7 +43,7 @@ describe('Create-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -74,7 +74,7 @@ describe('Create-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -105,7 +105,7 @@ describe('Create-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest with from address should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -138,7 +138,7 @@ describe('Create-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest reply-to should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -167,7 +167,7 @@ describe('Create-Identity', function () {
 			</CreateSignatureRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(sigRes.Fault, 'CreateSignatureRequest should not fault');
 		const sigId = sigRes.CreateSignatureResponse.signature[0].id;
 
@@ -182,7 +182,7 @@ describe('Create-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest with sig should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -217,7 +217,7 @@ describe('Create-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest all fields should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -251,7 +251,7 @@ describe('Create-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.exists(dupRes.Fault, 'Duplicate identity name should fault');
 	});
 
@@ -277,7 +277,7 @@ describe('Create-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.exists(createRes.Fault, 'Creating identity named DEFAULT should fault');
 	});
 
@@ -307,7 +307,7 @@ describe('Create-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -339,7 +339,7 @@ describe('Create-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -371,7 +371,7 @@ describe('Create-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest when-sent-to should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -403,7 +403,7 @@ describe('Create-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.exists(createRes.Fault, 'CreateIdentityRequest with zimbraPrefWhenInFolderEnabled should fault as unsupported');
 	});
 
@@ -433,7 +433,7 @@ describe('Create-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -472,7 +472,7 @@ describe('Create-Identity', function () {
 			</GetAccountRequest>`, adminAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(getRes.Fault, 'GetAccountRequest should not fault');
 		assert.exists(getRes.GetAccountResponse, 'GetAccountResponse should exist');
 	});
@@ -499,7 +499,7 @@ describe('Create-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.exists(createRes.Fault, 'Empty identity name should fault');
 	});
 
@@ -535,7 +535,7 @@ describe('Create-Identity', function () {
 			`<GetIdentitiesRequest xmlns="urn:zimbraAccount"/>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(getRes.Fault, 'GetIdentitiesRequest should not fault');
 		assert.exists(getRes.GetIdentitiesResponse, 'GetIdentitiesResponse should exist');
 	});
@@ -567,7 +567,7 @@ describe('Create-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -596,7 +596,7 @@ describe('Create-Identity', function () {
 			</CreateSignatureRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(sigRes.Fault, 'CreateSignatureRequest should not fault');
 		const sigId = sigRes.CreateSignatureResponse.signature[0].id;
 
@@ -611,7 +611,7 @@ describe('Create-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest fwd sig should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -642,7 +642,7 @@ describe('Create-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest sig position should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -671,7 +671,7 @@ describe('Create-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 		assert.exists(createRes.CreateIdentityResponse.identity, 'identity should exist in response');
 		assert.exists(createRes.CreateIdentityResponse.identity[0].id, 'identity id should exist');
@@ -703,7 +703,7 @@ describe('Create-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -732,7 +732,7 @@ describe('Create-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest long name should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -761,7 +761,7 @@ describe('Create-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest special chars should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -790,7 +790,7 @@ describe('Create-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 		assert.equal(createRes.CreateIdentityResponse.identity[0].name, identityName, 'Identity name should match');
 	});
@@ -821,7 +821,7 @@ describe('Create-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -854,7 +854,7 @@ describe('Create-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});

@@ -45,8 +45,6 @@ describe('EWS > Delete Mail From ZWC', function () {
 	it('Sanity | Soft delete email and verify it is moved to Trash in Server and verify on EWS', async () => {
 		const messageSubject = 'Message 1 test subject';
 		const messageContent = 'Message 1 test content';
-
-		// EWS: Send mail from user2 to user1 using CreateItem with SendAndSaveCopy
 		const createRes = await ews.makeEWSRequest(
 			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				MessageDisposition="SendAndSaveCopy">
@@ -90,10 +88,10 @@ describe('EWS > Delete Mail From ZWC', function () {
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
 		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+
+		// Verify response
 		assert.equal(createMessage.$.ResponseClass, 'Success',
 			'CreateItem should succeed');
-
-		// EWS: SyncFolderItems on Sent folder for user2
 		const syncSentRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -115,17 +113,21 @@ describe('EWS > Delete Mail From ZWC', function () {
 			? syncSentMsg[0] : syncSentMsg;
 		assert.equal(syncSentMessage.$.ResponseClass, 'Success',
 			'SyncFolderItems should succeed');
-
-		// ZWC: Verify mail received by user1
 		await new Promise(resolve => setTimeout(resolve, 5000));
+
+		// Authenticate account
 		const account1AuthToken = await soap.getAccountAuthToken(
 			account1Email, accountPassword);
+
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message"
 				sortBy="dateDesc" offset="0" limit="25">
 				<query>subject:${messageSubject}</query>
 			</SearchRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const messages = searchRes.SearchResponse?.m
@@ -135,29 +137,32 @@ describe('EWS > Delete Mail From ZWC', function () {
 		assert.isAbove(msgArr.length, 0, 'Should find received mail');
 		const msgId = msgArr[0]?.id || msgArr[0]?.m?.[0]?.id;
 
+		// Get the message
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${msgId}" />
 			</GetMsgRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not be a Fault');
 		const zwcMsg = getMsgRes.GetMsgResponse?.m;
 		const zwcMsgObj = Array.isArray(zwcMsg) ? zwcMsg[0] : zwcMsg;
 		assert.include(zwcMsgObj.su, messageSubject, 'Subject should match');
 
-		// ZWC: Soft delete (move to trash)
+		// Perform message action
 		const trashRes = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action id="${msgId}" op="trash"/>
 			</MsgActionRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(trashRes.Fault, 'MsgActionRequest should not be a Fault');
 		const trashAction = trashRes.MsgActionResponse?.action;
 		const trashObj = Array.isArray(trashAction) ? trashAction[0] : trashAction;
 		assert.equal(trashObj.op, 'trash', 'Op should be trash');
 		assert.equal(trashObj.id, msgId, 'Trashed message id should match');
-
-		// EWS: Verify trashed mail in Trash folder (Id=3)
 		const syncTrashRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -186,8 +191,6 @@ describe('EWS > Delete Mail From ZWC', function () {
 			'Trash should contain items');
 		const trashItemId = trashCreateArr[0]?.Message?.ItemId?.$.Id;
 		const trashItemChangeKey = trashCreateArr[0]?.Message?.ItemId?.$.ChangeKey;
-
-		// EWS: GetItem to verify trashed mail
 		const getItemRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -228,8 +231,6 @@ describe('EWS > Delete Mail From ZWC', function () {
 	it('Sanity | Hard delete email and verify it is not present in Trash in Server and verify on EWS', async () => {
 		const messageSubject = 'Message 2 test subject';
 		const messageContent = 'Message 2 test content';
-
-		// EWS: Send mail from user1 to user2 using CreateItem with SendAndSaveCopy
 		const createRes = await ews.makeEWSRequest(
 			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				MessageDisposition="SendAndSaveCopy">
@@ -273,10 +274,10 @@ describe('EWS > Delete Mail From ZWC', function () {
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
 		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+
+		// Verify response
 		assert.equal(createMessage.$.ResponseClass, 'Success',
 			'CreateItem should succeed');
-
-		// EWS: SyncFolderItems on Sent folder for user1
 		const syncSentRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -298,17 +299,21 @@ describe('EWS > Delete Mail From ZWC', function () {
 			? syncSentMsg[0] : syncSentMsg;
 		assert.equal(syncSentMessage.$.ResponseClass, 'Success',
 			'SyncFolderItems should succeed');
-
-		// ZWC: Verify mail received by user2
 		await new Promise(resolve => setTimeout(resolve, 5000));
+
+		// Authenticate account
 		const account2AuthToken = await soap.getAccountAuthToken(
 			account2Email, accountPassword);
+
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message"
 				sortBy="dateDesc" offset="0" limit="25">
 				<query>subject:${messageSubject}</query>
 			</SearchRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const messages = searchRes.SearchResponse?.m
@@ -318,30 +323,33 @@ describe('EWS > Delete Mail From ZWC', function () {
 		assert.isAbove(msgArr.length, 0, 'Should find received mail');
 		const msgId = msgArr[0]?.id || msgArr[0]?.m?.[0]?.id;
 
+		// Get the message
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${msgId}" />
 			</GetMsgRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not be a Fault');
 		const zwcMsg = getMsgRes.GetMsgResponse?.m;
 		const zwcMsgObj = Array.isArray(zwcMsg) ? zwcMsg[0] : zwcMsg;
 		assert.include(zwcMsgObj.su, messageSubject, 'Subject should match');
 
-		// ZWC: Hard delete (permanent delete) for dumpster user
+		// Perform message action
 		const deleteRes = await soap.makeSOAPEnvelopeAccount(
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 				<action id="${msgId}" op="delete"/>
 			</MsgActionRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(deleteRes.Fault, 'MsgActionRequest should not be a Fault');
 		const deleteAction = deleteRes.MsgActionResponse?.action;
 		const deleteObj = Array.isArray(deleteAction)
 			? deleteAction[0] : deleteAction;
 		assert.equal(deleteObj.op, 'delete', 'Op should be delete');
 		assert.equal(deleteObj.id, msgId, 'Deleted message id should match');
-
-		// EWS: Verify mail not in inbox for user2
 		const getFolderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>
@@ -388,8 +396,6 @@ describe('EWS > Delete Mail From ZWC', function () {
 			? syncInboxMsg[0] : syncInboxMsg;
 		assert.equal(syncInboxMessage.$.ResponseClass, 'Success',
 			'SyncFolderItems should succeed');
-
-		// EWS: Verify mail not in trash for user2
 		const getTrashRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>
@@ -437,7 +443,7 @@ describe('EWS > Delete Mail From ZWC', function () {
 		assert.equal(syncTrashMessage.$.ResponseClass, 'Success',
 			'SyncFolderItems on Trash should succeed');
 
-		// ZWC: Verify mail is in Dumpster
+		// Search item
 		const searchDumpsterRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message"
 				sortBy="dateDesc" offset="0" limit="25">
@@ -445,6 +451,8 @@ describe('EWS > Delete Mail From ZWC', function () {
 				<inDumpster>1</inDumpster>
 			</SearchRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchDumpsterRes.Fault,
 			'SearchRequest should not be a Fault');
 		assert.exists(searchDumpsterRes.SearchResponse,

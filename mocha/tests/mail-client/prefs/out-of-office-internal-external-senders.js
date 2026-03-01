@@ -31,81 +31,105 @@ describe('Mail Client > Prefs > OutOfOffice_InternalExternalSenders', function (
 
 	// Tests
 	it('Sanity | Verify sending an OOO in a specified time interval', async () => {
-		// Source: OutOfOfficeBasic01 from Prefs/OutOfOffice/OutOfOffice_InternalExternalSenders.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Verify not sending an OOO after a specified time interval is over', async () => {
-		// Source: OutOfOfficeBasic02 from Prefs/OutOfOffice/OutOfOffice_InternalExternalSenders.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Verify sending an OOO reply to the external end user after time elapses', async () => {
-		// Source: OutOfOfficeBasic03 from Prefs/OutOfOffice/OutOfOffice_InternalExternalSenders.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Verify sending an external OOO reply to the external end user of some other domain', async () => {
-		// Source: OutOfOfficeBasic04 from Prefs/OutOfOffice/OutOfOffice_InternalExternalSenders.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Verify sending an external OOO reply to the external user not in contact book', async () => {
-		// Source: OutOfOfficeBasic05 from Prefs/OutOfOffice/OutOfOffice_InternalExternalSenders.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Verify sending OOO message to external senders for specific domains', async () => {
-		// Source: OutOfOfficeBasic06 from Prefs/OutOfOffice/OutOfOffice_InternalExternalSenders.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Verify domains other than specific domains should receive the normal OOO message', async () => {
-		// Source: OutOfOfficeBasic07 from Prefs/OutOfOffice/OutOfOffice_InternalExternalSenders.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Verify not sending OOO message to external senders', async () => {
-		// Source: OutOfOfficeBasic08 from Prefs/OutOfOffice/OutOfOffice_InternalExternalSenders.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

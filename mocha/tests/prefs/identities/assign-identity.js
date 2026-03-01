@@ -46,7 +46,7 @@ describe('Assign-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -82,7 +82,7 @@ describe('Assign-Identity', function () {
 			`<GetIdentitiesRequest xmlns="urn:zimbraAccount"/>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(getRes.Fault, 'GetIdentitiesRequest should not fault');
 		assert.exists(getRes.GetIdentitiesResponse, 'GetIdentitiesResponse should exist');
 	});
@@ -115,7 +115,7 @@ describe('Assign-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest with reply-to should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -150,7 +150,7 @@ describe('Assign-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes2.Fault, 'Second CreateIdentityRequest should not fault');
 		assert.exists(createRes2.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -181,7 +181,7 @@ describe('Assign-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest special chars should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});

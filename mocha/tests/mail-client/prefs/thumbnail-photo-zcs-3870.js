@@ -31,11 +31,14 @@ describe('Mail Client > Prefs > ThumbnailPhoto_ZCS-3870', function () {
 
 	// Tests
 	it('Sanity | Set a thumbnail image to user and verify it gets saved in Ldap and synced to Gal', async () => {
-		// Source: ThumnailPhoto_Testcase01 from Prefs/Bugs/ThumbnailPhoto_ZCS-3870.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

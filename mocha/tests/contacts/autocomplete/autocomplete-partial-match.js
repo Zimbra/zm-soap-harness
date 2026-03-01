@@ -50,6 +50,8 @@ describe('Contacts > AutoComplete > AutoComplete Partial Match', function () {
 				<name>Part</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -61,6 +63,8 @@ describe('Contacts > AutoComplete > AutoComplete Partial Match', function () {
 				<name>Match</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -72,6 +76,8 @@ describe('Contacts > AutoComplete > AutoComplete Partial Match', function () {
 				<name>partial</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -83,6 +89,8 @@ describe('Contacts > AutoComplete > AutoComplete Partial Match', function () {
 				<name>artial</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -94,6 +102,8 @@ describe('Contacts > AutoComplete > AutoComplete Partial Match', function () {
 				<name>Partial</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});

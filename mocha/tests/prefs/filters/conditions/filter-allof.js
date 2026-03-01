@@ -50,7 +50,7 @@ describe('Filter-Allof', function () {
 			</ModifyFilterRulesRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest allof should not fault');
 		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 	});

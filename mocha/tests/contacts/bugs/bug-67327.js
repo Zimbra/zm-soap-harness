@@ -56,6 +56,7 @@ describe('Contacts > Bugs > Bug 67327 - Modify contact tag operations', function
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
+		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="0" force="1">
 				<cn id="${cn.id}" tn="${tag1Name}">
@@ -63,6 +64,8 @@ describe('Contacts > Bugs > Bug 67327 - Modify contact tag operations', function
 				</cn>
 			</ModifyContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
 		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});
@@ -81,6 +84,7 @@ describe('Contacts > Bugs > Bug 67327 - Modify contact tag operations', function
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
+		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="0">
 				<cn id="${cn.id}" tn="${tag2Name}">
@@ -88,6 +92,8 @@ describe('Contacts > Bugs > Bug 67327 - Modify contact tag operations', function
 				</cn>
 			</ModifyContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
 		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});
@@ -106,6 +112,7 @@ describe('Contacts > Bugs > Bug 67327 - Modify contact tag operations', function
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
+		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="1">
 				<cn id="${cn.id}">
@@ -113,6 +120,8 @@ describe('Contacts > Bugs > Bug 67327 - Modify contact tag operations', function
 				</cn>
 			</ModifyContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
 		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});
@@ -131,6 +140,7 @@ describe('Contacts > Bugs > Bug 67327 - Modify contact tag operations', function
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
+		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="0">
 				<cn id="${cn.id}" tn="${tag1Name},${tag2Name}">
@@ -138,6 +148,8 @@ describe('Contacts > Bugs > Bug 67327 - Modify contact tag operations', function
 				</cn>
 			</ModifyContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
 		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});
@@ -156,6 +168,7 @@ describe('Contacts > Bugs > Bug 67327 - Modify contact tag operations', function
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
+		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="0">
 				<cn id="${cn.id}" tn="${tag3Name}">
@@ -163,6 +176,8 @@ describe('Contacts > Bugs > Bug 67327 - Modify contact tag operations', function
 				</cn>
 			</ModifyContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
 		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});

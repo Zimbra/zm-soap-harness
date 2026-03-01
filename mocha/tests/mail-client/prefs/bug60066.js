@@ -31,11 +31,14 @@ describe('Mail Client > Prefs > bug60066', function () {
 
 	// Tests
 	it('Sanity | Indentity update in savde draft', async () => {
-		// Source: bug60066 from Prefs/Bugs/bug60066.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

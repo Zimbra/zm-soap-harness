@@ -81,16 +81,19 @@ describe('Mail Client > HAB > ZCS-6830 GetInfo HABroot', function () {
 
 	// Tests
 	it('Sanity | Create OU and HAB groups for GetInfo HAB root testing', async () => {
-		// Source: CreateOUAndHABGroups from HAB/ZCS-6830_GetInfo_HABroot.xml
 		const t = await soap.getAccountAuthToken(account2Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
+
 	it('Sanity | Add a new HAB root to domain and verify in GetInfo roots returned', async () => {
-		// Add HAB roots to domain
 		await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyDomainRequest xmlns="urn:zimbraAdmin">
 				<id>${domainId}</id>
@@ -99,18 +102,21 @@ describe('Mail Client > HAB > ZCS-6830 GetInfo HABroot', function () {
 			</ModifyDomainRequest>`, adminAuthToken
 		);
 
-		// Login as account2 and verify GetInfo has HAB roots
+		// Authenticate account
 		const acct2Auth = await soap.getAccountAuthToken(account2Name);
+
+		// Get info
 		const getInfo = await soap.makeSOAPEnvelopeAccount(
 			`<GetInfoRequest xmlns="urn:zimbraAccount"/>`, acct2Auth
 		);
+
+		// Verify response
 		assert.notExists(getInfo.Fault, 'GetInfoRequest should not fault');
 		assert.exists(getInfo.GetInfoResponse, 'GetInfoResponse should exist');
 	});
 
 
 	it('Sanity | Remove a HAB root from domain and verify it is not returned in GetInfo', async () => {
-		// Remove one HAB root
 		await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyDomainRequest xmlns="urn:zimbraAdmin">
 				<id>${domainId}</id>
@@ -118,11 +124,15 @@ describe('Mail Client > HAB > ZCS-6830 GetInfo HABroot', function () {
 			</ModifyDomainRequest>`, adminAuthToken
 		);
 
-		// Login as account2 and verify GetInfo
+		// Authenticate account
 		const acct2Auth = await soap.getAccountAuthToken(account2Name);
+
+		// Get info
 		const getInfo = await soap.makeSOAPEnvelopeAccount(
 			`<GetInfoRequest xmlns="urn:zimbraAccount"/>`, acct2Auth
 		);
+
+		// Verify response
 		assert.notExists(getInfo.Fault, 'GetInfoRequest should not fault');
 		assert.exists(getInfo.GetInfoResponse, 'GetInfoResponse should exist');
 	});

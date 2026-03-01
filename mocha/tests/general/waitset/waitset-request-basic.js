@@ -202,7 +202,7 @@ describe('General > WaitSet > WaitSet Request Basic', function () {
 				</CreateWaitSetRequest>`, accountAuthToken
 			);
 
-			// Verify the response
+			// Verify response
 			// Verify response
 			assert.notExists(res.Fault, `CreateWaitSetRequest ${i + 1} should not fault`);
 			if (i === 0) {

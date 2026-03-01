@@ -35,8 +35,10 @@ describe('EWS > Delete Draft From EWS', function () {
 		const messageSubject = `subject${common.getUniqueString()}`;
 		const messageContent = 'Message test content';
 
-		// ZWC: Save draft
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, accountPassword);
+
+		// Save draft
 		const saveDraftRes = await soap.makeSOAPEnvelopeAccount(
 			`<SaveDraftRequest xmlns="urn:zimbraMail">
 				<m>
@@ -47,11 +49,11 @@ describe('EWS > Delete Draft From EWS', function () {
 				</m>
 			</SaveDraftRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(saveDraftRes.Fault, 'SaveDraftRequest should not be a Fault');
 
 		await soap.waitFor(5000);
-
-		// EWS: GetFolder for Drafts
 		const getFolderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>
@@ -74,8 +76,6 @@ describe('EWS > Delete Draft From EWS', function () {
 		assert.equal(folderMsg.$.ResponseClass, 'Success', 'GetFolder should succeed');
 		const draftsId = folderMsg.Folders.Folder.FolderId.$.Id;
 		assert.equal(draftsId, '6', 'Drafts folder Id should be 6');
-
-		// EWS: SyncFolderItems on Drafts
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -105,8 +105,6 @@ describe('EWS > Delete Draft From EWS', function () {
 		assert.exists(matchedItem, "Should find message matching subject");
 		const mailItemId = matchedItem.Message.ItemId.$.Id;
 		const mailChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
-
-		// EWS: GetItem to verify draft
 		const getItemRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -141,8 +139,6 @@ describe('EWS > Delete Draft From EWS', function () {
 			'Body should contain expected content');
 		assert.equal(itemMsg.Items.Message.Importance, 'Normal',
 			'Importance should be Normal');
-
-		// EWS: MoveItem to Trash (Id=3) to delete the draft
 		const moveRes = await ews.makeEWSRequest(
 			`<MoveItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ToFolderId>
@@ -160,8 +156,6 @@ describe('EWS > Delete Draft From EWS', function () {
 		const moveMessage = Array.isArray(moveMsg) ? moveMsg[0] : moveMsg;
 		assert.equal(moveMessage.$.ResponseClass, 'Success',
 			'MoveItem to Trash should succeed');
-
-		// EWS: SyncFolderItems on Trash to verify the draft landed there
 		const syncTrashRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -183,27 +177,30 @@ describe('EWS > Delete Draft From EWS', function () {
 		assert.equal(syncTrashMessage.$.ResponseClass, 'Success',
 			'SyncFolderItems on Trash should succeed');
 
-		// ZWC: Verify draft is in Trash
+		// Search for the item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message"
 				sortBy="dateDesc" offset="0" limit="25">
 				<query>in:trash subject:${messageSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
-
-		// GetMsg to verify content
 		const messages = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : searchRes.SearchResponse.m ? [searchRes.SearchResponse.m] : [];
 		assert.isAbove(messages.length, 0, 'Should find message');
 		const msgId = messages[0].id;
 
+		// Get the message
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${msgId}" />
 			</GetMsgRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not be a Fault');
 		const msg = getMsgRes.GetMsgResponse.m;
 		const msgObj = Array.isArray(msg) ? msg[0] : msg;

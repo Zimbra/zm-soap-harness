@@ -48,7 +48,7 @@ describe('Filter-Attachment', function () {
 			</ModifyFilterRulesRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Attachment test filter should not fault');
 		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 	});
@@ -82,7 +82,7 @@ describe('Filter-Attachment', function () {
 			</ModifyFilterRulesRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Negative attachment test should not fault');
 	});
 
@@ -120,7 +120,7 @@ describe('Filter-Attachment', function () {
 			`<GetFilterRulesRequest xmlns="urn:zimbraMail"/>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
 		assert.exists(getRes.GetFilterRulesResponse, 'GetFilterRulesResponse should exist');
 	});

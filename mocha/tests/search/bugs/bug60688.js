@@ -71,6 +71,7 @@ Content for email02A mdate test</content>
 		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 	});
 
+
 	it('Sanity | Verify that a search for mdate - cuurentdate returns no message because there is no message newer than current date (Bug: 60888)', async () => {
 		// Search for email02A first
 		const res1 = await soap.makeSOAPEnvelopeAccount(
@@ -96,6 +97,7 @@ Content for email02A mdate test</content>
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 	});
 
+
 	it('Sanity | Verify that a search for mdate - cuurentdate - 1week returns no message becuase there is no message with mdate 1 week old for the user (Bug: 60888)', async () => {
 		// Search for email02A
 		const res1 = await soap.makeSOAPEnvelopeAccount(
@@ -117,6 +119,7 @@ Content for email02A mdate test</content>
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 	});
 
+
 	it('Sanity | Verify that a search for mdate - cuurentdate 1week returns no message becuase there is no message with mdate - 1 week after for the user (Bug: 60888)', async () => {
 		// Search for email02A
 		const res1 = await soap.makeSOAPEnvelopeAccount(
@@ -137,6 +140,7 @@ Content for email02A mdate test</content>
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 	});
+
 
 	it('Sanity | Verify that a search for date - 5, 15, 2005 returns the correct email message Moved that message to the trash and and search based on mdate (Bug: 60888)', async () => {
 		// Search for email02A

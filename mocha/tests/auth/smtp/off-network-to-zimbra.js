@@ -12,7 +12,6 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 
 	before(async function () {
 		adminAuthToken = await soap.getAdminAuthToken();
-
 		account1Name = 'smtp1.' + common.getUniqueString() + '@' + config.testDomain;
 
 		// Create account
@@ -57,10 +56,9 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 	});
 
 	after(async function () {
-		// Reset MTA config to defaults
 		const authToken = await soap.getAdminAuthToken();
 
-		// ModifyConfigRequest
+		// Reset MTA config to defaults
 		await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyConfigRequest xmlns="urn:zimbraAdmin">
 				<a n="zimbraMtaMyNetworks"></a>

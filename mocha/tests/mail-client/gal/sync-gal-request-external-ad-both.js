@@ -30,13 +30,15 @@ describe('Mail Client > GAL > SyncGALRequest_ExternalAD_Both', function () {
 	}
 
 	// Tests
-
 	it('Functional | SyncGalRequest against both internal and external (AD) servers should return accounts and resources', async () => {
-		// Source: SyncGalRequest_ExternalAD_Both_Basic_02 from GAL/ExternalGAL/SyncGALRequest_ExternalAD_Both.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

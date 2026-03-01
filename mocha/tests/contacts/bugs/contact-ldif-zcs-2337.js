@@ -38,11 +38,16 @@ describe('Contacts > Bugs > ZCS-2337 - Contact LDIF export', function () {
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 
+		// Export contacts
 		const exportRes = await soap.makeSOAPEnvelopeAccount(
 			`<ExportContactsRequest xmlns="urn:zimbraMail" ct="csv"/>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(exportRes.Fault, 'Export should not be a Fault');
 		assert.exists(exportRes.ExportContactsResponse, 'ExportContactsResponse should exist');
 	});
@@ -50,6 +55,8 @@ describe('Contacts > Bugs > ZCS-2337 - Contact LDIF export', function () {
 
 	it('Sanity | Create multiple contacts and export', async () => {
 		for (let i = 0; i < 3; i++) {
+
+			// Create a contact
 			await soap.makeSOAPEnvelopeAccount(
 				`<CreateContactRequest xmlns="urn:zimbraMail">
 					<cn>
@@ -61,9 +68,12 @@ describe('Contacts > Bugs > ZCS-2337 - Contact LDIF export', function () {
 			);
 		}
 
+		// Export contacts
 		const exportRes = await soap.makeSOAPEnvelopeAccount(
 			`<ExportContactsRequest xmlns="urn:zimbraMail" ct="csv"/>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(exportRes.Fault, 'Export should not be a Fault');
 		assert.exists(exportRes.ExportContactsResponse, 'ExportContactsResponse should exist');
 	});
@@ -80,9 +90,12 @@ describe('Contacts > Bugs > ZCS-2337 - Contact LDIF export', function () {
 			</CreateContactRequest>`, accountToken
 		);
 
+		// Export contacts
 		const exportRes = await soap.makeSOAPEnvelopeAccount(
 			`<ExportContactsRequest xmlns="urn:zimbraMail" ct="csv"/>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(exportRes.Fault, 'Export should not be a Fault');
 		assert.exists(exportRes.ExportContactsResponse, 'ExportContactsResponse should exist');
 	});

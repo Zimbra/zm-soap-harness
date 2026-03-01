@@ -16,6 +16,7 @@ describe('Admin > Accounts > Account Migration', function () {
 		return;
 	}
 
+	// Tests
 	it('Smoke | Create an account with valid values', async () => {
 		const accountName = 'test' + common.getUniqueString() +
 			'@' + config.testDomain;

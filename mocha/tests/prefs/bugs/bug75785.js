@@ -39,7 +39,7 @@ describe('Bug75785', function () {
 			`<GetFolderRequest xmlns="urn:zimbraMail"/>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(folderRes.Fault, 'GetFolderRequest should not fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 
@@ -48,7 +48,7 @@ describe('Bug75785', function () {
 			`<GetShareInfoRequest xmlns="urn:zimbraAccount"/>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(shareRes.Fault, 'GetShareInfoRequest should not fault');
 		assert.exists(shareRes.GetShareInfoResponse, 'GetShareInfoResponse should exist');
 	});

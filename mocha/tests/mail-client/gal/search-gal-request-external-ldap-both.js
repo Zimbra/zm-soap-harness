@@ -31,21 +31,27 @@ describe('Mail Client > GAL > SearchGALRequest_ExternalLDAP_Both', function () {
 
 	// Tests
 	it('Sanity | Search an external AD GAL for a test account', async () => {
-		// Source: SearchGALRequest_ExternalLDAP_Both_01 from GAL/ExternalGAL/SearchGALRequest_ExternalLDAP_Both.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Search an external LDAP GAL (only) for a an account that also exists locally', async () => {
-		// Source: SearchGALRequest_ExternalLDAP_Both_02 from GAL/ExternalGAL/SearchGALRequest_ExternalLDAP_Both.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

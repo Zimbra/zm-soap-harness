@@ -38,6 +38,8 @@ describe('Contacts > Mail > Message Get', function () {
 	// Tests
 	it('Sanity | Get message and verify contact info in headers', async () => {
 		const subject = `subject${common.getUniqueString()}`;
+
+		// Send the message
 		await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -52,11 +54,14 @@ describe('Contacts > Mail > Message Get', function () {
 
 		await new Promise(resolve => setTimeout(resolve, 2000));
 
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
@@ -64,6 +69,8 @@ describe('Contacts > Mail > Message Get', function () {
 
 	it('Functional | Get message with contact in To field', async () => {
 		const subject = `subject${common.getUniqueString()}`;
+
+		// Send the message
 		await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -78,11 +85,14 @@ describe('Contacts > Mail > Message Get', function () {
 
 		await new Promise(resolve => setTimeout(resolve, 2000));
 
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
@@ -90,6 +100,8 @@ describe('Contacts > Mail > Message Get', function () {
 
 	it('Functional | Get message with multiple contacts', async () => {
 		const account3Email = `test${common.getUniqueString()}@${config.testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account3Email}</name>
@@ -98,6 +110,8 @@ describe('Contacts > Mail > Message Get', function () {
 		);
 
 		const subject = `subject${common.getUniqueString()}`;
+
+		// Send the message
 		await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -113,11 +127,14 @@ describe('Contacts > Mail > Message Get', function () {
 
 		await new Promise(resolve => setTimeout(resolve, 2000));
 
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
@@ -135,6 +152,8 @@ describe('Contacts > Mail > Message Get', function () {
 				</m>
 			</SendMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, 'Send should not be a Fault');
 		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
 	});
@@ -146,6 +165,8 @@ describe('Contacts > Mail > Message Get', function () {
 				<query>in:sent</query>
 			</SearchRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
@@ -153,6 +174,8 @@ describe('Contacts > Mail > Message Get', function () {
 
 	it('Functional | Get sent message details', async () => {
 		const subject = `detail test ${common.getUniqueString()}`;
+
+		// Send the message
 		await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -165,11 +188,14 @@ describe('Contacts > Mail > Message Get', function () {
 			</SendMsgRequest>`, account1Token
 		);
 
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});

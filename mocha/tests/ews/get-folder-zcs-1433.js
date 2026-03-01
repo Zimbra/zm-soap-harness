@@ -50,6 +50,8 @@ describe('EWS > GetFolder ZCS-1433', function () {
 		const body = ews.getBody(res);
 		const msg = body.GetFolderResponse.ResponseMessages.GetFolderResponseMessage;
 		const folderMsg = Array.isArray(msg) ? msg[0] : msg;
+
+		// Verify response
 		assert.equal(folderMsg.$.ResponseClass, 'Success', 'GetFolder should succeed');
 		assert.equal(folderMsg.Folders.CalendarFolder.FolderId.$.Id, '10',
 			'Calendar folder Id should be 10');
@@ -77,6 +79,8 @@ describe('EWS > GetFolder ZCS-1433', function () {
 		const body = ews.getBody(res);
 		const msg = body.GetFolderResponse.ResponseMessages.GetFolderResponseMessage;
 		const folderMsg = Array.isArray(msg) ? msg[0] : msg;
+
+		// Verify response
 		assert.equal(folderMsg.$.ResponseClass, 'Success', 'GetFolder should succeed');
 		assert.equal(folderMsg.Folders.ContactsFolder.FolderId.$.Id, '7',
 			'Contacts folder Id should be 7');
@@ -104,6 +108,8 @@ describe('EWS > GetFolder ZCS-1433', function () {
 		const body = ews.getBody(res);
 		const msg = body.GetFolderResponse.ResponseMessages.GetFolderResponseMessage;
 		const folderMsg = Array.isArray(msg) ? msg[0] : msg;
+
+		// Verify response
 		assert.equal(folderMsg.$.ResponseClass, 'Success', 'GetFolder should succeed');
 		assert.equal(folderMsg.Folders.CalendarFolder.FolderId.$.Id, '10',
 			'Calendar folder Id should be 10');
@@ -131,6 +137,8 @@ describe('EWS > GetFolder ZCS-1433', function () {
 		const body = ews.getBody(res);
 		const msg = body.GetFolderResponse.ResponseMessages.GetFolderResponseMessage;
 		const folderMsg = Array.isArray(msg) ? msg[0] : msg;
+
+		// Verify response
 		assert.equal(folderMsg.$.ResponseClass, 'Success', 'GetFolder should succeed');
 		assert.equal(folderMsg.Folders.ContactsFolder.FolderId.$.Id, '7',
 			'Contacts folder Id should be 7');
@@ -163,6 +171,8 @@ describe('EWS > GetFolder ZCS-1433', function () {
 		const body = ews.getBody(res);
 		const msgs = body.GetFolderResponse.ResponseMessages.GetFolderResponseMessage;
 		const msgArray = Array.isArray(msgs) ? msgs : [msgs];
+
+		// Verify response
 		assert.isAtLeast(msgArray.length, 2, 'Should have 2 response messages');
 		assert.equal(msgArray[0].$.ResponseClass, 'Success',
 			'First GetFolder should succeed');

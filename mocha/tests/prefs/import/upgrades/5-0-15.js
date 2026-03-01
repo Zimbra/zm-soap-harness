@@ -34,7 +34,7 @@ describe('Import Upgrades 5-0-15', function () {
 			`<GetFolderRequest xmlns="urn:zimbraMail"/>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(folderRes.Fault, 'GetFolderRequest should not fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 		assert.exists(folderRes.GetFolderResponse.folder, 'Root folder should exist');
@@ -60,14 +60,14 @@ describe('Import Upgrades 5-0-15', function () {
 			</SendMsgRequest>`, accountAuthToken
 		);
 
-		// Search for the item
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject}) in:sent</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
@@ -85,7 +85,7 @@ describe('Import Upgrades 5-0-15', function () {
 			</CreateAppointmentRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateAppointmentRequest should not fault');
 		assert.exists(createRes.CreateAppointmentResponse, 'CreateAppointmentResponse should exist');
 	});
@@ -105,17 +105,17 @@ describe('Import Upgrades 5-0-15', function () {
 			</CreateContactRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateContactRequest should not fault');
 
-		// Search for the item
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
 				<query>contact:(${firstName})</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
@@ -131,7 +131,7 @@ describe('Import Upgrades 5-0-15', function () {
 			</CreateFolderRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateFolderRequest should not fault');
 
 		// Get the folder
@@ -139,7 +139,7 @@ describe('Import Upgrades 5-0-15', function () {
 			`<GetFolderRequest xmlns="urn:zimbraMail"/>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(folderRes.Fault, 'GetFolderRequest should not fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 	});
@@ -155,7 +155,7 @@ describe('Import Upgrades 5-0-15', function () {
 			</CreateTagRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateTagRequest should not fault');
 		assert.exists(createRes.CreateTagResponse, 'CreateTagResponse should exist');
 	});
@@ -171,7 +171,7 @@ describe('Import Upgrades 5-0-15', function () {
 			</CreateFolderRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateFolderRequest wiki should not fault');
 		assert.exists(createRes.CreateFolderResponse, 'CreateFolderResponse should exist');
 	});
@@ -187,7 +187,7 @@ describe('Import Upgrades 5-0-15', function () {
 			</CreateFolderRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateFolderRequest briefcase should not fault');
 		assert.exists(createRes.CreateFolderResponse, 'CreateFolderResponse should exist');
 	});

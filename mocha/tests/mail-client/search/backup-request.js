@@ -31,97 +31,131 @@ describe('Mail Client > Search > BackupRequest', function () {
 
 	// Tests
 	it('Sanity | Backup and restore accountVerify that after backup and restore, the injected message with attachment is correctly res...', async () => {
-		// Source: backup_search_inject01 from Search/Attach/BackupRequest.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Backup (incremental) and restore accountVerify that after backup and restore, the injected message with attachment is...', async () => {
-		// Source: backup_search_inject02 from Search/Attach/BackupRequest.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Backup and restore an account with flagged mail Verify that after backup and restore, the flagged mail is correctly r...', async () => {
-		// Source: flag_mail_Backup_01 from Search/Flag/BackupRequest.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
+
 	it('Sanity | Backup(incremental) and restore an account with flagged mails Verify that after backup and restore, the flagged mail ...', async () => {
-		// Source: flag_mail_Backup_02 from Search/Flag/BackupRequest.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Backup and restore an account with read, unread mails Verify that after backup and restore, the read, unread mails ar...', async () => {
-		// Source: ReadUnread_mail_Backup_01 from Search/Read/BackupRequest.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
+
 	it('Sanity | Backup (incremental) and restore an account with read, unread mails Verify that after backup and restore, the read, u...', async () => {
-		// Source: ReadUnread_mail_Backup_02 from Search/Read/BackupRequest.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Verify that search for replied and forwarded messages still work after Backup and Restore', async () => {
-		// Source: ReFwd_mail_Backup_01 from Search/Reply_Forward/BackupRequest.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
+
 	it('Sanity | Backup (incremental) and restore an account with replay, forward mails Verify that after backup and restore, the repl...', async () => {
-		// Source: ReFwd_mail_Backup_02 from Search/Reply_Forward/BackupRequest.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Backup and restore an account with tagged mail Verify that after backup and restore, the tagged mail is correctly res...', async () => {
-		// Source: tagged_mail_Backup_01 from Search/Tag/BackupRequest.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
+
 	it('Sanity | Backup(incremental) and restore an account with tag mail Verify that after backup and restore, the tagged mail is cor...', async () => {
-		// Source: tagged_mail_Backup_02 from Search/Tag/BackupRequest.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

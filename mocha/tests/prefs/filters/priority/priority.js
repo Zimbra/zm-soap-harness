@@ -33,7 +33,7 @@ describe('Filters-Priority', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="pri${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="X-Priority" stringComparison="is" value="1"/></filterTests><filterActions><actionFlag flagName="flagged"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'High priority filter should not fault');
 		assert.exists(modRes.ModifyFilterRulesResponse, 'Response should exist');
 	});
@@ -51,7 +51,7 @@ describe('Filters-Priority', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="pri${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="X-Priority" stringComparison="is" value="5"/></filterTests><filterActions><actionDiscard/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Low priority filter should not fault');
 	});
 
@@ -68,7 +68,7 @@ describe('Filters-Priority', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="pri${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="X-Priority" stringComparison="is" value="3"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Normal priority should not fault');
 	});
 
@@ -85,7 +85,7 @@ describe('Filters-Priority', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="pri${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="Importance" stringComparison="is" value="high"/></filterTests><filterActions><actionFlag flagName="flagged"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Importance high should not fault');
 	});
 
@@ -102,7 +102,7 @@ describe('Filters-Priority', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="pri${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="Importance" stringComparison="is" value="low"/></filterTests><filterActions><actionDiscard/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Importance low should not fault');
 	});
 
@@ -119,7 +119,7 @@ describe('Filters-Priority', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="pri${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="X-Priority" stringComparison="is" value="1"/></filterTests><filterActions><actionFileInto folderPath="/Inbox"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Priority fileinto should not fault');
 	});
 
@@ -140,7 +140,7 @@ describe('Filters-Priority', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="pri${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="X-Priority" stringComparison="is" value="2"/></filterTests><filterActions><actionTag tagName="${tagName}"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Priority tag should not fault');
 	});
 
@@ -157,7 +157,7 @@ describe('Filters-Priority', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="pri${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="X-Priority" stringComparison="is" value="1"/></filterTests><filterActions><actionRedirect a="urgent@test.com"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Priority redirect should not fault');
 	});
 
@@ -174,7 +174,7 @@ describe('Filters-Priority', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="pri${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="X-Priority" stringComparison="is" value="1"/></filterTests><filterActions><actionFlag flagName="flagged"/><actionStop/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Priority stop should not fault');
 	});
 
@@ -191,7 +191,7 @@ describe('Filters-Priority', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="pri${common.getUniqueString()}" active="1"><filterTests condition="allof"><headerTest header="X-Priority" stringComparison="is" value="1"/><headerTest header="subject" stringComparison="contains" value="urgent"/></filterTests><filterActions><actionFlag flagName="flagged"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Priority allof should not fault');
 	});
 
@@ -208,7 +208,7 @@ describe('Filters-Priority', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="pri${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="X-Priority" stringComparison="is" value="1"/></filterTests><filterActions><actionFlag flagName="flagged"/><actionKeep/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Priority multiple actions should not fault');
 	});
 
@@ -225,7 +225,7 @@ describe('Filters-Priority', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="pri${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerExistsTest header="X-Priority"/></filterTests><filterActions><actionFlag flagName="flagged"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Priority headerExists should not fault');
 	});
 
@@ -245,7 +245,7 @@ describe('Filters-Priority', function () {
 		// Get filter rules
 		const getRes = await soap.makeSOAPEnvelopeAccount(`<GetFilterRulesRequest xmlns="urn:zimbraMail"/>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
 		assert.exists(getRes.GetFilterRulesResponse, 'Response should exist');
 	});
@@ -263,7 +263,7 @@ describe('Filters-Priority', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="pri${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="Importance" stringComparison="is" value="normal"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Importance normal should not fault');
 	});
 
@@ -280,7 +280,7 @@ describe('Filters-Priority', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="pri${common.getUniqueString()}" active="0"><filterTests condition="anyof"><headerTest header="X-Priority" stringComparison="is" value="1"/></filterTests><filterActions><actionFlag flagName="flagged"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Priority inactive should not fault');
 	});
 
@@ -297,7 +297,7 @@ describe('Filters-Priority', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="pri${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="X-Priority" stringComparison="is" negative="1" value="5"/></filterTests><filterActions><actionFlag flagName="flagged"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Priority negative should not fault');
 	});
 
@@ -314,7 +314,7 @@ describe('Filters-Priority', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="pri1_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="X-Priority" stringComparison="is" value="1"/></filterTests><filterActions><actionFlag flagName="flagged"/></filterActions></filterRule><filterRule name="pri2_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="X-Priority" stringComparison="is" value="5"/></filterTests><filterActions><actionDiscard/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Multiple priority rules should not fault');
 	});
 
@@ -331,7 +331,7 @@ describe('Filters-Priority', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="pri${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="X-Priority" stringComparison="contains" value="1"/></filterTests><filterActions><actionFlag flagName="flagged"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Priority contains should not fault');
 	});
 
@@ -348,7 +348,7 @@ describe('Filters-Priority', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="pri${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="X-Priority" stringComparison="matches" value="?"/></filterTests><filterActions><actionFlag flagName="flagged"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Priority matches should not fault');
 	});
 
@@ -365,7 +365,7 @@ describe('Filters-Priority', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="pri${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="Importance" stringComparison="is" value="low"/></filterTests><filterActions><actionDiscard/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Priority discard should not fault');
 	});
 
@@ -382,7 +382,7 @@ describe('Filters-Priority', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="pri${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="X-Priority" stringComparison="is" value="2"/></filterTests><filterActions><actionKeep/><actionFlag flagName="flagged"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Priority keep+flag should not fault');
 	});
 
@@ -399,7 +399,7 @@ describe('Filters-Priority', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="pri${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerExistsTest header="Importance"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Importance exists should not fault');
 	});
 
@@ -416,7 +416,7 @@ describe('Filters-Priority', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="pri${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="X-Priority" stringComparison="contains" value="1"/></filterTests><filterActions><actionKeep/><actionStop/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Priority contains 1 should not fault');
 	});
 
@@ -434,7 +434,7 @@ describe('Filters-Priority', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="imp${common.getUniqueString()}" active="1"><filterTests condition="anyof"><importanceTest imp="high"/></filterTests><filterActions><actionFlag flagName="flagged"/><actionStop/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Importance high filter should not fault');
 	});
 
@@ -452,7 +452,7 @@ describe('Filters-Priority', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="li${common.getUniqueString()}" active="1"><filterTests condition="anyof"><linkedinTest/></filterTests><filterActions><actionKeep/><actionStop/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'LinkedIn filter should not fault');
 	});
 
@@ -470,7 +470,7 @@ describe('Filters-Priority', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="sc${common.getUniqueString()}" active="1"><filterTests condition="anyof"><socialcastTest/></filterTests><filterActions><actionDiscard/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Socialcast filter should not fault');
 	});
 
@@ -488,7 +488,7 @@ describe('Filters-Priority', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="tw${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="from" stringComparison="contains" value="twitter.com"/></filterTests><filterActions><actionKeep/><actionStop/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Twitter filter should not fault');
 	});
 });

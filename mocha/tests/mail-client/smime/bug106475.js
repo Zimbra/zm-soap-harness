@@ -31,21 +31,27 @@ describe('Mail Client > Smime > Bug106475', function () {
 
 	// Tests
 	it('Sanity | Verify signing fails when certificate is not present for the user', async () => {
-		// Source: bug106475_SSM_WOCert from Smime/Bug106475.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Verify signed mail is sent successfully', async () => {
-		// Source: bug106475_SSM_WithCert from Smime/Bug106475.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

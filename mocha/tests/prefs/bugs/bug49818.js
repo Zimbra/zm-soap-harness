@@ -37,7 +37,7 @@ describe('Prefs > Bugs > Bug49818', function () {
 		// Modify preferences
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyPrefsRequest xmlns="urn:zimbraAccount"><pref name="zimbraPrefNewMailNotificationEnabled">TRUE</pref><pref name="zimbraPrefNewMailNotificationAddress">${notifAddr}</pref></ModifyPrefsRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest should not fault');
 	});
 });

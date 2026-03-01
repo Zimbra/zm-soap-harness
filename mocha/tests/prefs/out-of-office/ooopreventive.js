@@ -42,7 +42,7 @@ describe('OOOPreventive', function () {
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest should not fault');
 		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
@@ -72,7 +72,7 @@ describe('OOOPreventive', function () {
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest with future date should not fault');
 		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
@@ -102,7 +102,7 @@ describe('OOOPreventive', function () {
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest external should not fault');
 		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
@@ -130,7 +130,7 @@ describe('OOOPreventive', function () {
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest should not fault');
 		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
@@ -147,7 +147,7 @@ describe('OOOPreventive', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
 		const accountId = createRes.CreateAccountResponse.account[0].id;
 
@@ -159,7 +159,7 @@ describe('OOOPreventive', function () {
 			</ModifyAccountRequest>`, adminAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyAccountRequest should not fault');
 		assert.exists(modRes.ModifyAccountResponse, 'ModifyAccountResponse should exist');
 	});
@@ -188,7 +188,7 @@ describe('OOOPreventive', function () {
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest suppress should not fault');
 		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
@@ -222,7 +222,7 @@ describe('OOOPreventive', function () {
 			</GetPrefsRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(getRes.Fault, 'GetPrefsRequest should not fault');
 		assert.exists(getRes.GetPrefsResponse, 'GetPrefsResponse should exist');
 	});

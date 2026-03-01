@@ -31,31 +31,40 @@ describe('Mail Client > Smime > ZCS-681', function () {
 
 	// Tests
 	it('Sanity | Verify the GetMsg response CertificateInfo contains email address from certificate (which is used to show Signed By) ...', async () => {
-		// Source: ZCS681_test1 from Smime/ZCS-681.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Verify the GetMsg response CertificateInfo contains email address from the certificate (which is used to show Signed ...', async () => {
-		// Source: ZCS681_test2 from Smime/ZCS-681.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Verify the GetMsg response CertificateInfo contains email address from certificate, FROM email address (which is used...', async () => {
-		// Source: ZCS681_test3 from Smime/ZCS-681.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

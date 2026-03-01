@@ -32,6 +32,7 @@ describe('Contacts > Contacts Modify', function () {
 		const email = `email${common.getUniqueString()}@hotmail.com`;
 		const newEmail = `email${common.getUniqueString()}@gmail.com`;
 
+		// Create a contact
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -41,12 +42,15 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 		const contactId = cn.id;
 
+		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="0" force="1">
 				<cn id="${contactId}">
@@ -54,13 +58,18 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</ModifyContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
 
+		// Get the contact
 		const getRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetContactsRequest xmlns="urn:zimbraMail">
 				<cn id="${contactId}"/>
 			</GetContactsRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'Get should not be a Fault');
 		const getCn = Array.isArray(getRes.GetContactsResponse.cn)
 			? getRes.GetContactsResponse.cn[0] : getRes.GetContactsResponse.cn;
@@ -90,6 +99,7 @@ describe('Contacts > Contacts Modify', function () {
 			middleName: `NewMid${common.getUniqueString()}`
 		};
 
+		// Create a contact
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -103,11 +113,14 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
+		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="0" force="0">
 				<cn id="${cn.id}">
@@ -121,13 +134,18 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</ModifyContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
 
+		// Get the contact
 		const getRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetContactsRequest xmlns="urn:zimbraMail">
 				<cn id="${cn.id}"/>
 			</GetContactsRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'Get should not be a Fault');
 		const getCn = Array.isArray(getRes.GetContactsResponse.cn)
 			? getRes.GetContactsResponse.cn[0] : getRes.GetContactsResponse.cn;
@@ -157,6 +175,8 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
@@ -166,7 +186,7 @@ describe('Contacts > Contacts Modify', function () {
 		const newLast = `NewLast${common.getUniqueString()}`;
 		const newMiddle = `NewMiddle${common.getUniqueString()}`;
 
-		// replace=0 should preserve existing fields
+		// Modify the contact
 		const mod0Res = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="0">
 				<cn id="${cn.id}">
@@ -176,9 +196,11 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</ModifyContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(mod0Res.Fault, 'Modify replace=0 should not be a Fault');
 
-		// replace=1 should clear unspecified fields
+		// Modify the contact
 		const mod1Res = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="1">
 				<cn id="${cn.id}">
@@ -188,13 +210,18 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</ModifyContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(mod1Res.Fault, 'Modify replace=1 should not be a Fault');
 
+		// Get the contact
 		const getRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetContactsRequest xmlns="urn:zimbraMail">
 				<cn id="${cn.id}"/>
 			</GetContactsRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'Get should not be a Fault');
 		const getCn = Array.isArray(getRes.GetContactsResponse.cn)
 			? getRes.GetContactsResponse.cn[0] : getRes.GetContactsResponse.cn;
@@ -224,11 +251,14 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
+		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail">
 				<cn id="${cn.id}">
@@ -238,6 +268,8 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</ModifyContactRequest>`, accountToken, false
 		);
+
+		// Verify response
 		assert.exists(modRes.Fault, 'Modify should be a Fault');
 		const code = modRes.Fault?.Detail?.Error?.Code || '';
 		assert.include(code, 'service.INVALID_REQUEST', 'Error code should be service.INVALID_REQUEST');
@@ -249,6 +281,7 @@ describe('Contacts > Contacts Modify', function () {
 		const lastName = `Last${common.getUniqueString()}`;
 		const middleName = `Mid${common.getUniqueString()}`;
 
+		// Create a contact
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -258,11 +291,14 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
+		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="1" force="1">
 				<cn id="${cn.id}">
@@ -272,6 +308,8 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</ModifyContactRequest>`, accountToken, false
 		);
+
+		// Verify response
 		assert.exists(modRes.Fault, 'Modify should be a Fault');
 		const code = modRes.Fault?.Detail?.Error?.Code || '';
 		assert.include(code, 'service.INVALID_REQUEST', 'Error code should be service.INVALID_REQUEST');
@@ -289,13 +327,15 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 		const contactId = cn.id;
 
-		// fileAs=10 (invalid)
+		// Modify the contact
 		const mod1 = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail">
 				<cn id="${contactId}">
@@ -303,9 +343,11 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</ModifyContactRequest>`, accountToken, false
 		);
+
+		// Verify response
 		assert.exists(mod1.Fault, 'fileAs=10 should be a Fault');
 
-		// fileAs=alpha (invalid)
+		// Modify the contact
 		const mod2 = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail">
 				<cn id="${contactId}">
@@ -313,9 +355,11 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</ModifyContactRequest>`, accountToken, false
 		);
+
+		// Verify response
 		assert.exists(mod2.Fault, 'fileAs=alpha should be a Fault');
 
-		// fileAs=-1 (invalid)
+		// Modify the contact
 		const mod3 = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail">
 				<cn id="${contactId}">
@@ -323,9 +367,11 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</ModifyContactRequest>`, accountToken, false
 		);
+
+		// Verify response
 		assert.exists(mod3.Fault, 'fileAs=-1 should be a Fault');
 
-		// fileAs=1.5 (invalid)
+		// Modify the contact
 		const mod4 = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail">
 				<cn id="${contactId}">
@@ -333,9 +379,11 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</ModifyContactRequest>`, accountToken, false
 		);
+
+		// Verify response
 		assert.exists(mod4.Fault, 'fileAs=1.5 should be a Fault');
 
-		// fileAs=0 (valid)
+		// Modify the contact
 		const mod5 = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail">
 				<cn id="${contactId}">
@@ -343,9 +391,11 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</ModifyContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(mod5.Fault, 'fileAs=0 should not be a Fault');
 
-		// fileAs=blank (valid)
+		// Modify the contact
 		const mod6 = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail">
 				<cn id="${contactId}">
@@ -353,6 +403,8 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</ModifyContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(mod6.Fault, 'fileAs=blank should not be a Fault');
 	});
 
@@ -367,6 +419,8 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
@@ -374,6 +428,8 @@ describe('Contacts > Contacts Modify', function () {
 		const contactId = cn.id;
 
 		for (const fileAs of ['1', '2', '3', '4', '5', '6', '7']) {
+
+			// Modify the contact
 			const modRes = await soap.makeSOAPEnvelopeAccount(
 				`<ModifyContactRequest xmlns="urn:zimbraMail">
 					<cn id="${contactId}">
@@ -381,13 +437,14 @@ describe('Contacts > Contacts Modify', function () {
 					</cn>
 				</ModifyContactRequest>`, accountToken
 			);
+
+			// Verify response
 			assert.notExists(modRes.Fault, `fileAs=${fileAs} should not be a Fault`);
 		}
 	});
 
 
 	it('Regression | Modify a contact with invalid id', async () => {
-		// numeric id
 		const mod1 = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail">
 				<cn id="12345678">
@@ -395,9 +452,11 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</ModifyContactRequest>`, accountToken, false
 		);
+
+		// Verify response
 		assert.exists(mod1.Fault, 'Numeric id should be a Fault');
 
-		// alpha id
+		// Modify the contact
 		const mod2 = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail">
 				<cn id="abcd">
@@ -405,9 +464,11 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</ModifyContactRequest>`, accountToken, false
 		);
+
+		// Verify response
 		assert.exists(mod2.Fault, 'Alpha id should be a Fault');
 
-		// negative id
+		// Modify the contact
 		const mod3 = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail">
 				<cn id="-1">
@@ -415,9 +476,11 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</ModifyContactRequest>`, accountToken, false
 		);
+
+		// Verify response
 		assert.exists(mod3.Fault, 'Negative id should be a Fault');
 
-		// blank id
+		// Modify the contact
 		const mod4 = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail">
 				<cn id="">
@@ -425,6 +488,8 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</ModifyContactRequest>`, accountToken, false
 		);
+
+		// Verify response
 		assert.exists(mod4.Fault, 'Blank id should be a Fault');
 	});
 
@@ -435,6 +500,7 @@ describe('Contacts > Contacts Modify', function () {
 		const email = `email${common.getUniqueString()}@hotmail.com`;
 		const newEmail = `newemail${common.getUniqueString()}@gmail.com`;
 
+		// Create a contact
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -444,11 +510,14 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
+		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="0" force="1" verbose="0">
 				<cn id="${cn.id}">
@@ -456,6 +525,8 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</ModifyContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
 		const modCn = Array.isArray(modRes.ModifyContactResponse.cn)
 			? modRes.ModifyContactResponse.cn[0] : modRes.ModifyContactResponse.cn;
@@ -465,6 +536,8 @@ describe('Contacts > Contacts Modify', function () {
 
 	it('Regression | Modify contact with force=1 to add duplicate email', async () => {
 		const email = `email${common.getUniqueString()}@domain.com`;
+
+		// Create a contact
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -477,6 +550,7 @@ describe('Contacts > Contacts Modify', function () {
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
+		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="0" force="1">
 				<cn id="${cn.id}">
@@ -484,6 +558,8 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</ModifyContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Modify with force should not be a Fault');
 		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});
@@ -503,6 +579,8 @@ describe('Contacts > Contacts Modify', function () {
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
 		const nickname = `nick${common.getUniqueString()}`;
+
+		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="0" force="1">
 				<cn id="${cn.id}">
@@ -510,6 +588,8 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</ModifyContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
 		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});
@@ -529,6 +609,7 @@ describe('Contacts > Contacts Modify', function () {
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
+		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="0" force="1">
 				<cn id="${cn.id}">
@@ -536,6 +617,8 @@ describe('Contacts > Contacts Modify', function () {
 				</cn>
 			</ModifyContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
 		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});

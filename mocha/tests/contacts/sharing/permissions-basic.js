@@ -50,9 +50,12 @@ describe('Contacts > Sharing > Permissions Basic', function () {
 			</CreateContactRequest>`, account1Token
 		);
 
+		// Get the folder
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetFolderRequest xmlns="urn:zimbraMail"/>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(folderRes.Fault, 'GetFolder should not be a Fault');
 	});
 
@@ -68,9 +71,12 @@ describe('Contacts > Sharing > Permissions Basic', function () {
 			</CreateContactRequest>`, account1Token
 		);
 
+		// Get the folder
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetFolderRequest xmlns="urn:zimbraMail"/>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(folderRes.Fault, 'GetFolder should not be a Fault');
 	});
 
@@ -86,9 +92,12 @@ describe('Contacts > Sharing > Permissions Basic', function () {
 			</CreateContactRequest>`, account1Token
 		);
 
+		// Get the folder
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetFolderRequest xmlns="urn:zimbraMail"/>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(folderRes.Fault, 'GetFolder should not be a Fault');
 	});
 });

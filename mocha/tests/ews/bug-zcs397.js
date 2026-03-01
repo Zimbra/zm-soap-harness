@@ -64,7 +64,6 @@ describe('EWS > Bug ZCS-397', function () {
 
 	// Tests
 	it('Sanity | Send encrypted mail from zwc to ews client', async () => {
-		// EWS: GetFolder inbox
 		const getFolderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>
@@ -84,14 +83,14 @@ describe('EWS > Bug ZCS-397', function () {
 		const getFolderMsg = getFolderBody.GetFolderResponse
 			.ResponseMessages.GetFolderResponseMessage;
 		const folderMsg = Array.isArray(getFolderMsg) ? getFolderMsg[0] : getFolderMsg;
+
+		// Verify response
 		assert.equal(folderMsg.$.ResponseClass, 'Success', 'GetFolder should succeed');
 		assert.equal(folderMsg.Folders.Folder.FolderId.$.Id, '2',
 			'Inbox folder Id should be 2');
 		assert.equal(folderMsg.Folders.Folder.DisplayName, 'Inbox',
 			'DisplayName should be Inbox');
 		const inboxId = folderMsg.Folders.Folder.FolderId.$.Id;
-
-		// EWS: SyncFolderItems
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -121,8 +120,6 @@ describe('EWS > Bug ZCS-397', function () {
 		assert.exists(matchedItem, "Should find message matching subject");
 		const mailItemId = matchedItem.Message.ItemId.$.Id;
 		const mailChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
-
-		// EWS: GetItem with MimeContent
 		const getItemRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>

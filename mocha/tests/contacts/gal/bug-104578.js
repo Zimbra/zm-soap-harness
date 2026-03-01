@@ -32,6 +32,8 @@ describe('Contacts > GAL > Bug 104578 - GAL search fix', function () {
 				<name>test</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
@@ -43,6 +45,8 @@ describe('Contacts > GAL > Bug 104578 - GAL search fix', function () {
 				<name>test</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});

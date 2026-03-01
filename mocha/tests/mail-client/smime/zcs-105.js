@@ -31,31 +31,40 @@ describe('Mail Client > Smime > ZCS-105', function () {
 
 	// Tests
 	it('Sanity | 1 Send encrypted msg from account1 to account2 2 GetConversation, SearchConversation and GetMessage on account 2 and ...', async () => {
-		// Source: zcs105_SendSignEncrypt from Smime/ZCS-105.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | 1 Send signed only msg from account1 to account2 2 GetConversation, SearchConversation and GetMessage on account 2 an...', async () => {
-		// Source: zcs105_SendSignOnly from Smime/ZCS-105.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | 1 user2 shares inbox with user1 2 Verify encrypted messages cannot be read, encrypted by user1 in the shared folder 3...', async () => {
-		// Source: zcs105_Search_InShared_Folder from Smime/ZCS-105.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

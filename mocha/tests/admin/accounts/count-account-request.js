@@ -16,6 +16,7 @@ describe('Admin > Accounts > Count Account Request', function () {
 		return;
 	}
 
+	// Tests
 	it('Sanity | Sanity test for CountAccountRequest', async () => {
 		const cosName = 'cos' + common.getUniqueString();
 		const account1Name = 'test' + common.getUniqueString() +

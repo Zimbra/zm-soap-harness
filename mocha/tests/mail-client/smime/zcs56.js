@@ -31,31 +31,40 @@ describe('Mail Client > Smime > ZCS56', function () {
 
 	// Tests
 	it('Sanity | user1 creates a contact for user2 and uploads public certificate which has user2 alias email address in subject and u...', async () => {
-		// Source: TC1 from Smime/ZCS56.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | user1 modifies contact for user2 and uploads public certificate which has no email address in subject and user2 alias...', async () => {
-		// Source: TC2 from Smime/ZCS56.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | user1 modifies contact for user2 and uploads public certificate which has no email address in subject and user3 email...', async () => {
-		// Source: TC3 from Smime/ZCS56.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

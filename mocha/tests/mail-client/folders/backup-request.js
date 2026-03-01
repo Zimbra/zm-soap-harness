@@ -103,60 +103,79 @@ describe('Mail Client > Folders > BackupRequest', function () {
 
 
 	it('Sanity | Verify that after backup and restore an account with a sub folder in Inbox, folder is restored', async () => {
-		// Source: folder_Backup_01 from Folders/BackupRequest.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
+
 	it('Sanity | Backup (incremental) and restore an account with a sub folder in inbox Verify that after backup and restore the folde...', async () => {
-		// Source: folder_Backup_02 from Folders/BackupRequest.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Backup (full) and restore an account with a Mount Point Verify the Mount Point is backed up and restored', async () => {
-		// Source: Mountpoint_AccountBackup_01 from Folders/Mountpoints/BackupRequest.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Backup (incremental) and restore an account with a Mount Point Verify the mount point value is backed up and restored', async () => {
-		// Source: Mountpoint_AccountBackup_02 from Folders/Mountpoints/BackupRequest.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Backup (full) and restore an account with sharing Verify the shared data is still viewable by grantee after restore', async () => {
-		// Source: Sharing_AccountBackup_01 from Folders/Sharing/BackupRequest.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Backup (incremental) and restore an account with sharing Verify the shared data is still viewable by grantee after re...', async () => {
-		// Source: Sharing_AccountBackup_02 from Folders/Sharing/BackupRequest.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

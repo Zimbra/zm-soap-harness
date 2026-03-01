@@ -48,7 +48,7 @@ describe('Filter-Anyof', function () {
 			</ModifyFilterRulesRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
 	});
 
@@ -81,7 +81,7 @@ describe('Filter-Anyof', function () {
 			</ModifyFilterRulesRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Contains filter should not fault');
 	});
 
@@ -114,7 +114,7 @@ describe('Filter-Anyof', function () {
 			</ModifyFilterRulesRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Matches filter should not fault');
 	});
 
@@ -149,7 +149,7 @@ describe('Filter-Anyof', function () {
 			</ModifyFilterRulesRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Multiple anyof tests should not fault');
 	});
 
@@ -182,7 +182,7 @@ describe('Filter-Anyof', function () {
 			</ModifyFilterRulesRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Negative contains should not fault');
 	});
 
@@ -215,7 +215,7 @@ describe('Filter-Anyof', function () {
 			</ModifyFilterRulesRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'HeaderExists test should not fault');
 	});
 
@@ -248,7 +248,7 @@ describe('Filter-Anyof', function () {
 			</ModifyFilterRulesRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Size test should not fault');
 	});
 
@@ -286,7 +286,7 @@ describe('Filter-Anyof', function () {
 			`<GetFilterRulesRequest xmlns="urn:zimbraMail"/>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
 		assert.exists(getRes.GetFilterRulesResponse, 'GetFilterRulesResponse should exist');
 	});

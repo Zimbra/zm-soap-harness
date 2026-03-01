@@ -53,8 +53,6 @@ describe('EWS > ZCS-2624', function () {
 	it('Sanity | Verify response of an attendee to instances of recurring meeting when new attendee added to the instances', async () => {
 		const account2Username = account2Email.split('@')[0];
 		const account3Username = account3Email.split('@')[0];
-
-		// EWS: Create recurring calendar item from account1
 		const createRes = await ews.makeEWSRequest(
 			`<m:CreateItem xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
 				xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
@@ -102,18 +100,24 @@ describe('EWS > ZCS-2624', function () {
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
 		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+
+		// Verify response
 		assert.equal(createMessage.$.ResponseClass, 'Success',
 			'CreateItem should succeed');
 
 		await soap.waitFor(10000);
 
-		// Account2 accepts the series via ZWC
+		// Authenticate account
 		const account2AuthToken = await soap.getAccountAuthToken(account2Email, accountPassword);
+
+		// Search for the item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
 				<query>subject:${messageSubject}</query>
 			</SearchRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		const appt = Array.isArray(searchRes.SearchResponse.appt)
 			? searchRes.SearchResponse.appt[0] : searchRes.SearchResponse.appt;
@@ -121,6 +125,7 @@ describe('EWS > ZCS-2624', function () {
 		const compNum = appt.compNum || '0';
 		const organizer = Array.isArray(appt.or) ? appt.or[0].a : appt.or.a;
 
+		// Send send invite reply request
 		const acceptRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendInviteReplyRequest xmlns="urn:zimbraMail"
 				id="${invId}" compNum="${compNum}" verb="ACCEPT" updateOrganizer="TRUE">
@@ -133,11 +138,11 @@ describe('EWS > ZCS-2624', function () {
 				</m>
 			</SendInviteReplyRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(acceptRes.Fault, 'Response should not be a Fault');
 
 		await soap.waitFor(10000);
-
-		// EWS: SyncFolderItems on calendar to get the item
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -174,8 +179,6 @@ describe('EWS > ZCS-2624', function () {
 		assert.exists(calItem, 'Calendar item should be found in sync results');
 		const cal02Id = calItem.ItemId.$.Id;
 		const cal02ChangeKey = calItem.ItemId.$.ChangeKey;
-
-		// EWS: GetItem to verify attendee accepted
 		const getItemRes = await ews.makeEWSRequest(
 			`<m:GetItem xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
 				xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
@@ -193,8 +196,6 @@ describe('EWS > ZCS-2624', function () {
 			.ResponseMessages.GetItemResponseMessage;
 		const itemMsg = Array.isArray(getItemMsg) ? getItemMsg[0] : getItemMsg;
 		assert.equal(itemMsg.$.ResponseClass, 'Success', 'GetItem should succeed');
-
-		// EWS: UpdateItem - edit 2nd instance to add account3 as attendee
 		const updateRes = await ews.makeEWSRequest(
 			`<m:UpdateItem xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
 				ConflictResolution="AutoResolve"
@@ -243,18 +244,20 @@ describe('EWS > ZCS-2624', function () {
 
 		await soap.waitFor(10000);
 
-		// Account3 receives the invite - verify via ZWC search
+		// Authenticate account
 		const account3AuthToken = await soap.getAccountAuthToken(account3Email, accountPassword);
+
+		// Search for the item
 		const searchRes3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
 				<query>subject:${messageSubject}</query>
 			</SearchRequest>`, account3AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes3.Fault, 'Response should not be a Fault');
 		assert.exists(searchRes3.SearchResponse.appt,
 			'Account3 should receive the appointment');
-
-		// EWS: GetItem on the updated instance to verify both attendees
 		await soap.waitFor(10000);
 		const getItem2Res = await ews.makeEWSRequest(
 			`<m:GetItem xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"

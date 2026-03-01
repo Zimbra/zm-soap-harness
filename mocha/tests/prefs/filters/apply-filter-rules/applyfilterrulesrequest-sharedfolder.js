@@ -60,7 +60,7 @@ describe('ApplyFilterRulesRequest-SharedFolder', function () {
 			</ApplyFilterRulesRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(applyRes.Fault, 'ApplyFilterRulesRequest should not fault');
 		assert.exists(applyRes.ApplyFilterRulesResponse, 'ApplyFilterRulesResponse should exist');
 	});
@@ -106,7 +106,7 @@ describe('ApplyFilterRulesRequest-SharedFolder', function () {
 			</ApplyFilterRulesRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(applyRes.Fault, 'ApplyFilterRulesRequest sent folder should not fault');
 	});
 });

@@ -38,10 +38,10 @@ describe('Prefs > Bugs > Bug92160', function () {
 		await soap.makeSOAPEnvelopeAccount(`<SendMsgRequest xmlns="urn:zimbraMail"><m><e t="t" a="${accountEmail}"/><su>${subject}</su><mp ct="text/plain"><content>Test body</content></mp></m></SendMsgRequest>`, authToken);
 		await new Promise(r => setTimeout(r, 2000));
 
-		// Search for the item
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(`<SearchRequest xmlns="urn:zimbraMail" types="message"><query>subject:(${subject})</query></SearchRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});

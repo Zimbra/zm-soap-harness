@@ -63,10 +63,12 @@ Test content
 		mountpointId = resMP.CreateMountpointResponse.link[0].id;
 	});
 
+	// Applicable zimbra versions
 	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;
 	}
 
+	// Tests
 	it('Sanity | Verify a search for not to - (address) in a mountpoint', async () => {
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest limit="100" xmlns="urn:zimbraMail" types="message">
@@ -74,15 +76,18 @@ Test content
 			</SearchRequest>`, accountAuthToken2
 		);
 
+		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
 		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
 
+		// Search item
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest limit="100" xmlns="urn:zimbraMail" types="message">
 				<query>inid:${mountpointId} not to:(origination_address@origination_domain.com)</query>
 			</SearchRequest>`, accountAuthToken2
 		);
 
+		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 	});
@@ -95,15 +100,18 @@ Test content
 			</SearchRequest>`, accountAuthToken2
 		);
 
+		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
 		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
 
+		// Search item
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest limit="100" xmlns="urn:zimbraMail" types="message">
 				<query>inid:"${account1.id}:2" -to:(origination_address@origination_domain.com)</query>
 			</SearchRequest>`, accountAuthToken2
 		);
 
+		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 	});

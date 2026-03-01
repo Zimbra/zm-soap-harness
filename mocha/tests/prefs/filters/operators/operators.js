@@ -32,7 +32,7 @@ describe('Filters-Operators', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="op${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="is" value="test"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Is operator should not fault');
 		assert.exists(modRes.ModifyFilterRulesResponse, 'Response should exist');
 	});
@@ -50,7 +50,7 @@ describe('Filters-Operators', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="op${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="is" negative="1" value="test"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Not is should not fault');
 	});
 
@@ -67,7 +67,7 @@ describe('Filters-Operators', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="op${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="contains" value="partial"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Contains should not fault');
 	});
 
@@ -84,7 +84,7 @@ describe('Filters-Operators', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="op${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="contains" negative="1" value="spam"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Not contains should not fault');
 	});
 
@@ -101,7 +101,7 @@ describe('Filters-Operators', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="op${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="matches" value="*test*"/></filterTests><filterActions><actionFlag flagName="flagged"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Matches should not fault');
 	});
 
@@ -118,7 +118,7 @@ describe('Filters-Operators', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="op${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="matches" negative="1" value="*spam*"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Not matches should not fault');
 	});
 
@@ -135,7 +135,7 @@ describe('Filters-Operators', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="op${common.getUniqueString()}" active="1"><filterTests condition="anyof"><sizeTest numberComparison="under" s="100K"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Size under should not fault');
 	});
 
@@ -152,7 +152,7 @@ describe('Filters-Operators', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="op${common.getUniqueString()}" active="1"><filterTests condition="anyof"><sizeTest numberComparison="over" s="10M"/></filterTests><filterActions><actionDiscard/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Size over should not fault');
 	});
 
@@ -169,7 +169,7 @@ describe('Filters-Operators', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="op${common.getUniqueString()}" active="1"><filterTests condition="anyof"><dateTest dateComparison="before" d="${Math.floor(Date.now() / 1000)}"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Date before should not fault');
 	});
 
@@ -186,7 +186,7 @@ describe('Filters-Operators', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="op${common.getUniqueString()}" active="1"><filterTests condition="anyof"><dateTest dateComparison="after" d="${Math.floor(Date.now() / 1000) - 86400}"/></filterTests><filterActions><actionFlag flagName="flagged"/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Date after should not fault');
 	});
 
@@ -203,7 +203,7 @@ describe('Filters-Operators', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="op${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerExistsTest header="X-Custom-Header"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Header exists should not fault');
 	});
 
@@ -223,7 +223,7 @@ describe('Filters-Operators', function () {
 		// Get filter rules
 		const getRes = await soap.makeSOAPEnvelopeAccount(`<GetFilterRulesRequest xmlns="urn:zimbraMail"/>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
 		assert.exists(getRes.GetFilterRulesResponse, 'GetFilterRulesResponse should exist');
 	});

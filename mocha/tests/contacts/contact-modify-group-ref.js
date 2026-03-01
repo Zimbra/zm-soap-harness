@@ -65,13 +65,14 @@ describe('Contacts > Contact Modify Group Reference', function () {
 				</cn>
 			</ModifyContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
 		assert.exists(modRes.ModifyContactResponse.cn, 'Modified contact should exist');
 	});
 
 
 	it('Sanity | Modify group reference - add a contact member', async () => {
-		// Create another ref contact
 		const refRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -84,6 +85,7 @@ describe('Contacts > Contact Modify Group Reference', function () {
 		const refCn = Array.isArray(refRes.CreateContactResponse.cn)
 			? refRes.CreateContactResponse.cn[0] : refRes.CreateContactResponse.cn;
 
+		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail">
 				<cn id="${contactGroupId}">
@@ -92,6 +94,8 @@ describe('Contacts > Contact Modify Group Reference', function () {
 				</cn>
 			</ModifyContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
 		assert.exists(modRes.ModifyContactResponse.cn, 'Modified contact should exist');
 	});
@@ -106,6 +110,8 @@ describe('Contacts > Contact Modify Group Reference', function () {
 				</cn>
 			</ModifyContactRequest>`, accountToken, false
 		);
+
+		// Verify response
 		assert.exists(modRes.Fault, 'Replace with op should be a Fault');
 		const code = modRes.Fault?.Detail?.Error?.Code || '';
 		assert.include(code, 'service.INVALID_REQUEST', 'Error code should be service.INVALID_REQUEST');

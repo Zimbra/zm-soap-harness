@@ -25,6 +25,8 @@ describe('Contacts > Contacts Export', function () {
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<ExportContactsRequest xmlns="urn:zimbraMail" ct="csv"/>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.ExportContactsResponse, 'ExportContactsResponse should exist');
 	});
@@ -48,9 +50,12 @@ describe('Contacts > Contacts Export', function () {
 			</CreateContactRequest>`, accountToken
 		);
 
+		// Export contacts
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<ExportContactsRequest xmlns="urn:zimbraMail" ct="csv"/>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.ExportContactsResponse.content, 'Content should exist');
 	});
@@ -58,6 +63,8 @@ describe('Contacts > Contacts Export', function () {
 
 	it('Functional | ExportContactsRequest with several contacts', async () => {
 		for (let i = 0; i < 5; i++) {
+
+			// Create a contact
 			await soap.makeSOAPEnvelopeAccount(
 				`<CreateContactRequest xmlns="urn:zimbraMail">
 					<cn>
@@ -69,9 +76,12 @@ describe('Contacts > Contacts Export', function () {
 			);
 		}
 
+		// Export contacts
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<ExportContactsRequest xmlns="urn:zimbraMail" ct="csv"/>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.ExportContactsResponse.content, 'Content should exist');
 	});
@@ -86,9 +96,12 @@ describe('Contacts > Contacts Export', function () {
 			</CreateContactRequest>`, accountToken
 		);
 
+		// Export contacts
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<ExportContactsRequest xmlns="urn:zimbraMail" ct="csv"/>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.ExportContactsResponse.content, 'Content should exist');
 	});
@@ -97,6 +110,7 @@ describe('Contacts > Contacts Export', function () {
 	it('Functional | ExportContactsRequest with long fields', async () => {
 		const longNotes = Array(11).fill(`Notes${common.getUniqueString()}`).join('');
 
+		// Create a contact
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -108,9 +122,12 @@ describe('Contacts > Contacts Export', function () {
 			</CreateContactRequest>`, accountToken
 		);
 
+		// Export contacts
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<ExportContactsRequest xmlns="urn:zimbraMail" ct="csv"/>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.ExportContactsResponse.content, 'Content should exist');
 	});
@@ -119,9 +136,13 @@ describe('Contacts > Contacts Export', function () {
 	it('Regression | ExportContactsRequest with invalid ct values', async () => {
 		const invalidTypes = ['abcd', '1234', '-1', '//\\\\|-', ''];
 		for (const ct of invalidTypes) {
+
+			// Export contacts
 			const res = await soap.makeSOAPEnvelopeAccount(
 				`<ExportContactsRequest xmlns="urn:zimbraMail" ct="${ct}"/>`, accountToken, false
 			);
+
+			// Verify response
 			assert.exists(res.Fault, `ct="${ct}" should be a Fault`);
 			const code = res.Fault?.Detail?.Error?.Code || '';
 			assert.include(code, 'service.INVALID_REQUEST', `ct="${ct}" should be service.INVALID_REQUEST`);
@@ -133,6 +154,8 @@ describe('Contacts > Contacts Export', function () {
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<ExportContactsRequest xmlns="urn:zimbraMail"/>`, accountToken, false
 		);
+
+		// Verify response
 		assert.exists(res.Fault, 'Response should be a Fault');
 		const code = res.Fault?.Detail?.Error?.Code || '';
 		assert.include(code, 'service.INVALID_REQUEST', 'Error code should be service.INVALID_REQUEST');
@@ -149,6 +172,8 @@ describe('Contacts > Contacts Export', function () {
 			`<ExportContactsRequest xmlns="urn:zimbraMail" ct="csv" csvfmt="yahoo-csv">
 			</ExportContactsRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(exportRes.Fault, 'Export Yahoo CSV should not be a Fault');
 		assert.exists(exportRes.ExportContactsResponse, 'ExportContactsResponse should exist');
 	});
@@ -159,6 +184,8 @@ describe('Contacts > Contacts Export', function () {
 			`<ExportContactsRequest xmlns="urn:zimbraMail" ct="csv">
 			</ExportContactsRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(exportRes.Fault, 'Export all contacts should not be a Fault');
 		assert.exists(exportRes.ExportContactsResponse, 'ExportContactsResponse should exist');
 	});
@@ -166,19 +193,26 @@ describe('Contacts > Contacts Export', function () {
 
 	it('Functional | Export contacts from empty folder', async () => {
 		const folderName = `empty${common.getUniqueString()}`;
+
+		// Create a folder
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="7" view="contact"/>
 			</CreateFolderRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(folderRes.Fault, 'CreateFolder should not be a Fault');
 		const folder = Array.isArray(folderRes.CreateFolderResponse.folder)
 			? folderRes.CreateFolderResponse.folder[0] : folderRes.CreateFolderResponse.folder;
 
+		// Export contacts
 		const exportRes = await soap.makeSOAPEnvelopeAccount(
 			`<ExportContactsRequest xmlns="urn:zimbraMail" ct="csv" l="${folder.id}">
 			</ExportContactsRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(exportRes.Fault, 'Export empty folder should not be a Fault');
 		assert.exists(exportRes.ExportContactsResponse, 'ExportContactsResponse should exist');
 	});

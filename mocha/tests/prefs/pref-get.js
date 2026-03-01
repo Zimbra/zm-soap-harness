@@ -39,7 +39,7 @@ describe('Pref Get', function () {
 			`<GetPrefsRequest xmlns="urn:zimbraAccount"/>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(getPrefsRes.Fault, 'GetPrefsRequest should not fault');
 		assert.exists(getPrefsRes.GetPrefsResponse, 'GetPrefsResponse should exist');
 	});
@@ -69,7 +69,7 @@ describe('Pref Get', function () {
 			</GetPrefsRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(getPrefsRes.Fault, 'GetPrefsRequest should not fault');
 		assert.exists(getPrefsRes.GetPrefsResponse, 'GetPrefsResponse should exist');
 

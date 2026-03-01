@@ -52,7 +52,7 @@ describe('SentMessageForPersona', function () {
 			</CreateIdentityRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 
 		const subject = `persona.${common.getUniqueString()}`;
@@ -68,7 +68,7 @@ describe('SentMessageForPersona', function () {
 			</SendMsgRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
 	});
@@ -108,14 +108,14 @@ describe('SentMessageForPersona', function () {
 			</SendMsgRequest>`, authToken
 		);
 
-		// Search for the item
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject}) in:sent</query>
 			</SearchRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
@@ -158,14 +158,14 @@ describe('SentMessageForPersona', function () {
 
 		await common.delay(2000);
 
-		// Search for the item
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, recipientAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});

@@ -55,7 +55,6 @@ describe('EWS > Bug ZCS-542', function () {
 
 	// Tests
 	it('Sanity | Execute GetItemForMsg With and without request for element MimeContent', async () => {
-		// EWS: GetFolder inbox
 		const getFolderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>
@@ -75,10 +74,10 @@ describe('EWS > Bug ZCS-542', function () {
 		const getFolderMsg = getFolderBody.GetFolderResponse
 			.ResponseMessages.GetFolderResponseMessage;
 		const folderMsg = Array.isArray(getFolderMsg) ? getFolderMsg[0] : getFolderMsg;
+
+		// Verify response
 		assert.equal(folderMsg.$.ResponseClass, 'Success', 'GetFolder should succeed');
 		const inboxId = folderMsg.Folders.Folder.FolderId.$.Id;
-
-		// EWS: SyncFolderItems
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -106,8 +105,6 @@ describe('EWS > Bug ZCS-542', function () {
 		assert.exists(matchedItem, "Should find message matching subject");
 		const mailItemId = matchedItem.Message.ItemId.$.Id;
 		const mailChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
-
-		// EWS: GetItem with Body
 		const getItemRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -129,8 +126,6 @@ describe('EWS > Bug ZCS-542', function () {
 		assert.equal(itemMsg.$.ResponseClass, 'Success', 'GetItem should succeed');
 		assert.equal(itemMsg.Items.Message.Body.$.BodyType, 'HTML',
 			'Body type should be HTML');
-
-		// EWS: GetItem with IncludeMimeContent=true
 		const getItemMimeRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -151,8 +146,6 @@ describe('EWS > Bug ZCS-542', function () {
 			'GetItem with MimeContent should succeed');
 		assert.exists(mimeItemMsg.Items.Message.MimeContent,
 			'MimeContent should be present when IncludeMimeContent is true');
-
-		// EWS: GetItem with IncludeMimeContent=false
 		const getItemNoMimeRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -174,8 +167,6 @@ describe('EWS > Bug ZCS-542', function () {
 			'GetItem without MimeContent should succeed');
 		assert.equal(noMimeItemMsg.Items.Message.ItemId.$.Id, mailItemId,
 			'ItemId should match');
-
-		// EWS: GetItem without IncludeMimeContent specified (default)
 		const getItemDefaultRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>

@@ -32,6 +32,8 @@ describe('Contacts > GAL > Bug 31500 - GAL search fix', function () {
 				<name>test</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
@@ -43,6 +45,8 @@ describe('Contacts > GAL > Bug 31500 - GAL search fix', function () {
 				<name>*</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});

@@ -55,8 +55,10 @@ describe('EWS > ZCS-2623 Calendar Add Attendee', function () {
 		const account2Username = account2Email.split('@')[0];
 		const account3Username = account3Email.split('@')[0];
 
-		// Create appointment from ZWC user1 inviting user2
+		// Authenticate account
 		const account1AuthToken = await soap.getAccountAuthToken(account1Email, accountPassword);
+
+		// Create an appointment
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -77,19 +79,25 @@ describe('EWS > ZCS-2623 Calendar Add Attendee', function () {
 				</m>
 			</CreateAppointmentRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAppointmentResponse,
 			'CreateAppointmentResponse should exist');
 
 		await soap.waitFor(10000);
 
-		// User2 accepts the meeting
+		// Authenticate account
 		const account2AuthToken = await soap.getAccountAuthToken(account2Email, accountPassword);
+
+		// Search for the item
 		const searchRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
 				<query>subject:${apptSubject}</query>
 			</SearchRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes2.Fault, 'Response should not be a Fault');
 		const appt2 = Array.isArray(searchRes2.SearchResponse.appt)
 			? searchRes2.SearchResponse.appt[0] : searchRes2.SearchResponse.appt;
@@ -97,6 +105,7 @@ describe('EWS > ZCS-2623 Calendar Add Attendee', function () {
 		const compNum2 = appt2.compNum || '0';
 		const organizer2 = Array.isArray(appt2.or) ? appt2.or[0].a : appt2.or.a;
 
+		// Send send invite reply request
 		const acceptRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendInviteReplyRequest xmlns="urn:zimbraMail"
 				id="${invId2}" compNum="${compNum2}" verb="ACCEPT" updateOrganizer="TRUE">
@@ -109,11 +118,11 @@ describe('EWS > ZCS-2623 Calendar Add Attendee', function () {
 				</m>
 			</SendInviteReplyRequest>`, account2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(acceptRes.Fault, 'Response should not be a Fault');
 
 		await soap.waitFor(10000);
-
-		// EWS: SyncFolderItems on calendar folder
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -150,8 +159,6 @@ describe('EWS > ZCS-2623 Calendar Add Attendee', function () {
 		assert.exists(calItem, 'Calendar item should be found in sync results');
 		const cal01Id = calItem.ItemId.$.Id;
 		const cal01ChangeKey = calItem.ItemId.$.ChangeKey;
-
-		// EWS: GetItem - verify account2 is attendee
 		const getItemRes = await ews.makeEWSRequest(
 			`<m:GetItem xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
 				xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
@@ -171,8 +178,6 @@ describe('EWS > ZCS-2623 Calendar Add Attendee', function () {
 			.ResponseMessages.GetItemResponseMessage;
 		const itemMsg = Array.isArray(getItemMsg) ? getItemMsg[0] : getItemMsg;
 		assert.equal(itemMsg.$.ResponseClass, 'Success', 'GetItem should succeed');
-
-		// EWS: UpdateItem - add account3 as attendee
 		const updateRes = await ews.makeEWSRequest(
 			`<m:UpdateItem xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
 				xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
@@ -217,8 +222,6 @@ describe('EWS > ZCS-2623 Calendar Add Attendee', function () {
 		const updatedItem = updateMessage.Items?.CalendarItem || updateMessage.Items?.Message;
 		const cal02Id = updatedItem?.ItemId?.$.Id || cal01Id;
 		const cal02ChangeKey = updatedItem?.ItemId?.$.ChangeKey || cal01ChangeKey;
-
-		// EWS: GetItem - verify both attendees
 		const getItem2Res = await ews.makeEWSRequest(
 			`<m:GetItem xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
 				xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">

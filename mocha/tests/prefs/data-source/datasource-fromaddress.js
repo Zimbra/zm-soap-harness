@@ -37,7 +37,7 @@ describe('Prefs > DataSource > DataSource-FromAddress', function () {
 		// Create a data source
 		const res = await soap.makeSOAPEnvelopeAccount(`<CreateDataSourceRequest xmlns="urn:zimbraMail"><pop3 name="${dsName}" isEnabled="0" host="pop.test.com" port="110" connectionType="cleartext" username="user_${common.getUniqueString()}" password="test123" leaveOnServer="1" l="2" fromAddress="from_${common.getUniqueString()}@${testDomain}"/></CreateDataSourceRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(res.Fault, 'Should not fault');
 		assert.exists(res.CreateDataSourceResponse, 'Response should exist');
 	});

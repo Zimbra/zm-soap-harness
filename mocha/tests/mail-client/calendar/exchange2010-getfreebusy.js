@@ -77,7 +77,7 @@ describe('Mail Client > Calendar > Exchange2010 GetFreeBusy', function () {
 		assert.notExists(fbRes.Fault, 'GetFreeBusyRequest should not fault');
 		assert.exists(fbRes.GetFreeBusyResponse, 'GetFreeBusyResponse should exist');
 
-		// Verify the response contains user free-busy data
+		// Verify response contains user free-busy data
 		const usr = Array.isArray(fbRes.GetFreeBusyResponse?.usr)
 			? fbRes.GetFreeBusyResponse.usr : [fbRes.GetFreeBusyResponse?.usr];
 		const exchangeUsr = usr.find(u => u?.id === exchangeUsername);

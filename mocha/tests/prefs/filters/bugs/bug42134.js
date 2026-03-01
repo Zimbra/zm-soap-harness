@@ -53,7 +53,7 @@ describe('Prefs > Filters > Bugs > Bug42134', function () {
 			</ModifyFilterRulesRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
 
 		// Get filter rules
@@ -61,7 +61,7 @@ describe('Prefs > Filters > Bugs > Bug42134', function () {
 			`<GetFilterRulesRequest xmlns="urn:zimbraMail"/>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
 		assert.exists(getRes.GetFilterRulesResponse, 'Response should exist');
 	});

@@ -45,6 +45,8 @@ describe('Contacts > AutoComplete > AutoComplete GAL and Shared Contacts', funct
 				<name>test</name>
 			</AutoCompleteRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -61,11 +63,14 @@ describe('Contacts > AutoComplete > AutoComplete GAL and Shared Contacts', funct
 			</CreateContactRequest>`, account1Token
 		);
 
+		// Send auto complete request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<AutoCompleteRequest xmlns="urn:zimbraMail" includeGal="0">
 				<name>Shared</name>
 			</AutoCompleteRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -77,6 +82,8 @@ describe('Contacts > AutoComplete > AutoComplete GAL and Shared Contacts', funct
 				<name>test</name>
 			</AutoCompleteRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -88,6 +95,8 @@ describe('Contacts > AutoComplete > AutoComplete GAL and Shared Contacts', funct
 				<name>test</name>
 			</AutoCompleteRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});

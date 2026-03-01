@@ -51,6 +51,8 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 				<name>test</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -62,6 +64,8 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 				<name>galuser</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -73,6 +77,8 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 				<name>GalUser</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -84,6 +90,8 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 				<name>gal</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -95,6 +103,8 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 				<name>${config.testDomain}</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -106,6 +116,8 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 				<name>GALUSER</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -117,6 +129,8 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 				<name>gal*</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -128,6 +142,8 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 				<name>g</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -139,6 +155,8 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 				<name>ga</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -150,6 +168,8 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 				<name>galuser@</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -161,6 +181,8 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 				<name>gal.user</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -172,6 +194,8 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 				<name>gal-user</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -183,6 +207,8 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 				<name>gal_user</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -194,6 +220,8 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 				<name>nonexistentxyz${common.getUniqueString()}</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -205,6 +233,8 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 				<name>gal</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -216,6 +246,8 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 				<name>galuser</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -227,6 +259,8 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 				<name>galuser</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -238,6 +272,8 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 				<name> galuser</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -249,6 +285,8 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 				<name>galuser </name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -260,6 +298,8 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 				<name>123</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -271,6 +311,8 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 				<name>GaLuSeR</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -282,6 +324,8 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 				<name>${account2Email}</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -293,6 +337,8 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 				<name>Two, GalUser</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -304,6 +350,8 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 				<name>galuser</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -311,6 +359,8 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 
 	it('Sanity | AutoComplete GAL after account creation', async () => {
 		const newEmail = `newgal${common.getUniqueString()}@${config.testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${newEmail}</name>
@@ -318,11 +368,14 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 
+		// Send auto complete request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>newgal</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});

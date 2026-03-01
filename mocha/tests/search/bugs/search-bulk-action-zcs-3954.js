@@ -28,7 +28,6 @@ describe('Search > Bugs > BulkAction ZCS 3954', function () {
 
 	// Tests
 	it('Sanity | basic system check', async () => {
-		// Admin
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<PingRequest xmlns="urn:zimbraAdmin" />`, adminAuthToken
 		);

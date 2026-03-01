@@ -223,6 +223,8 @@ describe('EWS > Send Mail', function () {
 			"text/plain",
 			null,
 			(msg) => {
+
+				// Verify response
 				assert.include(
 					msg.Items.Message.Body._,
 					messageContent,
@@ -232,6 +234,7 @@ describe('EWS > Send Mail', function () {
 		);
 	});
 
+
 	it("Sanity | Send html text mail from zwc to ews client", async () => {
 		await sendFromZwcAndVerifyOnEws(
 			messageSubject1,
@@ -239,6 +242,8 @@ describe('EWS > Send Mail', function () {
 			"text/html",
 			null,
 			(msg) => {
+
+				// Verify response
 				assert.equal(
 					msg.Items.Message.Body.$.BodyType,
 					"HTML",
@@ -248,14 +253,15 @@ describe('EWS > Send Mail', function () {
 		);
 	});
 
+
 	it("Sanity | Send an html mail with attachment from ZWC to EWS client", async () => {
-		// ZWC: Upload file and send with attachment
 		const uploadRes = await soap.uploadFile(
 			account2AuthToken,
 			"data/ews/image1.jpg",
 		);
 		const uploadAid = uploadRes;
 
+		// Send the message
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -269,11 +275,11 @@ describe('EWS > Send Mail', function () {
 			</SendMsgRequest>`,
 			account2AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, "SendMsgRequest should not fault");
 
 		await soap.waitFor(5000);
-
-		// EWS: GetFolder inbox
 		const folderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape><t:BaseShape>AllProperties</t:BaseShape></FolderShape>
@@ -291,8 +297,6 @@ describe('EWS > Send Mail', function () {
 			folderBody.GetFolderResponse.ResponseMessages.GetFolderResponseMessage;
 		const folderMessage = Array.isArray(folderMsg) ? folderMsg[0] : folderMsg;
 		const inboxId = folderMessage.Folders.Folder.FolderId.$.Id;
-
-		// EWS: SyncFolderItems
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -318,8 +322,6 @@ describe('EWS > Send Mail', function () {
 			|| createArr[createArr.length - 1];
 		const mailId = matchedCreate.Message.ItemId.$.Id;
 		const mailChangeKey = matchedCreate.Message.ItemId.$.ChangeKey;
-
-		// EWS: GetItem with attachment fields
 		const getRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -379,14 +381,15 @@ describe('EWS > Send Mail', function () {
 		);
 	});
 
+
 	it("Sanity | Send an html mail with png attachment from zwc to ews client", async () => {
-		// ZWC: Upload png file and send with attachment
 		const uploadRes = await soap.uploadFile(
 			account2AuthToken,
 			"data/ews/image2.png",
 		);
 		const uploadAid = uploadRes;
 
+		// Send the message
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -400,11 +403,11 @@ describe('EWS > Send Mail', function () {
 			</SendMsgRequest>`,
 			account2AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, "SendMsgRequest should not fault");
 
 		await soap.waitFor(5000);
-
-		// EWS: Verify via sendFromZwcAndVerifyOnEws helper pattern
 		const folderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape><t:BaseShape>AllProperties</t:BaseShape></FolderShape>
@@ -508,14 +511,15 @@ describe('EWS > Send Mail', function () {
 		);
 	});
 
+
 	it("Sanity | Send an html mail with bmp attachment from zwc to ews client", async () => {
-		// ZWC: Upload bmp file and send with attachment
 		const uploadRes = await soap.uploadFile(
 			account2AuthToken,
 			"data/ews/image3.bmp",
 		);
 		const uploadAid = uploadRes;
 
+		// Send the message
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -529,6 +533,8 @@ describe('EWS > Send Mail', function () {
 			</SendMsgRequest>`,
 			account2AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, "SendMsgRequest should not fault");
 
 		await soap.waitFor(5000);
@@ -636,14 +642,15 @@ describe('EWS > Send Mail', function () {
 		);
 	});
 
+
 	it("Sanity | Send an html mail with pdf attachment from zwc to ews client", async () => {
-		// ZWC: Upload pdf file and send with attachment
 		const uploadRes = await soap.uploadFile(
 			account2AuthToken,
 			"data/ews/file1.pdf",
 		);
 		const uploadAid = uploadRes;
 
+		// Send the message
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -657,6 +664,8 @@ describe('EWS > Send Mail', function () {
 			</SendMsgRequest>`,
 			account2AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, "SendMsgRequest should not fault");
 
 		await soap.waitFor(5000);
@@ -764,8 +773,8 @@ describe('EWS > Send Mail', function () {
 		);
 	});
 
+
 	it("Sanity | Send an html mail with inline attachment from zwc to ews client", async () => {
-		// ZWC: Upload file for inline and send with inline attachment
 		const uploadRes = await soap.uploadFile(
 			account2AuthToken,
 			"data/ews/image1.jpg",
@@ -773,6 +782,7 @@ describe('EWS > Send Mail', function () {
 		const uploadAid = uploadRes;
 		const cidValue = `${common.getUniqueString()}@zimbra`;
 
+		// Send the message
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -795,6 +805,8 @@ describe('EWS > Send Mail', function () {
 			</SendMsgRequest>`,
 			account2AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, "SendMsgRequest should not fault");
 
 		await soap.waitFor(5000);
@@ -903,8 +915,8 @@ describe('EWS > Send Mail', function () {
 		assert.equal(attachment8.IsInline, "true", "IsInline should be true");
 	});
 
+
 	it("Sanity | Send an html mail with png inline attachment from zwc to ews client", async () => {
-		// ZWC: Upload png file for inline and send with inline attachment
 		const uploadRes = await soap.uploadFile(
 			account2AuthToken,
 			"data/ews/image2.png",
@@ -912,6 +924,7 @@ describe('EWS > Send Mail', function () {
 		const uploadAid = uploadRes;
 		const cidValue = `${common.getUniqueString()}@zimbra`;
 
+		// Send the message
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -934,6 +947,8 @@ describe('EWS > Send Mail', function () {
 			</SendMsgRequest>`,
 			account2AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, "SendMsgRequest should not fault");
 
 		await soap.waitFor(5000);
@@ -1042,8 +1057,8 @@ describe('EWS > Send Mail', function () {
 		assert.equal(attachment9.IsInline, "true", "IsInline should be true");
 	});
 
+
 	it("Sanity | Send an html mail with attachment from EWS to ZWC client", async () => {
-		// EWS: CreateItem with MIME content (contains base64 encoded email with attachment)
 		const account1Username = account1Email.split("@")[0];
 		const account2Username = account2Email.split("@")[0];
 		const mailMime = Buffer.from(
@@ -1101,6 +1116,8 @@ describe('EWS > Send Mail', function () {
 		const createMsg =
 			createBody.CreateItemResponse.ResponseMessages.CreateItemResponseMessage;
 		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+
+		// Verify response
 		assert.equal(
 			createMessage.$.ResponseClass,
 			"Success",
@@ -1108,8 +1125,8 @@ describe('EWS > Send Mail', function () {
 		);
 	});
 
+
 	it("Sanity | Send a mail from ews to zwc client", async () => {
-		// EWS: CreateItem with plain text MIME
 		const account1Username = account1Email.split("@")[0];
 		const account2Username = account2Email.split("@")[0];
 		const mailMime = Buffer.from(
@@ -1164,14 +1181,16 @@ describe('EWS > Send Mail', function () {
 		const createMsg =
 			createBody.CreateItemResponse.ResponseMessages.CreateItemResponseMessage;
 		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+
+		// Verify response
 		assert.equal(
 			createMessage.$.ResponseClass,
 			"Success",
 			"CreateItem should succeed",
 		);
-
-		// Verify on ZWC: account2 received the mail
 		await soap.waitFor(5000);
+
+		// Search for the item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation"
 				sortBy="dateDesc" offset="0" limit="25">
@@ -1179,12 +1198,15 @@ describe('EWS > Send Mail', function () {
 			</SearchRequest>`,
 			account2AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, "SearchRequest should not fault");
 		const hit = Array.isArray(searchRes.SearchResponse.c)
 			? searchRes.SearchResponse.c[0]
 			: searchRes.SearchResponse.c;
 		assert.equal(hit.su, messageSubject10, "Subject should match");
 	});
+
 
 	it("Sanity | Send a html mail from ews to zwc client", async () => {
 		const account1Username = account1Email.split("@")[0];
@@ -1254,14 +1276,16 @@ describe('EWS > Send Mail', function () {
 		const createMsg =
 			createBody.CreateItemResponse.ResponseMessages.CreateItemResponseMessage;
 		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+
+		// Verify response
 		assert.equal(
 			createMessage.$.ResponseClass,
 			"Success",
 			"CreateItem should succeed",
 		);
-
-		// Verify on ZWC: account2 received the html mail
 		await soap.waitFor(5000);
+
+		// Search for the item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation"
 				sortBy="dateDesc" offset="0" limit="25">
@@ -1269,18 +1293,23 @@ describe('EWS > Send Mail', function () {
 			</SearchRequest>`,
 			account2AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, "SearchRequest should not fault");
 		const hit = Array.isArray(searchRes.SearchResponse.c)
 			? searchRes.SearchResponse.c[0]
 			: searchRes.SearchResponse.c;
 		const msgId = Array.isArray(hit.m) ? hit.m[0].id : hit.m.id;
 
+		// Get the message
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${msgId}" />
 			</GetMsgRequest>`,
 			account2AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(getMsgRes.Fault, "GetMsgRequest should not fault");
 		const msg = getMsgRes.GetMsgResponse.m;
 		const msgObj = Array.isArray(msg) ? msg[0] : msg;
@@ -1289,6 +1318,7 @@ describe('EWS > Send Mail', function () {
 		const hasHtml = JSON.stringify(mpArr).includes("text/html");
 		assert.isTrue(hasHtml, "Message should contain text/html content type");
 	});
+
 
 	it("Sanity | Send a html mail with attachment from ews to zwc client", async () => {
 		const account1Username = account1Email.split("@")[0];
@@ -1359,14 +1389,16 @@ describe('EWS > Send Mail', function () {
 		const createMsg =
 			createBody.CreateItemResponse.ResponseMessages.CreateItemResponseMessage;
 		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+
+		// Verify response
 		assert.equal(
 			createMessage.$.ResponseClass,
 			"Success",
 			"CreateItem should succeed",
 		);
-
-		// Verify on ZWC: account2 received the html mail with attachment
 		await soap.waitFor(5000);
+
+		// Search for the item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation"
 				sortBy="dateDesc" offset="0" limit="25">
@@ -1374,18 +1406,23 @@ describe('EWS > Send Mail', function () {
 			</SearchRequest>`,
 			account2AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, "SearchRequest should not fault");
 		const hit = Array.isArray(searchRes.SearchResponse.c)
 			? searchRes.SearchResponse.c[0]
 			: searchRes.SearchResponse.c;
 		const msgId = Array.isArray(hit.m) ? hit.m[0].id : hit.m.id;
 
+		// Get the message
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${msgId}" />
 			</GetMsgRequest>`,
 			account2AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(getMsgRes.Fault, "GetMsgRequest should not fault");
 		const msg = getMsgRes.GetMsgResponse.m;
 		const msgObj = Array.isArray(msg) ? msg[0] : msg;
@@ -1406,6 +1443,7 @@ describe('EWS > Send Mail', function () {
 			"Message should have attachment disposition",
 		);
 	});
+
 
 	it("Sanity | Send a high priority mail from ews to zwc client", async () => {
 		const account1Username = account1Email.split("@")[0];
@@ -1463,14 +1501,16 @@ describe('EWS > Send Mail', function () {
 		const createMsg =
 			createBody.CreateItemResponse.ResponseMessages.CreateItemResponseMessage;
 		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+
+		// Verify response
 		assert.equal(
 			createMessage.$.ResponseClass,
 			"Success",
 			"CreateItem should succeed",
 		);
-
-		// Verify on ZWC: account2 received high priority mail
 		await soap.waitFor(5000);
+
+		// Search for the item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation"
 				sortBy="dateDesc" offset="0" limit="25">
@@ -1478,6 +1518,8 @@ describe('EWS > Send Mail', function () {
 			</SearchRequest>`,
 			account2AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, "SearchRequest should not fault");
 		const hit = Array.isArray(searchRes.SearchResponse.c)
 			? searchRes.SearchResponse.c[0]
@@ -1485,17 +1527,21 @@ describe('EWS > Send Mail', function () {
 		assert.equal(hit.su, messageSubject13, "Subject should match");
 		const msgId = Array.isArray(hit.m) ? hit.m[0].id : hit.m.id;
 
+		// Get the message
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${msgId}" />
 			</GetMsgRequest>`,
 			account2AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(getMsgRes.Fault, "GetMsgRequest should not fault");
 		const msg = getMsgRes.GetMsgResponse.m;
 		const msgObj = Array.isArray(msg) ? msg[0] : msg;
 		assert.include(msgObj.f, "!", "Flag should indicate high priority");
 	});
+
 
 	it("Sanity | Send a low priority mail from ews to zwc client", async () => {
 		const account1Username = account1Email.split("@")[0];
@@ -1553,14 +1599,16 @@ describe('EWS > Send Mail', function () {
 		const createMsg =
 			createBody.CreateItemResponse.ResponseMessages.CreateItemResponseMessage;
 		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+
+		// Verify response
 		assert.equal(
 			createMessage.$.ResponseClass,
 			"Success",
 			"CreateItem should succeed",
 		);
-
-		// Verify on ZWC: account2 received low priority mail
 		await soap.waitFor(5000);
+
+		// Search for the item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation"
 				sortBy="dateDesc" offset="0" limit="25">
@@ -1568,6 +1616,8 @@ describe('EWS > Send Mail', function () {
 			</SearchRequest>`,
 			account2AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, "SearchRequest should not fault");
 		const hit = Array.isArray(searchRes.SearchResponse.c)
 			? searchRes.SearchResponse.c[0]
@@ -1575,20 +1625,23 @@ describe('EWS > Send Mail', function () {
 		assert.equal(hit.su, messageSubject14, "Subject should match");
 		const msgId = Array.isArray(hit.m) ? hit.m[0].id : hit.m.id;
 
+		// Get the message
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${msgId}" />
 			</GetMsgRequest>`,
 			account2AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(getMsgRes.Fault, "GetMsgRequest should not fault");
 		const msg = getMsgRes.GetMsgResponse.m;
 		const msgObj = Array.isArray(msg) ? msg[0] : msg;
 		assert.include(msgObj.f, "?", "Flag should indicate low priority");
 	});
 
+
 	it("Sanity | Send high priority mail from zwc to ews client", async () => {
-		// ZWC: Send high priority mail
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m f="!">
@@ -1601,11 +1654,11 @@ describe('EWS > Send Mail', function () {
 			</SendMsgRequest>`,
 			account2AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, "SendMsgRequest should not fault");
 
 		await soap.waitFor(5000);
-
-		// EWS: Verify importance is High
 		const folderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape><t:BaseShape>AllProperties</t:BaseShape></FolderShape>
@@ -1688,8 +1741,8 @@ describe('EWS > Send Mail', function () {
 		);
 	});
 
+
 	it("Sanity | Send low priority mail from zwc to ews client", async () => {
-		// ZWC: Send low priority mail
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m f="?">
@@ -1702,11 +1755,11 @@ describe('EWS > Send Mail', function () {
 			</SendMsgRequest>`,
 			account2AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, "SendMsgRequest should not fault");
 
 		await soap.waitFor(5000);
-
-		// EWS: Verify importance is Low
 		const folderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape><t:BaseShape>AllProperties</t:BaseShape></FolderShape>

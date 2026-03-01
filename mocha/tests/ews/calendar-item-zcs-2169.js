@@ -33,8 +33,6 @@ describe('EWS > CalendarItem ZCS-2169', function () {
 	// Tests
 	it('Sanity | Creating recurring appointments from outlook 2016 should show all instances including last instance in ZWC', async () => {
 		const messageSubject = `subject1${common.getUniqueString()}`;
-
-		// EWS: CreateItem — recurring appointment with EndDateRecurrence
 		const createRes = await ews.makeEWSRequest(
 			`<CreateItem
 				xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
@@ -75,28 +73,36 @@ describe('EWS > CalendarItem ZCS-2169', function () {
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
 		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
-		assert.equal(createMessage.$.ResponseClass, 'Success', 'CreateItem should succeed');
 
-		// ZWC: Verify the appointment via SearchRequest
+		// Verify response
+		assert.equal(createMessage.$.ResponseClass, 'Success', 'CreateItem should succeed');
 		await soap.waitFor(5000);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(account1Email, account1Password);
+
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
 				<query>subject:${messageSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
 		const appt = searchRes.SearchResponse?.appt;
 		assert.exists(appt, 'Appointment should exist in search results');
 		const apptItem = Array.isArray(appt) ? appt[0] : appt;
 		const invId = apptItem.invId;
 
-		// ZWC: GetMsgRequest to verify until date
+		// Get the message
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${invId}" />
 			</GetMsgRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not be a Fault');
 		const msg = getMsgRes.GetMsgResponse?.m;
 		assert.exists(msg, 'Message should exist');

@@ -43,7 +43,7 @@ describe('ImportZimbraContacts', function () {
 			</ImportContactsRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(importRes.Fault, 'ImportContactsRequest Zimbra should not fault');
 		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});
@@ -72,7 +72,7 @@ describe('ImportZimbraContacts', function () {
 			</ImportContactsRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(importRes.Fault, 'ImportContactsRequest should not fault');
 		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});
@@ -101,7 +101,7 @@ describe('ImportZimbraContacts', function () {
 			</ImportContactsRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(importRes.Fault, 'ImportContactsRequest should not fault');
 		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});
@@ -130,7 +130,7 @@ describe('ImportZimbraContacts', function () {
 			</ImportContactsRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(importRes.Fault, 'ImportContactsRequest should not fault');
 		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});
@@ -163,7 +163,7 @@ describe('ImportZimbraContacts', function () {
 			`<ExportContactsRequest xmlns="urn:zimbraMail" ct="csv"/>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(exportRes.Fault, 'ExportContactsRequest should not fault');
 		assert.exists(exportRes.ExportContactsResponse, 'ExportContactsResponse should exist');
 	});
@@ -193,14 +193,14 @@ describe('ImportZimbraContacts', function () {
 			</ImportContactsRequest>`, accountAuthToken
 		);
 
-		// Search for the item
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
 				<query>contact:(${uniqueName})</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
@@ -232,7 +232,7 @@ describe('ImportZimbraContacts', function () {
 			</ImportContactsRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(importRes.Fault, 'ImportContactsRequest large batch should not fault');
 		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});
@@ -261,7 +261,7 @@ describe('ImportZimbraContacts', function () {
 			</ImportContactsRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(importRes.Fault, 'ImportContactsRequest with notes should not fault');
 		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});
@@ -290,7 +290,7 @@ describe('ImportZimbraContacts', function () {
 			</ImportContactsRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(importRes.Fault, 'ImportContactsRequest to folder should not fault');
 		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});

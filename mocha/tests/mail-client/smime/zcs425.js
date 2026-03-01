@@ -31,31 +31,40 @@ describe('Mail Client > Smime > zcs425', function () {
 
 	// Tests
 	it('Sanity | Verify when just encrypted mail is received, ZWC user is not able to decrypt it if its certificate is not present', async () => {
-		// Source: zcs425_Test1 from Smime/zcs425.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Verify when just encrypted mail is received, ZWC user is able to decrypt it using its private key', async () => {
-		// Source: zcs425_Test2 from Smime/zcs425.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Verify when just encrypted mail with attachment is received, ZWC user is able to decrypt it using its private key', async () => {
-		// Source: zcs425_Test3 from Smime/zcs425.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

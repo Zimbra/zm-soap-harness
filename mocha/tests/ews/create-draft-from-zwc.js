@@ -47,8 +47,10 @@ describe('EWS > Create Draft From ZWC', function () {
 		const messageSubject = `subject${common.getUniqueString()}`;
 		const messageContent = 'Message test content';
 
-		// ZWC: Save draft
+		// Authenticate account
 		const account1AuthToken = await soap.getAccountAuthToken(account1Email, account1Password);
+
+		// Save draft
 		const saveDraftRes = await soap.makeSOAPEnvelopeAccount(
 			`<SaveDraftRequest xmlns="urn:zimbraMail">
 				<m>
@@ -59,11 +61,11 @@ describe('EWS > Create Draft From ZWC', function () {
 				</m>
 			</SaveDraftRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(saveDraftRes.Fault, 'SaveDraftRequest should not be a Fault');
 
 		await soap.waitFor(5000);
-
-		// EWS: GetFolder for Drafts
 		const getFolderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>
@@ -86,8 +88,6 @@ describe('EWS > Create Draft From ZWC', function () {
 		assert.equal(folderMsg.$.ResponseClass, 'Success', 'GetFolder should succeed');
 		const draftsId = folderMsg.Folders.Folder.FolderId.$.Id;
 		assert.equal(draftsId, '6', 'Drafts folder Id should be 6');
-
-		// EWS: SyncFolderItems on Drafts
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -117,8 +117,6 @@ describe('EWS > Create Draft From ZWC', function () {
 		assert.exists(matchedItem, "Should find message matching subject");
 		const mailItemId = matchedItem.Message.ItemId.$.Id;
 		const mailChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
-
-		// EWS: GetItem to verify draft
 		const getItemRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -159,8 +157,10 @@ describe('EWS > Create Draft From ZWC', function () {
 	it('Sanity | Create draft with subject and recipient in ZWC and sync on EWS client', async () => {
 		const messageSubject = `subject${common.getUniqueString()}`;
 
-		// ZWC: Save draft with recipient
+		// Authenticate account
 		const account1AuthToken = await soap.getAccountAuthToken(account1Email, account1Password);
+
+		// Save draft
 		const saveDraftRes = await soap.makeSOAPEnvelopeAccount(
 			`<SaveDraftRequest xmlns="urn:zimbraMail">
 				<m>
@@ -172,11 +172,11 @@ describe('EWS > Create Draft From ZWC', function () {
 				</m>
 			</SaveDraftRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(saveDraftRes.Fault, 'SaveDraftRequest should not be a Fault');
 
 		await soap.waitFor(5000);
-
-		// EWS: GetFolder for Drafts
 		const getFolderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>
@@ -198,8 +198,6 @@ describe('EWS > Create Draft From ZWC', function () {
 		const folderMsg = Array.isArray(getFolderMsg) ? getFolderMsg[0] : getFolderMsg;
 		assert.equal(folderMsg.$.ResponseClass, 'Success', 'GetFolder should succeed');
 		const draftsId = folderMsg.Folders.Folder.FolderId.$.Id;
-
-		// EWS: SyncFolderItems on Drafts
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -228,8 +226,6 @@ describe('EWS > Create Draft From ZWC', function () {
 		const latestCreate = creates[creates.length - 1];
 		const mailItemId = latestCreate.Message.ItemId.$.Id;
 		const mailChangeKey = latestCreate.Message.ItemId.$.ChangeKey;
-
-		// EWS: GetItem to verify draft with recipient
 		const getItemRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -263,8 +259,6 @@ describe('EWS > Create Draft From ZWC', function () {
 			'Subject should match');
 		assert.equal(itemMsg.Items.Message.Importance, 'Normal',
 			'Importance should be Normal');
-
-		// Verify ToRecipients
 		const toRecipients = itemMsg.Items.Message.ToRecipients;
 		assert.exists(toRecipients, 'ToRecipients should exist');
 		const mailbox = Array.isArray(toRecipients.Mailbox)

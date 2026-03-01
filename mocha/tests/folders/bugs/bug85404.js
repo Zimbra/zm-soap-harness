@@ -23,19 +23,17 @@ describe('Folders > Bugs > Bug 85404', function () {
 	it('Sanity | AbsFolderPath not returned in notification when a folder has moved', async () => {
 		const folderName = `bug85404_${common.getUniqueString()}`;
 		const rootId = '1';
-
-		// 1. Create folder under Root
 		const createRequest =
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='${rootId}'/>
 			</CreateFolderRequest>`;
 
-		// GetFolderRequest
+		// Get the folder
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
-
-		// Verify absFolderPath is /folderName
 		let getRequest = '<GetFolderRequest xmlns=\'urn:zimbraMail\'/>';
+
+		// Perform SOAP request
 		let getResponse = await soap.makeSOAPEnvelopeAccount(getRequest, accountAuthToken);
 
 		const findFolder = (folders, id) => {
@@ -58,18 +56,14 @@ describe('Folders > Bugs > Bug 85404', function () {
 		// Verify response
 		assert.equal(folder.absFolderPath, `/${folderName}`,
 			'Verify absFolderPath after create');
-
-		// 2. Rename folder
 		const newName = `renamed_${common.getUniqueString()}`;
 		const renameRequest =
 			`<FolderActionRequest xmlns='urn:zimbraMail'>
 				<action op='rename' id='${folderId}' name='${newName}'/>
 			</FolderActionRequest>`;
 
-		// FolderActionRequest
+		// Perform SOAP request
 		await soap.makeSOAPEnvelopeAccount(renameRequest, accountAuthToken);
-
-		// Verify absFolderPath is /newName
 		getResponse = await soap.makeSOAPEnvelopeAccount(getRequest, accountAuthToken);
 
 		folder = findFolder(getResponse.GetFolderResponse.folder, folderId);
@@ -77,15 +71,13 @@ describe('Folders > Bugs > Bug 85404', function () {
 		// Verify response
 		assert.equal(folder.absFolderPath, `/${newName}`,
 			'Verify absFolderPath after rename');
-
-		// 3. Move folder under Sent (ID 5)
 		const moveRequest =
 			`<FolderActionRequest xmlns='urn:zimbraMail'>
 				<action op='move' id='${folderId}' l='5'/>
 			</FolderActionRequest>`;
-		await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken);
 
-		// Verify absFolderPath is /Sent/newName
+		// Perform SOAP request
+		await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken);
 		getResponse = await soap.makeSOAPEnvelopeAccount(getRequest, accountAuthToken);
 
 		folder = findFolder(getResponse.GetFolderResponse.folder, folderId);

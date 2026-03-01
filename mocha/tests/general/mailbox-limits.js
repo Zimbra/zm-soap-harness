@@ -444,7 +444,7 @@ Content to fill quota
 				</AddMsgRequest>`, authToken
 			);
 
-			// Verify the response
+			// Verify response
 			// Verify response
 			assert.notExists(addRes.Fault, `AddMsgRequest ${i} should not fault`);
 		}

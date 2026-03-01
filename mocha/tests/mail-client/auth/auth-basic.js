@@ -56,6 +56,8 @@ describe('Mail Client > Auth > External Authentication > Basic', function () {
 				<password>${config.LDAP.account01.password}</password>
 			</AuthRequest>`, null, false
 		);
+
+		// Verify response
 		assert.isTrue(!!res.AuthResponse || !!res.Fault,
 			'Should get AuthResponse or Fault');
 	});

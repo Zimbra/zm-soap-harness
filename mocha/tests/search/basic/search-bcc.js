@@ -41,7 +41,6 @@ Test content</content>
 
 	// Tests
 	it('Functional | Login as the appropriate test account', async () => {
-		// Account auth
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 	});
 });

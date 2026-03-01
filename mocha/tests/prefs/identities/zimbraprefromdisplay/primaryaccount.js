@@ -38,7 +38,7 @@ describe('Prefs > Identities > ZimbraPrefFromDisplay > PrimaryAccount', function
 		// Get identities
 		const getRes = await soap.makeSOAPEnvelopeAccount(`<GetIdentitiesRequest xmlns="urn:zimbraAccount"/>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(getRes.Fault, 'GetIdentities should not fault');
 		const defaultIdentity = getRes.GetIdentitiesResponse?.identity?.[0] || getRes.GetIdentitiesResponse?.identity;
 		const identityId = defaultIdentity?.id;
@@ -47,7 +47,7 @@ describe('Prefs > Identities > ZimbraPrefFromDisplay > PrimaryAccount', function
 		// Modify the identity
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyIdentityRequest xmlns="urn:zimbraAccount"><identity id="${identityId}"><a name="zimbraPrefFromDisplay">${displayName}</a></identity></ModifyIdentityRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyIdentity should not fault');
 	});
 
@@ -66,7 +66,7 @@ describe('Prefs > Identities > ZimbraPrefFromDisplay > PrimaryAccount', function
 		// Get identities
 		const verifyRes = await soap.makeSOAPEnvelopeAccount(`<GetIdentitiesRequest xmlns="urn:zimbraAccount"/>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(verifyRes.Fault, 'Verify should not fault');
 		assert.exists(verifyRes.GetIdentitiesResponse, 'Response should exist');
 	});
@@ -82,7 +82,7 @@ describe('Prefs > Identities > ZimbraPrefFromDisplay > PrimaryAccount', function
 		// Modify the identity
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyIdentityRequest xmlns="urn:zimbraAccount"><identity id="${identityId}"><a name="zimbraPrefFromDisplay"></a></identity></ModifyIdentityRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Reset should not fault');
 	});
 });

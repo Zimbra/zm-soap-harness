@@ -30,13 +30,19 @@ describe('Contacts > GAL > ZCS-3390 - GAL delta sync fix', function () {
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SyncGalRequest xmlns="urn:zimbraAccount"/>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res1.Fault, 'SyncGal should not be a Fault');
 
 		const token = res1.SyncGalResponse.token;
 		if (token) {
+
+			// Send sync gal request
 			const res2 = await soap.makeSOAPEnvelopeAccount(
 				`<SyncGalRequest xmlns="urn:zimbraAccount" token="${token}"/>`, accountToken
 			);
+
+			// Verify response
 			assert.notExists(res2.Fault, 'SyncGal delta should not be a Fault');
 		}
 	});
@@ -44,6 +50,8 @@ describe('Contacts > GAL > ZCS-3390 - GAL delta sync fix', function () {
 
 	it('Sanity | ZCS-3390 SyncGal with new account added', async () => {
 		const newEmail = `zcs3390test${common.getUniqueString()}@${config.testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${newEmail}</name>
@@ -51,9 +59,12 @@ describe('Contacts > GAL > ZCS-3390 - GAL delta sync fix', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 
+		// Send sync gal request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<SyncGalRequest xmlns="urn:zimbraAccount"/>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SyncGal should not be a Fault');
 		assert.exists(res.SyncGalResponse, 'SyncGalResponse should exist');
 	});

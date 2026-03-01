@@ -61,8 +61,9 @@ describe('EWS > Send Mail CC BCC From ZWC', function () {
 
 	// Tests
 	it('Sanity | Send an email from user1 To user2 with CC user3 and BCC use4 from ZWC to EWS', async () => {
-		// Send mail from ZWC with To/Cc/Bcc
 		const account1AuthToken = await soap.getAccountAuthToken(account1Email, accountPassword);
+
+		// Send the message
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -76,12 +77,12 @@ describe('EWS > Send Mail CC BCC From ZWC', function () {
 				</m>
 			</SendMsgRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
 
 		await soap.waitFor(5000);
-
-		// EWS: Verify on account2 (To recipient)
 		const getFolderRes2 = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>
@@ -128,8 +129,6 @@ describe('EWS > Send Mail CC BCC From ZWC', function () {
 			? syncMessage2.Changes.Create : [syncMessage2.Changes.Create];
 		const mailId2 = creates2[0].Message.ItemId.$.Id;
 		const mailChangeKey2 = creates2[0].Message.ItemId.$.ChangeKey;
-
-		// EWS: GetItem on account2 to verify recipients
 		const getItemRes2 = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -181,8 +180,6 @@ describe('EWS > Send Mail CC BCC From ZWC', function () {
 			'Account4 should not be in Cc');
 		assert.notExists(itemMsg2.Items.Message.BccRecipients,
 			'BccRecipients should not be visible');
-
-		// EWS: Verify on account3 (Cc recipient) - same flow
 		const getFolderRes3 = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>
@@ -229,8 +226,6 @@ describe('EWS > Send Mail CC BCC From ZWC', function () {
 			? syncMessage3.Changes.Create : [syncMessage3.Changes.Create];
 		const mailId3 = creates3[0].Message.ItemId.$.Id;
 		const mailChangeKey3 = creates3[0].Message.ItemId.$.ChangeKey;
-
-		// EWS: GetItem on account3
 		const getItemRes3 = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>

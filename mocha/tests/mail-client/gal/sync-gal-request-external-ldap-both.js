@@ -31,21 +31,27 @@ describe('Mail Client > GAL > SyncGALRequest_ExternalLDAP_Both', function () {
 
 	// Tests
 	it('Sanity | Sync GAL against both the internal and external (LDAP) GAL servers', async () => {
-		// Source: SyncGalRequest_ExternalLDAP_Both_Basic_01 from GAL/ExternalGAL/SyncGALRequest_ExternalLDAP_Both.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Functional | SyncGalRequest against both internal and external (AD) servers should return accounts and resources', async () => {
-		// Source: SyncGalRequest_ExternalLDAP_Both_Basic_02 from GAL/ExternalGAL/SyncGALRequest_ExternalLDAP_Both.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

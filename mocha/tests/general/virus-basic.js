@@ -82,7 +82,7 @@ X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*
 		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
 
-		// Search for the item
+		// Search item
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>in:inbox</query>
@@ -110,7 +110,7 @@ X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*
 		// Authenticate account
 		const adminAcctToken = adminAuthToken;
 
-		// Search for the item
+		// Search item
 		const res = await soap.makeSOAPEnvelopeAdmin(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>in:inbox</query>

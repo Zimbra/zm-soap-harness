@@ -29,18 +29,24 @@ describe('Contacts > Bugs > Bug 32222 - Import custom CSV format', function () {
 	it('Functional | Import contacts with custom CSV header fields', async () => {
 		const csvContent = 'First Name,Last Name,E-mail Address,Job Title\nJeff,Schoenfeld,jeff@test.com,Engineer';
 
+		// Import contacts
 		const importRes = await soap.makeSOAPEnvelopeAccount(
 			`<ImportContactsRequest xmlns="urn:zimbraMail" ct="csv">
 				<content>${csvContent}</content>
 			</ImportContactsRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(importRes.Fault, 'Import should not be a Fault');
 
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact" limit="100">
 				<query>in:contacts</query>
 			</SearchRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});

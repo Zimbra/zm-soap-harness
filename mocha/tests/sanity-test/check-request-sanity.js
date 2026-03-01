@@ -19,7 +19,6 @@ describe('SanityTest > Check Request Sanity', function () {
 
 	// Tests
 	it('Sanity | Sanity test for CheckHostnameResolveRequest', async () => {
-		// CheckHostnameResolveRequest
 		const res = await soap.makeSOAPEnvelopeAdmin(
 			`<CheckHostnameResolveRequest xmlns="urn:zimbraAdmin">
 				<hostname>${config.serverHost}</hostname>
@@ -31,12 +30,8 @@ describe('SanityTest > Check Request Sanity', function () {
 		assert.exists(res.CheckHostnameResolveResponse,
 			'CheckHostnameResolveResponse should exist');
 		const codeArr = res.CheckHostnameResolveResponse.code;
-
-		// Verify response
 		assert.exists(codeArr, 'Response should contain code');
 		const code = Array.isArray(codeArr) ? codeArr[0]._content : codeArr;
-
-		// Verify response
 		assert.equal(code, 'check.OK', 'Code should be check.OK');
 	});
 

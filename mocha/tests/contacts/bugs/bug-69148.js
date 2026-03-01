@@ -36,6 +36,8 @@ describe('Contacts > Bugs > Bug 69148 - Contact limit check', function () {
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		assert.exists(createRes.CreateContactResponse.cn, 'Contact should be created');
 	});

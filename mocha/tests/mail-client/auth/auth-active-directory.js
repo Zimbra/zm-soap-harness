@@ -150,6 +150,8 @@ describe('Mail Client > Auth > External Authentication > Active Directory', func
 				<password>invalidPassword</password>
 			</AuthRequest>`, null, false
 		);
+
+		// Verify response
 		assert.exists(res.Fault, 'Should return Fault for invalid password');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Error code should be AUTH_FAILED');
@@ -163,12 +165,12 @@ describe('Mail Client > Auth > External Authentication > Active Directory', func
 				<password>${zimbraPassword}</password>
 			</AuthRequest>`, null, false
 		);
+
+		// Verify response
 		assert.exists(res.Fault, 'Should return Fault for internal password');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Error code should be AUTH_FAILED');
 	});
-
-
 
 
 	it('Sanity | Verify invalid password is denied on AD auth domain 2', async () => {
@@ -178,12 +180,12 @@ describe('Mail Client > Auth > External Authentication > Active Directory', func
 				<password>invalidPassword</password>
 			</AuthRequest>`, null, false
 		);
+
+		// Verify response
 		assert.exists(res.Fault, 'Should return Fault for invalid password');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Error code should be AUTH_FAILED');
 	});
-
-
 
 
 	it('Sanity | Verify invalid password is denied on AD auth domain with fallback', async () => {
@@ -193,6 +195,8 @@ describe('Mail Client > Auth > External Authentication > Active Directory', func
 				<password>invalidPassword</password>
 			</AuthRequest>`, null, false
 		);
+
+		// Verify response
 		assert.exists(res.Fault, 'Should return Fault for invalid password');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Error code should be AUTH_FAILED');
@@ -206,12 +210,11 @@ describe('Mail Client > Auth > External Authentication > Active Directory', func
 				<password>${zimbraPassword}</password>
 			</AuthRequest>`, null, false
 		);
-		// With fallback to local, internal password should work
+
+		// Verify response
 		assert.isTrue(!!res.AuthResponse || !!res.Fault,
 			'Should get AuthResponse or AUTH_FAILED');
 	});
-
-
 
 
 	it('Sanity | Verify invalid password is denied with fallback to local TRUE', async () => {
@@ -221,6 +224,8 @@ describe('Mail Client > Auth > External Authentication > Active Directory', func
 				<password>invalidPassword</password>
 			</AuthRequest>`, null, false
 		);
+
+		// Verify response
 		assert.exists(res.Fault, 'Should return Fault for invalid password');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Error code should be AUTH_FAILED');
@@ -234,6 +239,8 @@ describe('Mail Client > Auth > External Authentication > Active Directory', func
 				<password>${zimbraPassword}</password>
 			</AuthRequest>`, null, false
 		);
+
+		// Verify response
 		assert.exists(res.Fault, 'Should return Fault for internal password');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Error code should be AUTH_FAILED');
@@ -247,6 +254,8 @@ describe('Mail Client > Auth > External Authentication > Active Directory', func
 				<password>wrong password</password>
 			</AuthRequest>`, null, false
 		);
+
+		// Verify response
 		assert.exists(res.Fault, 'Should return Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Error code should be AUTH_FAILED');

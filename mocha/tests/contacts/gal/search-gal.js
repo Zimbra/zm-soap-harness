@@ -43,6 +43,8 @@ describe('Contacts > GAL > SearchGAL', function () {
 				<name>test</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
@@ -54,6 +56,8 @@ describe('Contacts > GAL > SearchGAL', function () {
 				<name>${account2Email}</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
@@ -65,6 +69,8 @@ describe('Contacts > GAL > SearchGAL', function () {
 				<name>@${config.testDomain}</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
@@ -76,6 +82,8 @@ describe('Contacts > GAL > SearchGAL', function () {
 				<name>gal</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
@@ -87,6 +95,8 @@ describe('Contacts > GAL > SearchGAL', function () {
 				<name>GALTEST</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
@@ -98,6 +108,8 @@ describe('Contacts > GAL > SearchGAL', function () {
 				<name>TEST</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
@@ -109,6 +121,8 @@ describe('Contacts > GAL > SearchGAL', function () {
 				<name>test*</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
@@ -120,6 +134,8 @@ describe('Contacts > GAL > SearchGAL', function () {
 				<name>test@</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
@@ -131,6 +147,8 @@ describe('Contacts > GAL > SearchGAL', function () {
 				<name>*</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
@@ -142,6 +160,8 @@ describe('Contacts > GAL > SearchGAL', function () {
 				<name>test</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
@@ -153,6 +173,8 @@ describe('Contacts > GAL > SearchGAL', function () {
 				<name>nonexistentuser${common.getUniqueString()}</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
@@ -164,6 +186,8 @@ describe('Contacts > GAL > SearchGAL', function () {
 				<name></name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
@@ -175,6 +199,8 @@ describe('Contacts > GAL > SearchGAL', function () {
 				<name>GalTest Person</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
@@ -186,6 +212,8 @@ describe('Contacts > GAL > SearchGAL', function () {
 				<name>test</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
@@ -197,6 +225,8 @@ describe('Contacts > GAL > SearchGAL', function () {
 				<name>g</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});

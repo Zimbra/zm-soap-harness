@@ -37,11 +37,14 @@ describe('Contacts > AutoComplete > Bug 65081 - AutoComplete fix', function () {
 			</CreateContactRequest>`, accountToken
 		);
 
+		// Send auto complete request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>Bug65</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -53,6 +56,8 @@ describe('Contacts > AutoComplete > Bug 65081 - AutoComplete fix', function () {
 				<name>test</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});

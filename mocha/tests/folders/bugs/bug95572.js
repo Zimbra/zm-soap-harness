@@ -28,7 +28,7 @@ describe('Folders > Bugs > Bug 95572', function () {
 				<folder name='${folderName}' l='1' fie='1'/>
 			</CreateFolderRequest>`;
 
-		// Try with account auth
+		// Perform SOAP request
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 
 		// Verify response

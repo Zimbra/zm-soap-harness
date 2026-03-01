@@ -31,11 +31,14 @@ describe('Mail Client > Prefs > bug23736', function () {
 
 	// Tests
 	it('Sanity | Verify if the externalmail fetch for IMap folders work properly', async () => {
-		// Source: imapPollDataSource from Prefs/Bugs/bug23736.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

@@ -31,31 +31,40 @@ describe('Mail Client > Smime > ZCS-85', function () {
 
 	// Tests
 	it('Sanity | User1 adds User3 as delegate with right sendAs User3 sends mail to user2No error should be thrown User3 sends signed ...', async () => {
-		// Source: TC1 from Smime/ZCS-85.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | User1 adds User4 as delegate with right sendOnBehalfOf User4 sends mail to user2No error should be thrown User4 sends...', async () => {
-		// Source: TC2 from Smime/ZCS-85.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | User1 is able to send encrypted mail to User2', async () => {
-		// Source: TC3 from Smime/ZCS-85.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

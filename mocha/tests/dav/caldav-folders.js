@@ -90,9 +90,7 @@ describe('CalDav > Folders', function () {
 		return;
 	}
 
-	/**
-	 * Helper: PROPFIND on root DAV folder for a specific user
-	 */
+	// Helper: PROPFIND on root DAV folder for a specific user
 	async function propfindRoot(user, encoded, server) {
 		return makeDavRequest({
 			method: 'PROPFIND',
@@ -115,7 +113,7 @@ describe('CalDav > Folders', function () {
 		});
 	}
 
-
+	// Tests
 	it('Sanity | Verify basic href path only includes user name part if user is in default domain', async () => {
 		// PROPFIND using username only (without domain)
 		const res = await makeDavRequest({

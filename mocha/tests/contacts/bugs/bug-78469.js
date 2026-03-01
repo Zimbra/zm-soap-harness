@@ -28,6 +28,8 @@ describe('Contacts > Bugs > Bug 78469 - Create contact with notes', function () 
 	// Tests
 	it('Sanity | Create contact with notes field', async () => {
 		const notes = 'Some notes for the contact ' + common.getUniqueString();
+
+		// Create a contact
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -38,6 +40,8 @@ describe('Contacts > Bugs > Bug 78469 - Create contact with notes', function () 
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		assert.exists(createRes.CreateContactResponse.cn, 'Contact should exist');
 	});
@@ -57,6 +61,7 @@ describe('Contacts > Bugs > Bug 78469 - Create contact with notes', function () 
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
+		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="0">
 				<cn id="${cn.id}">
@@ -64,6 +69,8 @@ describe('Contacts > Bugs > Bug 78469 - Create contact with notes', function () 
 				</cn>
 			</ModifyContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
 		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});

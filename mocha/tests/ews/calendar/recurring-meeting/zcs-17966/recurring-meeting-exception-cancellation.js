@@ -52,16 +52,12 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17966 > Recurring Meeting Exce
 		const subject1 = `subject1.${unique}`;
 		const updatedSubject2 = `updated_subject2.${unique}`;
 		const uid = `${unique}-D714-429E-94D7-80A1A975F61E`;
-
-		// Use future dates for recurrence
 		const startDate = common.getXMLTime(1440); // tomorrow
 		const endDate = common.getXMLTime(1500);
 		const startDateOnly = startDate.substring(0, 10);
 		const endDateOnly = common.getXMLTime(5760).substring(0, 10); // 4 days out
 		const day2Start = common.getXMLTime(2880); // day after tomorrow
 		const day2End = common.getXMLTime(2940);
-
-		// Step 1: Create a recurring meeting from Outlook
 		const createRes = await ews.makeEWSRequest(
 			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				MessageDisposition="SaveOnly"
@@ -110,6 +106,8 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17966 > Recurring Meeting Exce
 		const createBody = ews.getBody(createRes);
 		const createMsg =
 			createBody.CreateItemResponse.ResponseMessages.CreateItemResponseMessage;
+
+		// Verify response
 		assert.equal(
 			createMsg.$.ResponseClass,
 			'Success',
@@ -119,7 +117,7 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17966 > Recurring Meeting Exce
 		const masterCk = createMsg.Items.CalendarItem.ItemId.$.ChangeKey;
 		assert.exists(masterId, 'Master recurring ItemId should exist');
 
-		// Verify on ZWC
+		// Authenticate account
 		const account1AuthToken = await soap.getAccountAuthToken(
 			account1Email,
 			accountPassword,
@@ -127,12 +125,15 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17966 > Recurring Meeting Exce
 
 		await common.delay(5000);
 
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
 				<query>subject:${subject1}</query>
 			</SearchRequest>`,
 			account1AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		const appt = Array.isArray(searchRes.SearchResponse.appt)
 			? searchRes.SearchResponse.appt[0]
@@ -140,15 +141,16 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17966 > Recurring Meeting Exce
 		const invId = appt.invId;
 		assert.exists(invId, 'Appointment invId should exist');
 
+		// Get the message
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${invId}" />
 			</GetMsgRequest>`,
 			account1AuthToken,
 		);
-		assert.notExists(getMsgRes.Fault, 'Response should not be a Fault');
 
-		// Step 2: Create exception (update occurrence #2) via EWS
+		// Verify response
+		assert.notExists(getMsgRes.Fault, 'Response should not be a Fault');
 		const updateRes = await ews.makeEWSRequest(
 			`<UpdateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				ConflictResolution="AutoResolve"
@@ -192,14 +194,13 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17966 > Recurring Meeting Exce
 			'Success',
 			'UpdateItem (exception) should succeed',
 		);
-
-		// Step 3: Verify the exception in ZWC
 		await common.delay(5000);
 
 		const now = new Date();
 		const expandStart = now.getTime();
 		const expandEnd = expandStart + 7 * 24 * 60 * 60 * 1000;
 
+		// Search item
 		const searchRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${expandStart}" calExpandInstEnd="${expandEnd}"
@@ -208,6 +209,8 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17966 > Recurring Meeting Exce
 			</SearchRequest>`,
 			account1AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(searchRes2.Fault, 'Response should not be a Fault');
 		const appts = Array.isArray(searchRes2.SearchResponse.appt)
 			? searchRes2.SearchResponse.appt
@@ -226,12 +229,15 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17966 > Recurring Meeting Exce
 		}
 		assert.exists(exceptionInvId, 'Exception instance invId should exist');
 
+		// Get the message
 		const getMsgRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${exceptionInvId}" />
 			</GetMsgRequest>`,
 			account1AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(getMsgRes2.Fault, 'Response should not be a Fault');
 		const exMsg = Array.isArray(getMsgRes2.GetMsgResponse.m)
 			? getMsgRes2.GetMsgResponse.m[0]
@@ -243,8 +249,6 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17966 > Recurring Meeting Exce
 			updatedSubject2,
 			'Exception subject should match',
 		);
-
-		// Step 4: Get the occurrence item id for instance 2 using EWS GetItem
 		const getItemRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -265,8 +269,6 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17966 > Recurring Meeting Exce
 		const cancelTargetId = getItemMsg.Items.CalendarItem.ItemId.$.Id;
 		const cancelTargetCk = getItemMsg.Items.CalendarItem.ItemId.$.ChangeKey;
 		assert.exists(cancelTargetId, 'Occurrence ItemId should exist');
-
-		// Step 5: Cancel exception via EWS
 		const cancelRes = await ews.makeEWSRequest(
 			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				MessageDisposition="SendAndSaveCopy"
@@ -289,14 +291,13 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17966 > Recurring Meeting Exce
 			'Success',
 			'CancelCalendarItem should succeed',
 		);
-
-		// Step 6: Verify in Zimbra that the exception instance is removed
 		await common.delay(5000);
 
 		const day2Ms = new Date(day2Start).getTime();
 		const narrowStart = day2Ms - 60 * 60 * 1000;
 		const narrowEnd = day2Ms + 24 * 60 * 60 * 1000;
 
+		// Search item
 		const searchRes3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${narrowStart}" calExpandInstEnd="${narrowEnd}">
@@ -304,6 +305,8 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17966 > Recurring Meeting Exce
 			</SearchRequest>`,
 			account1AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(searchRes3.Fault, 'Response should not be a Fault');
 
 		const remainingAppts = searchRes3.SearchResponse.appt;
@@ -324,7 +327,7 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17966 > Recurring Meeting Exce
 			}
 		}
 
-		// Step 7: Verify attendee received cancellation mail with updated subject
+		// Authenticate account
 		const account2AuthToken = await soap.getAccountAuthToken(
 			account2Email,
 			accountPassword,
@@ -332,12 +335,15 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17966 > Recurring Meeting Exce
 
 		await common.delay(5000);
 
+		// Search item
 		const searchRes4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:${updatedSubject2}</query>
 			</SearchRequest>`,
 			account2AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(searchRes4.Fault, 'Response should not be a Fault');
 		const cancelMail = Array.isArray(searchRes4.SearchResponse.m)
 			? searchRes4.SearchResponse.m[0]
@@ -345,12 +351,15 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17966 > Recurring Meeting Exce
 		assert.exists(cancelMail, 'Cancellation mail should exist for attendee');
 		const cancelMailId = cancelMail.id;
 
+		// Get the message
 		const getMsgRes3 = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${cancelMailId}" />
 			</GetMsgRequest>`,
 			account2AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(getMsgRes3.Fault, 'Response should not be a Fault');
 		const cancelMailMsg = Array.isArray(getMsgRes3.GetMsgResponse.m)
 			? getMsgRes3.GetMsgResponse.m[0]

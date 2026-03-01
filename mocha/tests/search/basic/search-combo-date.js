@@ -344,83 +344,106 @@ Content for email03R</content>
 
 
 	it('Functional | Verify the results are correct for query using to - and date - , before - , after - (Bug: 2344)', async () => {
-		// TO with BEFORE
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>to:(${toUser}) before:5/5/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
 		assert.exists(res1.SearchResponse?.m, 'Response element should exist');
 
+		// Search item
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>to:(${toUser}) before:5/1/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 
+		// Search item
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>to:(${toUser}) before:4/30/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
 
-		// TO with DATE
+		// Search item
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>to:(${toUser}) date:5/15/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
 		assert.exists(res4.SearchResponse?.m, 'Response element should exist');
 
+		// Search item
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>to:(${toUser}) date:5/14/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
 
+		// Search item
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>to:(${toUser}) before:5/16/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
 		assert.exists(res6.SearchResponse?.m, 'Response element should exist');
 
-		// TO with AFTER
+		// Search item
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>to:(${toUser}) after:5/30/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
 		assert.exists(res7.SearchResponse?.m, 'Response element should exist');
 
+		// Search item
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>to:(${toUser}) after:5/31/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
 
+		// Search item
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>to:(${toUser}) after:6/1/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
 	});
 
@@ -432,74 +455,100 @@ Content for email03R</content>
 				<query>from:(${originationUser}) before:5/5/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
 		assert.exists(res1.SearchResponse?.m, 'Response element should exist');
 
+		// Search item
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>from:(${originationUser}) before:5/1/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 
+		// Search item
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>from:(${originationUser}) before:4/30/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
 
+		// Search item
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>from:(${originationUser}) date:5/15/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
 		assert.exists(res4.SearchResponse?.m, 'Response element should exist');
 
+		// Search item
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>from:(${originationUser}) date:5/14/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
 
+		// Search item
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>from:(${originationUser}) before:5/16/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
 		assert.exists(res6.SearchResponse?.m, 'Response element should exist');
 
+		// Search item
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>from:(${originationUser}) after:5/30/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
 		assert.exists(res7.SearchResponse?.m, 'Response element should exist');
 
+		// Search item
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>from:(${originationUser}) after:5/31/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
 
+		// Search item
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>from:(${originationUser}) after:6/1/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
 	});
 
@@ -511,74 +560,100 @@ Content for email03R</content>
 				<query>cc:(${copyUser}) before:5/5/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
 		assert.exists(res1.SearchResponse?.m, 'Response element should exist');
 
+		// Search item
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>cc:(${copyUser}) before:5/1/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 
+		// Search item
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>cc:(${copyUser}) before:4/30/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
 
+		// Search item
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>cc:(${copyUser}) date:5/15/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
 		assert.exists(res4.SearchResponse?.m, 'Response element should exist');
 
+		// Search item
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>cc:(${copyUser}) date:5/14/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
 
+		// Search item
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>cc:(${copyUser}) before:5/16/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
 		assert.exists(res6.SearchResponse?.m, 'Response element should exist');
 
+		// Search item
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>cc:(${copyUser}) after:5/30/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
 		assert.exists(res7.SearchResponse?.m, 'Response element should exist');
 
+		// Search item
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>cc:(${copyUser}) after:5/31/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
 
+		// Search item
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>cc:(${copyUser}) after:6/1/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
 	});
 
@@ -590,74 +665,100 @@ Content for email03R</content>
 				<query>subject:(${subjectText}) before:5/5/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
 		assert.exists(res1.SearchResponse?.m, 'Response element should exist');
 
+		// Search item
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>subject:(${subjectText}) before:5/1/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 
+		// Search item
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>subject:(${subjectText}) before:4/30/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
 
+		// Search item
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>subject:(${subjectText}) date:5/15/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
 		assert.exists(res4.SearchResponse?.m, 'Response element should exist');
 
+		// Search item
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>subject:(${subjectText}) date:5/14/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
 
+		// Search item
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>subject:(${subjectText}) before:5/16/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
 		assert.exists(res6.SearchResponse?.m, 'Response element should exist');
 
+		// Search item
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>subject:(${subjectText}) after:5/30/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
 		assert.exists(res7.SearchResponse?.m, 'Response element should exist');
 
+		// Search item
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>subject:(${subjectText}) after:5/31/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
 
+		// Search item
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>subject:(${subjectText}) after:6/1/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
 	});
 
@@ -669,74 +770,100 @@ Content for email03R</content>
 				<query>content:(${contentText}) before:5/5/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
 		assert.exists(res1.SearchResponse?.m, 'Response element should exist');
 
+		// Search item
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>content:(${contentText}) before:5/1/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 
+		// Search item
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>content:(${contentText}) before:4/30/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
 
+		// Search item
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>content:(${contentText}) date:5/15/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
 		assert.exists(res4.SearchResponse?.m, 'Response element should exist');
 
+		// Search item
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>content:(${contentText}) date:5/14/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
 
+		// Search item
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>content:(${contentText}) before:5/16/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
 		assert.exists(res6.SearchResponse?.m, 'Response element should exist');
 
+		// Search item
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>content:(${contentText}) after:5/30/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
 		assert.exists(res7.SearchResponse?.m, 'Response element should exist');
 
+		// Search item
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>content:(${contentText}) after:5/31/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
 
+		// Search item
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>content:(${contentText}) after:6/1/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
 	});
 
@@ -748,74 +875,100 @@ Content for email03R</content>
 				<query>content:(${contentAttachText}) before:5/5/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
 		assert.exists(res1.SearchResponse?.m, 'Response element should exist');
 
+		// Search item
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>content:(${contentAttachText}) before:5/1/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 
+		// Search item
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>content:(${contentAttachText}) before:4/30/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
 
+		// Search item
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>content:(${contentAttachText}) date:5/15/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
 		assert.exists(res4.SearchResponse?.m, 'Response element should exist');
 
+		// Search item
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>content:(${contentAttachText}) date:5/14/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
 
+		// Search item
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>content:(${contentAttachText}) before:5/16/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
 		assert.exists(res6.SearchResponse?.m, 'Response element should exist');
 
+		// Search item
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>content:(${contentAttachText}) after:5/30/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
 		assert.exists(res7.SearchResponse?.m, 'Response element should exist');
 
+		// Search item
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>content:(${contentAttachText}) after:5/31/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
 
+		// Search item
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<tz id="${timezone}"/>
 				<query>content:(${contentAttachText}) after:6/1/2005</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
 	});
 });

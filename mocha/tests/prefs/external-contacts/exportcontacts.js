@@ -45,7 +45,7 @@ describe('ExportContacts', function () {
 			</CreateContactRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateContactRequest should not fault');
 
 		// Export contacts
@@ -53,7 +53,7 @@ describe('ExportContacts', function () {
 			`<ExportContactsRequest xmlns="urn:zimbraMail" ct="csv"/>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(exportRes.Fault, 'ExportContactsRequest should not fault');
 		assert.exists(exportRes.ExportContactsResponse, 'ExportContactsResponse should exist');
 	});
@@ -89,7 +89,7 @@ describe('ExportContacts', function () {
 			`<ExportContactsRequest xmlns="urn:zimbraMail" ct="thunderbird-csv"/>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.exists(exportRes.Fault, 'ExportContactsRequest thunderbird-csv format should fault as unsupported');
 	});
 
@@ -124,7 +124,7 @@ describe('ExportContacts', function () {
 			`<ExportContactsRequest xmlns="urn:zimbraMail" ct="outlook-2003-csv"/>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.exists(exportRes.Fault, 'ExportContactsRequest outlook-2003-csv format should fault as unsupported');
 	});
 
@@ -159,7 +159,7 @@ describe('ExportContacts', function () {
 			`<ExportContactsRequest xmlns="urn:zimbraMail" ct="yahoo-csv"/>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.exists(exportRes.Fault, 'ExportContactsRequest yahoo-csv format should fault as unsupported');
 	});
 
@@ -183,7 +183,7 @@ describe('ExportContacts', function () {
 			`<ExportContactsRequest xmlns="urn:zimbraMail" ct="csv"/>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(exportRes.Fault, 'Export empty contacts should not fault');
 		assert.exists(exportRes.ExportContactsResponse, 'ExportContactsResponse should exist');
 	});
@@ -208,7 +208,7 @@ describe('ExportContacts', function () {
 			`<ExportContactsRequest xmlns="urn:zimbraMail" ct="invalid-format"/>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.exists(exportRes.Fault, 'Export with invalid format should fault');
 	});
 });

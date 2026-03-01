@@ -24,7 +24,7 @@ describe('Tasks > SetTaskRequest', function () {
 		const subject = `task${common.getUniqueString()}`;
 		const uid = common.getUniqueString();
 
-		// SetTaskRequest
+		// Send set task request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<SetTaskRequest xmlns="urn:zimbraMail">
 				<default ptst="AC">

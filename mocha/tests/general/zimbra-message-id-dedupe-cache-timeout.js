@@ -75,7 +75,7 @@ Third message content
 		// Verify response
 		assert.notExists(addRes3.Fault, 'Third AddMsgRequest should not fault');
 
-		// Search for the item
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject: test*</query>
@@ -150,7 +150,7 @@ Fourth message content
 			</AddMsgRequest>`, authToken
 		);
 
-		// Search for the item
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject: test*</query>

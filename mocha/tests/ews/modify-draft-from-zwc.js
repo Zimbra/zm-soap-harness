@@ -47,7 +47,6 @@ describe('EWS > Modify Draft From ZWC', function () {
 
 	// Tests
 	it('Sanity | Create draft with subject in EWS and Sync on ZWC Modify same draft using ZWC, add content and recipient and sync to EWS', async () => {
-		// EWS: Create draft with subject only via CreateItem
 		const createRes = await ews.makeEWSRequest(
 			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages" MessageDisposition="SaveOnly">
 				<SavedItemFolderId>
@@ -84,10 +83,10 @@ describe('EWS > Modify Draft From ZWC', function () {
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
 		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+
+		// Verify response
 		assert.equal(createMessage.$.ResponseClass, 'Success',
 			'CreateItem should succeed');
-
-		// EWS: SyncFolderItems on Drafts (empty SyncState)
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -108,14 +107,19 @@ describe('EWS > Modify Draft From ZWC', function () {
 		const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
 		assert.equal(syncMessage.$.ResponseClass, 'Success',
 			'SyncFolderItems should succeed');
-		// ZWC: Auth and search for the draft
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, accountPassword);
+
+		// Search for the item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message"
 				sortBy="dateDesc" offset="0" limit="25">
 				<query>subject:${messageSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const su = Array.isArray(searchRes.SearchResponse.m)
@@ -124,18 +128,20 @@ describe('EWS > Modify Draft From ZWC', function () {
 		assert.include(su.su, messageSubject, 'Subject should match');
 		const mailIdWc = su.id;
 
-		// ZWC: GetMsg to verify the draft
+		// Get the message
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${mailIdWc}" />
 			</GetMsgRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not be a Fault');
 		const msg = getMsgRes.GetMsgResponse.m;
 		const msgObj = Array.isArray(msg) ? msg[0] : msg;
 		assert.include(msgObj.su, messageSubject, 'Subject should contain draft subject');
 
-		// ZWC: SaveDraft - add content and recipient
+		// Save draft
 		const saveDraftRes = await soap.makeSOAPEnvelopeAccount(
 			`<SaveDraftRequest xmlns="urn:zimbraMail">
 				<m>
@@ -148,10 +154,10 @@ describe('EWS > Modify Draft From ZWC', function () {
 				</m>
 			</SaveDraftRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(saveDraftRes.Fault, 'SaveDraftRequest should not be a Fault');
 		assert.exists(saveDraftRes.SaveDraftResponse, 'SaveDraftResponse should exist');
-
-		// EWS: GetFolder for Drafts
 		const getFolderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>
@@ -176,8 +182,6 @@ describe('EWS > Modify Draft From ZWC', function () {
 		assert.equal(draftsId, '6', 'Drafts folder Id should be 6');
 		assert.equal(folderMsg.Folders.Folder.DisplayName, 'Drafts',
 			'DisplayName should be Drafts');
-
-		// EWS: SyncFolderItems on Drafts (with SyncState to get updates)
 		const syncRes2 = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -202,8 +206,6 @@ describe('EWS > Modify Draft From ZWC', function () {
 			? syncMessage2.Changes.Create : [syncMessage2.Changes.Create];
 		const mail02Id = creates2[creates2.length - 1].Message.ItemId.$.Id;
 		const mail02ChangeKey = creates2[creates2.length - 1].Message.ItemId.$.ChangeKey;
-
-		// EWS: GetItem to verify modified draft
 		const getItemRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -245,7 +247,6 @@ describe('EWS > Modify Draft From ZWC', function () {
 
 
 	it('Sanity | Create draft with subject and content in EWS and sync on ZWC Modify same draft using ZWC, Modify content and sync to EWS', async () => {
-		// EWS: Create draft with subject and content via CreateItem
 		const createRes = await ews.makeEWSRequest(
 			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages" MessageDisposition="SaveOnly">
 				<SavedItemFolderId>
@@ -282,10 +283,10 @@ describe('EWS > Modify Draft From ZWC', function () {
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
 		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+
+		// Verify response
 		assert.equal(createMessage.$.ResponseClass, 'Success',
 			'CreateItem should succeed');
-
-		// EWS: SyncFolderItems on Drafts (empty SyncState)
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -308,14 +309,18 @@ describe('EWS > Modify Draft From ZWC', function () {
 			'SyncFolderItems should succeed');
 		const syncState02Ews = syncMessage.SyncState;
 
-		// ZWC: Auth and search for the draft
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, accountPassword);
+
+		// Search for the item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message"
 				sortBy="dateDesc" offset="0" limit="25">
 				<query>subject:${messageSubject1}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const su = Array.isArray(searchRes.SearchResponse.m)
@@ -324,12 +329,14 @@ describe('EWS > Modify Draft From ZWC', function () {
 		assert.include(su.su, messageSubject1, 'Subject should match');
 		const mail02IdWc = su.id;
 
-		// ZWC: GetMsg to verify the draft
+		// Get the message
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${mail02IdWc}" />
 			</GetMsgRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not be a Fault');
 		const msg = getMsgRes.GetMsgResponse.m;
 		const msgObj = Array.isArray(msg) ? msg[0] : msg;
@@ -337,7 +344,7 @@ describe('EWS > Modify Draft From ZWC', function () {
 		assert.include(msgObj.fr || '', messageContent1,
 			'Content should contain original content');
 
-		// ZWC: SaveDraft - modify content
+		// Save draft
 		const saveDraftRes = await soap.makeSOAPEnvelopeAccount(
 			`<SaveDraftRequest xmlns="urn:zimbraMail">
 				<m>
@@ -349,10 +356,10 @@ describe('EWS > Modify Draft From ZWC', function () {
 				</m>
 			</SaveDraftRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(saveDraftRes.Fault, 'SaveDraftRequest should not be a Fault');
 		assert.exists(saveDraftRes.SaveDraftResponse, 'SaveDraftResponse should exist');
-
-		// EWS: GetFolder for Drafts
 		const getFolderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>
@@ -377,8 +384,6 @@ describe('EWS > Modify Draft From ZWC', function () {
 		assert.equal(draftsId, '6', 'Drafts folder Id should be 6');
 		assert.equal(folderMsg.Folders.Folder.DisplayName, 'Drafts',
 			'DisplayName should be Drafts');
-
-		// EWS: SyncFolderItems on Drafts (with previous SyncState)
 		const syncRes2 = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -403,8 +408,6 @@ describe('EWS > Modify Draft From ZWC', function () {
 			? syncMessage2.Changes.Update : [syncMessage2.Changes.Update];
 		const mail03Id = updates[0].Message.ItemId.$.Id;
 		const mail03ChangeKey = updates[0].Message.ItemId.$.ChangeKey;
-
-		// EWS: GetItem to verify modified draft
 		const getItemRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>

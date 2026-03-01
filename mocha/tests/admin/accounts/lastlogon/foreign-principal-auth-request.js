@@ -16,6 +16,7 @@ describe('Admin > Accounts > LastLogon > Foreign Principal Auth Request', functi
 		return;
 	}
 
+	// Tests
 	it('Functional | AuthRequest - verify zimbraLastLogonTimestamp is updated', async () => {
 		const accountName = 'fp' + common.getUniqueString() +
 			'@' + config.testDomain;

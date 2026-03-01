@@ -40,6 +40,7 @@ describe('Contacts > Bugs > Bug 75912 - Modify contact with replace modes', func
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
+		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="0">
 				<cn id="${cn.id}">
@@ -47,6 +48,8 @@ describe('Contacts > Bugs > Bug 75912 - Modify contact with replace modes', func
 				</cn>
 			</ModifyContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
 		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});
@@ -66,6 +69,7 @@ describe('Contacts > Bugs > Bug 75912 - Modify contact with replace modes', func
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
+		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="1">
 				<cn id="${cn.id}">
@@ -74,6 +78,8 @@ describe('Contacts > Bugs > Bug 75912 - Modify contact with replace modes', func
 				</cn>
 			</ModifyContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
 		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});
@@ -92,6 +98,7 @@ describe('Contacts > Bugs > Bug 75912 - Modify contact with replace modes', func
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
+		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="0" force="1">
 				<cn id="${cn.id}">
@@ -99,6 +106,8 @@ describe('Contacts > Bugs > Bug 75912 - Modify contact with replace modes', func
 				</cn>
 			</ModifyContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
 		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});

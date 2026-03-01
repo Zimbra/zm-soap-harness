@@ -43,7 +43,7 @@ describe('Bug47767', function () {
 			</CreateSignatureRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes1.Fault, 'CreateSignatureRequest aaa should not fault');
 		assert.exists(createRes1.CreateSignatureResponse, 'CreateSignatureResponse should exist');
 
@@ -56,7 +56,7 @@ describe('Bug47767', function () {
 			</CreateSignatureRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes2.Fault, 'CreateSignatureRequest bbb should not fault');
 
 		// Create a signature
@@ -68,7 +68,7 @@ describe('Bug47767', function () {
 			</CreateSignatureRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.exists(createRes3.Fault, 'CreateSignatureRequest Bbb should fault');
 		assert.equal(createRes3.Fault.Detail.Error.Code, 'account.SIGNATURE_EXISTS',
 			'Error code should be account.SIGNATURE_EXISTS');
@@ -98,7 +98,7 @@ describe('Bug47767', function () {
 			</CreateSignatureRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.exists(res1.Fault, 'Blank signature type should fault');
 		assert.equal(res1.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Error code should be service.INVALID_REQUEST');
@@ -112,7 +112,7 @@ describe('Bug47767', function () {
 			</CreateSignatureRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.exists(res2.Fault, 'Invalid signature type should fault');
 		assert.equal(res2.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Error code should be service.INVALID_REQUEST');
@@ -126,7 +126,7 @@ describe('Bug47767', function () {
 			</CreateSignatureRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.exists(res3.Fault, 'Blank signature name should fault');
 		assert.equal(res3.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Error code should be service.INVALID_REQUEST');

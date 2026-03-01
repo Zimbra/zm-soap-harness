@@ -62,7 +62,7 @@ simple text string in the body
 		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(account1Email);
 
-		// Search for the item
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>${subject}</query>
@@ -106,7 +106,7 @@ simple text string in the body
 		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(account1Email);
 
-		// Search for the item
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>${subject}</query>

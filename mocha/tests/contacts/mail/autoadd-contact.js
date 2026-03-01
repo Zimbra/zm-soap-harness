@@ -39,6 +39,8 @@ describe('Contacts > Mail > Autoadd Contact', function () {
 	// Tests
 	it('Smoke | Send message and verify contact auto-add behavior', async () => {
 		const subject = `subject${common.getUniqueString()}`;
+
+		// Send the message
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -50,6 +52,8 @@ describe('Contacts > Mail > Autoadd Contact', function () {
 				</m>
 			</SendMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, 'Send should not be a Fault');
 		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
 	});

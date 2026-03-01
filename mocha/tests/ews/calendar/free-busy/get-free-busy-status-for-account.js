@@ -57,8 +57,6 @@ describe('EWS > Calendar > FreeBusy > Get Free Busy Status For Account', functio
 		const endTime = common.getXMLTime(90);
 		const windowStart = common.getXMLTime(60);
 		const windowEnd = common.getXMLTime(120);
-
-		// User2 creates meeting with User3
 		const createRes = await ews.makeEWSRequest(
 			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				MessageDisposition="SaveOnly"
@@ -88,9 +86,9 @@ describe('EWS > Calendar > FreeBusy > Get Free Busy Status For Account', functio
 		const createBody = ews.getBody(createRes);
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
-		assert.equal(createMsg.$.ResponseClass, 'Success', 'CreateItem should succeed');
 
-		// User2 syncs to confirm item exists
+		// Verify response
+		assert.equal(createMsg.$.ResponseClass, 'Success', 'CreateItem should succeed');
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -110,9 +108,6 @@ describe('EWS > Calendar > FreeBusy > Get Free Busy Status For Account', functio
 		const syncMsg = syncBody.SyncFolderItemsResponse
 			.ResponseMessages.SyncFolderItemsResponseMessage;
 		assert.equal(syncMsg.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
-
-		// User1 checks User2 free/busy via EWS GetUserAvailability
-		// Use a wider time window starting from now to ensure we capture the event
 		const windowStartWide = common.getXMLTime(0);
 		const windowEndWide = common.getXMLTime(180);
 		await common.delay(8000);

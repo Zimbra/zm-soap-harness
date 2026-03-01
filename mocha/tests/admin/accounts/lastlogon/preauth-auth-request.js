@@ -16,6 +16,7 @@ describe('Admin > Accounts > LastLogon > Preauth Auth Request', function () {
 		return;
 	}
 
+	// Tests
 	it('Functional | AuthRequest - verify zimbraLastLogonTimestamp is updated', async () => {
 		const domainName = 'preauth' + common.getUniqueString() + '.com';
 		const preauthKey =

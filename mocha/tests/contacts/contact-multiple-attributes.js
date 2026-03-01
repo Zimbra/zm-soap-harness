@@ -32,6 +32,7 @@ describe('Contacts > Contact Multiple Attributes', function () {
 		const cert2 = `Cert2${common.getUniqueString()}`;
 		const smime2 = `Smime2${common.getUniqueString()}`;
 
+		// Create a contact
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -45,6 +46,8 @@ describe('Contacts > Contact Multiple Attributes', function () {
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Create should not be a Fault');
 		assert.exists(res.CreateContactResponse.cn, 'Contact should be created');
 	});
@@ -56,6 +59,7 @@ describe('Contacts > Contact Multiple Attributes', function () {
 		const cert2 = `Cert2${common.getUniqueString()}`;
 		const smime2 = `Smime2${common.getUniqueString()}`;
 
+		// Create a contact
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -68,6 +72,7 @@ describe('Contacts > Contact Multiple Attributes', function () {
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
+		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="0">
 				<cn id="${cn.id}">
@@ -78,6 +83,8 @@ describe('Contacts > Contact Multiple Attributes', function () {
 				</cn>
 			</ModifyContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
 		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});
@@ -89,6 +96,7 @@ describe('Contacts > Contact Multiple Attributes', function () {
 		const cert2 = `Cert2${common.getUniqueString()}`;
 		const smime2 = `Smime2${common.getUniqueString()}`;
 
+		// Create a contact
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -101,6 +109,7 @@ describe('Contacts > Contact Multiple Attributes', function () {
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
+		// Send contact action request
 		const actionRes = await soap.makeSOAPEnvelopeAccount(
 			`<ContactActionRequest xmlns="urn:zimbraMail">
 				<action id="${cn.id}" op="update">
@@ -111,13 +120,18 @@ describe('Contacts > Contact Multiple Attributes', function () {
 				</action>
 			</ContactActionRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(actionRes.Fault, 'ContactAction should not be a Fault');
 
+		// Get the contact
 		const getRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetContactsRequest xmlns="urn:zimbraMail">
 				<cn id="${cn.id}"/>
 			</GetContactsRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'Get should not be a Fault');
 		assert.exists(getRes.GetContactsResponse, 'GetContactsResponse should exist');
 	});

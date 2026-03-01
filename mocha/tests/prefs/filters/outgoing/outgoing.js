@@ -33,7 +33,7 @@ describe('Filters-Outgoing', function () {
 		// Modify outgoing filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="contains" value="outgoing"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyOutgoingFilterRulesRequest should not fault');
 		assert.exists(modRes.ModifyOutgoingFilterRulesResponse, 'Response should exist');
 	});
@@ -54,7 +54,7 @@ describe('Filters-Outgoing', function () {
 		// Get outgoing filter rules
 		const getRes = await soap.makeSOAPEnvelopeAccount(`<GetOutgoingFilterRulesRequest xmlns="urn:zimbraMail"/>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(getRes.Fault, 'GetOutgoingFilterRulesRequest should not fault');
 		assert.exists(getRes.GetOutgoingFilterRulesResponse, 'Response should exist');
 	});
@@ -72,7 +72,7 @@ describe('Filters-Outgoing', function () {
 		// Modify outgoing filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="is" value="file"/></filterTests><filterActions><actionFileInto folderPath="/Inbox"/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Outgoing fileinto should not fault');
 	});
 
@@ -93,7 +93,7 @@ describe('Filters-Outgoing', function () {
 		// Modify outgoing filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="contains" value="tag"/></filterTests><filterActions><actionTag tagName="${tagName}"/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Outgoing tag should not fault');
 	});
 
@@ -110,7 +110,7 @@ describe('Filters-Outgoing', function () {
 		// Modify outgoing filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="to" stringComparison="is" value="redir@test.com"/></filterTests><filterActions><actionRedirect a="copy@test.com"/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Outgoing redirect should not fault');
 	});
 
@@ -127,7 +127,7 @@ describe('Filters-Outgoing', function () {
 		// Modify outgoing filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="is" value="discard"/></filterTests><filterActions><actionDiscard/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Outgoing discard should not fault');
 	});
 
@@ -144,7 +144,7 @@ describe('Filters-Outgoing', function () {
 		// Modify outgoing filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="contains" value="urgent"/></filterTests><filterActions><actionFlag flagName="flagged"/><actionStop/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Outgoing flag+stop should not fault');
 	});
 
@@ -161,7 +161,7 @@ describe('Filters-Outgoing', function () {
 		// Modify outgoing filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out${common.getUniqueString()}" active="1"><filterTests condition="allof"><headerTest header="subject" stringComparison="contains" value="report"/><headerTest header="to" stringComparison="contains" value="boss"/></filterTests><filterActions><actionFlag flagName="flagged"/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Outgoing allof should not fault');
 	});
 
@@ -178,7 +178,7 @@ describe('Filters-Outgoing', function () {
 		// Modify outgoing filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out1_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="is" value="a"/></filterTests><filterActions><actionKeep/></filterActions></filterRule><filterRule name="out2_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="is" value="b"/></filterTests><filterActions><actionFlag flagName="flagged"/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Multiple outgoing rules should not fault');
 	});
 
@@ -195,7 +195,7 @@ describe('Filters-Outgoing', function () {
 		// Modify outgoing filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out${common.getUniqueString()}" active="1"><filterTests condition="anyof"><bodyTest value="confidential"/></filterTests><filterActions><actionFlag flagName="flagged"/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Outgoing body test should not fault');
 	});
 
@@ -212,7 +212,7 @@ describe('Filters-Outgoing', function () {
 		// Modify outgoing filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out${common.getUniqueString()}" active="1"><filterTests condition="anyof"><sizeTest numberComparison="over" s="5M"/></filterTests><filterActions><actionDiscard/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Outgoing size test should not fault');
 	});
 
@@ -229,7 +229,7 @@ describe('Filters-Outgoing', function () {
 		// Modify outgoing filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out${common.getUniqueString()}" active="1"><filterTests condition="anyof"><attachmentTest/></filterTests><filterActions><actionFlag flagName="flagged"/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Outgoing attachment test should not fault');
 	});
 
@@ -246,7 +246,7 @@ describe('Filters-Outgoing', function () {
 		// Modify outgoing filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out${common.getUniqueString()}" active="0"><filterTests condition="anyof"><headerTest header="subject" stringComparison="is" value="inactive"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Outgoing inactive should not fault');
 	});
 
@@ -263,7 +263,7 @@ describe('Filters-Outgoing', function () {
 		// Modify outgoing filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerExistsTest header="X-Custom"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Outgoing header exists should not fault');
 	});
 
@@ -283,7 +283,7 @@ describe('Filters-Outgoing', function () {
 		// Send apply outgoing filter rules request
 		const applyRes = await soap.makeSOAPEnvelopeAccount(`<ApplyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out${common.getUniqueString()}"/></filterRules><query>in:sent</query></ApplyOutgoingFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.isTrue((applyRes.ApplyOutgoingFilterRulesResponse !== undefined) || (applyRes.Fault !== undefined), 'Should return a proper response');
 	});
 
@@ -301,7 +301,7 @@ describe('Filters-Outgoing', function () {
 		// Modify outgoing filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="${ruleName}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="contains" value="outgoing_addmsg"/></filterTests><filterActions><actionTag tagName="outgoing_tagged"/><actionStop/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyOutgoingFilterRules should not fault');
 	});
 });

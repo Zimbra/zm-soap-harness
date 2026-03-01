@@ -49,6 +49,8 @@ describe('Contacts > Bugs > Bug 48742 - Japanese i18n contact search', function 
 				<query>いちご</query>
 			</SearchRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
@@ -60,6 +62,8 @@ describe('Contacts > Bugs > Bug 48742 - Japanese i18n contact search', function 
 				<query>イチゴ</query>
 			</SearchRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
@@ -71,6 +75,8 @@ describe('Contacts > Bugs > Bug 48742 - Japanese i18n contact search', function 
 				<query>ｲﾁｺﾞ</query>
 			</SearchRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
@@ -82,6 +88,8 @@ describe('Contacts > Bugs > Bug 48742 - Japanese i18n contact search', function 
 				<query>全角ひらがな</query>
 			</SearchRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});

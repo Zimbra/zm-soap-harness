@@ -62,6 +62,8 @@ describe('CalDav > Calendar > Filter', function () {
 		return;
 	}
 
+	// Tests
+
 	/**
 	 * Helper: Create appointment and get its UID
 	 */

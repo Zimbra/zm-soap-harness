@@ -34,6 +34,8 @@ describe('Contacts > AutoComplete > Ranking > RankingActionRequest Sanity', func
 				<action op="reset"/>
 			</RankingActionRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'RankingAction should not be a Fault');
 	});
 
@@ -44,12 +46,16 @@ describe('Contacts > AutoComplete > Ranking > RankingActionRequest Sanity', func
 				<action op="delete" email="nonexist${common.getUniqueString()}@domain.com"/>
 			</RankingActionRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'RankingAction should not be a Fault');
 	});
 
 
 	it('Sanity | RankingActionRequest reset after activity', async () => {
 		const targetEmail = `target${common.getUniqueString()}@${config.testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${targetEmail}</name>
@@ -57,6 +63,7 @@ describe('Contacts > AutoComplete > Ranking > RankingActionRequest Sanity', func
 			</CreateAccountRequest>`, adminAuthToken
 		);
 
+		// Send the message
 		await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -69,11 +76,14 @@ describe('Contacts > AutoComplete > Ranking > RankingActionRequest Sanity', func
 			</SendMsgRequest>`, accountToken
 		);
 
+		// Send ranking action request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<RankingActionRequest xmlns="urn:zimbraMail">
 				<action op="reset"/>
 			</RankingActionRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'RankingAction should not be a Fault');
 	});
 });

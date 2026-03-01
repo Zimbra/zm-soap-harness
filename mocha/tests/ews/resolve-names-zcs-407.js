@@ -40,11 +40,10 @@ describe('EWS > Resolve Names ZCS-407', function () {
 
 	// Tests
 	it('Sanity | Create a contact and sync using ResolveNames API in EWS All contact information should be returned', async () => {
-		// Auth account1
 		const account1AuthToken = await soap.getAccountAuthToken(account1Email, accountPassword);
 		const contactEmail = `email1.${common.getUniqueString()}@domain.com`;
 
-		// Create contact with full details
+		// Create a contact
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -85,13 +84,13 @@ describe('EWS > Resolve Names ZCS-407', function () {
 				</cn>
 			</CreateContactRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 		contact1Id = cn.id;
 		assert.exists(contact1Id, 'Contact should have an id');
-
-		// EWS: ResolveNames for the contact
 		const resolveRes = await ews.makeEWSRequest(
 			`<m:ResolveNames
 				xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
@@ -181,8 +180,9 @@ describe('EWS > Resolve Names ZCS-407', function () {
 
 
 	it('Sanity | Create a new account user and sync using ResolveNames API in EWS All contact information should be returned', async () => {
-		// Create a new account with detailed attributes
 		const newAccountEmail = `${firstnameAccount1}@${config.testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${newAccountEmail}</name>
@@ -210,7 +210,7 @@ describe('EWS > Resolve Names ZCS-407', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 
-		// Force GAL sync (multiple times to ensure propagation)
+		// Send sync gal request
 		await soap.makeSOAPEnvelopeAdmin(
 			`<SyncGalRequest xmlns="urn:zimbraAdmin">
 				<domain by="name">${config.testDomain}</domain>
@@ -223,8 +223,6 @@ describe('EWS > Resolve Names ZCS-407', function () {
 			</SyncGalRequest>`, adminAuthToken
 		);
 		await soap.waitFor(5000);
-
-		// EWS: ResolveNames for the account (with retry for GAL sync)
 		let msg;
 		for (let attempt = 0; attempt < 5; attempt++) {
 			if (attempt > 0) await soap.waitFor(10000);
@@ -243,6 +241,8 @@ describe('EWS > Resolve Names ZCS-407', function () {
 			msg = Array.isArray(resolveMsg) ? resolveMsg[0] : resolveMsg;
 			if (msg.$.ResponseClass === 'Success') break;
 		}
+
+		// Verify response
 		assert.equal(msg.$.ResponseClass, 'Success', 'ResolveNames should succeed');
 
 		const resolution = Array.isArray(msg.ResolutionSet.Resolution)
@@ -284,7 +284,6 @@ describe('EWS > Resolve Names ZCS-407', function () {
 
 
 	it('Sanity | Search for a contact using ResolveNames API in EWS which does not exist All contact information should be returned', async () => {
-		// EWS: ResolveNames for non-existing contact
 		const resolveRes = await ews.makeEWSRequest(
 			`<m:ResolveNames
 				xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
@@ -298,6 +297,8 @@ describe('EWS > Resolve Names ZCS-407', function () {
 		const resolveMsg = resolveBody.ResolveNamesResponse
 			.ResponseMessages.ResolveNamesResponseMessage;
 		const msg = Array.isArray(resolveMsg) ? resolveMsg[0] : resolveMsg;
+
+		// Verify response
 		assert.include(msg.MessageText,
 			`ResolveNames Failed to find a match: ${firstnameAccount2NotExists}`,
 			'Should return not found message');
@@ -305,8 +306,9 @@ describe('EWS > Resolve Names ZCS-407', function () {
 
 
 	it('Sanity | Modify an existing contact on ZWC and sync the same in resolveNames API All modified contact information should be returned', async () => {
-		// Auth and modify the contact
 		const account1AuthToken = await soap.getAccountAuthToken(account1Email, accountPassword);
+
+		// Modify the contact
 		const modifyRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="0" force="0">
 				<cn id="${contact1Id}">
@@ -347,10 +349,10 @@ describe('EWS > Resolve Names ZCS-407', function () {
 				</cn>
 			</ModifyContactRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(modifyRes.Fault, 'Response should not be a Fault');
 		assert.exists(modifyRes.ModifyContactResponse, 'ModifyContactResponse should exist');
-
-		// EWS: ResolveNames for modified contact
 		const resolveRes = await ews.makeEWSRequest(
 			`<m:ResolveNames
 				xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
@@ -444,18 +446,19 @@ describe('EWS > Resolve Names ZCS-407', function () {
 
 
 	it('Sanity | Delete an existing contact on ZWC and sync the same in resolveNames API All modified contact information should be returned', async () => {
-		// Auth and delete the contact
 		const account1AuthToken = await soap.getAccountAuthToken(account1Email, accountPassword);
+
+		// Send contact action request
 		const deleteRes = await soap.makeSOAPEnvelopeAccount(
 			`<ContactActionRequest xmlns="urn:zimbraMail">
 				<action id="${contact1Id}" op="delete" />
 			</ContactActionRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(deleteRes.Fault, 'Response should not be a Fault');
 		assert.exists(deleteRes.ContactActionResponse,
 			'ContactActionResponse should exist');
-
-		// EWS: ResolveNames for deleted contact
 		const resolveRes = await ews.makeEWSRequest(
 			`<m:ResolveNames
 				xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
@@ -476,13 +479,14 @@ describe('EWS > Resolve Names ZCS-407', function () {
 
 
 	it('Sanity | Create a contact with image on ZWC and sync the same in resolveNames API All contact information should be returned', async () => {
-		// Auth and upload image
 		const account1AuthToken = await soap.getAccountAuthToken(account1Email, accountPassword);
 		const filePath = path.resolve('data/ews/image1.jpg');
 		const imageAid = await soap.uploadFile(account1AuthToken, filePath);
+
+		// Verify response
 		assert.exists(imageAid, 'Upload should return attachment id');
 
-		// Create contact with image
+		// Create a contact
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -493,13 +497,13 @@ describe('EWS > Resolve Names ZCS-407', function () {
 				</cn>
 			</CreateContactRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 		const contactImageId = cn.id;
 		assert.exists(contactImageId, 'Contact should have an id');
-
-		// EWS: ResolveNames for contact with image
 		const resolveRes = await ews.makeEWSRequest(
 			`<m:ResolveNames
 				xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"

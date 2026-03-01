@@ -67,7 +67,7 @@ describe('ApplyFilterRulesRequest', function () {
 			</ApplyFilterRulesRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(applyRes.Fault, 'ApplyFilterRulesRequest should not fault');
 	});
 
@@ -95,7 +95,7 @@ describe('ApplyFilterRulesRequest', function () {
 			</ApplyFilterRulesRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.exists(applyRes.Fault, 'Apply non-existent filter should fault');
 	});
 });

@@ -76,7 +76,7 @@ describe('Mail Client > Auth > External Authentication > Change Password LDAP', 
 			</AuthRequest>`, null, false
 		);
 
-		// External auth should not be affected by must change password
+		// Verify response
 		assert.isTrue(!!res.AuthResponse || !!res.Fault,
 			'Should get AuthResponse or Fault');
 	});
@@ -90,7 +90,7 @@ describe('Mail Client > Auth > External Authentication > Change Password LDAP', 
 			</AuthRequest>`, null, false
 		);
 
-		// External auth should not be affected by must change password
+		// Verify response
 		assert.isTrue(!!res.AuthResponse || !!res.Fault,
 			'Should get AuthResponse or Fault');
 	});

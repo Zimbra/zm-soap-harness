@@ -31,11 +31,14 @@ describe('Mail Client > Smime > ZCS-165', function () {
 
 	// Tests
 	it('Sanity | 1 Inject PKCS-7 signed mime in the users inbox 2 Search the message and verify contents can be viewed in clear text', async () => {
-		// Source: zcs165_VerifyContents from Smime/ZCS-165.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

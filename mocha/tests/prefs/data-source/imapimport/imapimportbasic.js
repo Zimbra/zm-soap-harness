@@ -37,7 +37,7 @@ describe('Prefs > DataSource > ImapImport > ImapImportBasic', function () {
 		// Create a data source
 		const res = await soap.makeSOAPEnvelopeAccount(`<CreateDataSourceRequest xmlns="urn:zimbraMail"><imap name="${dsName}" isEnabled="0" host="imap.test.com" port="143" connectionType="cleartext" username="user_${common.getUniqueString()}" password="test123" l="2"/></CreateDataSourceRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(res.Fault, 'Should not fault');
 		assert.exists(res.CreateDataSourceResponse, 'Response should exist');
 	});

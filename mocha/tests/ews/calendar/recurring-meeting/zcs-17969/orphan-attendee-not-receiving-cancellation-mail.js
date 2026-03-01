@@ -66,16 +66,12 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17969 > Orphan Attendee Not Re
 		const subject1 = `subject1.${unique}`;
 		const updatedSubject2 = `updated_subject2.${unique}`;
 		const uid = `${unique}-D714-429E-94D7-80A1A975F61E`;
-
-		// Use future dates for recurrence
 		const startDate = common.getXMLTime(1440); // tomorrow
 		const endDate = common.getXMLTime(1500);
 		const startDateOnly = startDate.substring(0, 10);
 		const endDateOnly = common.getXMLTime(5760).substring(0, 10); // 4 days out
 		const day2Start = common.getXMLTime(2880);
 		const day2End = common.getXMLTime(2940);
-
-		// Step 1: Create a recurring meeting from Outlook
 		const createRes = await ews.makeEWSRequest(
 			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				MessageDisposition="SaveOnly"
@@ -124,6 +120,8 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17969 > Orphan Attendee Not Re
 		const createBody = ews.getBody(createRes);
 		const createMsg =
 			createBody.CreateItemResponse.ResponseMessages.CreateItemResponseMessage;
+
+		// Verify response
 		assert.equal(
 			createMsg.$.ResponseClass,
 			'Success',
@@ -132,8 +130,6 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17969 > Orphan Attendee Not Re
 		const masterId = createMsg.Items.CalendarItem.ItemId.$.Id;
 		const masterCk = createMsg.Items.CalendarItem.ItemId.$.ChangeKey;
 		assert.exists(masterId, 'Master recurring ItemId should exist');
-
-		// SyncFolderItems to get latest state
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -160,7 +156,7 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17969 > Orphan Attendee Not Re
 			'SyncFolderItems should succeed',
 		);
 
-		// Verify on ZWC
+		// Authenticate account
 		const account1AuthToken = await soap.getAccountAuthToken(
 			account1Email,
 			accountPassword,
@@ -168,12 +164,15 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17969 > Orphan Attendee Not Re
 
 		await common.delay(5000);
 
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
 				<query>subject:${subject1}</query>
 			</SearchRequest>`,
 			account1AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		const appt = Array.isArray(searchRes.SearchResponse.appt)
 			? searchRes.SearchResponse.appt[0]
@@ -181,15 +180,16 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17969 > Orphan Attendee Not Re
 		const invId = appt.invId;
 		assert.exists(invId, 'Appointment invId should exist');
 
+		// Get the message
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${invId}" />
 			</GetMsgRequest>`,
 			account1AuthToken,
 		);
-		assert.notExists(getMsgRes.Fault, 'Response should not be a Fault');
 
-		// Step 2: Accept the meeting invitation as account2
+		// Verify response
+		assert.notExists(getMsgRes.Fault, 'Response should not be a Fault');
 		const acceptRes = await ews.makeEWSRequest(
 			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				MessageDisposition="SendAndSaveCopy"
@@ -211,8 +211,6 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17969 > Orphan Attendee Not Re
 			'Success',
 			'AcceptItem should succeed',
 		);
-
-		// SyncFolderItems again
 		const syncRes2 = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -238,8 +236,6 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17969 > Orphan Attendee Not Re
 			'Success',
 			'SyncFolderItems should succeed',
 		);
-
-		// Step 3: Update the 2nd occurrence (create exception) with orphan attendee
 		const updateRes = await ews.makeEWSRequest(
 			`<UpdateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				ConflictResolution="AutoResolve"
@@ -302,14 +298,13 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17969 > Orphan Attendee Not Re
 			'Success',
 			'UpdateItem (exception) should succeed',
 		);
-
-		// Step 4: Verify exception in ZWC
 		await common.delay(5000);
 
 		const now = new Date();
 		const expandStart = now.getTime();
 		const expandEnd = expandStart + 30 * 24 * 60 * 60 * 1000;
 
+		// Search item
 		const searchRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${expandStart}" calExpandInstEnd="${expandEnd}"
@@ -318,6 +313,8 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17969 > Orphan Attendee Not Re
 			</SearchRequest>`,
 			account1AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(searchRes2.Fault, 'Response should not be a Fault');
 		const appts = Array.isArray(searchRes2.SearchResponse.appt)
 			? searchRes2.SearchResponse.appt
@@ -336,12 +333,15 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17969 > Orphan Attendee Not Re
 		}
 		assert.exists(exceptionInvId, 'Exception instance invId should exist');
 
+		// Get the message
 		const getMsgRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${exceptionInvId}" />
 			</GetMsgRequest>`,
 			account1AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(getMsgRes2.Fault, 'Response should not be a Fault');
 		const exMsg = Array.isArray(getMsgRes2.GetMsgResponse.m)
 			? getMsgRes2.GetMsgResponse.m[0]
@@ -353,8 +353,6 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17969 > Orphan Attendee Not Re
 			updatedSubject2,
 			'Exception subject should match',
 		);
-
-		// Step 5: Get the occurrence item id for instance 2 using EWS GetItem
 		const getItemRes = await ews.makeEWSRequest(
 			`<GetItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -375,8 +373,6 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17969 > Orphan Attendee Not Re
 		const cancelTargetId = getItemMsg.Items.CalendarItem.ItemId.$.Id;
 		const cancelTargetCk = getItemMsg.Items.CalendarItem.ItemId.$.ChangeKey;
 		assert.exists(cancelTargetId, 'Occurrence ItemId should exist');
-
-		// Step 6: Cancel exception from Outlook
 		const cancelRes = await ews.makeEWSRequest(
 			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				MessageDisposition="SendAndSaveCopy"
@@ -399,14 +395,13 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17969 > Orphan Attendee Not Re
 			'Success',
 			'CancelCalendarItem should succeed',
 		);
-
-		// Step 7: Verify in Zimbra that the exception instance is removed
 		await common.delay(5000);
 
 		const day2Ms = new Date(day2Start).getTime();
 		const narrowStart = day2Ms - 60 * 60 * 1000;
 		const narrowEnd = day2Ms + 60 * 60 * 1000;
 
+		// Search item
 		const searchRes3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${narrowStart}" calExpandInstEnd="${narrowEnd}">
@@ -414,6 +409,8 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17969 > Orphan Attendee Not Re
 			</SearchRequest>`,
 			account1AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(searchRes3.Fault, 'Response should not be a Fault');
 
 		const remainingAppts = searchRes3.SearchResponse.appt;
@@ -434,7 +431,7 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17969 > Orphan Attendee Not Re
 			}
 		}
 
-		// Step 8: Verify original attendee (account2) received cancellation mail
+		// Authenticate account
 		const account2AuthToken = await soap.getAccountAuthToken(
 			account2Email,
 			accountPassword,
@@ -442,24 +439,30 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17969 > Orphan Attendee Not Re
 
 		await common.delay(5000);
 
+		// Search item
 		const searchRes4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:${updatedSubject2}</query>
 			</SearchRequest>`,
 			account2AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(searchRes4.Fault, 'Response should not be a Fault');
 		const cancelMail = Array.isArray(searchRes4.SearchResponse.m)
 			? searchRes4.SearchResponse.m[0]
 			: searchRes4.SearchResponse.m;
 		assert.exists(cancelMail, 'Cancellation mail should exist for attendee');
 
+		// Get the message
 		const getMsgRes3 = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${cancelMail.id}" />
 			</GetMsgRequest>`,
 			account2AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(getMsgRes3.Fault, 'Response should not be a Fault');
 		const cancelMailMsg = Array.isArray(getMsgRes3.GetMsgResponse.m)
 			? getMsgRes3.GetMsgResponse.m[0]
@@ -477,7 +480,7 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17969 > Orphan Attendee Not Re
 			: cancelInv.comp;
 		assert.equal(cancelComp.method, 'CANCEL', 'Should have CANCEL method');
 
-		// Step 9: Verify orphan attendee (account3) also received cancellation mail
+		// Authenticate account
 		const account3AuthToken = await soap.getAccountAuthToken(
 			account3Email,
 			accountPassword,
@@ -485,12 +488,15 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17969 > Orphan Attendee Not Re
 
 		await common.delay(5000);
 
+		// Search item
 		const searchRes5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:${updatedSubject2}</query>
 			</SearchRequest>`,
 			account3AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(searchRes5.Fault, 'Response should not be a Fault');
 		const orphanCancelMail = Array.isArray(searchRes5.SearchResponse.m)
 			? searchRes5.SearchResponse.m[0]
@@ -500,12 +506,15 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17969 > Orphan Attendee Not Re
 			'Cancellation mail should exist for orphan attendee',
 		);
 
+		// Get the message
 		const getMsgRes4 = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${orphanCancelMail.id}" />
 			</GetMsgRequest>`,
 			account3AuthToken,
 		);
+
+		// Verify response
 		assert.notExists(getMsgRes4.Fault, 'Response should not be a Fault');
 		const orphanCancelMsg = Array.isArray(getMsgRes4.GetMsgResponse.m)
 			? getMsgRes4.GetMsgResponse.m[0]

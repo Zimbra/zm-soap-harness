@@ -43,6 +43,8 @@ describe('Contacts > AutoComplete > Ranking > AutoComplete Ranking', function ()
 				<name>test</name>
 			</AutoCompleteRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -61,11 +63,14 @@ describe('Contacts > AutoComplete > Ranking > AutoComplete Ranking', function ()
 			</SendMsgRequest>`, account1Token
 		);
 
+		// Send auto complete request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>test</name>
 			</AutoCompleteRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -73,6 +78,8 @@ describe('Contacts > AutoComplete > Ranking > AutoComplete Ranking', function ()
 
 	it('Sanity | AutoComplete ranking after multiple sends', async () => {
 		for (let i = 0; i < 3; i++) {
+
+			// Send the message
 			await soap.makeSOAPEnvelopeAccount(
 				`<SendMsgRequest xmlns="urn:zimbraMail">
 					<m>
@@ -86,11 +93,14 @@ describe('Contacts > AutoComplete > Ranking > AutoComplete Ranking', function ()
 			);
 		}
 
+		// Send auto complete request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<AutoCompleteRequest xmlns="urn:zimbraMail">
 				<name>test</name>
 			</AutoCompleteRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -102,6 +112,8 @@ describe('Contacts > AutoComplete > Ranking > AutoComplete Ranking', function ()
 				<name>test</name>
 			</AutoCompleteRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});

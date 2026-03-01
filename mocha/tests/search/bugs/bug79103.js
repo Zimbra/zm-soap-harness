@@ -65,12 +65,15 @@ Content for ${r.subject}</content>
 		];
 
 		for (const query of queries) {
+
+			// Search item
 			const res = await soap.makeSOAPEnvelopeAccount(
 				`<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>${query}</query>
 				</SearchRequest>`, accountAuthToken
 			);
 
+			// Verify response
 			assert.notExists(res.Fault, `Response should not be a Fault for query: ${query}`);
 			assert.exists(res.SearchResponse, `SearchResponse should exist for query: ${query}`);
 		}

@@ -197,6 +197,7 @@ Content for ${mail6.name}</content>
 		assert.exists(res7.SearchResponse?.m, 'Response element should exist');
 	});
 
+
 	it('Functional | Verify that a search for size smaller than 50bytes returns the correct email', async () => {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
@@ -209,6 +210,7 @@ Content for ${mail6.name}</content>
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		// Verify empty result set (original XML had emptyset="1")
 	});
+
 
 	it('Functional | Verify that a search for size smaller than 500bytes returns the correct email (for type message, conversation)', async () => {
 		// SearchRequest
@@ -233,6 +235,7 @@ Content for ${mail6.name}</content>
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 	});
 
+
 	it('Functional | Verify that a search for size larger than 50bytes returns the correct email (for type message, conversation)', async () => {
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
@@ -255,6 +258,7 @@ Content for ${mail6.name}</content>
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 	});
+
 
 	it('Functional | Verify that a search for size smaller than 500 kb returns the correct email (for type message, conversation)', async () => {
 		// SearchRequest
@@ -279,6 +283,7 @@ Content for ${mail6.name}</content>
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 	});
 
+
 	it('Functional | Verify that a search for size larger than 900 kb returns the correct email (for type message, conversation)', async () => {
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
@@ -302,6 +307,7 @@ Content for ${mail6.name}</content>
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 	});
 
+
 	it('Functional | Verify that a search for size larger than 3MB returns the correct email (for type message, conversation)', async () => {
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
@@ -324,6 +330,7 @@ Content for ${mail6.name}</content>
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 	});
+
 
 	it('Functional | Verify that a search for smaller than 0 (bytes, KB, MB, GB) doesnot return any mail 1 (Bug: 2696)', async () => {
 		// SearchRequest
@@ -370,6 +377,7 @@ Content for ${mail6.name}</content>
 		assert.exists(res4.SearchResponse, 'Response element should exist');
 	});
 
+
 	it('Functional | Verify that a search for larger than 0 (bytes, KB, MB, GB) doesnot return any mail (Bug: 2696)', async () => {
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
@@ -414,6 +422,7 @@ Content for ${mail6.name}</content>
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
 		assert.exists(res4.SearchResponse, 'Response element should exist');
 	});
+
 
 	it('Functional | Verify that a search for smaller than 0 (bytes, KB, MB, GB) doesnot return any mail 2 (Bug: 2696)', async () => {
 		// SearchRequest
@@ -460,6 +469,7 @@ Content for ${mail6.name}</content>
 		assert.exists(res4.SearchResponse, 'Response element should exist');
 	});
 
+
 	it('Functional | Verify that a search for larger than 0 (bytes, KB, MB, GB) return any mail (Bug: 2696)', async () => {
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
@@ -501,6 +511,7 @@ Content for ${mail6.name}</content>
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
 		assert.exists(res4.SearchResponse, 'Response element should exist');
 	});
+
 
 	it('Regression | Verify that a proper error message is displayed for invalid query using smaller - , larger - (Bug: 4987)', async () => {
 		// SearchRequest

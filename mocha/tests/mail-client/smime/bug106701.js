@@ -31,31 +31,40 @@ describe('Mail Client > Smime > Bug106701', function () {
 
 	// Tests
 	it('Sanity | Get smime certificate info', async () => {
-		// Source: bug106701_GetSmimeCertificateInfo_TestCase1 from Smime/Bug106701.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Get smime certificate info even if certId is not passed in request', async () => {
-		// Source: bug106701_GetSmimeCertificateInfo_TestCase2 from Smime/Bug106701.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Check the number of certificates returned', async () => {
-		// Source: bug106701_GetSmimeCertificateInfo_TestCase3 from Smime/Bug106701.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

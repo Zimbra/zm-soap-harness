@@ -31,21 +31,27 @@ describe('Mail Client > Smime > ZCS-177', function () {
 
 	// Tests
 	it('Sanity | Send a signed email to account 2 and verify feature', async () => {
-		// Source: Verify_basic_flow from Smime/ZCS-177.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Create contact without certificate and verify if cert gets attached after reading signed email', async () => {
-		// Source: Contact_already_exists from Smime/ZCS-177.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

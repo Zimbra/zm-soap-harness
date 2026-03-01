@@ -45,6 +45,8 @@ describe('Contacts > GAL > Hide Accounts in GAL', function () {
 				<name>hidden</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
@@ -56,6 +58,8 @@ describe('Contacts > GAL > Hide Accounts in GAL', function () {
 				<name>test</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
@@ -67,6 +71,8 @@ describe('Contacts > GAL > Hide Accounts in GAL', function () {
 				<name>hidden</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -78,6 +84,8 @@ describe('Contacts > GAL > Hide Accounts in GAL', function () {
 				<name>${hiddenEmail}</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
@@ -91,11 +99,14 @@ describe('Contacts > GAL > Hide Accounts in GAL', function () {
 			</ModifyAccountRequest>`, adminAuthToken
 		);
 
+		// Send search gal request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
 				<name>hidden</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
@@ -109,11 +120,14 @@ describe('Contacts > GAL > Hide Accounts in GAL', function () {
 			</ModifyAccountRequest>`, adminAuthToken
 		);
 
+		// Send search gal request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
 				<name>hidden</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
@@ -121,6 +135,8 @@ describe('Contacts > GAL > Hide Accounts in GAL', function () {
 
 	it('Regression | Hide via ModifyAccount', async () => {
 		const newEmail = `visible${common.getUniqueString()}@${config.testDomain}`;
+
+		// Create an account
 		const newRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${newEmail}</name>
@@ -130,6 +146,7 @@ describe('Contacts > GAL > Hide Accounts in GAL', function () {
 		const newAcct = Array.isArray(newRes.CreateAccountResponse.account)
 			? newRes.CreateAccountResponse.account[0] : newRes.CreateAccountResponse.account;
 
+		// Modify the account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${newAcct.id}</id>
@@ -137,11 +154,14 @@ describe('Contacts > GAL > Hide Accounts in GAL', function () {
 			</ModifyAccountRequest>`, adminAuthToken
 		);
 
+		// Send search gal request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
 				<name>visible</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
@@ -151,6 +171,8 @@ describe('Contacts > GAL > Hide Accounts in GAL', function () {
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<SyncGalRequest xmlns="urn:zimbraAccount"/>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SyncGal should not be a Fault');
 		assert.exists(res.SyncGalResponse, 'SyncGalResponse should exist');
 	});
@@ -160,6 +182,8 @@ describe('Contacts > GAL > Hide Accounts in GAL', function () {
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<SyncGalRequest xmlns="urn:zimbraAccount"/>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SyncGal should not be a Fault');
 		assert.exists(res.SyncGalResponse, 'SyncGalResponse should exist');
 	});
@@ -167,19 +191,26 @@ describe('Contacts > GAL > Hide Accounts in GAL', function () {
 
 	it('Regression | Hidden DL not shown in GAL', async () => {
 		const dlName = `hiddendl${common.getUniqueString()}@${config.testDomain}`;
+
+		// Create a distribution list
 		const dlRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
 				<name>${dlName}</name>
 				<a n="zimbraHideInGal">TRUE</a>
 			</CreateDistributionListRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(dlRes.Fault, 'CreateDL should not be a Fault');
 
+		// Send search gal request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
 				<name>hiddendl</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
@@ -191,6 +222,8 @@ describe('Contacts > GAL > Hide Accounts in GAL', function () {
 				<name>hiddendl</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -200,6 +233,8 @@ describe('Contacts > GAL > Hide Accounts in GAL', function () {
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<SyncGalRequest xmlns="urn:zimbraAccount"/>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SyncGal should not be a Fault');
 		assert.exists(res.SyncGalResponse, 'SyncGalResponse should exist');
 	});
@@ -211,12 +246,16 @@ describe('Contacts > GAL > Hide Accounts in GAL', function () {
 				<account by="name">${hiddenEmail}</account>
 			</GetAccountRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'GetAccount should not be a Fault');
 	});
 
 
 	it('Regression | Verify multiple hidden accounts', async () => {
 		const hidden2 = `hidden2${common.getUniqueString()}@${config.testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${hidden2}</name>
@@ -225,11 +264,14 @@ describe('Contacts > GAL > Hide Accounts in GAL', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 
+		// Send search gal request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
 				<name>hidden2</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
@@ -241,6 +283,8 @@ describe('Contacts > GAL > Hide Accounts in GAL', function () {
 				<name>*</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
@@ -254,13 +298,17 @@ describe('Contacts > GAL > Hide Accounts in GAL', function () {
 			</ModifyAccountRequest>`, adminAuthToken
 		);
 
+		// Send search gal request
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
 				<name>hidden</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res1.Fault, 'SearchGal should not be a Fault');
 
+		// Modify the account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${hiddenId}</id>
@@ -276,6 +324,8 @@ describe('Contacts > GAL > Hide Accounts in GAL', function () {
 				<name>hidden</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
@@ -287,6 +337,8 @@ describe('Contacts > GAL > Hide Accounts in GAL', function () {
 				<name>hidden</name>
 			</SearchGalRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});

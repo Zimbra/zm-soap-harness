@@ -54,9 +54,10 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 		const apptSubject = `subject1.${unique}`;
 		const apptContent = `content1.${unique}`;
 
-		// ZWC organizer creates appointment
+		// Authenticate account
 		const account1AuthToken = await soap.getAccountAuthToken(account1Email, accountPassword);
 
+		// Create an appointment
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -77,11 +78,11 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 				</m>
 			</CreateAppointmentRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 
 		await soap.waitFor(5000);
-
-		// EWS attendee syncs inbox to get the meeting invite
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -109,8 +110,6 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 		const itemNode = calCreate?.CalendarItem || calCreate?.MeetingRequest || calCreate?.Message;
 		const calId = itemNode?.ItemId?.$.Id;
 		assert.exists(calId, 'Calendar item Id should exist');
-
-		// EWS attendee accepts the meeting
 		const acceptRes = await ews.makeEWSRequest(
 			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				MessageDisposition="SendAndSaveCopy"
@@ -130,23 +129,28 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 
 		await soap.waitFor(5000);
 
-		// Verify on ZWC organizer that acceptance is received
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
 				<query>subject:${apptSubject}</query>
 			</SearchRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		const appt = Array.isArray(searchRes.SearchResponse.appt)
 			? searchRes.SearchResponse.appt[0] : searchRes.SearchResponse.appt;
 		const invId = appt.invId;
 		assert.exists(invId, 'Appointment invId should exist');
 
+		// Get the message
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${invId}" />
 			</GetMsgRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(getMsgRes.Fault, 'Response should not be a Fault');
 		const msgComp = getMsgRes.GetMsgResponse.m[0] || getMsgRes.GetMsgResponse.m;
 		const attendees = msgComp.inv[0].comp[0].at;
@@ -161,9 +165,10 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 		const apptSubject = `subject2.${unique}`;
 		const apptContent = `content2.${unique}`;
 
-		// ZWC organizer creates appointment
+		// Authenticate account
 		const account1AuthToken = await soap.getAccountAuthToken(account1Email, accountPassword);
 
+		// Create an appointment
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -184,11 +189,11 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 				</m>
 			</CreateAppointmentRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 
 		await soap.waitFor(5000);
-
-		// EWS attendee syncs inbox to get the meeting invite
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -216,8 +221,6 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 		const itemNode = calCreate?.CalendarItem || calCreate?.MeetingRequest || calCreate?.Message;
 		const calId = itemNode?.ItemId?.$.Id;
 		assert.exists(calId, 'Calendar item Id should exist');
-
-		// EWS attendee declines the meeting
 		const declineRes = await ews.makeEWSRequest(
 			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				MessageDisposition="SendAndSaveCopy"
@@ -237,23 +240,28 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 
 		await soap.waitFor(5000);
 
-		// Verify on ZWC organizer that decline is received
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
 				<query>subject:${apptSubject}</query>
 			</SearchRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		const appt = Array.isArray(searchRes.SearchResponse.appt)
 			? searchRes.SearchResponse.appt[0] : searchRes.SearchResponse.appt;
 		const invId = appt.invId;
 		assert.exists(invId, 'Appointment invId should exist');
 
+		// Get the message
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${invId}" />
 			</GetMsgRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(getMsgRes.Fault, 'Response should not be a Fault');
 		const msgComp = getMsgRes.GetMsgResponse.m[0] || getMsgRes.GetMsgResponse.m;
 		const attendees = msgComp.inv[0].comp[0].at;
@@ -268,9 +276,10 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 		const apptSubject = `subject3.${unique}`;
 		const apptContent = `content3.${unique}`;
 
-		// ZWC organizer creates appointment
+		// Authenticate account
 		const account1AuthToken = await soap.getAccountAuthToken(account1Email, accountPassword);
 
+		// Create an appointment
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -291,11 +300,11 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 				</m>
 			</CreateAppointmentRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 
 		await soap.waitFor(5000);
-
-		// EWS attendee syncs inbox to get the meeting invite
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -323,8 +332,6 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 		const itemNode = calCreate?.CalendarItem || calCreate?.MeetingRequest || calCreate?.Message;
 		const calId = itemNode?.ItemId?.$.Id;
 		assert.exists(calId, 'Calendar item Id should exist');
-
-		// EWS attendee tentatively accepts the meeting
 		const tentRes = await ews.makeEWSRequest(
 			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				MessageDisposition="SendAndSaveCopy"
@@ -344,23 +351,28 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 
 		await soap.waitFor(5000);
 
-		// Verify on ZWC organizer that tentative response is received
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
 				<query>subject:${apptSubject}</query>
 			</SearchRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		const appt = Array.isArray(searchRes.SearchResponse.appt)
 			? searchRes.SearchResponse.appt[0] : searchRes.SearchResponse.appt;
 		const invId = appt.invId;
 		assert.exists(invId, 'Appointment invId should exist');
 
+		// Get the message
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${invId}" />
 			</GetMsgRequest>`, account1AuthToken
 		);
+
+		// Verify response
 		assert.notExists(getMsgRes.Fault, 'Response should not be a Fault');
 		const msgComp = getMsgRes.GetMsgResponse.m[0] || getMsgRes.GetMsgResponse.m;
 		const attendees = msgComp.inv[0].comp[0].at;
@@ -374,8 +386,6 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 		const unique = common.getUniqueString();
 		const apptSubject = `subject4.${unique}`;
 		const apptContent = `content4.${unique}`;
-
-		// EWS organizer creates meeting
 		const createRes = await ews.makeEWSRequest(
 			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				MessageDisposition="SaveOnly"
@@ -413,9 +423,9 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 		const createBody = ews.getBody(createRes);
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
-		assert.equal(createMsg.$.ResponseClass, 'Success', 'CreateItem should succeed');
 
-		// EWS organizer syncs calendar folder
+		// Verify response
+		assert.equal(createMsg.$.ResponseClass, 'Success', 'CreateItem should succeed');
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems
 				xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
@@ -436,17 +446,19 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 		const syncMsg = syncBody.SyncFolderItemsResponse
 			.ResponseMessages.SyncFolderItemsResponseMessage;
 		assert.equal(syncMsg.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
-
-		// ZWC attendee accepts the meeting
 		await soap.waitFor(5000);
 
+		// Authenticate account
 		const acct2AuthToken = await soap.getAccountAuthToken(account2Email, accountPassword);
 
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
 				<query>${apptSubject} inid:10</query>
 			</SearchRequest>`, acct2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		const appt = Array.isArray(searchRes.SearchResponse.appt)
 			? searchRes.SearchResponse.appt[0] : searchRes.SearchResponse.appt;
@@ -454,6 +466,7 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 		const compNum = appt.compNum;
 		const organizer = appt.or?.a || account1Email;
 
+		// Send send invite reply request
 		const acceptRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendInviteReplyRequest xmlns="urn:zimbraMail"
 				id="${invId}" compNum="${compNum}" verb="ACCEPT"
@@ -467,11 +480,11 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 				</m>
 			</SendInviteReplyRequest>`, acct2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(acceptRes.Fault, 'Response should not be a Fault');
 
 		await soap.waitFor(5000);
-
-		// Verify on EWS organizer via GetItem
 		const syncRes2 = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -540,8 +553,6 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 		const unique = common.getUniqueString();
 		const apptSubject = `subject5.${unique}`;
 		const apptContent = `content5.${unique}`;
-
-		// EWS organizer creates meeting
 		const createRes = await ews.makeEWSRequest(
 			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				MessageDisposition="SaveOnly"
@@ -579,9 +590,9 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 		const createBody = ews.getBody(createRes);
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
-		assert.equal(createMsg.$.ResponseClass, 'Success', 'CreateItem should succeed');
 
-		// EWS organizer syncs calendar folder
+		// Verify response
+		assert.equal(createMsg.$.ResponseClass, 'Success', 'CreateItem should succeed');
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems
 				xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
@@ -603,17 +614,19 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 			.ResponseMessages.SyncFolderItemsResponseMessage;
 		assert.equal(syncMsg.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
 		const syncState = syncMsg.SyncState;
-
-		// ZWC attendee declines the meeting
 		await soap.waitFor(5000);
 
+		// Authenticate account
 		const acct2AuthToken = await soap.getAccountAuthToken(account2Email, accountPassword);
 
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
 				<query>${apptSubject} inid:10</query>
 			</SearchRequest>`, acct2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		const appt = Array.isArray(searchRes.SearchResponse.appt)
 			? searchRes.SearchResponse.appt[0] : searchRes.SearchResponse.appt;
@@ -621,6 +634,7 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 		const compNum = appt.compNum;
 		const organizer = appt.or?.a || account1Email;
 
+		// Send send invite reply request
 		const declineRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendInviteReplyRequest xmlns="urn:zimbraMail"
 				id="${invId}" compNum="${compNum}" verb="DECLINE"
@@ -634,11 +648,11 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 				</m>
 			</SendInviteReplyRequest>`, acct2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(declineRes.Fault, 'Response should not be a Fault');
 
 		await soap.waitFor(5000);
-
-		// Verify on EWS organizer via SyncFolderItems + GetItem
 		const syncRes2 = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -707,8 +721,6 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 		const unique = common.getUniqueString();
 		const apptSubject = `subject6.${unique}`;
 		const apptContent = `content6.${unique}`;
-
-		// EWS organizer creates meeting
 		const createRes = await ews.makeEWSRequest(
 			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				MessageDisposition="SaveOnly"
@@ -746,9 +758,9 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 		const createBody = ews.getBody(createRes);
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
-		assert.equal(createMsg.$.ResponseClass, 'Success', 'CreateItem should succeed');
 
-		// EWS organizer syncs calendar folder
+		// Verify response
+		assert.equal(createMsg.$.ResponseClass, 'Success', 'CreateItem should succeed');
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems
 				xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
@@ -770,17 +782,19 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 			.ResponseMessages.SyncFolderItemsResponseMessage;
 		assert.equal(syncMsg.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
 		const syncState = syncMsg.SyncState;
-
-		// ZWC attendee tentatively accepts the meeting
 		await soap.waitFor(5000);
 
+		// Authenticate account
 		const acct2AuthToken = await soap.getAccountAuthToken(account2Email, accountPassword);
 
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
 				<query>${apptSubject} inid:10</query>
 			</SearchRequest>`, acct2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
 		const appt = Array.isArray(searchRes.SearchResponse.appt)
 			? searchRes.SearchResponse.appt[0] : searchRes.SearchResponse.appt;
@@ -788,6 +802,7 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 		const compNum = appt.compNum;
 		const organizer = appt.or?.a || account1Email;
 
+		// Send send invite reply request
 		const tentRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendInviteReplyRequest xmlns="urn:zimbraMail"
 				id="${invId}" compNum="${compNum}" verb="TENTATIVE"
@@ -801,11 +816,11 @@ describe('EWS > Calendar > Calendar Meeting Response', function () {
 				</m>
 			</SendInviteReplyRequest>`, acct2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(tentRes.Fault, 'Response should not be a Fault');
 
 		await soap.waitFor(5000);
-
-		// Verify on EWS organizer via SyncFolderItems + GetItem
 		const syncRes2 = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>

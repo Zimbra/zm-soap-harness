@@ -31,41 +31,53 @@ describe('Mail Client > Smime > ZCS-478', function () {
 
 	// Tests
 	it('Sanity | 1 Send only encrypted message to account 2 from account 1 2 GetConversation on account 2 and verify encryption is tru...', async () => {
-		// Source: zcs478_EncTrueSignFalse from Smime/ZCS-478.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | 1 Send normal message to account 2 from account 1 sign false and encrypt false 2 GetConversation on account 2 and ver...', async () => {
-		// Source: zcs478_EncfalseSignFalse from Smime/ZCS-478.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | 1 Send encrypted and signed message to account 2 from account 1 sign true and encrypt true 2 GetConversation, SearchC...', async () => {
-		// Source: zcs478_EnctrueSignTrue from Smime/ZCS-478.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | 1 Delete account1 certificate and Send encrypted message to account 2 from account 1 sign false and encrypt true 2 Ge...', async () => {
-		// Source: zcs478_SentFolderdecryptError from Smime/ZCS-478.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

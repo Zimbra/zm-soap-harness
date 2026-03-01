@@ -39,10 +39,13 @@ describe('Mail Client > Misc > CheckLicenseRequest', function () {
 	it('Sanity | CheckLicenseRequest for mapi feature - NETWORK', async () => {
 		const acctAuthToken = await soap.getAccountAuthToken(account1Name);
 
+		// Send check license request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CheckLicenseRequest xmlns="urn:zimbraAccount" feature="mapi">
 			</CheckLicenseRequest>`, acctAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CheckLicenseResponse, 'CheckLicenseResponse should exist');
 	});
@@ -51,10 +54,13 @@ describe('Mail Client > Misc > CheckLicenseRequest', function () {
 	it('Sanity | CheckLicenseRequest for mobileSync feature - NETWORK', async () => {
 		const acctAuthToken = await soap.getAccountAuthToken(account1Name);
 
+		// Send check license request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CheckLicenseRequest xmlns="urn:zimbraAccount" feature="mapi">
 			</CheckLicenseRequest>`, acctAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CheckLicenseResponse, 'CheckLicenseResponse should exist');
 	});
@@ -63,10 +69,13 @@ describe('Mail Client > Misc > CheckLicenseRequest', function () {
 	it('Sanity | CheckLicenseRequest for smime feature - NETWORK', async () => {
 		const acctAuthToken = await soap.getAccountAuthToken(account2Name);
 
+		// Send check license request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CheckLicenseRequest xmlns="urn:zimbraAccount" feature="smime">
 			</CheckLicenseRequest>`, acctAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.CheckLicenseResponse, 'CheckLicenseResponse should exist');
 	});

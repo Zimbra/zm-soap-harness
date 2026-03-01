@@ -31,41 +31,53 @@ describe('Mail Client > Smime > bug106697', function () {
 
 	// Tests
 	it('Sanity | Verify GetSearchConvRequest successfully gets signed messages with valid certificate', async () => {
-		// Source: bug106697_GetSearchConvRequest_Signed from Smime/bug106697.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Verify tampering of signed message is detected', async () => {
-		// Source: bug106697_GetSearchConvRequest_Signed_Tampered from Smime/bug106697.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Verify certificate of signed message is expired', async () => {
-		// Source: bug106697_GetSearchConvRequest_Signed_ExpiredCert from Smime/bug106697.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Verify GetSearchConvRequest successfully gets signed messages with valid certificate for shared items', async () => {
-		// Source: bug106697_GetSearchConvRequest_Signed_Shared_Items from Smime/bug106697.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

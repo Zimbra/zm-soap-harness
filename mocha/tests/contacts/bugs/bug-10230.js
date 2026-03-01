@@ -40,7 +40,6 @@ describe('Contacts > Bugs > Bug 10230 - Shared contacts search', function () {
 
 	// Tests
 	it('Sanity | Search shared contacts should return results', async () => {
-		// Account1 creates a contact
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -50,15 +49,19 @@ describe('Contacts > Bugs > Bug 10230 - Shared contacts search', function () {
 				</cn>
 			</CreateContactRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 
-		// Account1 gets contacts folder id
+		// Get the folder
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetFolderRequest xmlns="urn:zimbraMail"/>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(folderRes.Fault, 'GetFolder should not be a Fault');
 
-		// Account2 creates a contact
+		// Create a contact
 		const create2 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -68,14 +71,18 @@ describe('Contacts > Bugs > Bug 10230 - Shared contacts search', function () {
 				</cn>
 			</CreateContactRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(create2.Fault, 'Create2 should not be a Fault');
 
-		// Search contacts locally
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
 				<query>in:contacts</query>
 			</SearchRequest>`, account2Token
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});

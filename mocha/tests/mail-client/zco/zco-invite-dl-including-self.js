@@ -65,11 +65,14 @@ describe('Mail Client > ZCO > Invite DL Including Self', function () {
 	it('Sanity | Verify invite to DL including self does not trigger calendar entry for organizer', async () => {
 		const orgAuthToken = await soap.getAccountAuthToken(organizerName);
 
+		// Search for the item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
 				<query>in:Calendar AND subject:(${apptSubject})</query>
 			</SearchRequest>`, orgAuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
@@ -78,11 +81,14 @@ describe('Mail Client > ZCO > Invite DL Including Self', function () {
 	it('Sanity | Verify invite DL triggers calendar entry for other attendee', async () => {
 		const att2AuthToken = await soap.getAccountAuthToken(attendee2Name);
 
+		// Search for the item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
 				<query>subject:(${apptSubject})</query>
 			</SearchRequest>`, att2AuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});

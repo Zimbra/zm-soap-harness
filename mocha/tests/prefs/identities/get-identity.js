@@ -37,7 +37,7 @@ describe('Prefs > Identities > Get-Identity', function () {
 		// Get identities
 		const res = await soap.makeSOAPEnvelopeAccount(`<GetIdentitiesRequest xmlns="urn:zimbraAccount"/>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(res.Fault, 'Should not fault');
 		assert.exists(res.GetIdentitiesResponse, 'Response should exist');
 	});
@@ -50,13 +50,13 @@ describe('Prefs > Identities > Get-Identity', function () {
 		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(`<CreateIdentityRequest xmlns="urn:zimbraAccount"><identity name="${name}"><a name="zimbraPrefIdentityName">${name}</a></identity></CreateIdentityRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not fault');
 
 		// Get identities
 		const res = await soap.makeSOAPEnvelopeAccount(`<GetIdentitiesRequest xmlns="urn:zimbraAccount"/>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(res.Fault, 'Get should not fault');
 		assert.exists(res.GetIdentitiesResponse, 'Response should exist');
 	});
@@ -72,7 +72,7 @@ describe('Prefs > Identities > Get-Identity', function () {
 		// Get identities
 		const res = await soap.makeSOAPEnvelopeAccount(`<GetIdentitiesRequest xmlns="urn:zimbraAccount"/>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(res.Fault, 'Should not fault');
 		assert.exists(res.GetIdentitiesResponse, 'Response should exist');
 	});
@@ -88,7 +88,7 @@ describe('Prefs > Identities > Get-Identity', function () {
 		// Get identities
 		const res = await soap.makeSOAPEnvelopeAccount(`<GetIdentitiesRequest xmlns="urn:zimbraAccount"/>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(res.Fault, 'Should not fault');
 	});
 
@@ -103,7 +103,7 @@ describe('Prefs > Identities > Get-Identity', function () {
 		// Get identities
 		const res = await soap.makeSOAPEnvelopeAccount(`<GetIdentitiesRequest xmlns="urn:zimbraAccount"/>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(res.Fault, 'Should not fault');
 	});
 
@@ -118,7 +118,7 @@ describe('Prefs > Identities > Get-Identity', function () {
 		// Get identities
 		const res = await soap.makeSOAPEnvelopeAccount(`<GetIdentitiesRequest xmlns="urn:zimbraAccount"/>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(res.Fault, 'Should not fault');
 	});
 
@@ -129,7 +129,7 @@ describe('Prefs > Identities > Get-Identity', function () {
 		// Get identities
 		const res = await soap.makeSOAPEnvelopeAccount(`<GetIdentitiesRequest xmlns="urn:zimbraAccount"/>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(res.Fault, 'Should not fault');
 		assert.exists(res.GetIdentitiesResponse, 'Response should exist');
 	});
@@ -142,7 +142,7 @@ describe('Prefs > Identities > Get-Identity', function () {
 		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(`<CreateIdentityRequest xmlns="urn:zimbraAccount"><identity name="${name}"><a name="zimbraPrefIdentityName">${name}</a></identity></CreateIdentityRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not fault');
 		const identityId = createRes.CreateIdentityResponse?.identity?.[0]?.id || createRes.CreateIdentityResponse?.identity?.id;
 		if (identityId) {
@@ -154,7 +154,7 @@ describe('Prefs > Identities > Get-Identity', function () {
 		// Get identities
 		const res = await soap.makeSOAPEnvelopeAccount(`<GetIdentitiesRequest xmlns="urn:zimbraAccount"/>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(res.Fault, 'Should not fault after deletion');
 	});
 });

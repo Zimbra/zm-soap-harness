@@ -51,7 +51,7 @@ describe('Prefs > Filters > Bugs > Bug66704', function () {
 			</ModifyFilterRulesRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.exists(modRes.Fault, 'Request should fault with INVALID_REQUEST');
 		const code = modRes.Fault.Detail.Error.Code;
 		assert.include(code, 'service.INVALID_REQUEST', 'Error code should be INVALID_REQUEST');
@@ -89,7 +89,7 @@ describe('Prefs > Filters > Bugs > Bug66704', function () {
 			</ModifyFilterRulesRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.exists(modRes.Fault, 'Request should fault with INVALID_REQUEST');
 		const code = modRes.Fault.Detail.Error.Code;
 		assert.include(code, 'service.INVALID_REQUEST', 'Error code should be INVALID_REQUEST');
@@ -127,7 +127,7 @@ describe('Prefs > Filters > Bugs > Bug66704', function () {
 			</ModifyFilterRulesRequest>`, authToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.exists(modRes.Fault, 'Request should fault with INVALID_REQUEST');
 		const code = modRes.Fault.Detail.Error.Code;
 		assert.include(code, 'service.INVALID_REQUEST', 'Error code should be INVALID_REQUEST');

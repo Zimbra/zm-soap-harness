@@ -51,8 +51,6 @@ describe('EWS > Calendar > Inline > Meeting Send Update And Accept With Inline A
 		const startTime = common.getXMLTime(60);
 		const endTime = common.getXMLTime(120);
 		const htmlBody = `&lt;html&gt;&lt;body&gt;&lt;p&gt;&lt;img src="cid:${IMAGE_CONTENT_ID}"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;`;
-
-		// Step 1: Create appointment from EWS
 		const createRes = await ews.makeEWSRequest(
 			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				MessageDisposition="SaveOnly"
@@ -88,10 +86,10 @@ describe('EWS > Calendar > Inline > Meeting Send Update And Accept With Inline A
 		const createBody = ews.getBody(createRes);
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
+
+		// Verify response
 		assert.equal(createMsg.$.ResponseClass, 'Success', 'CreateItem should succeed');
 		const calItemId = createMsg.Items.CalendarItem.ItemId.$.Id;
-
-		// Step 2: Attach first inline image
 		const attachRes = await ews.makeEWSRequest(
 			`<CreateAttachment xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ParentItemId Id="${calItemId}" />
@@ -112,8 +110,6 @@ describe('EWS > Calendar > Inline > Meeting Send Update And Accept With Inline A
 			.ResponseMessages.CreateAttachmentResponseMessage;
 		assert.equal(attachMsg.$.ResponseClass, 'Success', 'CreateAttachment should succeed');
 		const attachCk = attachMsg.Attachments.FileAttachment.AttachmentId.$.RootItemChangeKey;
-
-		// Step 3: First UpdateItem to send meeting
 		await ews.makeEWSRequest(
 			`<UpdateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				ConflictResolution="AutoResolve"
@@ -135,8 +131,6 @@ describe('EWS > Calendar > Inline > Meeting Send Update And Accept With Inline A
 			</UpdateItem>`,
 			account1Email, accountPassword
 		);
-
-		// Step 4: Attach second inline image and update subject
 		const attachRes2 = await ews.makeEWSRequest(
 			`<CreateAttachment xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ParentItemId Id="${calItemId}" />
@@ -165,8 +159,6 @@ describe('EWS > Calendar > Inline > Meeting Send Update And Accept With Inline A
 		const attachMsgArr = Array.isArray(attachMsg2) ? attachMsg2 : [attachMsg2];
 		const fileAttachments = Array.isArray(attachMsgArr[0].Attachments.FileAttachment) ? attachMsgArr[0].Attachments.FileAttachment : [attachMsgArr[0].Attachments.FileAttachment];
 		const attachCk2 = fileAttachments[0].AttachmentId.$.RootItemChangeKey;
-
-		// Step 5: Second UpdateItem with updated subject and send
 		await ews.makeEWSRequest(
 			`<UpdateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				ConflictResolution="AutoResolve"
@@ -188,8 +180,6 @@ describe('EWS > Calendar > Inline > Meeting Send Update And Accept With Inline A
 			</UpdateItem>`,
 			account1Email, accountPassword
 		);
-
-		// Step 6: Sync and verify
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -210,42 +200,53 @@ describe('EWS > Calendar > Inline > Meeting Send Update And Accept With Inline A
 			.ResponseMessages.SyncFolderItemsResponseMessage;
 		assert.equal(syncMsg.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
 
-		// Verify on organizer ZWC
+		// Authenticate account
 		const acct1Token = await soap.getAccountAuthToken(account1Email, accountPassword);
+
+		// Search item
 		const sentSearch = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>in:"Sent" subject:${apptSubject2}</query>
 			</SearchRequest>`, acct1Token
 		);
+
+		// Verify response
 		assert.notExists(sentSearch.Fault, 'Response should not be a Fault');
 		const sentMsg = Array.isArray(sentSearch.SearchResponse.m)
 			? sentSearch.SearchResponse.m[0] : sentSearch.SearchResponse.m;
 		assert.exists(sentMsg, 'Sent message with updated subject should exist');
-
-		// Verify on attendee ZWC
 		await common.delay(3000);
+
+		// Authenticate account
 		const acct2Token = await soap.getAccountAuthToken(account2Email, accountPassword);
+
+		// Search item
 		const inboxSearch = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>in:"Inbox" subject:${apptSubject2}</query>
 			</SearchRequest>`, acct2Token
 		);
+
+		// Verify response
 		assert.notExists(inboxSearch.Fault, 'Response should not be a Fault');
 		const inboxMsg = Array.isArray(inboxSearch.SearchResponse.m)
 			? inboxSearch.SearchResponse.m[0] : inboxSearch.SearchResponse.m;
 		assert.exists(inboxMsg, 'Updated meeting should be received by attendee');
 
-		// Attendee accepts
+		// Search item
 		const apptSearch = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
 				<query>subject:${apptSubject2}</query>
 			</SearchRequest>`, acct2Token
 		);
+
+		// Verify response
 		assert.notExists(apptSearch.Fault, 'Response should not be a Fault');
 		const attendeeAppt = Array.isArray(apptSearch.SearchResponse.appt)
 			? apptSearch.SearchResponse.appt[0] : apptSearch.SearchResponse.appt;
 		const attendeeInvId = attendeeAppt.invId;
 
+		// Send send invite reply request
 		const acceptRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendInviteReplyRequest xmlns="urn:zimbraMail"
 				verb="ACCEPT" id="${attendeeInvId}" compNum="0" updateOrganizer="TRUE">
@@ -264,17 +265,23 @@ describe('EWS > Calendar > Inline > Meeting Send Update And Accept With Inline A
 				</m>
 			</SendInviteReplyRequest>`, acct2Token
 		);
+
+		// Verify response
 		assert.notExists(acceptRes.Fault, 'SendInviteReply should not fault');
 		assert.exists(acceptRes.SendInviteReplyResponse, 'SendInviteReplyResponse should exist');
-
-		// Verify organizer received the accept
 		await common.delay(8000);
+
+		// Authenticate account
 		const acct1Token2 = await soap.getAccountAuthToken(account1Email, accountPassword);
+
+		// Search item
 		const responseSearch = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>in:"Inbox" from:${account2Email} subject:"${apptSubject2}"</query>
 			</SearchRequest>`, acct1Token2
 		);
+
+		// Verify response
 		assert.notExists(responseSearch.Fault, 'Response should not be a Fault');
 		const responseMsg = Array.isArray(responseSearch.SearchResponse.m)
 			? responseSearch.SearchResponse.m[0] : responseSearch.SearchResponse.m;

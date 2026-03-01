@@ -43,19 +43,24 @@ Test content</content>
 	it('Sanity | Advance search should not partial domain', async () => {
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
+		// Search item
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query> from:(@yahoo.co.in) </query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 
-		// BrowseRequest
+		// Send browse request
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<BrowseRequest xmlns="urn:zimbraMail" browseBy="domains">
 			</BrowseRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
 		assert.exists(res3.BrowseResponse, 'BrowseResponse should exist');
 	});

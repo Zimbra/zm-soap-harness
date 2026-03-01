@@ -50,7 +50,7 @@ describe('Delete-Identity', function () {
 			</DeleteIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(delRes.Fault, 'DeleteIdentityRequest should not fault');
 		assert.exists(delRes.DeleteIdentityResponse, 'DeleteIdentityResponse should exist');
 	});
@@ -87,7 +87,7 @@ describe('Delete-Identity', function () {
 			</DeleteIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(delRes.Fault, 'DeleteIdentityRequest by ID should not fault');
 		assert.exists(delRes.DeleteIdentityResponse, 'DeleteIdentityResponse should exist');
 	});
@@ -114,7 +114,7 @@ describe('Delete-Identity', function () {
 			</DeleteIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.exists(delRes.Fault, 'Delete non-existent identity should fault');
 	});
 
@@ -154,7 +154,7 @@ describe('Delete-Identity', function () {
 			`<GetIdentitiesRequest xmlns="urn:zimbraAccount"/>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(getRes.Fault, 'GetIdentitiesRequest should not fault');
 		assert.exists(getRes.GetIdentitiesResponse, 'GetIdentitiesResponse should exist');
 	});
@@ -181,7 +181,7 @@ describe('Delete-Identity', function () {
 			</DeleteIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.exists(delRes.Fault, 'Delete DEFAULT identity should fault');
 	});
 });

@@ -31,41 +31,53 @@ describe('Mail Client > Smime > ZCS-51', function () {
 
 	// Tests
 	it('Sanity | 1 Create a contact and upload public certificate which has single email address in it 2 Verify contact email associat...', async () => {
-		// Source: zcs51_SingleEmailCert from Smime/ZCS-51.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | 1 Create a contact and upload public certificate which has multiple email address in it 2 Verify contact email associ...', async () => {
-		// Source: zcs51_MultiEmailCert from Smime/ZCS-51.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | 1 Create a contact and upload public certificate which has no email address in it 2 Verify contact email associated w...', async () => {
-		// Source: zcs51_EmptyEmailCert from Smime/ZCS-51.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | 1 Create a contact and upload public certificate which has no email address in it 2 Verify contact email associated w...', async () => {
-		// Source: zcs51_EmptyEmailCert from Smime/ZCS-51.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

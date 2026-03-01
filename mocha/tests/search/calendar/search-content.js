@@ -41,7 +41,7 @@ describe('Search > Calendar > Content', function () {
 	it('Functional | Login as the appropriate test account', async () => {
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
-		// Create appointment
+		// Create an appointment
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -57,17 +57,23 @@ describe('Search > Calendar > Content', function () {
 				</m>
 			</CreateAppointmentRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Functional | Search for an appointment based on subject (Bug: 3141, 5176)', async () => {
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
+
+		// Search item
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
 				<query>subject:"${apptSubject}"</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 	});
@@ -79,6 +85,8 @@ describe('Search > Calendar > Content', function () {
 				<query>"${apptLocation}"</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
@@ -90,6 +98,8 @@ describe('Search > Calendar > Content', function () {
 				<query>"${apptContent}"</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
@@ -99,11 +109,15 @@ describe('Search > Calendar > Content', function () {
 		const month = now.getMonth() + 1;
 		const day = now.getDate();
 		const year = now.getFullYear();
+
+		// Search item
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="appointment">
 				<query>after:${month}/${day}/${year}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});

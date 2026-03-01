@@ -16,6 +16,7 @@ describe('Admin > Accounts > Get Account Multinode', function () {
 		return;
 	}
 
+	// Tests
 	it('Sanity | Verify that GetAccountRequest is successfully proxied', async () => {
 		const serverAName = config.mailboxServerHost1;
 		const serverBName = config.mailboxServerHost2;

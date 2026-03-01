@@ -35,14 +35,19 @@ describe('Contacts > Bugs > ZCS-6232 - GetContacts deny view', function () {
 				<name>${dlName}</name>
 			</CreateDistributionListRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(dlRes.Fault, 'CreateDL should not be a Fault');
 
+		// Send add distribution list member request
 		const addRes = await soap.makeSOAPEnvelopeAdmin(
 			`<AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
 				<id>${Array.isArray(dlRes.CreateDistributionListResponse.dl) ? dlRes.CreateDistributionListResponse.dl[0].id : dlRes.CreateDistributionListResponse.dl.id}</id>
 				<dlm>${account1Email}</dlm>
 			</AddDistributionListMemberRequest>`, adminAuthToken
 		);
+
+		// Verify response
 		assert.notExists(addRes.Fault, 'AddMember should not be a Fault');
 	});
 
@@ -53,8 +58,9 @@ describe('Contacts > Bugs > ZCS-6232 - GetContacts deny view', function () {
 				<cn id="999999999"/>
 			</GetContactsRequest>`, account1Token, false
 		);
-		// Should return empty or fault
 		if (getRes.Fault) {
+
+			// Verify response
 			assert.exists(getRes.Fault, 'Invalid id should return Fault');
 		} else {
 			assert.exists(getRes.GetContactsResponse, 'Response should exist');

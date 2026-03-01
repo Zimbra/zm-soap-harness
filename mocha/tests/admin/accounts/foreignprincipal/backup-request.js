@@ -16,6 +16,7 @@ describe('Admin > Accounts > ForeignPrincipal > Backup Request', function () {
 		return;
 	}
 
+	// Tests
 	it('Functional | Backup (full) and restore an account with a Foreign Principal. Verify the Foreign Principal value is backed up and restored', async () => {
 		const accountName = 'fp' + common.getUniqueString() +
 			'@' + config.testDomain;

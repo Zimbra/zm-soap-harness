@@ -36,16 +36,21 @@ describe('Contacts > Bugs > Bug 74468 - Contact operations', function () {
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
+		// Get the contact
 		const getRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetContactsRequest xmlns="urn:zimbraMail">
 				<cn id="${cn.id}"/>
 			</GetContactsRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(getRes.Fault, 'Get should not be a Fault');
 		assert.exists(getRes.GetContactsResponse, 'GetContactsResponse should exist');
 	});

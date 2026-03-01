@@ -32,6 +32,8 @@ describe('Contacts > GAL > GALAccount > AutoComplete > AutoCompleteRequest', fun
 				<name>test</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -43,6 +45,8 @@ describe('Contacts > GAL > GALAccount > AutoComplete > AutoCompleteRequest', fun
 				<name>te</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -54,6 +58,8 @@ describe('Contacts > GAL > GALAccount > AutoComplete > AutoCompleteRequest', fun
 				<name>TEST</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});

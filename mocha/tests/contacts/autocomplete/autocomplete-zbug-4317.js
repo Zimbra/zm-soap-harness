@@ -42,6 +42,8 @@ describe('Contacts > AutoComplete > AutoComplete ZBUG-4317', function () {
 				<name>bug4317</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -53,6 +55,8 @@ describe('Contacts > AutoComplete > AutoComplete ZBUG-4317', function () {
 				<name>Bug</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});

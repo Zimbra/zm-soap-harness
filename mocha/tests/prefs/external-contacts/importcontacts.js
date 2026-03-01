@@ -43,7 +43,7 @@ describe('ImportContacts', function () {
 			</ImportContactsRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(importRes.Fault, 'ImportContactsRequest should not fault');
 		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});
@@ -72,7 +72,7 @@ describe('ImportContacts', function () {
 			</ImportContactsRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(importRes.Fault, 'ImportContactsRequest should not fault');
 		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});
@@ -99,7 +99,7 @@ describe('ImportContacts', function () {
 			</ImportContactsRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.isTrue(
 			(importRes.ImportContactsResponse !== undefined) || (importRes.Fault !== undefined),
 			'Server should return a proper response for empty import'

@@ -44,7 +44,7 @@ describe('ModifyWhiteBlackList Basic', function () {
 			</ModifyWhiteBlackListRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyWhiteBlackListRequest should not fault');
 		assert.exists(modRes.ModifyWhiteBlackListResponse, 'ModifyWhiteBlackListResponse should exist');
 	});
@@ -74,7 +74,7 @@ describe('ModifyWhiteBlackList Basic', function () {
 			</ModifyWhiteBlackListRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyWhiteBlackListRequest should not fault');
 		assert.exists(modRes.ModifyWhiteBlackListResponse, 'ModifyWhiteBlackListResponse should exist');
 	});
@@ -104,7 +104,7 @@ describe('ModifyWhiteBlackList Basic', function () {
 			</ModifyWhiteBlackListRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyWhiteBlackListRequest should not fault');
 		assert.exists(modRes.ModifyWhiteBlackListResponse, 'ModifyWhiteBlackListResponse should exist');
 	});
@@ -134,7 +134,7 @@ describe('ModifyWhiteBlackList Basic', function () {
 			</ModifyWhiteBlackListRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyWhiteBlackListRequest should not fault');
 		assert.exists(modRes.ModifyWhiteBlackListResponse, 'ModifyWhiteBlackListResponse should exist');
 	});

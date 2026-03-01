@@ -16,6 +16,7 @@ describe('Admin > Accounts > Create Account Multinode 3', function () {
 		return;
 	}
 
+	// Tests
 	it('Sanity | Verify that the accounts with COS having 2 servers(A and B) in the server Pool are getting created on server A or B but not on C', async () => {
 		const serverAName = config.mailboxServerHost1;
 		const serverBName = config.mailboxServerHost2;

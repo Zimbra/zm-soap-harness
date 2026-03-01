@@ -31,58 +31,79 @@ describe('Mail Client > Prefs > BackupRequest', function () {
 
 	// Tests
 	it('Sanity | Verify that after backup and restore an account having a signature, sign is restored', async () => {
-		// Source: Sign_Backup_01 from Prefs/BackupRequest.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Backup (incremental) and restore an account with a Signature Verify that after backup and restore the signature is co...', async () => {
-		// Source: Sign_Backup_02 from Prefs/BackupRequest.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Verify that after backup and restore an account that the skin setting is restored 1', async () => {
-		// Source: BackupRequest_Skins_01 from Prefs/Skins/BackupRequest.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
+
 
 	it('Sanity | Verify that after backup and restore an account that the skin setting is restored 2', async () => {
-		// Source: BackupRequest_Skins_02 from Prefs/Skins/BackupRequest.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
+
 
 	it('Sanity | Backup (incremental) and restore an account Verify that after backup and restore the correct Skin is restored 1', async () => {
-		// Source: Cont_Backup_03 from Prefs/Skins/BackupRequest.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
+
 	it('Sanity | Backup (incremental) and restore an account Verify that after backup and restore the correct Skin is restored 2', async () => {
-		// Source: Cont_Backup_04 from Prefs/Skins/BackupRequest.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

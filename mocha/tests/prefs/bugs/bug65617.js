@@ -39,7 +39,7 @@ describe('Bug65617', function () {
 			`<GetShareInfoRequest xmlns="urn:zimbraAccount"/>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.isTrue(
 			(res.GetShareInfoResponse !== undefined) || (res.Fault !== undefined),
 			'Server should return a proper response without NPE'

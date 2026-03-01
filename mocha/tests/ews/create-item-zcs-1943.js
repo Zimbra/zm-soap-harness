@@ -81,6 +81,8 @@ describe('EWS > CreateItem ZCS-1943', function () {
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
 		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+
+		// Verify response
 		assert.equal(createMessage.$.ResponseClass, 'Success', 'CreateItem should succeed');
 		assert.exists(createMessage.Items.CalendarItem.ItemId.$.Id,
 			'ItemId should be present');
@@ -126,6 +128,8 @@ describe('EWS > CreateItem ZCS-1943', function () {
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
 		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+
+		// Verify response
 		assert.equal(createMessage.$.ResponseClass, 'Success',
 			'CreateItem with unmapped folder ID should succeed');
 	});
@@ -169,6 +173,8 @@ describe('EWS > CreateItem ZCS-1943', function () {
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
 		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+
+		// Verify response
 		assert.equal(createMessage.$.ResponseClass, 'Success', 'CreateItem should succeed');
 		assert.exists(createMessage.Items.CalendarItem.ItemId.$.Id,
 			'ItemId should be present');
@@ -221,6 +227,8 @@ describe('EWS > CreateItem ZCS-1943', function () {
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
 		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+
+		// Verify response
 		assert.equal(createMessage.$.ResponseClass, 'Success',
 			'CreateItem with inbox folder should succeed');
 		assert.exists(createMessage.Items.Message.ItemId.$.Id,
@@ -263,6 +271,8 @@ describe('EWS > CreateItem ZCS-1943', function () {
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
 		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+
+		// Verify response
 		assert.equal(createMessage.$.ResponseClass, 'Success',
 			'CreateItem with contacts folder should succeed');
 		assert.exists(createMessage.Items.Contact.ItemId.$.Id,
@@ -271,11 +281,11 @@ describe('EWS > CreateItem ZCS-1943', function () {
 
 
 	it('Sanity | MoveItem request with distinguished folder ID for mail item', async () => {
-		// Send mail from account2 to account1
 		const account2AuthToken = await soap.getAccountAuthToken(account2Email, account2Password);
 		const messageSubject = `subject${common.getUniqueString()}`;
 		const messageContent = 'Message test content';
 
+		// Send the message
 		await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -289,8 +299,6 @@ describe('EWS > CreateItem ZCS-1943', function () {
 		);
 
 		await soap.waitFor(5000);
-
-		// EWS: GetFolder inbox
 		const getFolderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>
@@ -310,13 +318,13 @@ describe('EWS > CreateItem ZCS-1943', function () {
 		const getFolderMsg = getFolderBody.GetFolderResponse
 			.ResponseMessages.GetFolderResponseMessage;
 		const folderMsg = Array.isArray(getFolderMsg) ? getFolderMsg[0] : getFolderMsg;
+
+		// Verify response
 		assert.equal(folderMsg.$.ResponseClass, 'Success', 'GetFolder should succeed');
 		assert.equal(folderMsg.Folders.Folder.FolderId.$.Id, '2',
 			'Inbox folder Id should be 2');
 		assert.equal(folderMsg.Folders.Folder.DisplayName, 'Inbox',
 			'DisplayName should be Inbox');
-
-		// EWS: SyncFolderItems for inbox
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -345,8 +353,6 @@ describe('EWS > CreateItem ZCS-1943', function () {
 		assert.exists(matchedItem, "Should find message matching subject");
 		const mailItemId = matchedItem.Message.ItemId.$.Id;
 		const mailChangeKey = matchedItem.Message.ItemId.$.ChangeKey;
-
-		// EWS: MoveItem to drafts
 		const moveRes = await ews.makeEWSRequest(
 			`<MoveItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
@@ -369,10 +375,10 @@ describe('EWS > CreateItem ZCS-1943', function () {
 
 
 	it('Sanity | CopyItem request with distinguished folder ID for sent item', async () => {
-		// Send mail from account2 to account1 (reuse mail from previous setup)
 		const account2AuthToken = await soap.getAccountAuthToken(account2Email, account2Password);
 		const messageSubject = `subject${common.getUniqueString()}`;
 
+		// Send the message
 		await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -384,8 +390,6 @@ describe('EWS > CreateItem ZCS-1943', function () {
 				</m>
 			</SendMsgRequest>`, account2AuthToken
 		);
-
-		// EWS: SyncFolderItems inbox to get item
 		await common.delay(3000);
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
@@ -405,12 +409,12 @@ describe('EWS > CreateItem ZCS-1943', function () {
 		const syncMsg = syncBody.SyncFolderItemsResponse
 			.ResponseMessages.SyncFolderItemsResponseMessage;
 		const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
+
+		// Verify response
 		assert.equal(syncMessage.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
 		const creates = Array.isArray(syncMessage.Changes.Create)
 			? syncMessage.Changes.Create : [syncMessage.Changes.Create];
 		const mailItemId = creates[creates.length - 1].Message.ItemId.$.Id;
-
-		// EWS: CopyItem to sentitems
 		const copyRes = await ews.makeEWSRequest(
 			`<CopyItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
@@ -436,8 +440,10 @@ describe('EWS > CreateItem ZCS-1943', function () {
 		const appointmentSubject = `appsubject1${common.getUniqueString()}`;
 		const appointmentContent = `appcont1${common.getUniqueString()}`;
 
-		// ZWC: User2 sends a meeting request to user1
+		// Authenticate account
 		const account2AuthToken = await soap.getAccountAuthToken(account2Email, account2Password);
+
+		// Create an appointment
 		const createApptRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
@@ -458,9 +464,9 @@ describe('EWS > CreateItem ZCS-1943', function () {
 				</m>
 			</CreateAppointmentRequest>`, account2AuthToken
 		);
-		assert.notExists(createApptRes.Fault, 'CreateAppointmentRequest should not be a Fault');
 
-		// EWS: GetFolder calendar
+		// Verify response
+		assert.notExists(createApptRes.Fault, 'CreateAppointmentRequest should not be a Fault');
 		const getFolderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>
@@ -485,8 +491,6 @@ describe('EWS > CreateItem ZCS-1943', function () {
 			'Calendar folder Id should be 10');
 		assert.equal(folderMsg.Folders.CalendarFolder.DisplayName, 'Calendar',
 			'DisplayName should be Calendar');
-
-		// EWS: SyncFolderItems with distinguished folder ID
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>

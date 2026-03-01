@@ -57,6 +57,7 @@ describe('Search > Date', function () {
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
 
+
 	it('Regression | Search with negative after date (Bug: 1781)', async () => {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
@@ -69,6 +70,7 @@ describe('Search > Date', function () {
 		assert.exists(res.Fault, 'Response should be a Fault');
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
+
 
 	it('Regression | Search with negative date (Bug: 1781)', async () => {
 		// SearchRequest
@@ -83,6 +85,7 @@ describe('Search > Date', function () {
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
 
+
 	it('Regression | Search for negative value of Month in after query', async () => {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
@@ -95,6 +98,7 @@ describe('Search > Date', function () {
 		assert.exists(res.Fault, 'Response should be a Fault');
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
+
 
 	it('Regression | Search for negative value of Month in before query', async () => {
 		// SearchRequest
@@ -109,6 +113,7 @@ describe('Search > Date', function () {
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
 
+
 	it('Regression | Search for negative value of Month', async () => {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
@@ -121,6 +126,7 @@ describe('Search > Date', function () {
 		assert.exists(res.Fault, 'Response should be a Fault');
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
+
 
 	it('Regression | Search for negative value of Year in after query', async () => {
 		// SearchRequest
@@ -135,6 +141,7 @@ describe('Search > Date', function () {
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
 
+
 	it('Regression | Search for negative value of Year in before query', async () => {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
@@ -148,6 +155,7 @@ describe('Search > Date', function () {
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
 
+
 	it('Regression | Search for negative value of Year', async () => {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
@@ -160,6 +168,7 @@ describe('Search > Date', function () {
 		assert.exists(res.Fault, 'Response should be a Fault');
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
+
 
 	it('Functional | Search for mails before 50 years', async () => {
 		// SearchRequest
@@ -175,6 +184,7 @@ describe('Search > Date', function () {
 		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
+
 	it('Regression | Search with wrong Date Formate in query after - using variable GENTIME', async () => {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
@@ -187,6 +197,7 @@ describe('Search > Date', function () {
 		assert.exists(res.Fault, 'Response should be a Fault');
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
+
 
 	it('Regression | Search with wrong Date Formate in query before - using variable GENTIME', async () => {
 		// SearchRequest
@@ -201,6 +212,7 @@ describe('Search > Date', function () {
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
 
+
 	it('Regression | Search with wrong Date Formate using variable GENTIME', async () => {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
@@ -213,6 +225,7 @@ describe('Search > Date', function () {
 		assert.exists(res.Fault, 'Response should be a Fault');
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
+
 
 	it('Functional | Search for invalid value of Date in after query (Bug: 1305)', async () => {
 		// SearchRequest
@@ -227,6 +240,7 @@ describe('Search > Date', function () {
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
 
+
 	it('Functional | Search for invalid value of Date in before query (Bug: 1305)', async () => {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
@@ -239,6 +253,7 @@ describe('Search > Date', function () {
 		assert.exists(res.Fault, 'Response should be a Fault');
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
+
 
 	it('Functional | Search for invalid value of Date (Bug: 1305)', async () => {
 		// SearchRequest
@@ -253,6 +268,7 @@ describe('Search > Date', function () {
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
 
+
 	it('Functional | Search for invalid value of Month in after - query (Bug: 1305)', async () => {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
@@ -265,6 +281,7 @@ describe('Search > Date', function () {
 		assert.exists(res.Fault, 'Response should be a Fault');
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
+
 
 	it('Functional | Search for invalid value of Month in before - query (Bug: 1305)', async () => {
 		// SearchRequest
@@ -279,6 +296,7 @@ describe('Search > Date', function () {
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
 
+
 	it('Functional | Search for invalid value of Month (Bug: 1305)', async () => {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
@@ -291,6 +309,7 @@ describe('Search > Date', function () {
 		assert.exists(res.Fault, 'Response should be a Fault');
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
+
 
 	it('Functional | Search with text in after query', async () => {
 		// SearchRequest
@@ -305,6 +324,7 @@ describe('Search > Date', function () {
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
 
+
 	it('Functional | Search with text in before query', async () => {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
@@ -317,6 +337,7 @@ describe('Search > Date', function () {
 		assert.exists(res.Fault, 'Response should be a Fault');
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
+
 
 	it('Functional | Search with text', async () => {
 		// SearchRequest
@@ -331,6 +352,7 @@ describe('Search > Date', function () {
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
 
+
 	it('Functional | Search with decimal value of date in after query', async () => {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
@@ -343,6 +365,7 @@ describe('Search > Date', function () {
 		assert.exists(res.Fault, 'Response should be a Fault');
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
+
 
 	it('Functional | Search with decimal value of date in before query', async () => {
 		// SearchRequest
@@ -357,6 +380,7 @@ describe('Search > Date', function () {
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
 
+
 	it('Functional | Search with decimal value of date', async () => {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
@@ -369,6 +393,7 @@ describe('Search > Date', function () {
 		assert.exists(res.Fault, 'Response should be a Fault');
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
+
 
 	it('Functional | Search with decimal value of month in after query', async () => {
 		// SearchRequest
@@ -383,6 +408,7 @@ describe('Search > Date', function () {
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
 
+
 	it('Functional | Search with decimal value of month in before query', async () => {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
@@ -395,6 +421,7 @@ describe('Search > Date', function () {
 		assert.exists(res.Fault, 'Response should be a Fault');
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
+
 
 	it('Functional | Search with decimal value of month', async () => {
 		// SearchRequest
@@ -409,6 +436,7 @@ describe('Search > Date', function () {
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
 
+
 	it('Functional | Search with decimal value of year in after query', async () => {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
@@ -422,6 +450,7 @@ describe('Search > Date', function () {
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
 
+
 	it('Functional | Search with decimal value of year in before query', async () => {
 		// SearchRequest
 		res = await soap.makeSOAPEnvelopeAccount(
@@ -434,6 +463,7 @@ describe('Search > Date', function () {
 		assert.exists(res.Fault, 'Response should be a Fault');
 		assert.match(res.Fault?.Detail?.Error?.Code, /(service.INVALID_REQUEST|mail.QUERY_PARSE_ERROR)/, 'Fault code should match');
 	});
+
 
 	it('Functional | Search with decimal value of year', async () => {
 		// SearchRequest

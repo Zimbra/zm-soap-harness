@@ -32,7 +32,7 @@ describe('Filters-Spam', function () {
 		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="spam${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="X-Spam-Flag" stringComparison="is" value="YES"/></filterTests><filterActions><actionDiscard/></filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, authToken);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(modRes.Fault, 'Spam header filter should not fault');
 		assert.exists(modRes.ModifyFilterRulesResponse, 'Response should exist');
 	});

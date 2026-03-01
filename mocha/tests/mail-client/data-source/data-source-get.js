@@ -31,11 +31,14 @@ describe('Mail Client > DataSource > DataSource_get', function () {
 
 	// Tests
 	it('Sanity | Test an Imap and pop account with all valid values by admin user credentials', async () => {
-		// Source: GetDataSources01 from DataSource/DataSource_get.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

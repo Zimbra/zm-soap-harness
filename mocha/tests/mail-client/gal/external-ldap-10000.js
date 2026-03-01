@@ -31,31 +31,40 @@ describe('Mail Client > GAL > ExternalLDAP_10000', function () {
 
 	// Tests
 	it('Sanity | Verify basic AutoCompleteRequest for GalAccount', async () => {
-		// Source: GalAccount_AutoCompleteRequest_1000_01 from GAL/LargeGAL/GALAccount/ExternalLDAP_10000.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Search an external LDAP GAL for a test account', async () => {
-		// Source: SearchGALRequest_ExternalLDAP_1000_01 from GAL/LargeGAL/GALAccount/ExternalLDAP_10000.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Sync GAL against an external (LDAP) GAL servers', async () => {
-		// Source: SyncGalRequest_ExternalLDAP_Basic_01 from GAL/LargeGAL/GALAccount/ExternalLDAP_10000.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

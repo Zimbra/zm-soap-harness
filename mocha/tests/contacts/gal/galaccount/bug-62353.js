@@ -32,6 +32,8 @@ describe('Contacts > GAL > GALAccount > AutoComplete > Bug 62353', function () {
 				<name>test</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -43,6 +45,8 @@ describe('Contacts > GAL > GALAccount > AutoComplete > Bug 62353', function () {
 				<name>admin</name>
 			</AutoCompleteRequest>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});

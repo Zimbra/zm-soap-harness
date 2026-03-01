@@ -31,41 +31,53 @@ describe('Mail Client > DataSource > DataSource_delete', function () {
 
 	// Tests
 	it('Sanity | Delete an existing pop3 account by providing its id', async () => {
-		// Source: DataSource_delete1 from DataSource/DataSource_delete.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Delete an existing pop3 account by providing its name', async () => {
-		// Source: DataSource_delete2 from DataSource/DataSource_delete.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Functional | Verify deletion of already deleted pop3 account', async () => {
-		// Source: DataSource_delete3 from DataSource/DataSource_delete.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Regression | Deletion of a non existing pop3 account', async () => {
-		// Source: DataSource_delete4 from DataSource/DataSource_delete.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

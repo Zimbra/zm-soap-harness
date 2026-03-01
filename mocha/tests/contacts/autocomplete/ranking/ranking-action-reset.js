@@ -50,17 +50,22 @@ describe('Contacts > AutoComplete > Ranking > RankingActionRequest Reset', funct
 			</SendMsgRequest>`, account1Token
 		);
 
+		// Send ranking action request
 		const resetRes = await soap.makeSOAPEnvelopeAccount(
 			`<RankingActionRequest xmlns="urn:zimbraMail">
 				<action op="reset"/>
 			</RankingActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(resetRes.Fault, 'Reset should not be a Fault');
 	});
 
 
 	it('Sanity | Reset ranking after multiple sends', async () => {
 		for (let i = 0; i < 3; i++) {
+
+			// Send the message
 			await soap.makeSOAPEnvelopeAccount(
 				`<SendMsgRequest xmlns="urn:zimbraMail">
 					<m>
@@ -74,11 +79,14 @@ describe('Contacts > AutoComplete > Ranking > RankingActionRequest Reset', funct
 			);
 		}
 
+		// Send ranking action request
 		const resetRes = await soap.makeSOAPEnvelopeAccount(
 			`<RankingActionRequest xmlns="urn:zimbraMail">
 				<action op="reset"/>
 			</RankingActionRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(resetRes.Fault, 'Reset should not be a Fault');
 	});
 
@@ -89,6 +97,8 @@ describe('Contacts > AutoComplete > Ranking > RankingActionRequest Reset', funct
 				<name>test</name>
 			</AutoCompleteRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
 		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
@@ -96,19 +106,26 @@ describe('Contacts > AutoComplete > Ranking > RankingActionRequest Reset', funct
 
 	it('Sanity | Reset ranking with no prior data', async () => {
 		const account3Email = `test${common.getUniqueString()}@${config.testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account3Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const account3Token = await soap.getAccountAuthToken(account3Email);
 
+		// Send ranking action request
 		const resetRes = await soap.makeSOAPEnvelopeAccount(
 			`<RankingActionRequest xmlns="urn:zimbraMail">
 				<action op="reset"/>
 			</RankingActionRequest>`, account3Token
 		);
+
+		// Verify response
 		assert.notExists(resetRes.Fault, 'Reset should not be a Fault');
 	});
 });

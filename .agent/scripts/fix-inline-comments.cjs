@@ -52,7 +52,7 @@ function getSoapComment(requestType) {
         'SetCustomMetadataRequest': 'Set custom metadata',
         'SetMailboxMetadataRequest': 'Set mailbox metadata',
         'ModifyMailboxMetadataRequest': 'Modify mailbox metadata',
-        'SearchRequest': 'Search for the item',
+        'SearchRequest': 'Search item',
         'SendMsgRequest': 'Send the message',
         'AddMsgRequest': 'Inject the message',
         'AuthRequest': 'Authenticate',
@@ -265,7 +265,7 @@ function processFile(filePath) {
                     if (prevLine !== '' && !prevLine.startsWith('it(') && !prevLine.startsWith('//')) {
                         newLines.push('');
                     }
-                    newLines.push(indent + '// Verify the response');
+                    newLines.push(indent + '// Verify response');
                 }
             }
 

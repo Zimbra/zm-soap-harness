@@ -340,6 +340,8 @@ Content-Transfer-Encoding: base64
 				<query>attachment:"application/pdf"</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.SearchResponse?.m, 'Response element should exist');
 	});
@@ -351,6 +353,8 @@ Content-Transfer-Encoding: base64
 				<query>attachment:"application/x-tar"</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
@@ -361,6 +365,8 @@ Content-Transfer-Encoding: base64
 				<query>attachment:"text/calendar"</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
@@ -371,6 +377,8 @@ Content-Transfer-Encoding: base64
 				<query>attachment:"text/plain"</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
@@ -381,6 +389,8 @@ Content-Transfer-Encoding: base64
 				<query>attachment:"text/html"</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
@@ -391,6 +401,8 @@ Content-Transfer-Encoding: base64
 				<query>attachment:"text/richtext"</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
@@ -401,6 +413,8 @@ Content-Transfer-Encoding: base64
 				<query>attachment:"image"</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
@@ -412,6 +426,8 @@ Content-Transfer-Encoding: base64
 				<query>attachment:"image/jpeg"</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.SearchResponse?.m, 'Response element should exist');
 	});
@@ -423,6 +439,8 @@ Content-Transfer-Encoding: base64
 				<query>attachment:"image/gif"</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
@@ -433,6 +451,8 @@ Content-Transfer-Encoding: base64
 				<query>attachment:"application/vnd.ms-excel"</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
@@ -443,6 +463,8 @@ Content-Transfer-Encoding: base64
 				<query>attachment:"application/vnd.ms-powerpoint"</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
@@ -453,6 +475,8 @@ Content-Transfer-Encoding: base64
 				<query>attachment:"application/msword"</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
@@ -463,6 +487,8 @@ Content-Transfer-Encoding: base64
 				<query>attachment:("application/x-zip-compressed" OR "application/zip")</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
@@ -473,6 +499,8 @@ Content-Transfer-Encoding: base64
 				<query>attachment:"application/pdf"</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
@@ -483,6 +511,8 @@ Content-Transfer-Encoding: base64
 				<query>attachment:"image/jpeg"</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.SearchResponse?.m, 'Response element should exist');
 	});

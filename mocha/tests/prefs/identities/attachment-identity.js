@@ -46,7 +46,7 @@ describe('Attachment-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
-		// Verify the response
+		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});

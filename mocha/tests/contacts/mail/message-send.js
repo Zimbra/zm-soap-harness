@@ -49,6 +49,8 @@ describe('Contacts > Mail > Message Send', function () {
 	// Tests
 	it('Smoke | Send message and verify contact auto-added', async () => {
 		const subject = `subject${common.getUniqueString()}`;
+
+		// Send the message
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -60,6 +62,8 @@ describe('Contacts > Mail > Message Send', function () {
 				</m>
 			</SendMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, 'Send should not be a Fault');
 		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
 	});
@@ -68,6 +72,7 @@ describe('Contacts > Mail > Message Send', function () {
 	it('Sanity | Send message to contact and verify', async () => {
 		const contactEmail = `email${common.getUniqueString()}@domain.com`;
 
+		// Create a contact
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -79,6 +84,8 @@ describe('Contacts > Mail > Message Send', function () {
 		);
 
 		const subject = `subject${common.getUniqueString()}`;
+
+		// Send the message
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -90,6 +97,8 @@ describe('Contacts > Mail > Message Send', function () {
 				</m>
 			</SendMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, 'Send should not be a Fault');
 		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
 	});
@@ -97,6 +106,8 @@ describe('Contacts > Mail > Message Send', function () {
 
 	it('Functional | Send message to multiple contacts', async () => {
 		const subject = `subject${common.getUniqueString()}`;
+
+		// Send the message
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -109,6 +120,8 @@ describe('Contacts > Mail > Message Send', function () {
 				</m>
 			</SendMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, 'Send should not be a Fault');
 		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
 	});
@@ -116,6 +129,8 @@ describe('Contacts > Mail > Message Send', function () {
 
 	it('Functional | Send and verify sent message in sent folder', async () => {
 		const subject = `subject${common.getUniqueString()}`;
+
+		// Send the message
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -127,20 +142,24 @@ describe('Contacts > Mail > Message Send', function () {
 				</m>
 			</SendMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, 'Send should not be a Fault');
 
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>in:sent subject:(${subject})</query>
 			</SearchRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
 
 	it('Functional | Reply to message from contact', async () => {
-		// Send initial message
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -152,6 +171,8 @@ describe('Contacts > Mail > Message Send', function () {
 				</m>
 			</SendMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, 'Send should not be a Fault');
 		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
 	});
@@ -169,6 +190,8 @@ describe('Contacts > Mail > Message Send', function () {
 				</m>
 			</SendMsgRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(sendRes.Fault, 'Forward should not be a Fault');
 		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
 	});

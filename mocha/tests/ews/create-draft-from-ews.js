@@ -34,8 +34,6 @@ describe('EWS > Create Draft From EWS', function () {
 	it('Sanity | Create draft with subject and content in EWS and sync on ZWC client', async () => {
 		const messageSubject = 'Create draft with subject and content-subject';
 		const messageContent = 'Create draft with subject and content-content';
-
-		// EWS: CreateItem to save draft in Drafts folder (Id=6)
 		const createRes = await ews.makeEWSRequest(
 			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				MessageDisposition="SaveOnly">
@@ -77,10 +75,10 @@ describe('EWS > Create Draft From EWS', function () {
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
 		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+
+		// Verify response
 		assert.equal(createMessage.$.ResponseClass, 'Success',
 			'CreateItem should succeed');
-
-		// EWS: SyncFolderItems on Drafts folder
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -102,28 +100,33 @@ describe('EWS > Create Draft From EWS', function () {
 		assert.equal(syncMessage.$.ResponseClass, 'Success',
 			'SyncFolderItems should succeed');
 
-		// ZWC: Verify draft is visible
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, accountPassword);
+
+		// Search for the item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message"
 				sortBy="dateDesc" offset="0" limit="25">
 				<query>subject:${messageSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
-
-		// ZWC: GetMsg to verify content and draft flag
 		const messages = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : searchRes.SearchResponse.m ? [searchRes.SearchResponse.m] : [];
 		assert.isAbove(messages.length, 0, 'Should find message');
 		const msgId = messages[0].id;
 
+		// Get the message
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${msgId}" />
 			</GetMsgRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not be a Fault');
 		const msg = getMsgRes.GetMsgResponse.m;
 		const msgObj = Array.isArray(msg) ? msg[0] : msg;
@@ -133,8 +136,6 @@ describe('EWS > Create Draft From EWS', function () {
 
 	it('Sanity | Create draft with subject and recipient in EWS and sync on ZWC client', async () => {
 		const messageSubject = 'Create draft with subject and recipient-subject';
-
-		// EWS: CreateItem draft with recipient
 		const createRes = await ews.makeEWSRequest(
 			`<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
 				MessageDisposition="SaveOnly">
@@ -176,10 +177,10 @@ describe('EWS > Create Draft From EWS', function () {
 		const createMsg = createBody.CreateItemResponse
 			.ResponseMessages.CreateItemResponseMessage;
 		const createMessage = Array.isArray(createMsg) ? createMsg[0] : createMsg;
+
+		// Verify response
 		assert.equal(createMessage.$.ResponseClass, 'Success',
 			'CreateItem should succeed');
-
-		// EWS: SyncFolderItems on Drafts folder
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -201,14 +202,18 @@ describe('EWS > Create Draft From EWS', function () {
 		assert.equal(syncMessage.$.ResponseClass, 'Success',
 			'SyncFolderItems should succeed');
 
-		// ZWC: Verify draft with recipient
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, accountPassword);
+
+		// Search for the item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message"
 				sortBy="dateDesc" offset="0" limit="25">
 				<query>subject:${messageSubject}</query>
 			</SearchRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
@@ -219,16 +224,18 @@ describe('EWS > Create Draft From EWS', function () {
 				: [searchRes.SearchResponse?.m];
 		const msgId = messages[0]?.id || messages[0]?.m?.[0]?.id;
 
+		// Get the message
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${msgId}" />
 			</GetMsgRequest>`, accountAuthToken
 		);
+
+		// Verify response
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not be a Fault');
 		const msg = getMsgRes.GetMsgResponse.m;
 		const msgObj = Array.isArray(msg) ? msg[0] : msg;
 		assert.include(msgObj.su, messageSubject, 'Subject should match');
-		// Verify recipient exists
 		const recipients = Array.isArray(msgObj.e) ? msgObj.e : [msgObj.e];
 		const toRecipient = recipients.find(e => e.t === 't');
 		assert.exists(toRecipient, 'To recipient should exist');

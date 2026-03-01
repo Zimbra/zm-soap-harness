@@ -31,21 +31,27 @@ describe('Mail Client > Smime > ZBUG-771', function () {
 
 	// Tests
 	it('Sanity | Verify signed mail is sent successfully and BCC header is not visible', async () => {
-		// Source: ZBUG-771_BCC_TEST from Smime/ZBUG-771.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
 
 	it('Sanity | Verify that bcc is not present in rest response - get a message by id', async () => {
-		// Source: ZBUG-771_BCC_RestServlet_TEST from Smime/ZBUG-771.xml
 		const t = await soap.getAccountAuthToken(account1Name);
+
+		// Send NoOp request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<NoOpRequest xmlns="urn:zimbraMail"/>', t
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

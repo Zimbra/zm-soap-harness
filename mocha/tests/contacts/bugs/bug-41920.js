@@ -40,7 +40,6 @@ describe('Contacts > Bugs > Bug 41920 - Shared contact no duplicates', function 
 
 	// Tests
 	it('Functional | Search shared contacts should not return duplicates', async () => {
-		// Account1 creates contacts
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -50,7 +49,6 @@ describe('Contacts > Bugs > Bug 41920 - Shared contact no duplicates', function 
 				</cn>
 			</CreateContactRequest>`, account1Token
 		);
-
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
@@ -61,18 +59,22 @@ describe('Contacts > Bugs > Bug 41920 - Shared contact no duplicates', function 
 			</CreateContactRequest>`, account1Token
 		);
 
-		// Account1 shares contacts folder
+		// Get the folder
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetFolderRequest xmlns="urn:zimbraMail"/>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(folderRes.Fault, 'GetFolder should not be a Fault');
 
-		// Search contacts locally from account1
+		// Search item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact" sortBy="nameAsc">
 				<query>in:contacts</query>
 			</SearchRequest>`, account1Token
 		);
+
+		// Verify response
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});

@@ -30,6 +30,8 @@ describe('Contacts > GAL > GALAccount > Resources > SyncGalRequest', function ()
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<SyncGalRequest xmlns="urn:zimbraAccount"/>`, accountToken
 		);
+
+		// Verify response
 		assert.notExists(res.Fault, 'SyncGal should not be a Fault');
 		assert.exists(res.SyncGalResponse, 'SyncGalResponse should exist');
 	});
@@ -44,6 +46,8 @@ describe('Contacts > GAL > GALAccount > Resources > SyncGalRequest', function ()
 			const res2 = await soap.makeSOAPEnvelopeAccount(
 				`<SyncGalRequest xmlns="urn:zimbraAccount" token="${token}"/>`, accountToken
 			);
+
+			// Verify response
 			assert.notExists(res2.Fault, 'SyncGal should not be a Fault');
 			assert.exists(res2.SyncGalResponse, 'SyncGalResponse should exist');
 		}
