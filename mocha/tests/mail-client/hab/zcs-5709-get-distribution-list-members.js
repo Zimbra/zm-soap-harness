@@ -30,7 +30,7 @@ describe('Mail Client > HAB > ZCS-5709 GetDistributionListMembers', function () 
 	const group7 = `${group7Name}@${domainName}`;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		account1Name = `test1${uid}@${domainName}`;
 		account2Name = `test2${uid}@${domainName}`;

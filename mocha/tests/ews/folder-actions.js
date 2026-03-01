@@ -21,7 +21,7 @@ describe('EWS > Folder Actions', function () {
 	let syncState01, syncState03;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		accountPassword = config.accountPassword;
 		const unique = common.getUniqueString();
@@ -828,7 +828,6 @@ describe('EWS > Folder Actions', function () {
 		const subMsg = subBody.SyncFolderItemsResponse
 			.ResponseMessages.SyncFolderItemsResponseMessage;
 		const subMessage = Array.isArray(subMsg) ? subMsg[0] : subMsg;
-		if (subMessage.$.ResponseClass !== 'Success') console.log('SyncSubRes Error:', JSON.stringify(subMessage));
 		assert.equal(subMessage.$.ResponseClass, 'Success',
 			'SyncFolderItems should succeed');
 		const subCreates = Array.isArray(subMessage.Changes.Create)

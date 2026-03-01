@@ -11,7 +11,7 @@ describe('EWS > Calendar > Cal DL Attendee ZCS-2625', function () {
 	let dlName, dlId;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		accountPassword = config.accountPassword;
 		const unique = common.getUniqueString();

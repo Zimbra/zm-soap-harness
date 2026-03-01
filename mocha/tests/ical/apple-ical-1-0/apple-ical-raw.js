@@ -11,7 +11,7 @@ describe('iCal > Apple iCal 1.0 > Apple Ical Raw', function () {
 	const testDomain = config.testDomain;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 	});
 

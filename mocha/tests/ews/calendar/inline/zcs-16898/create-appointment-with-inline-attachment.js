@@ -14,7 +14,7 @@ describe('EWS > Calendar > Inline > ZCS-16898 > Create Appointment With Inline A
 	let adminAuthToken, account1Email, accountPassword;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		const unique = common.getUniqueString();
 		accountPassword = config.accountPassword;

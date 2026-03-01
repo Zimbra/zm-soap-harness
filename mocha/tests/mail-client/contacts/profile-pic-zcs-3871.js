@@ -14,7 +14,7 @@ describe('Mail Client > Contacts > ProfilePic ZCS-3871', function () {
 	const galAccountName = `galaccount${uid}@${domainName}`;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create custom domain with GAL mode

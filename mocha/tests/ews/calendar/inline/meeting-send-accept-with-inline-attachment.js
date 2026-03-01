@@ -13,7 +13,7 @@ describe('EWS > Calendar > Inline > Meeting Send Accept With Inline Attachment',
 	let adminAuthToken, account1Email, account2Email, accountPassword;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		const unique = common.getUniqueString();
 		accountPassword = config.accountPassword;

@@ -8,7 +8,7 @@ describe('SanityTest > Check Request Sanity', function () {
 	let adminAuthToken;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 	});
 

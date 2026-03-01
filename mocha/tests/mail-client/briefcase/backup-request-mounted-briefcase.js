@@ -15,7 +15,7 @@ describe('Mail Client > Briefcase > BackupRequest MountedBriefcase', function ()
 	const sharedName3 = `share.${uid}b`;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		account1Name = `mp.${uid}a@${config.testDomain}`;
 		account2Name = `mp.${uid}b@${config.testDomain}`;

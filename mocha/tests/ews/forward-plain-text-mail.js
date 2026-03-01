@@ -14,7 +14,7 @@ describe('EWS > Forward Plain Text Mail', function () {
 	const forwardContent = 'Test forward content1';
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		accountPassword = config.accountPassword;
 

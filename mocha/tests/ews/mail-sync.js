@@ -10,7 +10,7 @@ describe('EWS > Mail Sync', function () {
 	let adminAuthToken, account1Email, account1Password;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		const accountName = `ewstest${common.getUniqueString()}@${config.testDomain}`;
@@ -223,7 +223,6 @@ describe('EWS > Mail Sync', function () {
 		assert.exists(getNewItemBody.GetItemResponse, 'GetItemResponse should exist');
 		const getItemMsg = getNewItemBody.GetItemResponse.ResponseMessages.GetItemResponseMessage;
 		const newItemMsg = Array.isArray(getItemMsg) ? getItemMsg[0] : getItemMsg;
-		if (newItemMsg.$.ResponseClass !== 'Success') console.log('GetNewItemRes Error:', JSON.stringify(getNewItemBody));
 		assert.equal(newItemMsg.$.ResponseClass, 'Success', 'GetItem should succeed');
 		const msgBody = newItemMsg.Items.Message.Body._;
 		assert.include(msgBody, content3, 'Message body should contain expected content');

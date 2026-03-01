@@ -12,7 +12,7 @@ describe('Mail Client > Briefcase > BackupRequest SharedBriefcase', function () 
 	const uid = common.getUniqueString();
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		account1Name = `account1.${uid}a@${config.testDomain}`;
 		account2Name = `account2.${uid}b@${config.testDomain}`;

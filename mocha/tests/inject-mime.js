@@ -8,13 +8,13 @@ describe('Mail > Mime > Inject MIME', function () {
 	this.timeout(30 * 1000);
 
 	before(async () => {
-		await main.before(this.ctx);
+		await main.before(this);
 	});
 	beforeEach(async () => {
-		await main.beforeEach(this.ctx);
+		await main.beforeEach(this);
 	});
 	afterEach(async () => {
-		await main.afterEach(this.ctx);
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

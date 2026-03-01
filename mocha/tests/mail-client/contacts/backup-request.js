@@ -16,7 +16,7 @@ describe('Mail Client > Contacts > BackupRequest', function () {
 	const newEmail = `email${uid}@gmail.com`;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Name = `cont_backup.${uid}a@${config.testDomain}`;

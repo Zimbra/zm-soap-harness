@@ -18,7 +18,7 @@ describe('Sharing > Shared All Folders With Me', function () {
 	const testDomain = config.testDomain;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create accounts 1-3

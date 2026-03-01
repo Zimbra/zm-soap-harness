@@ -13,7 +13,7 @@ describe('Sync > Mountpoint > SyncRequest Mail', function () {
 	let inboxFolderId = null;
 
 	before(async () => {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create account1

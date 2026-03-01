@@ -11,7 +11,7 @@ describe('Sync > Sync Request 02', function () {
 	let inboxId = null, trashId = null, sentId = null, draftsId = null, junkId = null;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		accountEmail = soap.testAccounts.testAccount1.emailAddress;
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 		account2Email = soap.testAccounts.testAccount2.emailAddress;

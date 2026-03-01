@@ -20,7 +20,7 @@ describe('Mail Client > Calendar > Appointments > appointment_publish', function
     const reminderText = 'Reminder 1';
 
     before(async function () {
-        await main.before(this.ctx);
+        await main.before(this);
         adminAuthToken = await soap.getAdminAuthToken();
 
         account1Name = `publisher${uid}@${config.testDomain}`;

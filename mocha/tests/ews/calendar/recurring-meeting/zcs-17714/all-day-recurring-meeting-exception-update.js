@@ -10,7 +10,7 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17714 > All Day Recurring Meet
 	let adminAuthToken, account1Email, account2Email, accountPassword;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		const unique = common.getUniqueString();
 		accountPassword = config.accountPassword;
@@ -260,7 +260,6 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17714 > All Day Recurring Meet
 			? getMsgRes2.GetMsgResponse.m[0]
 			: getMsgRes2.GetMsgResponse.m;
 		const exInv = Array.isArray(exMsg.inv) ? exMsg.inv[0] : exMsg.inv;
-		if (!exInv.comp) console.log('GetMsgRes Error:', JSON.stringify(getMsgRes2));
 		const exComp = Array.isArray(exInv.comp) ? exInv.comp[0] : exInv.comp;
 		assert.isTrue(Boolean(exComp.ex || exComp.$.ex), 'Should be an exception instance');
 		assert.equal(

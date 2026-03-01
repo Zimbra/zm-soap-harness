@@ -12,7 +12,7 @@ describe('EWS > Send Mail CC BCC From ZWC', function () {
 	const messageContent = 'Message test content';
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		accountPassword = config.accountPassword;
 		messageSubject = `subject${common.getUniqueString()}`;

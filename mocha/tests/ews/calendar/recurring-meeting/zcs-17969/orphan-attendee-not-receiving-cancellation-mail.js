@@ -14,7 +14,7 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17969 > Orphan Attendee Not Re
 		accountPassword;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		const unique = common.getUniqueString();
 		accountPassword = config.accountPassword;

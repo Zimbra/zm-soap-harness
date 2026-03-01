@@ -11,7 +11,7 @@ describe('EWS > ZCS-2623 Calendar Add Attendee', function () {
 	let apptSubject;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		accountPassword = config.accountPassword;
 		apptSubject = `Subject of meeting${common.getUniqueString()}`;

@@ -9,7 +9,7 @@ describe('Admin > Accounts > Create Account 03', function () {
 	let account1 = { server: '' };
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuth = await soap.getAdminAuthToken();
 	});
 

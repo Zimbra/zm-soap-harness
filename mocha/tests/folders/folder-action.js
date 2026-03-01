@@ -10,18 +10,18 @@ describe('Folders > Folder Action', function () {
 	let account2Email = null;
 
 	before(async () => {
-		await main.before(this.ctx);
+		await main.before(this);
 		accountEmail = soap.testAccounts.testAccount1.emailAddress;
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 		account2Email = soap.testAccounts.testAccount2.emailAddress;
 	});
 
 	beforeEach(async () => {
-		await main.beforeEach(this.ctx);
+		await main.beforeEach(this);
 	});
 
 	afterEach(async () => {
-		await main.afterEach(this.ctx);
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

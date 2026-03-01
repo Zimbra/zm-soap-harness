@@ -13,7 +13,7 @@ describe('Admin > Accounts > Create Account 01', function () {
 	let test_account7_name, test_account8_name, test_account9_name, test_account10_name, test_account11_name, test_account12_name;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuth = await soap.getAdminAuthToken();
 		test_account1_name = `test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}`;
 		test_account2_name = `test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}`;

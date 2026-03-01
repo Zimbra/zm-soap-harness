@@ -12,7 +12,7 @@ describe('Folders > Folder Retention Policy', function () {
 	let policy2Id, policy2Interval;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		const accountEmail = soap.testAccounts.testAccount1.emailAddress;
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 		adminAuthToken = await soap.getAdminAuthToken();

@@ -10,7 +10,7 @@ describe('EWS > Modify Draft Priority From ZWC', function () {
 	let adminAuthToken, accountEmail, accountPassword;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		accountPassword = config.accountPassword;
 

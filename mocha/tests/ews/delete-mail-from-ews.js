@@ -10,7 +10,7 @@ describe('EWS > Delete Mail From EWS', function () {
 	let adminAuthToken, account1Email, account2Email, accountPassword;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		accountPassword = config.accountPassword;
 
@@ -270,7 +270,6 @@ describe('EWS > Delete Mail From EWS', function () {
 				<m id="${trashMsgId}" />
 			</GetMsgRequest>`, account1AuthToken
 		);
-		if (getMsgRes.Fault) console.log('SoftDelete GetMsg Fault:', JSON.stringify(getMsgRes), 'SearchRes:', JSON.stringify(searchRes));
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not be a Fault');
 		const zwcMsg = getMsgRes.GetMsgResponse?.m;
 		const zwcMsgObj = Array.isArray(zwcMsg) ? zwcMsg[0] : zwcMsg;
@@ -501,18 +500,14 @@ describe('EWS > Delete Mail From EWS', function () {
 				<query>subject:${messageSubject}</query>
 			</SearchRequest>`, account2AuthToken
 		);
-		if (searchDumpsterRes.Fault) {
-			console.log('Dumpster search returned Fault (may not be enabled):', JSON.stringify(searchDumpsterRes.Fault));
-		} else {
-			assert.exists(searchDumpsterRes.SearchResponse,
-				'SearchResponse should exist');
-			const dumpsterSu = searchDumpsterRes.SearchResponse?.m?.su
-				|| (Array.isArray(searchDumpsterRes.SearchResponse?.m)
-					? searchDumpsterRes.SearchResponse.m[0]?.su : undefined);
-			if (dumpsterSu !== messageSubject) {
-				assert.isTrue(dumpsterSu === messageSubject || dumpsterSu === undefined,
-					'Dumpster should contain the deleted mail or be undefined if disabled');
-			}
+		assert.exists(searchDumpsterRes.SearchResponse,
+			'SearchResponse should exist');
+		const dumpsterSu = searchDumpsterRes.SearchResponse?.m?.su
+			|| (Array.isArray(searchDumpsterRes.SearchResponse?.m)
+				? searchDumpsterRes.SearchResponse.m[0]?.su : undefined);
+		if (dumpsterSu !== messageSubject) {
+			assert.isTrue(dumpsterSu === messageSubject || dumpsterSu === undefined,
+				'Dumpster should contain the deleted mail or be undefined if disabled');
 		}
 	});
 });

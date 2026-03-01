@@ -12,7 +12,7 @@ describe('Sync > Mountpoint > SyncRequest Appointments', function () {
 	let calendarFolderId = null, trashFolderId = null;
 
 	before(async () => {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create account1

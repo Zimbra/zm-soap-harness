@@ -10,7 +10,7 @@ describe('EWS > Contact Sync', function () {
 	let adminAuthToken, accountEmail, accountPassword, contactFolderId;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		accountPassword = config.accountPassword;
 		contactFolderId = '7';

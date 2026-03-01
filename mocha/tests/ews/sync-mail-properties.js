@@ -12,7 +12,7 @@ describe('EWS > Sync Mail Properties', function () {
 	let inboxId, mailItemId, mailItemChangeKey;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Password = config.accountPassword;

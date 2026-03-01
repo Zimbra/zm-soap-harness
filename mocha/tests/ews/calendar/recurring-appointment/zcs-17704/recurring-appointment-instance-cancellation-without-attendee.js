@@ -10,7 +10,7 @@ describe('EWS > Calendar > RecurringAppointment > ZCS-17704 > Recurring Appointm
 	let adminAuthToken, account1Email, accountPassword;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		const unique = common.getUniqueString();
 		accountPassword = config.accountPassword;
@@ -211,9 +211,6 @@ describe('EWS > Calendar > RecurringAppointment > ZCS-17704 > Recurring Appointm
 			account1Email, accountPassword
 		);
 		const deleteBody = ews.getBody(deleteRes);
-		if (!deleteBody.DeleteItemResponse) {
-			console.log('DeleteItem full response:', JSON.stringify(deleteBody));
-		}
 		assert.exists(deleteBody.DeleteItemResponse, 'DeleteItemResponse should exist');
 		// Server may return DeleteItemResponseMessage or GetItemResponseMessage for occurrence deletions
 		const deleteMsg = deleteBody.DeleteItemResponse

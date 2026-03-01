@@ -16,7 +16,7 @@ describe('Mail Client > Mail > ZCS-1870 Attachments', function () {
 	const mailSubject3 = `text_html_long_${uid}`;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		account1Name = `test1.${uid}@${config.testDomain}`;
 		account2Name = `test2.${uid}@${config.testDomain}`;

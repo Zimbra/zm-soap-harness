@@ -9,7 +9,7 @@ describe('Tags > Tags Limit', function () {
 	let accountEmail = null;
 
 	before(async () => {
-		await main.before(this.ctx);
+		await main.before(this);
 		accountEmail = soap.testAccounts.testAccount1.emailAddress;
 		await soap.getAccountAuthToken(accountEmail);
 	});

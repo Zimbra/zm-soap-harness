@@ -16,7 +16,7 @@ describe('EWS > Modify Draft From EWS', function () {
 	const messageContent2 = 'Modify draft-Modify content from EWS';
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		accountPassword = config.accountPassword;
 

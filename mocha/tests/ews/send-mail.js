@@ -33,7 +33,7 @@ describe('EWS > Send Mail', function () {
 		"&lt;html&gt;&lt;body&gt;&lt;div style=\\'font-family: arial, helvetica, sans-serif; font-size: 12pt; color: #000000\\'&gt;&lt;div&gt;&lt;em&gt;&lt;strong&gt;asdasd&lt;/strong&gt;&lt;/em&gt;&lt;br data-mce-bogus=\\'1\\'&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt; ";
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		accountPassword = config.accountPassword;
 

@@ -11,7 +11,7 @@ describe('EWS > ZCS-2624', function () {
 	let messageSubject;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		accountPassword = config.accountPassword;
 		messageSubject = `subject1${common.getUniqueString()}`;

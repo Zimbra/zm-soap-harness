@@ -13,7 +13,7 @@ describe('Delegated > Bug 38452', function () {
 	const defaultPassword = config.defaultPassword;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create delegated admin account

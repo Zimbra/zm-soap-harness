@@ -15,7 +15,7 @@ describe('Mail Client > HAB > ZCS-6830 GetInfo HABroot', function () {
 	const ou1Name = `ZimbraOU${uid}`;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		account2Name = `test2${uid}@${domainName}`;
 

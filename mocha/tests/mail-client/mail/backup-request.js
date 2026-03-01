@@ -15,7 +15,7 @@ describe('Mail Client > Mail > BackupRequest', function () {
 	const messageContent = 'this mail is to check whether the message is read or unread';
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		const domainName = `domain${uid}.com`;
 		account1Name = `acct1${uid}@${domainName}`;

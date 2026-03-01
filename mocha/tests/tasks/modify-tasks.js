@@ -10,7 +10,7 @@ describe('Tasks > Modify Tasks', function () {
 	let account2Email = null, account2AuthToken = null;
 
 	before(async () => {
-		await main.before(this.ctx);
+		await main.before(this);
 		accountEmail = soap.testAccounts.testAccount1.emailAddress;
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 		account2Email = soap.testAccounts.testAccount2.emailAddress;

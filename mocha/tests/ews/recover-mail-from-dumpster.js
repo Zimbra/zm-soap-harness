@@ -17,7 +17,7 @@ describe('EWS > Recover Mail From Dumpster', function () {
 	let subFolder1Name, subFolder1Id;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		accountPassword = config.accountPassword;
 

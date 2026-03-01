@@ -17,7 +17,7 @@ describe('Mail Client > Calendar > Exchange2010 GetFreeBusy', function () {
 	const exchangeAdminPassword = 'z1mbr4Migration';
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		account1Domain1 = `test.${uid}a@${domain1Name}`;
 		account1Domain2 = `test.${uid}b@${domain2Name}`;

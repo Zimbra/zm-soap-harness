@@ -12,7 +12,7 @@ describe('EWS > Remove Attachment From Mail From ZWC', function () {
 	const messageContent = 'Message test Content1';
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		accountPassword = config.accountPassword;
 
@@ -241,7 +241,6 @@ describe('EWS > Remove Attachment From Mail From ZWC', function () {
 				<m id="${mailIdWc}" part="${part1}" />
 			</RemoveAttachmentsRequest>`, account2AuthToken
 		);
-		if (removeRes.Fault) console.log('RemoveAttachments Fault:', JSON.stringify(removeRes.Fault));
 		assert.notExists(removeRes.Fault, 'Response should not be a Fault');
 		const removeM = Array.isArray(removeRes.RemoveAttachmentsResponse.m) ? removeRes.RemoveAttachmentsResponse.m[0] : removeRes.RemoveAttachmentsResponse.m;
 		const newMsgId = removeM.id;
@@ -252,7 +251,6 @@ describe('EWS > Remove Attachment From Mail From ZWC', function () {
 				<m id="${newMsgId}" />
 			</GetMsgRequest>`, account2AuthToken
 		);
-		if (getMsgRes2.Fault) console.log('GetMsg2 Fault:', JSON.stringify(getMsgRes2.Fault), 'newMsgId:', newMsgId);
 		assert.notExists(getMsgRes2.Fault, 'Response should not be a Fault');
 		const msgObj2 = Array.isArray(getMsgRes2.GetMsgResponse.m)
 			? getMsgRes2.GetMsgResponse.m[0] : getMsgRes2.GetMsgResponse.m;

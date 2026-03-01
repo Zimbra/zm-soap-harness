@@ -11,7 +11,7 @@ describe('EWS > Email > ZCS1005', function () {
 	const messageContent = 'Message 1 test content';
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		const adminAuthToken = await soap.getAdminAuthToken();
 		account1Password = config.accountPassword;
 		account2Password = config.accountPassword;

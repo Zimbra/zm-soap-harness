@@ -10,7 +10,7 @@ describe('EWS > Calendar > FreeBusy > Get Free Busy Status For Account', functio
 	let adminAuthToken, account1Email, account2Email, account3Email, accountPassword;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		const unique = common.getUniqueString();
 		accountPassword = config.accountPassword;
@@ -175,8 +175,6 @@ describe('EWS > Calendar > FreeBusy > Get Free Busy Status For Account', functio
 
 			const calendarEvents = fbMsg.FreeBusyView?.CalendarEventArray?.CalendarEvent;
 			eventArr = Array.isArray(calendarEvents) ? calendarEvents : (calendarEvents && calendarEvents !== '' ? [calendarEvents] : []);
-			if (eventArr.length > 0) break;
-			console.log(`Free/busy attempt ${attempt + 1}: CalendarEventArray empty, retrying...`);
 		}
 		assert.isAbove(eventArr.length, 0, 'Should have at least one CalendarEvent (after retry)');
 

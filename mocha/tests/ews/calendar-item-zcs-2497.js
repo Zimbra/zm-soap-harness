@@ -11,7 +11,7 @@ describe('EWS > CalendarItem ZCS-2497', function () {
 	let account2Email, account2Password;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		account1Password = config.accountPassword;
 		account2Password = config.accountPassword;

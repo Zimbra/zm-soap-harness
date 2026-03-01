@@ -8,7 +8,7 @@ describe('Admin > Accounts > Create Account 04', function () {
 	let adminAuth;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuth = await soap.getAdminAuthToken();
 	});
 

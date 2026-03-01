@@ -13,7 +13,7 @@ describe('EWS > Reply To Plain Text Mail', function () {
 	const replySubject = 'Re: Test message subject';
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		accountPassword = config.accountPassword;
 

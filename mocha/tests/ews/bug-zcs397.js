@@ -10,7 +10,7 @@ describe('EWS > Bug ZCS-397', function () {
 	let adminAuthToken, account1Email, account2Email, accountPassword;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		accountPassword = config.accountPassword;
 

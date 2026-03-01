@@ -10,7 +10,7 @@ describe('EWS > EWS Sharing ZCS-1498', function () {
 	let adminAuthToken, account1Email, account2Email, account3Email, accountPassword;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		accountPassword = config.accountPassword;
 
@@ -105,7 +105,6 @@ describe('EWS > EWS Sharing ZCS-1498', function () {
 		const updateFolderMsg = updateBody.UpdateFolderResponse
 			?.ResponseMessages?.UpdateFolderResponseMessage || updateBody.UpdateFolderResponse?.ResponseMessages?.GetFolderResponseMessage;
 		const updateMsg = Array.isArray(updateFolderMsg) ? updateFolderMsg[0] : updateFolderMsg;
-		if (!updateMsg || updateMsg.$.ResponseClass !== 'Success') console.log('UpdateFolderRes Error:', JSON.stringify(updateBody));
 		assert.exists(updateMsg, 'UpdateFolderResponseMessage or GetFolderResponseMessage should exist');
 		assert.equal(updateMsg.$.ResponseClass, 'Success', 'UpdateFolder should succeed');
 

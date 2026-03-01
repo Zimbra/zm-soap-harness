@@ -27,7 +27,7 @@ describe('EWS > FindItem FindFolder ZCS-799', function () {
 			</FolderShape>`;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		const adminAuthToken = await soap.getAdminAuthToken();
 		account1Password = config.accountPassword;
 

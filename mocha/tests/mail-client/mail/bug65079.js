@@ -11,7 +11,7 @@ describe('Mail Client > Mail > bug65079', function () {
 	const uid = common.getUniqueString();
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		account1Name = `acct1.${uid}@${config.testDomain}`;
 

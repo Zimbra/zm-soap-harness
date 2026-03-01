@@ -13,7 +13,7 @@ describe('EWS > Resolve Names ZCS-407', function () {
 	let firstnameAccount2NotExists, contact1Id;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		accountPassword = config.accountPassword || config.accountPassword;
 

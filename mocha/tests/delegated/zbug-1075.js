@@ -17,7 +17,7 @@ describe('Delegated > ZBUG 1075', function () {
 	let dn;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		granteeAccount1 = `${localPart}@${domainName1}`;

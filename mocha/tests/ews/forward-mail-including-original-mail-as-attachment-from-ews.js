@@ -14,7 +14,7 @@ describe('EWS > Forward Mail Including Original Mail As Attachment From EWS', fu
 	const forwardContent = 'Message test Content1 forward original mail as attachment';
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		accountPassword = config.accountPassword;
 

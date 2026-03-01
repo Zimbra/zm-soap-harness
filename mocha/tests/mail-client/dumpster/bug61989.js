@@ -13,7 +13,7 @@ describe('Mail Client > Dumpster > Bugs > bug61989', function () {
     const composeContent = 'Content in the message is contents dumpstertest';
 
     before(async function () {
-        await main.before(this.ctx);
+        await main.before(this);
         adminAuthToken = await soap.getAdminAuthToken();
 
         account1Name = `dumpster61989.${uid}a@${config.testDomain}`;

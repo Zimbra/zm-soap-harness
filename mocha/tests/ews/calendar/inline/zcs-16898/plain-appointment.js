@@ -10,7 +10,7 @@ describe('EWS > Calendar > Inline > ZCS-16898 > Plain Appointment', function () 
 	let adminAuthToken, account1Email, accountPassword;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		const unique = common.getUniqueString();
 		accountPassword = 'testpassword';

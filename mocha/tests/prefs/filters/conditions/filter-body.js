@@ -1,0 +1,69 @@
+import { assert } from 'chai';
+import config from '../../../../conf/config.js';
+import common from '../../../../framework/core/common.js';
+import soap from '../../../../framework/backend/soap-client.js';
+import { main } from '../../../../pages/main.js';
+
+describe('Filter-Body', function () {
+	this.timeout(120 * 1000);
+	let adminAuthToken;
+	const testDomain = config.testDomain;
+
+	before(async function () {
+		await main.before(this);
+		adminAuthToken = await soap.getAdminAuthToken();
+	});
+
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
+
+	it('Sanity | Create filter with body contains test', async () => {
+		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+		await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${accountEmail}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		const authToken = await soap.getAccountAuthToken(accountEmail);
+		const modRes = await soap.makeSOAPEnvelopeAccount(
+			`<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="body${common.getUniqueString()}" active="1">
+						<filterTests condition="anyof">
+							<bodyTest value="confidential"/>
+						</filterTests>
+						<filterActions><actionFlag flagName="flagged"/></filterActions>
+					</filterRule>
+				</filterRules>
+			</ModifyFilterRulesRequest>`, authToken
+		);
+		assert.notExists(modRes.Fault, 'Body test filter should not fault');
+		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
+	});
+
+	it('Functional | Create filter with body negative test', async () => {
+		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+		await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${accountEmail}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		const authToken = await soap.getAccountAuthToken(accountEmail);
+		const modRes = await soap.makeSOAPEnvelopeAccount(
+			`<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="body${common.getUniqueString()}" active="1">
+						<filterTests condition="anyof">
+							<bodyTest negative="1" value="unsubscribe"/>
+						</filterTests>
+						<filterActions><actionKeep/></filterActions>
+					</filterRule>
+				</filterRules>
+			</ModifyFilterRulesRequest>`, authToken
+		);
+		assert.notExists(modRes.Fault, 'Negative body test should not fault');
+	});
+});

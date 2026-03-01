@@ -10,7 +10,7 @@ describe('Admin > Accounts > Create Account 07', function () {
 	let test_account13_name;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuth = await soap.getAdminAuthToken();
 		test_account13_name = `test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}`;
 	});

@@ -12,7 +12,7 @@ describe('Mail Client > Mail > bug-43359', function () {
 	const message1Subject = `subject1.${uid}`;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		account1Name = `account1.${uid}@${config.testDomain}`;
 		account3Name = `account3.${uid}@${config.testDomain}`;

@@ -15,7 +15,7 @@ describe('EWS > Modify Draft From ZWC', function () {
 	const messageContent2 = 'Modify draft-Modify content from ZWC-content2';
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		accountPassword = config.accountPassword;
 

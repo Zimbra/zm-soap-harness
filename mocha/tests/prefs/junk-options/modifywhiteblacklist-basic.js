@@ -1,0 +1,117 @@
+import { assert } from 'chai';
+import config from '../../../conf/config.js';
+import common from '../../../framework/core/common.js';
+import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
+
+describe('ModifyWhiteBlackList Basic', function () {
+	this.timeout(120 * 1000);
+	let adminAuthToken;
+	const testDomain = config.testDomain;
+
+	before(async function () {
+		await main.before(this);
+		adminAuthToken = await soap.getAdminAuthToken();
+	});
+
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
+
+	// Tests
+	it('Sanity | Verify ModifyWhiteBlackListRequest blacklist domain blocks messages', async () => {
+		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+		await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${accountEmail}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
+
+		// Add domain to blacklist
+		const blackDomain = `@blackdomain${common.getUniqueString()}.com`;
+		const modRes = await soap.makeSOAPEnvelopeAccount(
+			`<ModifyWhiteBlackListRequest xmlns="urn:zimbraAccount">
+				<blackList>
+					<addr op="+">${blackDomain}</addr>
+				</blackList>
+			</ModifyWhiteBlackListRequest>`, accountAuthToken
+		);
+		assert.notExists(modRes.Fault, 'ModifyWhiteBlackListRequest should not fault');
+		assert.exists(modRes.ModifyWhiteBlackListResponse, 'ModifyWhiteBlackListResponse should exist');
+	});
+
+
+	it('Sanity | Verify ModifyWhiteBlackListRequest blacklist user blocks messages', async () => {
+		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+		await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${accountEmail}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
+
+		// Add user to blacklist
+		const blackUser = `blackuser.${common.getUniqueString()}@example.com`;
+		const modRes = await soap.makeSOAPEnvelopeAccount(
+			`<ModifyWhiteBlackListRequest xmlns="urn:zimbraAccount">
+				<blackList>
+					<addr op="+">${blackUser}</addr>
+				</blackList>
+			</ModifyWhiteBlackListRequest>`, accountAuthToken
+		);
+		assert.notExists(modRes.Fault, 'ModifyWhiteBlackListRequest should not fault');
+		assert.exists(modRes.ModifyWhiteBlackListResponse, 'ModifyWhiteBlackListResponse should exist');
+	});
+
+
+	it('Sanity | Verify ModifyWhiteBlackListRequest whitelist domain allows messages', async () => {
+		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+		await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${accountEmail}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
+
+		// Add domain to whitelist
+		const whiteDomain = `whitedomain${common.getUniqueString()}.com`;
+		const modRes = await soap.makeSOAPEnvelopeAccount(
+			`<ModifyWhiteBlackListRequest xmlns="urn:zimbraAccount">
+				<whiteList>
+					<addr op="+">${whiteDomain}</addr>
+				</whiteList>
+			</ModifyWhiteBlackListRequest>`, accountAuthToken
+		);
+		assert.notExists(modRes.Fault, 'ModifyWhiteBlackListRequest should not fault');
+		assert.exists(modRes.ModifyWhiteBlackListResponse, 'ModifyWhiteBlackListResponse should exist');
+	});
+
+
+	it('Sanity | Verify ModifyWhiteBlackListRequest whitelist user allows messages', async () => {
+		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+		await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${accountEmail}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
+
+		// Add user to whitelist
+		const whiteUser = `whiteuser.${common.getUniqueString()}@example.com`;
+		const modRes = await soap.makeSOAPEnvelopeAccount(
+			`<ModifyWhiteBlackListRequest xmlns="urn:zimbraAccount">
+				<whiteList>
+					<addr op="+">${whiteUser}</addr>
+				</whiteList>
+			</ModifyWhiteBlackListRequest>`, accountAuthToken
+		);
+		assert.notExists(modRes.Fault, 'ModifyWhiteBlackListRequest should not fault');
+		assert.exists(modRes.ModifyWhiteBlackListResponse, 'ModifyWhiteBlackListResponse should exist');
+	});
+});

@@ -11,7 +11,7 @@ describe('Folders > Folder Loop', function () {
 	let folderId;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		const accountEmail = soap.testAccounts.testAccount1.emailAddress;
 		auth = await soap.getAccountAuthToken(accountEmail);
 

@@ -10,7 +10,7 @@ describe('EWS > Calendar > RecurringMeeting > ZCS-17966 > Recurring Meeting Exce
 	let adminAuthToken, account1Email, account2Email, accountPassword;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		const unique = common.getUniqueString();
 		accountPassword = config.accountPassword;

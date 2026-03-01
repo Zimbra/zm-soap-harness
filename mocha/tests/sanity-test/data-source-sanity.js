@@ -16,7 +16,7 @@ describe('SanityTest > Data Source Sanity', function () {
 	const pop3ConnectionType = 'ssl';
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create test account using framework helper

@@ -10,7 +10,7 @@ describe('EWS > Calendar > Modify Meeting Invite From ZWC', function () {
 	let adminAuthToken, account1Email, account2Email, account3Email, accountPassword;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		const unique = common.getUniqueString();
 		accountPassword = config.accountPassword;

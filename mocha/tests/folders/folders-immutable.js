@@ -10,7 +10,7 @@ describe('Folders > Folders Immutable', function () {
 	let folderIds = {};
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		const accountEmail = soap.testAccounts.testAccount1.emailAddress;
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 

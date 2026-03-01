@@ -46,6 +46,17 @@ Only `type="smoke"`, `type="sanity"`, `type="functional"`, `type="bhr"`, and `ty
 5. **Data file paths** use `mocha/data/` (NOT `data/soapvalidator/`), files are flat under `mocha/data/{folder}/`
 6. XML tests: `data/soapvalidator/<Module>/*.xml` (with subdirs like `Sharing/`, `Mountpoint/`, `VirtualHost/`)
 7. JS tests: `mocha/tests/<module>/*.js` (with matching subdirs)
+8. **`describe()` name MUST follow folder path** — Use `>` separators matching the directory structure from `tests/` onward. Capitalize each segment using the XML folder casing:
+   ```js
+   // File: mocha/tests/prefs/bugs/bug49818.js
+   describe('Prefs > Bugs > Bug49818', function () {
+   
+   // File: mocha/tests/prefs/filters/addresstest/addresstest.js
+   describe('Prefs > Filters > AddressTest', function () {
+   
+   // File: mocha/tests/tags/itemaction-tag.js
+   describe('Tags > ItemAction Tag', function () {
+   ```
 
 ## `it()` Description Format (STRICT)
 
@@ -89,7 +100,7 @@ describe('{SuiteName}', function () {
 	const testDomain = config.testDomain;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 	});
 
@@ -130,6 +141,7 @@ const filePath = path.join(config.projectRoot, 'mocha/data/ical/Apple-iCal-1-0/m
 
 - **TABS ONLY for indentation** — NEVER use spaces. This applies to ALL code: `describe()`, `before()`, `it()`, assertions, SOAP XML inside template literals, etc. Files that use 4-space indentation are WRONG and must be converted to tabs.
 - **2 blank lines between `it()` blocks** — ALWAYS leave exactly 2 blank lines between the closing `});` of one `it()` and the next `it(`
+- **NO comments between `it()` blocks** — NEVER put XML testcaseid or objective comments before `it()` blocks (e.g. `// TestCase01 - description`). The `it()` description already contains the objective. Comments are only allowed INSIDE `it()` blocks as inline step comments (e.g. `// Create the account`, `// Verify response`).
 - **1 blank line** after `// Tests` comment before first `it()`
 - **No blank line** between `const filePath = ...` and `await soap.injectMime(...)` — they stay together
 - **MANDATORY section comments** — Every test file MUST have `// Applicable zimbra versions` before the `if (config.serial...)` block and `// Tests` before the first `it()` block. Both comments use the same indentation as the code around them (one tab). There must be exactly 1 blank line between `});` (end of `before`) and `// Applicable zimbra versions`, and exactly 1 blank line between `}` (end of `if` block) and `// Tests`.

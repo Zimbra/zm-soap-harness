@@ -12,7 +12,7 @@ describe('Sync > Mountpoint > SyncRequest Contacts', function () {
 	let contactsFolderId = null;
 
 	before(async () => {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create account1

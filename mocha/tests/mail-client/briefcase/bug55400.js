@@ -12,7 +12,7 @@ describe('Mail Client > Briefcase > bug55400', function () {
 	const uid = common.getUniqueString();
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		account1Name = `account1.${uid}@${config.testDomain}`;
 

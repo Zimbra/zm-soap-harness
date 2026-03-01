@@ -15,7 +15,7 @@ describe('Mail Client > HAB > ZCS-7213 HAB DomainOUList', function () {
 	const ou3Name = `ZimbraOU${uid}3`;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create domain

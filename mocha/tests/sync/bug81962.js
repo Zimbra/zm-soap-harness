@@ -11,7 +11,7 @@ describe('Sync > Bug81962', function () {
 	let account2Email = null, account2AuthToken = null;
 
 	before(async () => {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create account1

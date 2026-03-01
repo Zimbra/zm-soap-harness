@@ -11,7 +11,7 @@ describe('EWS > Bug 105034', function () {
 	let account1Password, listName;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		account1Password = config.accountPassword;
 

@@ -15,7 +15,7 @@ describe('Mail Client > HAB > ZCS-5824 SyncHABToGal', function () {
 	const ou1Name = `ZimbraOU${uid}`;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		account1DomainName = `account1${uid}@${domain1Name}`;
 

@@ -26,7 +26,7 @@ describe('Admin > Accounts > Modify Account 04', function () {
 	let test_account7_name, test_account8_name, test_account9_name, test_account10_name;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuth = await soap.getAdminAuthToken();
 		test_account1_name = `test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}`;
 		test_accountid_name = test_account1_name;

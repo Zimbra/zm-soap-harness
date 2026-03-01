@@ -11,7 +11,7 @@ describe('Mail Client > Contacts > ContactBackup ZCS-3594', function () {
 	const uid = common.getUniqueString();
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		account1Name = `test${uid}@${config.testDomain}`;
 

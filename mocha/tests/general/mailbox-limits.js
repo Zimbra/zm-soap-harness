@@ -10,7 +10,7 @@ describe('General > Mailbox Limits', function () {
 	let destinationEmail;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		destinationEmail = `dest${common.getUniqueString()}@${config.testDomain}`;

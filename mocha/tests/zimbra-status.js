@@ -7,14 +7,14 @@ describe('Admin > Server > Zimbra Status', function () {
 	this.timeout(60 * 1000);
 
 	before(async () => {
-		await main.before(this.ctx);
+		await main.before(this);
 		await soap.getAdminAuthToken(config.adminEmailAddress);
 	});
 	beforeEach(async () => {
-		await main.beforeEach(this.ctx);
+		await main.beforeEach(this);
 	});
 	afterEach(async () => {
-		await main.afterEach(this.ctx);
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

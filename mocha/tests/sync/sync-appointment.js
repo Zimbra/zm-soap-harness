@@ -12,7 +12,7 @@ describe('Sync > Sync Appointment', function () {
 	let account4Email = null, account4AuthToken = null;
 
 	before(async () => {
-		await main.before(this.ctx);
+		await main.before(this);
 		accountEmail = soap.testAccounts.testAccount1.emailAddress;
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 		account2Email = soap.testAccounts.testAccount2.emailAddress;

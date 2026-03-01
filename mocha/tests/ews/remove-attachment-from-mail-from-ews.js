@@ -12,7 +12,7 @@ describe('EWS > Remove Attachment From Mail From EWS', function () {
 	const messageContent = 'Message test Content1';
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		accountPassword = config.accountPassword;
 
