@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Auth > Jwt > Jwt Zcs 3676', function () {
 	this.timeout(30 * 1000);
@@ -12,6 +13,7 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 	let account1ForeignPrincipal;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		account1ForeignPrincipal = 'test:' + common.getUniqueString();
@@ -38,6 +40,14 @@ describe('Auth > Jwt > Jwt Zcs 3676', function () {
 		account1Id = acct1.id;
 		const host1 = acct1.a.find(a => a.n === 'zimbraMailHost');
 		account1Server = host1 ? host1._content : config.server;
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

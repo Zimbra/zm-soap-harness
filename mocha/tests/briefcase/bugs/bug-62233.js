@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Briefcase > Bugs > Bug 62233', function () {
 	this.timeout(60 * 1000);
@@ -10,6 +11,7 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 	let account2Token;
 
 	before(async function () {
+		await main.before(this);
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		const account1Name = 'acct1.' + common.getUniqueString() + '@' + config.testDomain;
@@ -124,6 +126,14 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 				<link l="${rootFolder.id}" name="SharedBriefcase.${common.getUniqueString()}" rid="${briefcaseFolderId}" zid="${account1Id}"/>
 			</CreateMountpointRequest>`, account2Token
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

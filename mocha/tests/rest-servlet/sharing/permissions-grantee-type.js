@@ -3,6 +3,7 @@ import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import rest from '../../../framework/backend/rest-servlet.js';
+import { main } from '../../../pages/main.js';
 
 describe('Rest Servlet > Sharing > Permissions Grantee Type', function () {
 	this.timeout(120 * 1000);
@@ -16,6 +17,7 @@ describe('Rest Servlet > Sharing > Permissions Grantee Type', function () {
 	let dlName;
 
 	before(async function () {
+		await main.before(this);
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		messageSubject = 'subject' + common.getUniqueString();
@@ -170,6 +172,14 @@ describe('Rest Servlet > Sharing > Permissions Grantee Type', function () {
 				<action id="${messageId}" op="move" l="${folderId}"/>
 			</MsgActionRequest>`, account1Token
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

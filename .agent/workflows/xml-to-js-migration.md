@@ -104,6 +104,14 @@ describe('{SuiteName}', function () {
 		adminAuthToken = await soap.getAdminAuthToken();
 	});
 
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
+	});
+
 	// Applicable zimbra versions
 	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;
@@ -369,7 +377,8 @@ it('Functional | Verify a message with long domain can be received', async () =>
 - [ ] `it()` count matches non-excluded `<t:test_case>` count in XML
 - [ ] **ALL indentation uses TABS — zero spaces anywhere (including SOAP XML in template literals)**
 - [ ] **`npx eslint --fix` has been run on every created/modified file**
-- [ ] **Every file has the `// Applicable zimbra versions` block between `before()` and first `it()`**
+- [ ] **Every file has the `// Applicable zimbra versions` block after `beforeEach`/`afterEach` and before first `it()`**
 - [ ] **Every file has exactly ONE `// Tests` comment — AFTER the if block, not before it**
 - [ ] **Exactly 2 blank lines between every `it()` block**
 - [ ] **`assert.notExists(res.Fault, ...)` before every response existence check**
+- [ ] **Every file has `beforeEach`/`afterEach` hooks with `function()` syntax calling `main.beforeEach(this)` / `main.afterEach(this)`**

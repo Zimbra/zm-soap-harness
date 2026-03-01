@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Mail Client > Mobile > GetDeviceStatusRequest', function () {
 	this.timeout(120 * 1000);
@@ -10,6 +11,7 @@ describe('Mail Client > Mobile > GetDeviceStatusRequest', function () {
 	const uid = common.getUniqueString();
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		account1Name = `test${uid}@${config.testDomain}`;
 
@@ -30,6 +32,14 @@ describe('Mail Client > Mobile > GetDeviceStatusRequest', function () {
 				<a n="zimbraFeatureMobileSyncEnabled">TRUE</a>
 			</ModifyAccountRequest>`, adminAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

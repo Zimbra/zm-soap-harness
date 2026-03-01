@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../conf/config.js';
 import common from '../../framework/core/common.js';
 import soap from '../../framework/backend/soap-client.js';
+import { main } from '../../pages/main.js';
 
 describe('Briefcase > Briefcase Document Action', function () {
 	this.timeout(180 * 1000);
@@ -13,6 +14,7 @@ describe('Briefcase > Briefcase Document Action', function () {
 	let briefcaseFolderId;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create account1
@@ -84,6 +86,14 @@ describe('Briefcase > Briefcase Document Action', function () {
 		// Verify response
 		assert.exists(briefcase, 'Briefcase folder should exist');
 		briefcaseFolderId = briefcase.id;
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

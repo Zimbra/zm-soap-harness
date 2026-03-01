@@ -3,12 +3,14 @@ import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import rest from '../../../framework/backend/rest-servlet.js';
+import { main } from '../../../pages/main.js';
 
 describe('Rest Servlet > Calendar > HTML Format', function () {
 	this.timeout(120 * 1000);
 	let account1Email, account1Token, appt01Id, appt02Id;
 
 	before(async function () {
+		await main.before(this);
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
@@ -80,6 +82,14 @@ describe('Rest Servlet > Calendar > HTML Format', function () {
 		assert.notExists(createAppt02.Fault, 'Response should not be a Fault');
 		appt02Id = createAppt02.CreateAppointmentResponse.apptId
 			|| createAppt02.CreateAppointmentResponse.$.apptId;
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

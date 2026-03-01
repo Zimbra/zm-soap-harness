@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Auth > Preauth > Preauth Basic', function () {
 	this.timeout(120 * 1000);
@@ -17,6 +18,7 @@ describe('Auth > Preauth > Preauth Basic', function () {
 	let account4Name;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		preauthKey = '7c9d4c4372457f2e9df0a681e31559e691199762171b832ec042861bc9b610ba';
 
@@ -107,6 +109,14 @@ describe('Auth > Preauth > Preauth Basic', function () {
 		// Verify response
 		assert.notExists(createRes4.Fault, 'Response should not be a Fault');
 		assert.exists(createRes4.CreateAccountResponse, 'Should create account4');
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

@@ -3,6 +3,7 @@ import https from 'https';
 import config from '../../../../conf/config.js';
 import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
+import { main } from '../../../../pages/main.js';
 
 describe('Folders > Sharing > Bugs > Bug 77298', function () {
 	let testAccount1, guestAccount1;
@@ -40,6 +41,7 @@ describe('Folders > Sharing > Bugs > Bug 77298', function () {
 	};
 
 	before(async function () {
+		await main.before(this);
 		testAccount1 = `bug77298_1_${common.getUniqueString()}@${config.testDomain}`;
 		guestAccount1 = `guest1${common.getUniqueString()}@${config.testDomain}`;
 
@@ -70,6 +72,14 @@ describe('Folders > Sharing > Bugs > Bug 77298', function () {
 	after(async function () {
 		const adminAuth = await soap.getAdminAuthToken();
 		if (testAccount1) await soap.deleteAccount(testAccount1, adminAuth);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

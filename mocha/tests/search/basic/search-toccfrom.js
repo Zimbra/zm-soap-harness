@@ -2,15 +2,17 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Search > Basic > Toccfrom', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken, accountEmail, accountAuthToken;
 
 	// Test data variables (from XML properties)
-	const test_account1 = { name: `test_account1_${common.getUniqueString()}`, subject: `test_account1_${common.getUniqueString()}`, from: accountEmail, content: `test_account1_${common.getUniqueString()}`, value: `test_account1_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `test_account1_id`, toString() { return this.name; } };
+	const test_account1 = { name: `test_account1_${common.getUniqueString()}` };
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -21,6 +23,14 @@ describe('Search > Basic > Toccfrom', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

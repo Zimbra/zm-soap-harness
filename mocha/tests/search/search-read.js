@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../conf/config.js';
 import common from '../../framework/core/common.js';
 import soap from '../../framework/backend/soap-client.js';
+import { main } from '../../pages/main.js';
 
 describe('Search > Read', function () {
 	this.timeout(60 * 1000);
@@ -17,6 +18,7 @@ describe('Search > Read', function () {
 	const read_text = 'sometext';
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -45,11 +47,18 @@ describe('Search > Read', function () {
 To: ${accountEmail}
 Subject: test message
 MIME-Version: 1.0
-
 1</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

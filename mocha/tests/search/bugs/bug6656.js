@@ -2,12 +2,14 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Search > Bugs > Bug6656', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken, accountEmail, accountAuthToken;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -27,7 +29,6 @@ describe('Search > Bugs > Bug6656', function () {
 To: ${accountEmail}
 Subject: bug6656 test email
 MIME-Version: 1.0
-
 This is a simple text string in the body.
 CST 2063530-50 is a reference number.
 The price is $325 for the item.
@@ -36,6 +37,14 @@ Meeting in Orlando next week.</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

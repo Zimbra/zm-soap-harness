@@ -135,8 +135,26 @@ for (const file of files) {
         }
     }
 
+    // --- STEP 4: Remove blank lines inside XML template literals ---
+    const step4Lines = [];
+    let inTemplateLiteral = false;
+    for (let i = 0; i < fixedLines.length; i++) {
+        const line = fixedLines[i];
+        const backtickCount = (line.match(/`/g) || []).length;
+        if (backtickCount % 2 === 1) {
+            inTemplateLiteral = !inTemplateLiteral;
+        }
+
+        // Skip blank/whitespace-only lines inside template literals
+        if (inTemplateLiteral && line.trim() === '') {
+            changed = true;
+            continue;
+        }
+        step4Lines.push(line);
+    }
+
     if (changed) {
-        const finalContent = fixedLines.join(newline);
+        const finalContent = step4Lines.join(newline);
         fs.writeFileSync(file, finalContent, 'utf8');
     }
 }

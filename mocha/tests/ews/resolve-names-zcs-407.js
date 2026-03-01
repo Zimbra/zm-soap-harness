@@ -33,6 +33,14 @@ describe('EWS > Resolve Names ZCS-407', function () {
 		);
 	});
 
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
+	});
+
 	// Applicable zimbra versions
 	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;

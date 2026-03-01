@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Briefcase > Tags > Tag Briefcase Docs', function () {
 	this.timeout(60 * 1000);
@@ -9,6 +10,7 @@ describe('Briefcase > Tags > Tag Briefcase Docs', function () {
 	let briefcaseFolderId;
 
 	before(async function () {
+		await main.before(this);
 		const adminAuthToken = await soap.getAdminAuthToken();
 		const account1Name = 'acct.' + common.getUniqueString() + '@' + config.testDomain;
 
@@ -40,6 +42,14 @@ describe('Briefcase > Tags > Tag Briefcase Docs', function () {
 		const subfolders = Array.isArray(root.folder) ? root.folder : [root.folder];
 		const briefcase = subfolders.find(f => f && f.name === 'Briefcase');
 		briefcaseFolderId = briefcase.id;
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

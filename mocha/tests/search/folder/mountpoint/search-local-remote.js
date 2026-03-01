@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../../conf/config.js';
 import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
+import { main } from '../../../../pages/main.js';
 
 describe('Search > Folder > Mountpoint > Local Remote', function () {
 	this.timeout(120 * 1000);
@@ -14,6 +15,7 @@ describe('Search > Folder > Mountpoint > Local Remote', function () {
 	const account4 = {};
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create account1
@@ -56,7 +58,6 @@ describe('Search > Folder > Mountpoint > Local Remote', function () {
 From: bar@example.com
 Subject: ${account1.message1.subject}
 Date: Mon, 30 Oct 2006 20:27:31 -0800 (PST)
-
 Sample Content
 					</content>
 				</m>
@@ -89,7 +90,6 @@ Sample Content
 From: bar@example.com
 Subject: ${account1.message1.subject}
 Date: Mon, 30 Oct 2006 20:27:31 -0800 (PST)
-
 Sample Content
 					</content>
 				</m>
@@ -117,6 +117,14 @@ Sample Content
 		);
 		account4.id = res4.CreateAccountResponse.account[0].id;
 		accountAuthToken4 = await soap.getAccountAuthToken(accountEmail4);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions
@@ -235,7 +243,6 @@ Sample Content
 					<content>To: foo@example.com
 From: bar@example.com
 Subject: SubjectValue
-
 ${searchTerm}
 					</content>
 				</m>
@@ -268,7 +275,6 @@ ${searchTerm}
 					<content>To: foo@example.com
 From: bar@example.com
 Subject: SubjectValue
-
 ${searchTerm}
 					</content>
 				</m>

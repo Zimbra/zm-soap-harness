@@ -3,6 +3,7 @@ import config from '../../conf/config.js';
 import common from '../../framework/core/common.js';
 import soap from '../../framework/backend/soap-client.js';
 import makeDavRequest from '../../framework/backend/dav-client.js';
+import { main } from '../../pages/main.js';
 
 describe('CalDav > Folders', function () {
 	this.timeout(60 * 1000);
@@ -16,6 +17,7 @@ describe('CalDav > Folders', function () {
 	let account2Server;
 
 	before(async function () {
+		await main.before(this);
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create account1 on default domain
@@ -83,6 +85,14 @@ describe('CalDav > Folders', function () {
 		const attrs2 = Array.isArray(acct2.a) ? acct2.a : [acct2.a];
 		const mailHost2 = attrs2.find(a => a.n === 'zimbraMailHost');
 		account2Server = mailHost2 ? (mailHost2._content || mailHost2) : config.serverHost;
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

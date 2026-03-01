@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../conf/config.js';
 import common from '../../framework/core/common.js';
 import soap from '../../framework/backend/soap-client.js';
+import { main } from '../../pages/main.js';
 
 describe('General > Spell Check Add Word', function () {
 	this.timeout(60 * 1000);
@@ -9,6 +10,7 @@ describe('General > Spell Check Add Word', function () {
 	let account1Email, account2Email, account3Email;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = `spellcheck${common.getUniqueString()}@${config.testDomain}`;
@@ -38,6 +40,14 @@ describe('General > Spell Check Add Word', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

@@ -2,12 +2,14 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Search > Basic > Subject String Comparison', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken, accountEmail, accountAuthToken;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -45,12 +47,19 @@ describe('Search > Basic > Subject String Comparison', function () {
 To: ${accountEmail}
 Subject: ${subject}
 MIME-Version: 1.0
-
 Content for ${subject}</content>
 						</m>
 					</AddMsgRequest>`, accountAuthToken
 			);
 		}
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

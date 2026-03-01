@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../conf/config.js';
 import common from '../../framework/core/common.js';
 import soap from '../../framework/backend/soap-client.js';
+import { main } from '../../pages/main.js';
 
 describe('Auth > Auth German', function () {
 	this.timeout(30 * 1000);
@@ -9,6 +10,7 @@ describe('Auth > Auth German', function () {
 	let account1Name;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create domain with German umlaut
@@ -35,6 +37,14 @@ describe('Auth > Auth German', function () {
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create account1');
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

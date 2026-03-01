@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../../conf/config.js';
 import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
+import { main } from '../../../../pages/main.js';
 
 describe('Folders > Sharing > Grantee > Sharing Grantee Cos', function () {
 	let testAccount1, cosAccount;
@@ -10,6 +11,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Cos', function () {
 	let cosId;
 
 	before(async function () {
+		await main.before(this);
 		testAccount1 = `grant_cos1_${common.getUniqueString()}@${config.testDomain}`;
 		cosAccount = `cos_user_${common.getUniqueString()}@${config.testDomain}`;
 
@@ -56,6 +58,14 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Cos', function () {
 		if (testAccount1) await soap.deleteAccount(testAccount1, adminAuth);
 		if (cosAccount) await soap.deleteAccount(cosAccount, adminAuth);
 		if (cosId) await soap.makeSOAPEnvelopeAdmin(`<DeleteCosRequest xmlns="urn:zimbraAdmin"><id>${cosId}</id></DeleteCosRequest>`, adminAuth);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

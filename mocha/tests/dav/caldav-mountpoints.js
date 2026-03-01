@@ -3,6 +3,7 @@ import config from '../../conf/config.js';
 import common from '../../framework/core/common.js';
 import soap from '../../framework/backend/soap-client.js';
 import makeDavRequest from '../../framework/backend/dav-client.js';
+import { main } from '../../pages/main.js';
 
 describe('CalDav > Calendar > Mountpoints', function () {
 	this.timeout(60 * 1000);
@@ -16,6 +17,7 @@ describe('CalDav > Calendar > Mountpoints', function () {
 	let account2CalendarId;
 
 	before(async function () {
+		await main.before(this);
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create account1
@@ -122,6 +124,14 @@ describe('CalDav > Calendar > Mountpoints', function () {
 		// Verify response
 		assert.notExists(grantRes.Fault, 'Response should not be a Fault');
 		assert.exists(grantRes.FolderActionResponse, 'Should grant access');
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

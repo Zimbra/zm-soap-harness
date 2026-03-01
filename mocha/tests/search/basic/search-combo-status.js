@@ -2,20 +2,22 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Search > Basic > Combo Status', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken, accountEmail, accountAuthToken;
 
 	// Test data variables (from XML properties)
-	const mail = { name: `mail_${common.getUniqueString()}`, subject: `mail_${common.getUniqueString()}`, from: accountEmail, content: `mail_${common.getUniqueString()}`, value: `mail_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `mail_id`, toString() { return this.name; } };
-	const mail1 = { name: `mail1_${common.getUniqueString()}`, subject: `mail1_${common.getUniqueString()}`, from: accountEmail, content: `mail1_${common.getUniqueString()}`, value: `mail1_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `mail1_id`, toString() { return this.name; } };
-	const mail2 = { name: `mail2_${common.getUniqueString()}`, subject: `mail2_${common.getUniqueString()}`, from: accountEmail, content: `mail2_${common.getUniqueString()}`, value: `mail2_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `mail2_id`, toString() { return this.name; } };
-	const mail3 = { name: `mail3_${common.getUniqueString()}`, subject: `mail3_${common.getUniqueString()}`, from: accountEmail, content: `mail3_${common.getUniqueString()}`, value: `mail3_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `mail3_id`, toString() { return this.name; } };
-	const mail4 = { name: `mail4_${common.getUniqueString()}`, subject: `mail4_${common.getUniqueString()}`, from: accountEmail, content: `mail4_${common.getUniqueString()}`, value: `mail4_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `mail4_id`, toString() { return this.name; } };
-	const origination = { name: `origination_${common.getUniqueString()}`, subject: `origination_${common.getUniqueString()}`, from: accountEmail, content: `origination_${common.getUniqueString()}`, value: `origination_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `origination_id`, toString() { return this.name; } };
+	const mail = { content: `mail_${common.getUniqueString()}` };
+	const mail1 = { name: `mail1_${common.getUniqueString()}`, subject: `mail1_${common.getUniqueString()}` };
+	const mail2 = { name: `mail2_${common.getUniqueString()}`, subject: `mail2_${common.getUniqueString()}` };
+	const mail3 = { name: `mail3_${common.getUniqueString()}`, subject: `mail3_${common.getUniqueString()}` };
+	const mail4 = { name: `mail4_${common.getUniqueString()}`, subject: `mail4_${common.getUniqueString()}` };
+	const origination = {};
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -35,7 +37,6 @@ describe('Search > Basic > Combo Status', function () {
 To: ${accountEmail}
 Subject: ${mail1.subject}
 MIME-Version: 1.0
-
 Content for ${mail1.name}</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -48,7 +49,6 @@ Content for ${mail1.name}</content>
 To: ${accountEmail}
 Subject: ${mail2.subject}
 MIME-Version: 1.0
-
 Content for ${mail2.name}</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -61,7 +61,6 @@ Content for ${mail2.name}</content>
 To: ${accountEmail}
 Subject: ${mail3.subject}
 MIME-Version: 1.0
-
 Content for ${mail3.name}</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -74,11 +73,18 @@ Content for ${mail3.name}</content>
 To: ${accountEmail}
 Subject: ${mail4.subject}
 MIME-Version: 1.0
-
 Content for ${mail4.name}</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

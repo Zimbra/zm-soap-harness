@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Auth > Forgetpassword > Zcs 4800', function () {
 	this.timeout(180 * 1000);
@@ -14,6 +15,7 @@ describe('Auth > Forgetpassword > Zcs 4800', function () {
 	let account3Name;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create account1 with reset password and lockout enabled
@@ -71,6 +73,14 @@ describe('Auth > Forgetpassword > Zcs 4800', function () {
 				<alias>${account1Alias}</alias>
 			</AddAccountAliasRequest>`, adminAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

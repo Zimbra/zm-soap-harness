@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Auth > Multihost > Multihost Auth Basic', function () {
 	this.timeout(60 * 1000);
@@ -10,6 +11,7 @@ describe('Auth > Multihost > Multihost Auth Basic', function () {
 	let account2Name;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Name = 'mh1.' + common.getUniqueString() + '@' + config.testDomain;
@@ -39,6 +41,14 @@ describe('Auth > Multihost > Multihost Auth Basic', function () {
 		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

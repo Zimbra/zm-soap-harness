@@ -3,6 +3,7 @@ import path from 'path';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Rest Servlet > Upload Servlet > Attachments', function () {
 	this.timeout(60 * 1000);
@@ -13,6 +14,7 @@ describe('Rest Servlet > Upload Servlet > Attachments', function () {
 	let uploadedAid;
 
 	before(async function () {
+		await main.before(this);
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create account1
@@ -83,6 +85,14 @@ describe('Rest Servlet > Upload Servlet > Attachments', function () {
 
 		// Verify response
 		assert.exists(uploadedAid, 'Upload should return attachment id');
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

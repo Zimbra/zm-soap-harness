@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Folders > Sharing > Sharing Toadmin', function () {
 	let testAccount1, adminAccount1;
@@ -9,6 +10,7 @@ describe('Folders > Sharing > Sharing Toadmin', function () {
 	let account1Id;
 
 	before(async function () {
+		await main.before(this);
 		const adminAuth = await soap.getAdminAuthToken();
 		testAccount1 = `share_user_${common.getUniqueString()}@${config.testDomain}`;
 		adminAccount1 = `share_admin_${common.getUniqueString()}@${config.testDomain}`; // This will be an Admin account
@@ -57,6 +59,14 @@ describe('Folders > Sharing > Sharing Toadmin', function () {
 		const adminAuth = await soap.getAdminAuthToken();
 		if (testAccount1) await soap.deleteAccount(testAccount1, adminAuth);
 		if (adminAccount1) await soap.deleteAccount(adminAccount1, adminAuth);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

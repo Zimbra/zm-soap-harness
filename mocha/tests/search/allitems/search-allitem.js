@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Search > AllItems > Allitem', function () {
 	this.timeout(60 * 1000);
@@ -14,6 +15,7 @@ describe('Search > AllItems > Allitem', function () {
 	const composeContent = 'Content in the message is contents...';
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create account1
@@ -74,6 +76,14 @@ describe('Search > AllItems > Allitem', function () {
 				</cn>
 			</CreateContactRequest>`, accountAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

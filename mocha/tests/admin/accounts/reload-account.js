@@ -2,12 +2,14 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Admin > Accounts > Reload Account', function () {
 	let adminAuthToken;
 	let account1Name, account2Id;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Name = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -47,6 +49,14 @@ describe('Admin > Accounts > Reload Account', function () {
 				<a n="zimbraAccountStatus">active</a>
 			</ModifyAccountRequest>`, adminAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

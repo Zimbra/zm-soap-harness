@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Search > Basic > Combo Date', function () {
 	this.timeout(120 * 1000);
@@ -17,6 +18,7 @@ describe('Search > Basic > Combo Date', function () {
 	const timezone = 'America/Los_Angeles';
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -37,7 +39,6 @@ To: ${toUser}
 Subject: email03A
 Date: Sun, 01 May 2005 12:00:00 -0700
 MIME-Version: 1.0
-
 Content for email03A</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -52,7 +53,6 @@ To: ${toUser}
 Subject: email03B
 Date: Sun, 15 May 2005 12:00:00 -0700
 MIME-Version: 1.0
-
 Content for email03B</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -67,7 +67,6 @@ To: ${toUser}
 Subject: email03C
 Date: Tue, 31 May 2005 12:00:00 -0700
 MIME-Version: 1.0
-
 Content for email03C</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -82,7 +81,6 @@ To: ${accountEmail}
 Subject: email03D
 Date: Sun, 01 May 2005 12:00:00 -0700
 MIME-Version: 1.0
-
 Content for email03D</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -97,7 +95,6 @@ To: ${accountEmail}
 Subject: email03E
 Date: Sun, 15 May 2005 12:00:00 -0700
 MIME-Version: 1.0
-
 Content for email03E</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -112,7 +109,6 @@ To: ${accountEmail}
 Subject: email03F
 Date: Tue, 31 May 2005 12:00:00 -0700
 MIME-Version: 1.0
-
 Content for email03F</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -127,7 +123,6 @@ To: ${accountEmail}
 Subject: email03G ${subjectText}
 Date: Sun, 01 May 2005 12:00:00 -0700
 MIME-Version: 1.0
-
 Content for email03G</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -142,7 +137,6 @@ To: ${accountEmail}
 Subject: email03H ${subjectText}
 Date: Sun, 15 May 2005 12:00:00 -0700
 MIME-Version: 1.0
-
 Content for email03H</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -157,7 +151,6 @@ To: ${accountEmail}
 Subject: email03I ${subjectText}
 Date: Tue, 31 May 2005 12:00:00 -0700
 MIME-Version: 1.0
-
 Content for email03I</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -172,7 +165,6 @@ To: ${accountEmail}
 Subject: email03J
 Date: Sun, 01 May 2005 12:00:00 -0700
 MIME-Version: 1.0
-
 ${contentText}</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -187,7 +179,6 @@ To: ${accountEmail}
 Subject: email03K
 Date: Sun, 15 May 2005 12:00:00 -0700
 MIME-Version: 1.0
-
 ${contentText}</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -202,7 +193,6 @@ To: ${accountEmail}
 Subject: email03L
 Date: Tue, 31 May 2005 12:00:00 -0700
 MIME-Version: 1.0
-
 ${contentText}</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -218,15 +208,12 @@ Subject: email03M
 Date: Sun, 01 May 2005 12:00:00 -0700
 MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary="boundary03m"
-
 --boundary03m
 Content-Type: text/plain
-
 Main body
 --boundary03m
 Content-Type: text/plain; name="attach.txt"
 Content-Disposition: attachment; filename="attach.txt"
-
 ${contentAttachText}
 --boundary03m--</content>
 					</m>
@@ -243,15 +230,12 @@ Subject: email03N
 Date: Sun, 15 May 2005 12:00:00 -0700
 MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary="boundary03n"
-
 --boundary03n
 Content-Type: text/plain
-
 Main body
 --boundary03n
 Content-Type: text/plain; name="attach.txt"
 Content-Disposition: attachment; filename="attach.txt"
-
 ${contentAttachText}
 --boundary03n--</content>
 					</m>
@@ -268,15 +252,12 @@ Subject: email03O
 Date: Tue, 31 May 2005 12:00:00 -0700
 MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary="boundary03o"
-
 --boundary03o
 Content-Type: text/plain
-
 Main body
 --boundary03o
 Content-Type: text/plain; name="attach.txt"
 Content-Disposition: attachment; filename="attach.txt"
-
 ${contentAttachText}
 --boundary03o--</content>
 					</m>
@@ -293,7 +274,6 @@ Cc: ${copyUser}
 Subject: email03P
 Date: Sun, 01 May 2005 12:00:00 -0700
 MIME-Version: 1.0
-
 Content for email03P</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -309,7 +289,6 @@ Cc: ${copyUser}
 Subject: email03Q
 Date: Sun, 15 May 2005 12:00:00 -0700
 MIME-Version: 1.0
-
 Content for email03Q</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -325,11 +304,18 @@ Cc: ${copyUser}
 Subject: email03R
 Date: Tue, 31 May 2005 12:00:00 -0700
 MIME-Version: 1.0
-
 Content for email03R</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

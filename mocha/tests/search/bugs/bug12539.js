@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Search > Bugs > Bug12539', function () {
 	this.timeout(60 * 1000);
@@ -12,6 +13,7 @@ describe('Search > Bugs > Bug12539', function () {
 	const chineseSubject2 = '別の中国語テスト件名';
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -32,11 +34,18 @@ To: ${accountEmail}
 Subject: ${chineseSubject1}
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-
 Content for Chinese subject test</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

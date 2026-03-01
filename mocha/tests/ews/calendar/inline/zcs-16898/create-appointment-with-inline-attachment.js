@@ -29,6 +29,14 @@ describe('EWS > Calendar > Inline > ZCS-16898 > Create Appointment With Inline A
 		);
 	});
 
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
+	});
+
 	// Applicable zimbra versions
 	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;

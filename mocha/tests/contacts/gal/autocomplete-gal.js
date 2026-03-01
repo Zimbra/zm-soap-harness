@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Contacts > GAL > AutoComplete GAL', function () {
 	this.timeout(120 * 1000);
@@ -9,6 +10,7 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 	let account2Email, account3Email;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -37,6 +39,14 @@ describe('Contacts > GAL > AutoComplete GAL', function () {
 				<a n="displayName">GalThree User</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

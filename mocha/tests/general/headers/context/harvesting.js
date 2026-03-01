@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../../conf/config.js';
 import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
+import { main } from '../../../../pages/main.js';
 
 describe('General > Headers > Context > Harvesting', function () {
 	this.timeout(120 * 1000);
@@ -13,6 +14,7 @@ describe('General > Headers > Context > Harvesting', function () {
 	const account3Id = '4069da09-3794-4d2a-ad16-fb2dad556dc4';
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = `account${common.getUniqueString()}@${config.testDomain}`;
@@ -45,6 +47,14 @@ describe('General > Headers > Context > Harvesting', function () {
 		account2Id = acct2.id;
 
 		account1AuthToken = await soap.getAccountAuthToken(account1Email);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

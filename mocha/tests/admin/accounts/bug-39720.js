@@ -2,12 +2,14 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Admin > Accounts > Bug 39720', function () {
 	let adminAuthToken;
 	let adminAcctId, delegatedAdminId, regularAcctId;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		const adminAcctName = `admin.${common.getUniqueString()}@${config.testDomain}`;
@@ -58,6 +60,14 @@ describe('Admin > Accounts > Bug 39720', function () {
 		assert.exists(r3.CreateAccountResponse, 'regularAcct account creation failed');
 
 		regularAcctId = Array.isArray(r3.CreateAccountResponse.account) ? r3.CreateAccountResponse.account[0].id : r3.CreateAccountResponse.account.id;
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

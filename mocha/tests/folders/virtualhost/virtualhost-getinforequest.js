@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Folders > Virtualhost > Virtualhost Getinforequest', function () {
 	let virtHostAccount;
@@ -9,6 +10,7 @@ describe('Folders > Virtualhost > Virtualhost Getinforequest', function () {
 	let virtDomain;
 
 	before(async function () {
+		await main.before(this);
 		const adminAuth = await soap.getAdminAuthToken();
 
 		const unique = common.getUniqueString();
@@ -46,6 +48,14 @@ describe('Folders > Virtualhost > Virtualhost Getinforequest', function () {
 		const adminAuth = await soap.getAdminAuthToken();
 		if (virtHostAccount) await soap.deleteAccount(virtHostAccount, adminAuth);
 		// Best effort domain cleanup - can be tricky if we lost the ID or original name
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

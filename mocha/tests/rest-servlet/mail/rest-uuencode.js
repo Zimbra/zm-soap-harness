@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Rest Servlet > Mail > Uuencode', function () {
 	this.timeout(120 * 1000);
@@ -10,6 +11,7 @@ describe('Rest Servlet > Mail > Uuencode', function () {
 	let msg01Content, msg02Content;
 
 	before(async function () {
+		await main.before(this);
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		msg01Content = 'Western Digital WD800JB 80GB 8MB Buffer';
@@ -55,6 +57,14 @@ describe('Rest Servlet > Mail > Uuencode', function () {
 
 		// Verify response
 		assert.notExists(addMsg2Res.Fault, 'Response should not be a Fault');
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

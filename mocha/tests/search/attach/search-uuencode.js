@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Search > Attach > Uuencode', function () {
 	this.timeout(60 * 1000);
@@ -12,6 +13,7 @@ describe('Search > Attach > Uuencode', function () {
 	const msg02Content = 'Lucky Craft PT65-803BRT Pointer';
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create account1
@@ -42,7 +44,6 @@ describe('Search > Attach > Uuencode', function () {
 To: ${accountEmail}
 Subject: uuencode word doc
 MIME-Version: 1.0
-
 ${msg01Content}</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -56,11 +57,18 @@ ${msg01Content}</content>
 To: ${accountEmail2}
 Subject: uuencode text
 MIME-Version: 1.0
-
 ${msg02Content}</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken2
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

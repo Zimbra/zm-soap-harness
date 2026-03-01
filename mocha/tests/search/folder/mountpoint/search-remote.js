@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../../conf/config.js';
 import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
+import { main } from '../../../../pages/main.js';
 
 describe('Search > Folder > Mountpoint > Remote', function () {
 	this.timeout(120 * 1000);
@@ -11,6 +12,7 @@ describe('Search > Folder > Mountpoint > Remote', function () {
 	const account2 = {};
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create account1 (owner)
@@ -55,7 +57,6 @@ describe('Search > Folder > Mountpoint > Remote', function () {
 From: bar@example.com
 Subject: U1 ${account1.message1.subject}
 Date: Mon, 30 Oct 2006 20:27:31 -0800 (PST)
-
 Sample Content
 					</content>
 				</m>
@@ -82,7 +83,6 @@ Sample Content
 From: bar@example.com
 Subject: U1 ${account1.message2.subject}
 Date: Mon, 30 Oct 2006 20:27:31 -0800 (PST)
-
 Sample Content
 					</content>
 				</m>
@@ -127,6 +127,14 @@ Sample Content
 			</CreateMountpointRequest>`, accountAuthToken2
 		);
 		account2.dupmountpoint1.id = resDMP1.CreateMountpointResponse.link[0].id;
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

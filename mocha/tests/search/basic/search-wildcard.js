@@ -2,21 +2,23 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Search > Basic > Wildcard', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken, accountEmail, accountAuthToken;
 
 	// Test data variables (from XML properties)
-	const mail1 = { name: `mail1_${common.getUniqueString()}`, subject: `mail1_${common.getUniqueString()}`, from: accountEmail, content: `mail1_${common.getUniqueString()}`, value: `mail1_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `mail1_id`, toString() { return this.name; } };
-	const test_account1 = { name: `test_account1_${common.getUniqueString()}`, subject: `test_account1_${common.getUniqueString()}`, from: accountEmail, content: `test_account1_${common.getUniqueString()}`, value: `test_account1_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `test_account1_id`, toString() { return this.name; } };
+	const mail1 = { subject: `mail1_${common.getUniqueString()}`, content: `mail1_${common.getUniqueString()}` };
+	const test_account1 = { name: `test_account1_${common.getUniqueString()}` };
 	test_account1.name = "FROMUSER_" + common.getUniqueString() + "@" + config.testDomain;
-	const test_account2 = { name: `test_account2_${common.getUniqueString()}`, subject: `test_account2_${common.getUniqueString()}`, from: accountEmail, content: `test_account2_${common.getUniqueString()}`, value: `test_account2_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `test_account2_id`, toString() { return this.name; } };
+	const test_account2 = { name: `test_account2_${common.getUniqueString()}` };
 	test_account2.name = "TOUSER_" + common.getUniqueString() + "@" + config.testDomain;
-	const test_account3 = { name: `test_account3_${common.getUniqueString()}`, subject: `test_account3_${common.getUniqueString()}`, from: accountEmail, content: `test_account3_${common.getUniqueString()}`, value: `test_account3_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `test_account3_id`, toString() { return this.name; } };
+	const test_account3 = { name: `test_account3_${common.getUniqueString()}` };
 	test_account3.name = "CCUSER_" + common.getUniqueString() + "@" + config.testDomain;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -27,6 +29,14 @@ describe('Search > Basic > Wildcard', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

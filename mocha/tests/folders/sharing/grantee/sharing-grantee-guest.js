@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../../conf/config.js';
 import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
+import { main } from '../../../../pages/main.js';
 
 describe('Folders > Sharing > Grantee > Sharing Grantee Guest', function () {
 	let testAccount1;
@@ -10,6 +11,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Guest', function () {
 
 
 	before(async function () {
+		await main.before(this);
 		testAccount1 = `grant_guest1_${common.getUniqueString()}@${config.testDomain}`;
 
 		const adminAuth = await soap.getAdminAuthToken();
@@ -22,6 +24,14 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Guest', function () {
 	after(async function () {
 		const adminAuth = await soap.getAdminAuthToken();
 		if (testAccount1) await soap.deleteAccount(testAccount1, adminAuth);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../../conf/config.js';
 import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
+import { main } from '../../../../pages/main.js';
 
 describe('General > Headers > Notification Block > Folder Action Request ACL', function () {
 	this.timeout(120 * 1000);
@@ -12,6 +13,7 @@ describe('General > Headers > Notification Block > Folder Action Request ACL', f
 	let account2Id;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		account1Email = `account1${common.getUniqueString()}@${config.testDomain}`;
 		account2Email = `account2${common.getUniqueString()}@${config.testDomain}`;
@@ -37,6 +39,14 @@ describe('General > Headers > Notification Block > Folder Action Request ACL', f
 		account2Id = acct2.id;
 
 		account1AuthToken = await soap.getAccountAuthToken(account1Email);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

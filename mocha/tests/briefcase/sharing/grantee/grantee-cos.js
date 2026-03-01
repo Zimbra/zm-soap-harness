@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../../conf/config.js';
 import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
+import { main } from '../../../../pages/main.js';
 
 describe('Briefcase > Sharing > Grantee > Grantee Cos', function () {
 	this.timeout(60 * 1000);
@@ -10,6 +11,7 @@ describe('Briefcase > Sharing > Grantee > Grantee Cos', function () {
 	let cosId;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		const account1Name = 'acct.' + common.getUniqueString() + '@' + config.testDomain;
 
@@ -39,6 +41,14 @@ describe('Briefcase > Sharing > Grantee > Grantee Cos', function () {
 		const cos = Array.isArray(cosRes.GetCosResponse.cos) ? cosRes.GetCosResponse.cos[0] : cosRes.GetCosResponse.cos;
 
 		cosId = cos.id;
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

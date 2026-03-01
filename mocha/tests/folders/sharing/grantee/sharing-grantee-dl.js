@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../../conf/config.js';
 import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
+import { main } from '../../../../pages/main.js';
 
 describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 	let testAccount1, testAccount2;
@@ -10,6 +11,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 	let dlId;
 
 	before(async function () {
+		await main.before(this);
 		testAccount1 = `grant_dl1_${common.getUniqueString()}@${config.testDomain}`;
 		testAccount2 = `grant_dl2_${common.getUniqueString()}@${config.testDomain}`;
 
@@ -28,6 +30,14 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
 		if (testAccount1) await soap.deleteAccount(testAccount1, adminAuth);
 		if (testAccount2) await soap.deleteAccount(testAccount2, adminAuth);
 		if (dlId) await soap.makeSOAPEnvelopeAdmin(`<DeleteDistributionListRequest xmlns="urn:zimbraAdmin"><id>${dlId}</id></DeleteDistributionListRequest>`, adminAuth);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

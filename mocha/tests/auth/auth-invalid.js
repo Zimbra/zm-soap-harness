@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../conf/config.js';
 import common from '../../framework/core/common.js';
 import soap from '../../framework/backend/soap-client.js';
+import { main } from '../../pages/main.js';
 
 describe('Auth > Auth Invalid', function () {
 	this.timeout(30 * 1000);
@@ -10,6 +11,7 @@ describe('Auth > Auth Invalid', function () {
 	let validUserShort;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create valid test account
@@ -27,6 +29,14 @@ describe('Auth > Auth Invalid', function () {
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		assert.exists(createRes.CreateAccountResponse, 'Should create test account');
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

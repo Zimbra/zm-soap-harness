@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Briefcase > MountPoint > Briefcase Get Mountpoint', function () {
 	this.timeout(60 * 1000);
@@ -17,6 +18,7 @@ describe('Briefcase > MountPoint > Briefcase Get Mountpoint', function () {
 	let subFolderId;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create account1
@@ -135,6 +137,14 @@ describe('Briefcase > MountPoint > Briefcase Get Mountpoint', function () {
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

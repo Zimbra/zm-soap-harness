@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Mail Client > Identities > Bug7090', function () {
 	this.timeout(300 * 1000);
@@ -11,6 +12,7 @@ describe('Mail Client > Identities > Bug7090', function () {
 	const prefix = 'prefix';
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		account1Name = `account1.${uid}@${config.testDomain}`;
 
@@ -23,6 +25,14 @@ describe('Mail Client > Identities > Bug7090', function () {
 		const acct = Array.isArray(res.CreateAccountResponse?.account)
 			? res.CreateAccountResponse.account[0] : res.CreateAccountResponse?.account;
 		account1Id = acct?.id;
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

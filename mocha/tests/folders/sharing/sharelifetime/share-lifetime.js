@@ -2,12 +2,14 @@ import { assert } from 'chai';
 import config from '../../../../conf/config.js';
 import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
+import { main } from '../../../../pages/main.js';
 
 describe('Folders > Sharing > Sharelifetime > Share Lifetime', function () {
 	let testAccount1, testAccount2;
 	let auth1, account1Id, testAccount2Id;
 
 	before(async function () {
+		await main.before(this);
 		testAccount1 = `lifetime1_${common.getUniqueString()}@${config.testDomain}`;
 		testAccount2 = `lifetime2_${common.getUniqueString()}@${config.testDomain}`;
 
@@ -28,6 +30,14 @@ describe('Folders > Sharing > Sharelifetime > Share Lifetime', function () {
 		const adminAuth = await soap.getAdminAuthToken();
 		if (testAccount1) await soap.deleteAccount(testAccount1, adminAuth);
 		if (testAccount2) await soap.deleteAccount(testAccount2, adminAuth);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

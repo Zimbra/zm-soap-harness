@@ -62,6 +62,14 @@ describe('Delegated > Bug 38452', function () {
 		equipmentId = res.CreateCalendarResourceResponse.calresource[0].id;
 	});
 
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
+	});
+
 	// Applicable zimbra versions
 	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;

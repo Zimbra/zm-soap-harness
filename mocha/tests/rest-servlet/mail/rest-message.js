@@ -3,6 +3,7 @@ import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import rest from '../../../framework/backend/rest-servlet.js';
+import { main } from '../../../pages/main.js';
 
 describe('Rest Servlet > Mail > Rest Message', function () {
 	this.timeout(120 * 1000);
@@ -12,6 +13,7 @@ describe('Rest Servlet > Mail > Rest Message', function () {
 	let message2Id, message2Subject;
 
 	before(async function () {
+		await main.before(this);
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		message1Subject = 'subject' + common.getUniqueString();
@@ -90,6 +92,14 @@ describe('Rest Servlet > Mail > Rest Message', function () {
 		assert.notExists(addMsgRes.Fault, 'Response should not be a Fault');
 		const m2 = addMsgRes.AddMsgResponse?.m;
 		message2Id = (Array.isArray(m2) ? m2[0] : m2).id;
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

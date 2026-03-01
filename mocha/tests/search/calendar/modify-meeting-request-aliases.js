@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Search > Calendar > ModifyMeetingRequest Aliases', function () {
 	this.timeout(60 * 1000);
@@ -21,6 +22,7 @@ describe('Search > Calendar > ModifyMeetingRequest Aliases', function () {
 	const calEnd = `${now.getTime() + 86400000}`;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -40,6 +42,14 @@ describe('Search > Calendar > ModifyMeetingRequest Aliases', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		accountAuthToken2 = await soap.getAccountAuthToken(accountEmail2);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

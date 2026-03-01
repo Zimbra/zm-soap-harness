@@ -2,12 +2,14 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Folders > Bugs > Bug 66715', function () {
 	let adminAuthToken;
 	const accounts = [];
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create 3 test accounts
@@ -30,6 +32,14 @@ describe('Folders > Bugs > Bug 66715', function () {
 				await soap.deleteAccount(acct.id, adminAuthToken);
 			}
 		}
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

@@ -2,17 +2,19 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Search > Bugs > Bug78001', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken, accountEmail, accountAuthToken;
 
 	// Test data variables (from XML properties)
-	const message = { name: `message_${common.getUniqueString()}`, subject: `message_${common.getUniqueString()}`, from: accountEmail, content: `message_${common.getUniqueString()}`, value: `message_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `message_id`, toString() { return this.name; } };
-	const search = { name: `search_${common.getUniqueString()}`, subject: `search_${common.getUniqueString()}`, from: accountEmail, content: `search_${common.getUniqueString()}`, value: `search_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `search_id`, toString() { return this.name; } };
-	const test_account = { name: `test_account_${common.getUniqueString()}`, subject: `test_account_${common.getUniqueString()}`, from: accountEmail, content: `test_account_${common.getUniqueString()}`, value: `test_account_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `test_account_id`, toString() { return this.name; } };
+	const message = { subject: `message_${common.getUniqueString()}`, content: `message_${common.getUniqueString()}` };
+	const search = {};
+	const test_account = { name: `test_account_${common.getUniqueString()}` };
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -24,6 +26,14 @@ describe('Search > Bugs > Bug78001', function () {
 		);
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 		test_account.name = accountEmail;
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

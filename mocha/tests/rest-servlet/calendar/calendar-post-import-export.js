@@ -4,6 +4,7 @@ import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import rest from '../../../framework/backend/rest-servlet.js';
+import { main } from '../../../pages/main.js';
 
 const dataRoot = path.join(config.projectRoot, 'mocha/data/tests');
 
@@ -13,6 +14,7 @@ describe('Rest Servlet > Calendar > Post Import Export', function () {
 	let account2Email, account2Token;
 
 	before(async function () {
+		await main.before(this);
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
@@ -43,6 +45,14 @@ describe('Rest Servlet > Calendar > Post Import Export', function () {
 
 		account1Token = await soap.getAccountAuthToken(account1Email);
 		account2Token = await soap.getAccountAuthToken(account2Email);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

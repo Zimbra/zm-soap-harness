@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Folders > Sharing > Sharing Immutable', function () {
 	let testAccount1, testAccount2;
@@ -9,6 +10,7 @@ describe('Folders > Sharing > Sharing Immutable', function () {
 	let account1Id;
 
 	before(async function () {
+		await main.before(this);
 		testAccount1 = `immutable1_${common.getUniqueString()}@${config.testDomain}`;
 		testAccount2 = `immutable2_${common.getUniqueString()}@${config.testDomain}`;
 
@@ -43,6 +45,14 @@ describe('Folders > Sharing > Sharing Immutable', function () {
 		const adminAuth = await soap.getAdminAuthToken();
 		if (testAccount1) await soap.deleteAccount(testAccount1, adminAuth);
 		if (testAccount2) await soap.deleteAccount(testAccount2, adminAuth);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	const verifyImmutable = async (op, folderName, newName = null, newParent = null) => {

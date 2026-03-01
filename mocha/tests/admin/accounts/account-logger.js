@@ -2,12 +2,14 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Admin > Accounts > Account Logger', function () {
 	let adminAuthToken;
 	let account1Id, account2Id, account3Id, account4Id;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		const acct1 = `account${common.getUniqueString()}@${config.testDomain}`;
@@ -54,6 +56,14 @@ describe('Admin > Accounts > Account Logger', function () {
 		account2Id = getAcctId(r2);
 		account3Id = getAcctId(r3);
 		account4Id = getAcctId(r4);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

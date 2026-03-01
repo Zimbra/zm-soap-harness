@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Folders > Sharing > Sharing Rights', function () {
 	let testAccount1, testAccount2, testAccount3;
@@ -9,6 +10,7 @@ describe('Folders > Sharing > Sharing Rights', function () {
 	let account1Id;
 
 	before(async function () {
+		await main.before(this);
 		testAccount1 = `rights1_${common.getUniqueString()}@${config.testDomain}`;
 		testAccount2 = `rights2_${common.getUniqueString()}@${config.testDomain}`;
 		testAccount3 = `rights3_${common.getUniqueString()}@${config.testDomain}`;
@@ -29,6 +31,14 @@ describe('Folders > Sharing > Sharing Rights', function () {
 		if (testAccount1) await soap.deleteAccount(testAccount1, adminAuth);
 		if (testAccount2) await soap.deleteAccount(testAccount2, adminAuth);
 		if (testAccount3) await soap.deleteAccount(testAccount3, adminAuth);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

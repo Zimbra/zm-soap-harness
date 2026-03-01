@@ -125,6 +125,14 @@ describe('EWS > FindItem FindFolder ZCS-799', function () {
 		folderId8 = res.CreateFolderResponse.folder[0].id;
 	});
 
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
+	});
+
 	// Applicable zimbra versions
 	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;

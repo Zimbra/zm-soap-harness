@@ -3,6 +3,7 @@ import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import rest from '../../../framework/backend/rest-servlet.js';
+import { main } from '../../../pages/main.js';
 
 describe('Rest Servlet > Calendar > FreeBusy IFB', function () {
 	this.timeout(120 * 1000);
@@ -12,6 +13,7 @@ describe('Rest Servlet > Calendar > FreeBusy IFB', function () {
 	let account3Email, account3Token;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create account1
@@ -59,6 +61,14 @@ describe('Rest Servlet > Calendar > FreeBusy IFB', function () {
 		account1Token = await soap.getAccountAuthToken(account1Email);
 		await soap.getAccountAuthToken(account2Email);
 		account3Token = await soap.getAccountAuthToken(account3Email);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

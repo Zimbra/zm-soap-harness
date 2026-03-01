@@ -3,6 +3,7 @@ import config from '../../conf/config.js';
 import common from '../../framework/core/common.js';
 import soap from '../../framework/backend/soap-client.js';
 import makeDavRequest from '../../framework/backend/dav-client.js';
+import { main } from '../../pages/main.js';
 
 describe('CalDav > Basic Folders', function () {
 	this.timeout(60 * 1000);
@@ -11,6 +12,7 @@ describe('CalDav > Basic Folders', function () {
 	let account1Server;
 
 	before(async function () {
+		await main.before(this);
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		const account1User = 'test' + common.getUniqueString();
@@ -38,6 +40,14 @@ describe('CalDav > Basic Folders', function () {
 		const attrs = Array.isArray(acct.a) ? acct.a : [acct.a];
 		const mailHost = attrs.find(a => a.n === 'zimbraMailHost');
 		account1Server = mailHost ? (mailHost._content || mailHost) : config.serverHost;
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

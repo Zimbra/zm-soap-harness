@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Auth > Forgetpassword > Reset Account Password', function () {
 	this.timeout(120 * 1000);
@@ -10,6 +11,7 @@ describe('Auth > Forgetpassword > Reset Account Password', function () {
 	let testAccount1Name;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create test_account1 (recovery email recipient)
@@ -44,6 +46,14 @@ describe('Auth > Forgetpassword > Reset Account Password', function () {
 		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
 		assert.exists(createRes2.CreateAccountResponse, 'Should create account1');
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../conf/config.js';
 import common from '../../framework/core/common.js';
 import soap from '../../framework/backend/soap-client.js';
+import { main } from '../../pages/main.js';
 
 describe('Search > Attach', function () {
 	this.timeout(60 * 1000);
@@ -9,6 +10,7 @@ describe('Search > Attach', function () {
 	let res;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -29,17 +31,13 @@ To: ${accountEmail}
 Subject: message with jpeg
 MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary="----=_Part_456"
-
 ------=_Part_456
 Content-Type: text/plain; charset=utf-8
-
 Test content with attachment
-
 ------=_Part_456
 Content-Type: image/jpeg; name="test.jpg"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="test.jpg"
-
 /9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRof
 Hh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwh
 MjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAAR
@@ -50,6 +48,14 @@ AAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA
 					</m>
 				</AddMsgRequest>`, accountAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

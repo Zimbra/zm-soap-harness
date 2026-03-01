@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../../conf/config.js';
 import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
+import { main } from '../../../../pages/main.js';
 
 describe('General > Headers > Notification Block > Subject Normalization', function () {
 	this.timeout(120 * 1000);
@@ -10,6 +11,7 @@ describe('General > Headers > Notification Block > Subject Normalization', funct
 	let inboxId;
 
 	before(async function () {
+		await main.before(this);
 		const adminAuthToken = await soap.getAdminAuthToken();
 		accountEmail = `account${common.getUniqueString()}@${config.testDomain}`;
 
@@ -29,6 +31,14 @@ describe('General > Headers > Notification Block > Subject Normalization', funct
 		const folders = folderRes.GetFolderResponse.folder[0].folder;
 		const inbox = folders.find(f => f.name === 'Inbox');
 		inboxId = inbox.id;
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

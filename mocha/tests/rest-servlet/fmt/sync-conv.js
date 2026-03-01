@@ -3,6 +3,7 @@ import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import rest from '../../../framework/backend/rest-servlet.js';
+import { main } from '../../../pages/main.js';
 
 describe('Rest Servlet > Fmt > Sync > Conversation', function () {
 	this.timeout(120 * 1000);
@@ -11,6 +12,7 @@ describe('Rest Servlet > Fmt > Sync > Conversation', function () {
 	let message1Id;
 
 	before(async function () {
+		await main.before(this);
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
@@ -54,6 +56,14 @@ describe('Rest Servlet > Fmt > Sync > Conversation', function () {
 		message1Id = sendRes.SendMsgResponse?.m?.id
 			|| (Array.isArray(sendRes.SendMsgResponse?.m)
 				? sendRes.SendMsgResponse.m[0].id : undefined);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

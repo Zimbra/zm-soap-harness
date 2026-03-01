@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Mail Client > Headers > JSON > SearchGALRequest JSON', function () {
 	this.timeout(120 * 1000);
@@ -11,6 +12,7 @@ describe('Mail Client > Headers > JSON > SearchGALRequest JSON', function () {
 	const uid = common.getUniqueString();
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		domainName = `domain${uid}.testgal.com`;
 		account1Name = `user1${uid}`;
@@ -64,6 +66,14 @@ describe('Mail Client > Headers > JSON > SearchGALRequest JSON', function () {
 				);
 			}
 		}
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

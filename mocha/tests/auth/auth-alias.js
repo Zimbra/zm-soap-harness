@@ -3,6 +3,7 @@ import config from '../../conf/config.js';
 import common from '../../framework/core/common.js';
 import soap from '../../framework/backend/soap-client.js';
 import server from '../../framework/backend/server-command.js';
+import { main } from '../../pages/main.js';
 
 describe('Auth > Auth Alias', function () {
 	this.timeout(30 * 1000);
@@ -16,6 +17,7 @@ describe('Auth > Auth Alias', function () {
 	let account2Alias;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create account1
@@ -79,6 +81,14 @@ describe('Auth > Auth Alias', function () {
 				<alias>${account2Alias}</alias>
 			</AddAccountAliasRequest>`, adminAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Tests

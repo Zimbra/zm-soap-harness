@@ -115,6 +115,14 @@ describe('Sharing > Shared All Folders With Me', function () {
 		acct1RootId = res.GetFolderResponse.folder[0].id;
 	});
 
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
+	});
+
 	// Applicable zimbra versions
 	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;

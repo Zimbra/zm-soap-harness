@@ -2,12 +2,14 @@ import { assert } from 'chai';
 import config from '../../conf/config.js';
 import common from '../../framework/core/common.js';
 import soap from '../../framework/backend/soap-client.js';
+import { main } from '../../pages/main.js';
 
 describe('Contacts > Contacts Create', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken, account1Email, account1Token, account2Email, account2Token;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -27,6 +29,14 @@ describe('Contacts > Contacts Create', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		account2Token = await soap.getAccountAuthToken(account2Email);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

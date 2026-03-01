@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../../../conf/config.js';
 import common from '../../../../../framework/core/common.js';
 import soap from '../../../../../framework/backend/soap-client.js';
+import { main } from '../../../../../pages/main.js';
 
 describe('Search > Negate > Folder > Mountpoint > Negate Subject', function () {
 	this.timeout(60 * 1000);
@@ -12,6 +13,7 @@ describe('Search > Negate > Folder > Mountpoint > Negate Subject', function () {
 	let mountpointId;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -40,7 +42,6 @@ describe('Search > Negate > Folder > Mountpoint > Negate Subject', function () {
 To: ${accountEmail}
 Subject: test message
 MIME-Version: 1.0
-
 Test content
 					</content>
 				</m>
@@ -61,6 +62,14 @@ Test content
 			</CreateMountpointRequest>`, accountAuthToken2
 		);
 		mountpointId = resMP.CreateMountpointResponse.link[0].id;
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

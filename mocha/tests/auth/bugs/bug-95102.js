@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Auth > Bugs > Bug 95102', function () {
 	this.timeout(30 * 1000);
@@ -12,6 +13,7 @@ describe('Auth > Bugs > Bug 95102', function () {
 	const domainPreauthKey = '7c9d4c4372457f2e9df0a681e31559e691199762171b832ec042861bc9b610ba';
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create domain with preauth key
@@ -50,6 +52,14 @@ describe('Auth > Bugs > Bug 95102', function () {
 			: createRes.CreateAccountResponse.account;
 		const host = acct.a.find(a => a.n === 'zimbraMailHost');
 		accountServer = host ? host._content : config.server;
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

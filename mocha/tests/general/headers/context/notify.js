@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../../conf/config.js';
 import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
+import { main } from '../../../../pages/main.js';
 
 describe('General > Headers > Context > Notify', function () {
 	this.timeout(300 * 1000);
@@ -13,6 +14,7 @@ describe('General > Headers > Context > Notify', function () {
 	let inboxId;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		account1Email = `test1${common.getUniqueString()}@${config.testDomain}`;
 		account2Email = `test2${common.getUniqueString()}@${config.testDomain}`;
@@ -42,6 +44,14 @@ describe('General > Headers > Context > Notify', function () {
 		const folders = folderRes.GetFolderResponse.folder[0].folder;
 		const inbox = folders.find(f => f.name === 'Inbox');
 		inboxId = inbox.id;
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

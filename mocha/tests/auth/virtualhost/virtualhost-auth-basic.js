@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Auth > Virtualhost > Virtualhost Auth Basic', function () {
 	this.timeout(30 * 1000);
@@ -15,6 +16,7 @@ describe('Auth > Virtualhost > Virtualhost Auth Basic', function () {
 	let account1Server;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		domain1Name = 'domain.' + common.getUniqueString() + '.com';
@@ -73,6 +75,14 @@ describe('Auth > Virtualhost > Virtualhost Auth Basic', function () {
 		} catch {
 			// Ignore cleanup errors
 		}
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

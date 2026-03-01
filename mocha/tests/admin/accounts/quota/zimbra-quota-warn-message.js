@@ -2,12 +2,22 @@ import { assert } from 'chai';
 import config from '../../../../conf/config.js';
 import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
+import { main } from '../../../../pages/main.js';
 
 describe('Admin > Accounts > Quota > Zimbra Quota Warn Message', function () {
 	let adminAuthToken;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions
@@ -32,11 +42,8 @@ describe('Admin > Accounts > Quota > Zimbra Quota Warn Message', function () {
 To: bar@example.com
 Subject: QuotaWarn
 Content-Type: text/plain
-
 Your mailbox is nearly full
-
 ${warnMsg}
-
 </a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
@@ -70,11 +77,8 @@ ${warnMsg}
 To: bar@example.com
 Subject: QuotaWarn
 Content-Type: text/plain
-
 Your mailbox is nearly full
-
 ${warnMsg}
-
 </a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
@@ -138,11 +142,8 @@ ${warnMsg}
 To: bar@example.com
 Subject: ${warnSubject}
 Content-Type: text/plain
-
 Your mailbox is nearly full
-
 ${warnMsg}
-
 </a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
@@ -187,9 +188,7 @@ ${warnMsg}
 To: bar@example.com
 Subject: ${warnSubject}
 Content-Type: text/plain
-
 Your mailbox is nearly full
-
 </a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
@@ -235,9 +234,7 @@ To: bar@example.com
 Subject: ${warnSubject}
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: base64
-
 ${encoded}
-
 </a>
 			</CreateAccountRequest>`, adminAuthToken
 		);

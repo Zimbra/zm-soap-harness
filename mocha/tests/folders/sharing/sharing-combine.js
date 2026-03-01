@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Folders > Sharing > Sharing Combine', function () {
 	let testAccount1, testAccount2, testAccount3;
@@ -12,6 +13,7 @@ describe('Folders > Sharing > Sharing Combine', function () {
 	let account1Id;
 
 	before(async function () {
+		await main.before(this);
 		adminAuth = await soap.getAdminAuthToken();
 		testAccount1 = `combine1_${common.getUniqueString()}@${config.testDomain}`;
 		testAccount2 = `combine2_${common.getUniqueString()}@${config.testDomain}`;
@@ -66,6 +68,14 @@ describe('Folders > Sharing > Sharing Combine', function () {
 		if (testAccount2) await soap.deleteAccount(testAccount2, adminAuth);
 		if (testAccount3) await soap.deleteAccount(testAccount3, adminAuth);
 		if (groupName) await soap.deleteDistributionList(groupName, adminAuth);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

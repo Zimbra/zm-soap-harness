@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Search > Basic > Content', function () {
 	this.timeout(60 * 1000);
@@ -9,6 +10,7 @@ describe('Search > Basic > Content', function () {
 	let res;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -28,7 +30,6 @@ describe('Search > Basic > Content', function () {
 To: ${accountEmail}
 Subject: email01A
 MIME-Version: 1.0
-
 This is a simple text string in the body of the message</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -43,15 +44,12 @@ To: ${accountEmail}
 Subject: email01B
 MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary="boundary01"
-
 --boundary01
 Content-Type: text/plain
-
 Main body text
 --boundary01
 Content-Type: text/plain; name="attach.txt"
 Content-Disposition: attachment; filename="attach.txt"
-
 This is a simple text string in the attachment
 --boundary01--</content>
 					</m>
@@ -66,11 +64,18 @@ This is a simple text string in the attachment
 To: ${accountEmail}
 Subject: email01H
 MIME-Version: 1.0
-
 Thank you for contributing to xmlbeans project</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

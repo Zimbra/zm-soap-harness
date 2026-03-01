@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../../conf/config.js';
 import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
+import { main } from '../../../../pages/main.js';
 
 describe('General > Headers > Format > Auth Request JSON', function () {
 	this.timeout(120 * 1000);
@@ -9,6 +10,7 @@ describe('General > Headers > Format > Auth Request JSON', function () {
 	let accountEmail;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		accountEmail = `user${common.getUniqueString()}@${config.testDomain}`;
 
@@ -19,6 +21,14 @@ describe('General > Headers > Format > Auth Request JSON', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

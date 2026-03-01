@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Folders > Mountpoint > Folderactionrequest Mountpoint', function () {
 	let testAccount1, testAccount2;
@@ -10,6 +11,7 @@ describe('Folders > Mountpoint > Folderactionrequest Mountpoint', function () {
 	let folderId, mountId;
 
 	before(async function () {
+		await main.before(this);
 		testAccount1 = `mp_act1_${common.getUniqueString()}@${config.testDomain}`;
 		testAccount2 = `mp_act2_${common.getUniqueString()}@${config.testDomain}`;
 
@@ -64,6 +66,14 @@ describe('Folders > Mountpoint > Folderactionrequest Mountpoint', function () {
 		const adminAuth = await soap.getAdminAuthToken();
 		if (testAccount1) await soap.deleteAccount(testAccount1, adminAuth);
 		if (testAccount2) await soap.deleteAccount(testAccount2, adminAuth);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

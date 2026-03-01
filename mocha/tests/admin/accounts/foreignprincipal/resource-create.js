@@ -2,12 +2,14 @@ import { assert } from 'chai';
 import config from '../../../../conf/config.js';
 import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
+import { main } from '../../../../pages/main.js';
 
 describe('Admin > Accounts > Foreignprincipal > Resource Create', function () {
 	let adminAuthToken;
 	let cosId;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// CreateCosRequest
@@ -17,6 +19,14 @@ describe('Admin > Accounts > Foreignprincipal > Resource Create', function () {
 			</CreateCosRequest>`, adminAuthToken
 		);
 		cosId = cosRes.CreateCosResponse.cos[0].id;
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

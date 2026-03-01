@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Contacts > Bugs > Bug 67327 - Modify contact tag operations', function () {
 	this.timeout(120 * 1000);
@@ -9,6 +10,7 @@ describe('Contacts > Bugs > Bug 67327 - Modify contact tag operations', function
 	let tag1Name, tag2Name, tag3Name;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -35,6 +37,14 @@ describe('Contacts > Bugs > Bug 67327 - Modify contact tag operations', function
 				<tag name="${tag2Name}"/>
 			</CreateTagRequest>`, accountToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

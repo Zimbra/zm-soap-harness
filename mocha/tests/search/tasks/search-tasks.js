@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Search > Tasks > Tasks', function () {
 	this.timeout(60 * 1000);
@@ -11,14 +12,27 @@ describe('Search > Tasks > Tasks', function () {
 	// Test data variables (from XML properties)
 	const now = new Date();
 	let Date1 = now.toISOString().slice(0, 10).replace(/-/g, '');
-	const account1 = { name: `account1_${common.getUniqueString()}`, subject: `account1_${common.getUniqueString()}`, from: accountEmail, content: `account1_${common.getUniqueString()}`, value: `account1_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `account1_id`, toString() { return this.name; } };
-	const globals = { name: 'globals', inbox: 'inbox', sent: 'sent', trash: 'trash', spam: 'junk', drafts: 'drafts', calendar: 'calendar', contacts: 'contacts', true: 'TRUE', false: 'FALSE', toString() { return this.name; } };
-	const task1 = { name: `task1_${common.getUniqueString()}`, subject: `task1_${common.getUniqueString()}`, from: accountEmail, content: `task1_${common.getUniqueString()}`, value: `task1_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `task1_id`, toString() { return this.name; } };
-	const task2 = { name: `task2_${common.getUniqueString()}`, subject: `task2_${common.getUniqueString()}`, from: accountEmail, content: `task2_${common.getUniqueString()}`, value: `task2_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `task2_id`, toString() { return this.name; } };
-	const task3 = { name: `task3_${common.getUniqueString()}`, subject: `task3_${common.getUniqueString()}`, from: accountEmail, content: `task3_${common.getUniqueString()}`, value: `task3_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `task3_id`, toString() { return this.name; } };
-	const task4 = { name: `task4_${common.getUniqueString()}`, subject: `task4_${common.getUniqueString()}`, from: accountEmail, content: `task4_${common.getUniqueString()}`, value: `task4_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `task4_id`, toString() { return this.name; } };
+	const account1 = {};
+	const globals = {
+		name: 'globals',
+		inbox: 'inbox',
+		sent: 'sent',
+		trash: 'trash',
+		spam: 'junk',
+		drafts: 'drafts',
+		calendar: 'calendar',
+		contacts: 'contacts',
+		true: 'TRUE',
+		false: 'FALSE',
+		toString() { return this.name; }
+	};
+	const task1 = { subject: `task1_${common.getUniqueString()}` };
+	const task2 = { subject: `task2_${common.getUniqueString()}` };
+	const task3 = { subject: `task3_${common.getUniqueString()}`, content: `task3_${common.getUniqueString()}` };
+	const task4 = { subject: `task4_${common.getUniqueString()}`, id: `task4_id` };
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -40,20 +54,20 @@ describe('Search > Tasks > Tasks', function () {
 		// Create Task 1 (attachment)
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateTaskRequest xmlns="urn:zimbraMail">
-                <m l="${tasksFolderId}">
-                    <inv>
-                        <comp name="${task1.subject}">
-                            <s d="20150101T100000"/>
-                            <e d="20150101T110000"/>
-                        </comp>
-                    </inv>
-                    <su>${task1.subject}</su>
-                    <mp ct="multipart/mixed">
-                        <mp ct="text/plain"><content>content1</content></mp>
-                        <mp ct="text/plain" filename="attach.txt"><content>attachment</content></mp>
-                    </mp>
-                </m>
-            </CreateTaskRequest>`, accountAuthToken
+				<m l="${tasksFolderId}">
+					<inv>
+						<comp name="${task1.subject}">
+							<s d="20150101T100000"/>
+							<e d="20150101T110000"/>
+						</comp>
+					</inv>
+					<su>${task1.subject}</su>
+					<mp ct="multipart/mixed">
+						<mp ct="text/plain"><content>content1</content></mp>
+						<mp ct="text/plain" filename="attach.txt"><content>attachment</content></mp>
+					</mp>
+				</m>
+			</CreateTaskRequest>`, accountAuthToken
 		);
 
 		// Create Task 2 (recurring)
@@ -95,6 +109,14 @@ describe('Search > Tasks > Tasks', function () {
 		// Add inboxFolder to account1
 		account1.folder = { task: { id: tasksFolderId } };
 
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

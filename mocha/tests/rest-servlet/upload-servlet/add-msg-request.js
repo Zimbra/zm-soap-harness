@@ -3,6 +3,7 @@ import path from 'path';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Rest Servlet > Upload Servlet > Add Msg Request', function () {
 	this.timeout(30 * 1000);
@@ -10,6 +11,7 @@ describe('Rest Servlet > Upload Servlet > Add Msg Request', function () {
 	let inboxId;
 
 	before(async function () {
+		await main.before(this);
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		const account1Name = 'test' + common.getUniqueString() + '@' + config.testDomain;
@@ -70,6 +72,14 @@ describe('Rest Servlet > Upload Servlet > Add Msg Request', function () {
 		assert.exists(inbox, 'Inbox folder should exist');
 
 		inboxId = inbox.id;
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

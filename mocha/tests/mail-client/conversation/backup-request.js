@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Mail Client > Conversation > BackupRequest', function () {
 	this.timeout(300 * 1000);
@@ -14,6 +15,7 @@ describe('Mail Client > Conversation > BackupRequest', function () {
 	const messageContent = 'this mail is to check whether the message is read or unread';
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		const domainName = `domain${uid}.com`;
 
@@ -40,6 +42,14 @@ describe('Mail Client > Conversation > BackupRequest', function () {
 			if (acctName === account2Name) account2Id = acct?.id;
 			if (acctName === account4Name) account4Id = acct?.id;
 		}
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

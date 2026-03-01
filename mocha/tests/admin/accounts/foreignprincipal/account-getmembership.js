@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../../conf/config.js';
 import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
+import { main } from '../../../../pages/main.js';
 
 describe('Admin > Accounts > Foreignprincipal > Account Getmembership', function () {
 	let adminAuthToken;
@@ -9,6 +10,7 @@ describe('Admin > Accounts > Foreignprincipal > Account Getmembership', function
 	let account1Fp, account2Fp, account3Fp;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create 4 DLs: DL4 -> DL3 -> DL2 (nested)
@@ -102,6 +104,14 @@ describe('Admin > Accounts > Foreignprincipal > Account Getmembership', function
 				<a n="zimbraForeignPrincipal">${account3Fp}</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

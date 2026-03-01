@@ -2,16 +2,18 @@ import { assert } from 'chai';
 import config from '../../conf/config.js';
 import common from '../../framework/core/common.js';
 import soap from '../../framework/backend/soap-client.js';
+import { main } from '../../pages/main.js';
 
 describe('Search > Encoded', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken, accountEmail, accountAuthToken;
 
 	// Test data variables (from XML properties)
-	const SearchEncoded01 = { name: `SearchEncoded01_${common.getUniqueString()}`, subject: `SearchEncoded01_${common.getUniqueString()}`, from: accountEmail, content: `SearchEncoded01_${common.getUniqueString()}`, value: `SearchEncoded01_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `SearchEncoded01_id`, toString() { return this.name; } };
-	const SearchEncoded318 = { name: `SearchEncoded318_${common.getUniqueString()}`, subject: `SearchEncoded318_${common.getUniqueString()}`, from: accountEmail, content: `SearchEncoded318_${common.getUniqueString()}`, value: `SearchEncoded318_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `SearchEncoded318_id`, toString() { return this.name; } };
+	const SearchEncoded01 = { subject: `SearchEncoded01_${common.getUniqueString()}`, from: accountEmail };
+	const SearchEncoded318 = { from: accountEmail };
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -31,11 +33,18 @@ describe('Search > Encoded', function () {
 To: ${accountEmail}
 Subject: test message
 MIME-Version: 1.0
-
 Test content</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

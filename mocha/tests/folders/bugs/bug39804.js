@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Folders > Bugs > Bug 39804', function () {
 	let testAccount1, testAccount2, testAccount3;
@@ -10,6 +11,7 @@ describe('Folders > Bugs > Bug 39804', function () {
 	let inboxId;
 
 	before(async function () {
+		await main.before(this);
 		testAccount1 = `bug39804_1_${common.getUniqueString()}@${config.testDomain}`;
 		testAccount2 = `bug39804_2_${common.getUniqueString()}@${config.testDomain}`;
 		testAccount3 = `bug39804_3_${common.getUniqueString()}@${config.testDomain}`;
@@ -37,6 +39,14 @@ describe('Folders > Bugs > Bug 39804', function () {
 		if (testAccount1) await soap.deleteAccount(testAccount1, adminAuth);
 		if (testAccount2) await soap.deleteAccount(testAccount2, adminAuth);
 		if (testAccount3) await soap.deleteAccount(testAccount3, adminAuth);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

@@ -3,6 +3,7 @@ import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import server from '../../../framework/backend/server-command.js';
+import { main } from '../../../pages/main.js';
 
 describe('Auth > Virtualhost > Auth Virtualhost', function () {
 	this.timeout(60 * 1000);
@@ -13,6 +14,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 	let testDomainName;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		testAccountUser = 'user' + common.getUniqueString();
@@ -62,6 +64,14 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 				<password>${config.accountPassword}v</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Tests
@@ -325,6 +335,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 
 	// Serial tests
+	// Applicable zimbra versions
 	if (config.serial === true && String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		it('Basic Test - AuthRequest - login using default, good password - Adding and removing virtual host', async () => {
 			this.timeout(600 * 1000);

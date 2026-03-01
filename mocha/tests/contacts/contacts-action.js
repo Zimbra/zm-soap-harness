@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../conf/config.js';
 import common from '../../framework/core/common.js';
 import soap from '../../framework/backend/soap-client.js';
+import { main } from '../../pages/main.js';
 
 describe('Contacts > Contacts Action', function () {
 	this.timeout(120 * 1000);
@@ -9,6 +10,7 @@ describe('Contacts > Contacts Action', function () {
 	let folderInbox, folderTrash, folderSent, folderSpam, folderDrafts;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -45,6 +47,14 @@ describe('Contacts > Contacts Action', function () {
 		folderSent = findFolder('Sent') || '5';
 		folderSpam = findFolder('Junk') || '4';
 		folderDrafts = findFolder('Drafts') || '6';
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

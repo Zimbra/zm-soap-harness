@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('General > WaitSet > Bug 17306', function () {
 	this.timeout(120 * 1000);
@@ -11,6 +12,7 @@ describe('General > WaitSet > Bug 17306', function () {
 	let accountAuthToken;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		accountEmail = `waitset${common.getUniqueString()}@${config.testDomain}`;
 
@@ -29,6 +31,14 @@ describe('General > WaitSet > Bug 17306', function () {
 			: createRes.CreateAccountResponse.account;
 		accountId = account.id;
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

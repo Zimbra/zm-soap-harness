@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Search > Bugs > Bug54328', function () {
 	this.timeout(60 * 1000);
@@ -12,6 +13,7 @@ describe('Search > Bugs > Bug54328', function () {
 	const decodedSubject = 'こんにちは';
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -32,11 +34,18 @@ To: ${accountEmail}
 Subject: ${nonUtfSubject}
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-
 Test content for non UTF subject search</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

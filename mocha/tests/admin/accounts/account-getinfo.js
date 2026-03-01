@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Admin > Accounts > Account Getinfo', function () {
 	let adminAuthToken;
@@ -11,6 +12,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 	const sanValue = 'H123456';
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		testAccount1 = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -64,6 +66,14 @@ describe('Admin > Accounts > Account Getinfo', function () {
 		if (testAccount2) await soap.deleteAccount(testAccount2, adminAuthToken);
 		if (testAccount4) await soap.deleteAccount(testAccount4, adminAuthToken);
 		if (testAccount6) await soap.deleteAccount(testAccount6, adminAuthToken);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

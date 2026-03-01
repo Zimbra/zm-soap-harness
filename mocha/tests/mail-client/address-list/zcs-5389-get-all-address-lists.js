@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Mail Client > AddressList > ZCS-5389 GetAllAddressLists', function () {
 	this.timeout(120 * 1000);
@@ -12,6 +13,7 @@ describe('Mail Client > AddressList > ZCS-5389 GetAllAddressLists', function () 
 	let al1Id, al2Id, al3Id, al4Id;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		const uid = common.getUniqueString();
 		domain1Name = `testdomain1.${uid}.com`;
@@ -95,6 +97,14 @@ describe('Mail Client > AddressList > ZCS-5389 GetAllAddressLists', function () 
 				);
 			}
 		}
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

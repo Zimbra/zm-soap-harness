@@ -3,6 +3,7 @@ import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import server from '../../../framework/backend/server-command.js';
+import { main } from '../../../pages/main.js';
 
 describe('Auth > SMTP > Off Network To Zimbra', function () {
 	this.timeout(120 * 1000);
@@ -11,6 +12,7 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 	let account2Name;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		account1Name = 'smtp1.' + common.getUniqueString() + '@' + config.testDomain;
 
@@ -70,7 +72,16 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 		await server.runCommand('sudo su - zimbra -c \'/opt/zimbra/bin/zmmtactl reload\'');
 	});
 
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
+	});
+
 	// Serial tests
+	// Applicable zimbra versions
 	if (config.serial === true && String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		it('Verify zimbraMtaTlsSecurityLevel may, zimbraMtaSaslAuthEnable TRUE, zimbraMtaTlsAuthOnly TRUE settings', async () => {
 			this.timeout(120 * 1000);
@@ -100,7 +111,9 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 			// Verify response
 			assert.notExists(configRes.Fault, 'Response should not be a Fault');
 			assert.exists(configRes.GetAllConfigResponse, 'GetAllConfigResponse should exist');
-		});
+		}
+
+		// Tests);
 
 
 		it('Verify zimbraMtaTlsSecurityLevel may, zimbraMtaSaslAuthEnable TRUE, zimbraMtaTlsAuthOnly FALSE settings', async () => {

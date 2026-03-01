@@ -20,6 +20,14 @@ describe('Sync > Sync Action', function () {
 		account3AuthToken = await soap.getAccountAuthToken(account3Email);
 	});
 
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
+	});
+
 	// Applicable zimbra versions
 	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;

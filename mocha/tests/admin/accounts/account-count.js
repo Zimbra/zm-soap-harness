@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Admin > Accounts > Account Count', function () {
 	let adminAuthToken;
@@ -10,6 +11,7 @@ describe('Admin > Accounts > Account Count', function () {
 	let cos1Id, cos2Id, cos3Id;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		const ts = common.getUniqueString();
@@ -172,6 +174,14 @@ describe('Admin > Accounts > Account Count', function () {
 				<a n="zimbraCOSId">${cos2Id}</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Search > Basic > Env Header', function () {
 	this.timeout(60 * 1000);
@@ -9,6 +10,7 @@ describe('Search > Basic > Env Header', function () {
 	let res;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -30,11 +32,18 @@ Subject: bug50312
 X-Envelope-To: user1@example.com
 X-Envelope-From: user1@example.com
 MIME-Version: 1.0
-
 Test content for envelope header search</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

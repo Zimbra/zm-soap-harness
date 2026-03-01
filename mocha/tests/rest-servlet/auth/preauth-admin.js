@@ -3,12 +3,14 @@ import crypto from 'crypto';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Rest Servlet > Auth > Admin Preauth', function () {
 	this.timeout(120 * 1000);
 	let account1Email, account2Email, preauthKey, domainName;
 
 	before(async function () {
+		await main.before(this);
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		preauthKey = '7c9d4c4372457f2e9df0a681e31559e691199762171b832ec042861bc9b610ba';
@@ -54,6 +56,14 @@ describe('Rest Servlet > Auth > Admin Preauth', function () {
 
 		// Verify response
 		assert.notExists(create2Res.Fault, 'Response should not be a Fault');
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

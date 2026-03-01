@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Mail Client > Folders > BackupRequest', function () {
 	this.timeout(300 * 1000);
@@ -12,6 +13,7 @@ describe('Mail Client > Folders > BackupRequest', function () {
 	const folderName = `folder${uid}`;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		account1Name = `folder_backup.${uid}a@${config.testDomain}`;
 		account2Name = `folder_backup.${uid}b@${config.testDomain}`;
@@ -27,6 +29,14 @@ describe('Mail Client > Folders > BackupRequest', function () {
 			if (n === account1Name) account1Id = a?.id;
 			if (n === account2Name) account2Id = a?.id;
 		}
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

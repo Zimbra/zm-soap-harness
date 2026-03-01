@@ -117,6 +117,14 @@ describe('Delegated > ZBUG 1075', function () {
 		assert.notExists(res.Fault, 'GrantRightRequest for domain2 should not fault');
 	});
 
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
+	});
+
 	// Applicable zimbra versions
 	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;

@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('General > WaitSet > WaitSet Request Contacts', function () {
 	this.timeout(120 * 1000);
@@ -12,6 +13,7 @@ describe('General > WaitSet > WaitSet Request Contacts', function () {
 	let account2Id;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		account1Email = `waitset${common.getUniqueString()}@${config.testDomain}`;
 		account2Email = `waitset${common.getUniqueString()}@${config.testDomain}`;
@@ -45,6 +47,14 @@ describe('General > WaitSet > WaitSet Request Contacts', function () {
 			? createRes2.CreateAccountResponse.account[0]
 			: createRes2.CreateAccountResponse.account;
 		account2Id = acct2.id;
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

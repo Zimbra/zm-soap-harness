@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Mail Client > VoiceMail > VoiceServiceTester', function () {
 	this.timeout(120 * 1000);
@@ -10,6 +11,7 @@ describe('Mail Client > VoiceMail > VoiceServiceTester', function () {
 	const uid = common.getUniqueString();
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		account1Name = `voicemail.${uid}@${config.testDomain}`;
 
@@ -20,6 +22,14 @@ describe('Mail Client > VoiceMail > VoiceServiceTester', function () {
 				<a n="zimbraFeatureVoiceEnabled">TRUE</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('General > NoOp > NoOp Request Delegate', function () {
 	this.timeout(120 * 1000);
@@ -10,6 +11,7 @@ describe('General > NoOp > NoOp Request Delegate', function () {
 	let account2FolderId;
 
 	before(async function () {
+		await main.before(this);
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = `account1${common.getUniqueString()}@${config.testDomain}`;
@@ -66,6 +68,14 @@ describe('General > NoOp > NoOp Request Delegate', function () {
 					rid="${account2FolderId}" zid="${account2Id}"/>
 			</CreateMountpointRequest>`, account1AuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

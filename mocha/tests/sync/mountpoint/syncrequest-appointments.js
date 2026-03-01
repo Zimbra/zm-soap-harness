@@ -75,6 +75,14 @@ describe('Sync > Mountpoint > SyncRequest Appointments', function () {
 		assert.notExists(grantRes.Fault, 'Response should not be a Fault');
 	});
 
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
+	});
+
 	// Applicable zimbra versions
 	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;

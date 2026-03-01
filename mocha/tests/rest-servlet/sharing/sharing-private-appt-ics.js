@@ -3,6 +3,7 @@ import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import rest from '../../../framework/backend/rest-servlet.js';
+import { main } from '../../../pages/main.js';
 
 describe('Rest Servlet > Sharing > Private Appointment ICS', function () {
 	this.timeout(120 * 1000);
@@ -11,6 +12,7 @@ describe('Rest Servlet > Sharing > Private Appointment ICS', function () {
 	let calendarFolderId, mountpointName;
 
 	before(async function () {
+		await main.before(this);
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = 'test' + common.getUniqueString() + '@' + config.testDomain;
@@ -74,6 +76,14 @@ describe('Rest Servlet > Sharing > Private Appointment ICS', function () {
 		// Verify response
 		assert.notExists(mountRes.Fault, 'Response should not be a Fault');
 		mountRes.CreateMountpointResponse?.link;
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

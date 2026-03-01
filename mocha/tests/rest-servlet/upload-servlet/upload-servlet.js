@@ -3,12 +3,14 @@ import path from 'path';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Rest Servlet > Upload Servlet > Upload Servlet', function () {
 	this.timeout(120 * 1000);
 	let account1Token;
 
 	before(async function () {
+		await main.before(this);
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		const account1Name = 'test' + common.getUniqueString() + '@' + config.testDomain;
@@ -49,6 +51,14 @@ describe('Rest Servlet > Upload Servlet > Upload Servlet', function () {
 		account1Token = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
 			: authRes.AuthResponse.authToken._content || authRes.AuthResponse.authToken;
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

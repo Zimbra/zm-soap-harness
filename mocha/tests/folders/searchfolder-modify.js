@@ -14,6 +14,14 @@ describe('Folders > Searchfolder Modify', function () {
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 	});
 
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
+	});
+
 	async function createSearchFolder(query, types) {
 		const name = `Search${common.getUniqueString()}`;
 		const typesAttr = types ? ` types='${types}'` : '';

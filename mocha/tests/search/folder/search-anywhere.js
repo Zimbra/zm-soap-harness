@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Search > Folder > Anywhere', function () {
 	this.timeout(60 * 1000);
@@ -18,6 +19,7 @@ describe('Search > Folder > Anywhere', function () {
 	let email17AId, email17BId, email17CId, email17DId, email17EId;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -39,12 +41,19 @@ describe('Search > Folder > Anywhere', function () {
 To: ${accountEmail}
 Subject: ${subj}
 MIME-Version: 1.0
-
 Now is the time for all good men to come to the aid of their country.</content>
 						</m>
 					</AddMsgRequest>`, accountAuthToken
 			);
 		}
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions
@@ -181,7 +190,6 @@ From: bar@example.com
 Subject: email17G
 Date: Wed, 15 Aug 2007 10:11:05 -0700 (PDT)
 MIME-Version: 1.0
-
 ${message1Content}</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken

@@ -106,6 +106,14 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 		assert.notExists(res.Fault, 'AddDL2Members should not fault');
 	});
 
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
+	});
+
 	// Applicable zimbra versions
 	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;

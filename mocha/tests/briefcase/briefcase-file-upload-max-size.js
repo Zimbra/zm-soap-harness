@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../conf/config.js';
 import common from '../../framework/core/common.js';
 import soap from '../../framework/backend/soap-client.js';
+import { main } from '../../pages/main.js';
 
 describe('Briefcase > Briefcase File Upload Max Size', function () {
 	this.timeout(60 * 1000);
@@ -10,6 +11,7 @@ describe('Briefcase > Briefcase File Upload Max Size', function () {
 	let briefcaseFolderId;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		const account1Name = 'acct.' + common.getUniqueString() + '@' + config.testDomain;
@@ -80,6 +82,14 @@ describe('Briefcase > Briefcase File Upload Max Size', function () {
 		// Verify response
 		assert.exists(briefcase, 'Briefcase folder should exist');
 		briefcaseFolderId = briefcase.id;
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

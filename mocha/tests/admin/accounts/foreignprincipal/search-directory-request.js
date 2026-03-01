@@ -2,12 +2,14 @@ import { assert } from 'chai';
 import config from '../../../../conf/config.js';
 import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
+import { main } from '../../../../pages/main.js';
 
 describe('Admin > Accounts > Foreignprincipal > Search Directory Request', function () {
 	let adminAuthToken;
 	let domainName, account1Id, account1Fp, account2Id, account2Fp1, account2Fp2;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		domainName = `domain.${common.getUniqueString()}.com`;
@@ -44,6 +46,14 @@ describe('Admin > Accounts > Foreignprincipal > Search Directory Request', funct
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		account2Id = (Array.isArray(a2.CreateAccountResponse?.account) ? (Array.isArray(a2.CreateAccountResponse?.account) ? a2.CreateAccountResponse.account[0].id : a2.CreateAccountResponse?.account?.id) : a2.CreateAccountResponse?.account?.id);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

@@ -25,6 +25,14 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 			'Test domain should be created');
 	});
 
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
+	});
+
 	const verifyCreateAccount = async (accountName, testName, isPassing) => {
 		const encodedAccountName = accountName.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/'/g, '&apos;').replace(/"/g, '&quot;');
 
@@ -114,18 +122,12 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 		// XML translates \&\* into &*, etc. We use literal string.
 		await verifyCreateAccount(`!#$%&'*+-/=?^_\`{}~@${testDomain}`, 'allsphchars', true);
 	});
-
-
 	it('Sanity | Create and modify an account with zimbraCalendarReminderDeviceEmail', async () => {
 		await verifyCreateAccount(`user.a${common.getUniqueString()}@${testDomain}`, 'charsdot', true);
 	});
-
-
 	it('Sanity | Create an account with valid values of zimbraContactMaxNumEntries', async () => {
 		await verifyCreateAccount(`0123.456789${common.getUniqueString()}@${testDomain}`, 'decimaldot', true);
 	});
-
-
 	it('Sanity | Create and modify an account with zimbraCalendarReminderDeviceEmail 1', async () => {
 		await verifyCreateAccount(`!#$%&'*+.-/=?^_\`{}~@${testDomain}`, 'sphchardot', true);
 	});

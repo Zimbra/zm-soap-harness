@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Search > Bugs > Bug75100', function () {
 	this.timeout(60 * 1000);
@@ -11,6 +12,7 @@ describe('Search > Bugs > Bug75100', function () {
 	const subject2 = `subject2_${common.getUniqueString()}`;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Account 0 (owner)
@@ -32,6 +34,14 @@ describe('Search > Bugs > Bug75100', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		accountAuthToken2 = await soap.getAccountAuthToken(accountEmail2);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions
@@ -74,7 +84,6 @@ Subject: ${subject1}
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-
 hi This is message1</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -92,7 +101,6 @@ Subject: ${subject2}
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-
 hi This is message2</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken

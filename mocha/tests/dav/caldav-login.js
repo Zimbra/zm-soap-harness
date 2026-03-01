@@ -3,6 +3,7 @@ import config from '../../conf/config.js';
 import common from '../../framework/core/common.js';
 import soap from '../../framework/backend/soap-client.js';
 import makeDavRequest from '../../framework/backend/dav-client.js';
+import { main } from '../../pages/main.js';
 
 describe('CalDav > Login', function () {
 	this.timeout(30 * 1000);
@@ -11,6 +12,7 @@ describe('CalDav > Login', function () {
 	let account1Server;
 
 	before(async function () {
+		await main.before(this);
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create account1
@@ -62,6 +64,14 @@ describe('CalDav > Login', function () {
 
 		// Verify response
 		assert.exists(acct2.id, 'Account2 should have an id');
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

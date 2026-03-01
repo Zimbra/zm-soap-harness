@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Auth > Forgetpassword > Zcs 4798', function () {
 	this.timeout(120 * 1000);
@@ -13,6 +14,7 @@ describe('Auth > Forgetpassword > Zcs 4798', function () {
 	let account3Name;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create account1 with reset password enabled
@@ -70,6 +72,14 @@ describe('Auth > Forgetpassword > Zcs 4798', function () {
 		// Verify response
 		assert.notExists(createRes3.Fault, 'Response should not be a Fault');
 		assert.exists(createRes3.CreateAccountResponse, 'Should create account3');
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

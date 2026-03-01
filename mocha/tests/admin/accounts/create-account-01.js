@@ -29,6 +29,14 @@ describe('Admin > Accounts > Create Account 01', function () {
 		test_account12_name = `test.${Date.now()}.${Math.floor(Math.random() * 1000)}@${config.testDomain}`;
 	});
 
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
+	});
+
 	// Applicable zimbra versions
 	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;
@@ -513,8 +521,6 @@ describe('Admin > Accounts > Create Account 01', function () {
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${test_nouser_name}</name>
 				<password>${config.accountPassword}</password>
-				
-				
 			</CreateAccountRequest>`, adminAuth);
 		test_account.id = Array.isArray(res.CreateAccountResponse?.account) ?
 			res.CreateAccountResponse.account[0].id : res.CreateAccountResponse?.account?.id;

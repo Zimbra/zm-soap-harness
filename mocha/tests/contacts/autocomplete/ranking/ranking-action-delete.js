@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../../conf/config.js';
 import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
+import { main } from '../../../../pages/main.js';
 
 describe('Contacts > AutoComplete > Ranking > RankingActionRequest Delete', function () {
 	this.timeout(120 * 1000);
@@ -9,6 +10,7 @@ describe('Contacts > AutoComplete > Ranking > RankingActionRequest Delete', func
 	let account2Email;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -27,6 +29,14 @@ describe('Contacts > AutoComplete > Ranking > RankingActionRequest Delete', func
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 

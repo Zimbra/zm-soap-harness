@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Search > DelayedIndexing > ZCS 8515 8517', function () {
 	this.timeout(120 * 1000);
@@ -13,6 +14,7 @@ describe('Search > DelayedIndexing > ZCS 8515 8517', function () {
 	let authToken2, authToken3, authToken4;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		// Create 4 test accounts
@@ -75,6 +77,14 @@ describe('Search > DelayedIndexing > ZCS 8515 8517', function () {
 		authToken2 = await soap.getAccountAuthToken(test_account2.name);
 		authToken3 = await soap.getAccountAuthToken(test_account3.name);
 		authToken4 = await soap.getAccountAuthToken(test_account4.name);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

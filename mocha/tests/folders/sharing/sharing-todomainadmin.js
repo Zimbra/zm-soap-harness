@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Folders > Sharing > Sharing Todomainadmin', function () {
 	let testAccount1, domainAdminAccount;
@@ -9,6 +10,7 @@ describe('Folders > Sharing > Sharing Todomainadmin', function () {
 	let account1Id;
 
 	before(async function () {
+		await main.before(this);
 		const adminAuth = await soap.getAdminAuthToken();
 		testAccount1 = `da_share_user_${common.getUniqueString()}@${config.testDomain}`;
 		domainAdminAccount = `da_admin_${common.getUniqueString()}@${config.testDomain}`;
@@ -48,6 +50,14 @@ describe('Folders > Sharing > Sharing Todomainadmin', function () {
 		const adminAuth = await soap.getAdminAuthToken();
 		if (testAccount1) await soap.deleteAccount(testAccount1, adminAuth);
 		if (domainAdminAccount) await soap.deleteAccount(domainAdminAccount, adminAuth);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

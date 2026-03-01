@@ -2,28 +2,41 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Search > Basic > Combo Tag', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken, accountEmail, accountAuthToken;
 
 	// Test data variables (from XML properties)
-	const emailSubject = { name: `emailSubject_${common.getUniqueString()}`, subject: `emailSubject_${common.getUniqueString()}`, from: accountEmail, content: `emailSubject_${common.getUniqueString()}`, value: `emailSubject_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `emailSubject_id`, toString() { return this.name; } };
-	const mail1 = { name: `mail1_${common.getUniqueString()}`, subject: `mail1_${common.getUniqueString()}`, from: accountEmail, content: `mail1_${common.getUniqueString()}`, value: `mail1_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `mail1_id`, toString() { return this.name; } };
-	const mail2 = { name: `mail2_${common.getUniqueString()}`, subject: `mail2_${common.getUniqueString()}`, from: accountEmail, content: `mail2_${common.getUniqueString()}`, value: `mail2_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `mail2_id`, toString() { return this.name; } };
-	const mail3 = { name: `mail3_${common.getUniqueString()}`, subject: `mail3_${common.getUniqueString()}`, from: accountEmail, content: `mail3_${common.getUniqueString()}`, value: `mail3_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `mail3_id`, toString() { return this.name; } };
-	const mail4 = { name: `mail4_${common.getUniqueString()}`, subject: `mail4_${common.getUniqueString()}`, from: accountEmail, content: `mail4_${common.getUniqueString()}`, value: `mail4_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `mail4_id`, toString() { return this.name; } };
-	const mail5 = { name: `mail5_${common.getUniqueString()}`, subject: `mail5_${common.getUniqueString()}`, from: accountEmail, content: `mail5_${common.getUniqueString()}`, value: `mail5_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `mail5_id`, toString() { return this.name; } };
-	const mail6 = { name: `mail6_${common.getUniqueString()}`, subject: `mail6_${common.getUniqueString()}`, from: accountEmail, content: `mail6_${common.getUniqueString()}`, value: `mail6_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `mail6_id`, toString() { return this.name; } };
-	const mail7 = { name: `mail7_${common.getUniqueString()}`, subject: `mail7_${common.getUniqueString()}`, from: accountEmail, content: `mail7_${common.getUniqueString()}`, value: `mail7_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `mail7_id`, toString() { return this.name; } };
-	const mail8 = { name: `mail8_${common.getUniqueString()}`, subject: `mail8_${common.getUniqueString()}`, from: accountEmail, content: `mail8_${common.getUniqueString()}`, value: `mail8_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `mail8_id`, toString() { return this.name; } };
-	const message = { name: `message_${common.getUniqueString()}`, subject: `message_${common.getUniqueString()}`, from: accountEmail, content: `message_${common.getUniqueString()}`, value: `message_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `message_id`, toString() { return this.name; } };
-	const op = { name: 'op', move: 'move', flag: 'flag', unflag: '!flag', read: 'read', unread: '!read', update: 'update', delete: 'delete', trash: 'trash', toString() { return this.name; } };
-	const tag = { name: `tag_${common.getUniqueString()}`, subject: `tag_${common.getUniqueString()}`, from: accountEmail, content: `tag_${common.getUniqueString()}`, value: `tag_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `tag_id`, toString() { return this.name; } };
-	const tag1 = { name: `tag1_${common.getUniqueString()}`, subject: `tag1_${common.getUniqueString()}`, from: accountEmail, content: `tag1_${common.getUniqueString()}`, value: `tag1_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `tag1_id`, toString() { return this.name; } };
-	const tag2 = { name: `tag2_${common.getUniqueString()}`, subject: `tag2_${common.getUniqueString()}`, from: accountEmail, content: `tag2_${common.getUniqueString()}`, value: `tag2_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `tag2_id`, toString() { return this.name; } };
+	const emailSubject = `emailSubject_${common.getUniqueString()}`;
+	const mail1 = { name: `mail1_${common.getUniqueString()}`, subject: `mail1_${common.getUniqueString()}` };
+	const mail2 = { name: `mail2_${common.getUniqueString()}`, subject: `mail2_${common.getUniqueString()}` };
+	const mail3 = { name: `mail3_${common.getUniqueString()}`, subject: `mail3_${common.getUniqueString()}` };
+	const mail4 = { name: `mail4_${common.getUniqueString()}`, subject: `mail4_${common.getUniqueString()}` };
+	const mail5 = { name: `mail5_${common.getUniqueString()}`, subject: `mail5_${common.getUniqueString()}` };
+	const mail6 = { name: `mail6_${common.getUniqueString()}`, subject: `mail6_${common.getUniqueString()}` };
+	const mail7 = { name: `mail7_${common.getUniqueString()}`, subject: `mail7_${common.getUniqueString()}` };
+	const mail8 = { name: `mail8_${common.getUniqueString()}`, subject: `mail8_${common.getUniqueString()}` };
+	const message = {};
+	const op = {
+		name: 'op',
+		move: 'move',
+		flag: 'flag',
+		unflag: '!flag',
+		read: 'read',
+		unread: '!read',
+		update: 'update',
+		delete: 'delete',
+		trash: 'trash',
+		toString() { return this.name; }
+	};
+	const tag = {};
+	const tag1 = { name: `tag1_${common.getUniqueString()}` };
+	const tag2 = { name: `tag2_${common.getUniqueString()}` };
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -43,7 +56,6 @@ describe('Search > Basic > Combo Tag', function () {
 To: ${accountEmail}
 Subject: ${mail1.subject}
 MIME-Version: 1.0
-
 Content for ${mail1.name}</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -56,7 +68,6 @@ Content for ${mail1.name}</content>
 To: ${accountEmail}
 Subject: ${mail2.subject}
 MIME-Version: 1.0
-
 Content for ${mail2.name}</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -69,7 +80,6 @@ Content for ${mail2.name}</content>
 To: ${accountEmail}
 Subject: ${mail3.subject}
 MIME-Version: 1.0
-
 Content for ${mail3.name}</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -82,7 +92,6 @@ Content for ${mail3.name}</content>
 To: ${accountEmail}
 Subject: ${mail4.subject}
 MIME-Version: 1.0
-
 Content for ${mail4.name}</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -95,7 +104,6 @@ Content for ${mail4.name}</content>
 To: ${accountEmail}
 Subject: ${mail5.subject}
 MIME-Version: 1.0
-
 Content for ${mail5.name}</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -108,7 +116,6 @@ Content for ${mail5.name}</content>
 To: ${accountEmail}
 Subject: ${mail6.subject}
 MIME-Version: 1.0
-
 Content for ${mail6.name}</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -121,7 +128,6 @@ Content for ${mail6.name}</content>
 To: ${accountEmail}
 Subject: ${mail7.subject}
 MIME-Version: 1.0
-
 Content for ${mail7.name}</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -134,11 +140,18 @@ Content for ${mail7.name}</content>
 To: ${accountEmail}
 Subject: ${mail8.subject}
 MIME-Version: 1.0
-
 Content for ${mail8.name}</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

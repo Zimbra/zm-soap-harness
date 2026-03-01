@@ -32,6 +32,21 @@ description: Strict formatting rules for all mocha test files
 - All variables used across `before()` hooks and `it()` test blocks must be declared with `let` at the **`describe` scope** (top of the describe block).
 - Variables must NOT be assigned without prior declaration — ES modules run in strict mode, which throws `ReferenceError` on undeclared assignments.
 
+## 🚨 Mandatory beforeEach / afterEach Hooks — EVERY FILE
+> [!CAUTION]
+> **EVERY test file MUST have `beforeEach` and `afterEach` hooks** using `function()` syntax (NEVER arrow functions). These MUST appear after the `before()` block (and after `after()` if present), before `// Applicable zimbra versions`. The exact pattern is:
+> ```js
+> 	beforeEach(async function () {
+> 		await main.beforeEach(this);
+> 	});
+>
+> 	afterEach(async function () {
+> 		await main.afterEach(this);
+> 	});
+> ```
+> **NEVER use arrow functions for these hooks** — `this` must be Mocha's context so `this.currentTest` is available.
+> To fix all files automatically, run: `node .agent/scripts/fix-hooks.cjs mocha/tests`
+
 ## No Skipped Tests
 **NEVER create `it()` blocks with `this.skip()`.** If a test cannot be implemented via SOAP (e.g. REST servlet, upload servlet, zmlocalconfig, STAF tasks), simply do NOT include that `it()` block at all. Do not create placeholder tests that just call `this.skip()`.
 
@@ -49,6 +64,22 @@ const res = await soap.makeSOAPEnvelopeAdmin(
 		<name>${name}</name>
 		<password>${password}</password>
 	</CreateAccountRequest>`, adminAuth);
+```
+
+## No Blank Lines Inside SOAP XML Template Literals
+**NEVER** leave blank/whitespace-only lines inside XML template literals. The opening tag should flow directly into the first child element with no empty lines:
+
+```js
+// WRONG:
+`<SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+				
+				<query>before:${date}</query>
+			</SearchRequest>`
+
+// CORRECT:
+`<SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+				<query>before:${date}</query>
+			</SearchRequest>`
 ```
 
 ## Assertions Must Match XML Expectations Exactly
@@ -84,9 +115,17 @@ There MUST be exactly **2 blank lines** between every `it()` block. Not 0, not 1
 
 ## 🚨 Applicable Zimbra Versions Block — MANDATORY IN EVERY FILE
 > [!CAUTION]
-> **EVERY test file MUST have EXACTLY ONE `Applicable zimbra versions` block.** Include this block between the `before()` closing `});` and the first `it()`. **1 blank line** between `});` (end of before block) and `// Applicable zimbra versions`. **1 blank line** between `}` (end of if block) and `// Tests`. **NEVER** use `/g` flag. **NEVER** omit `config.serial === true ||`. **NEVER** put a `// Tests` comment before the Applicable block — only ONE `// Tests` comment, and it goes AFTER the if block.
+> **EVERY test file MUST have EXACTLY ONE `Applicable zimbra versions` block.** Include this block after the `beforeEach`/`afterEach` hooks and before the first `it()`. **1 blank line** between `});` (end of afterEach block) and `// Applicable zimbra versions`. **1 blank line** between `}` (end of if block) and `// Tests`. **NEVER** use `/g` flag. **NEVER** omit `config.serial === true ||`. **NEVER** put a `// Tests` comment before the Applicable block — only ONE `// Tests` comment, and it goes AFTER the if block.
 
 ```js
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('General > Script Kiddie', function () {
 	this.timeout(60 * 1000);
@@ -13,6 +14,7 @@ describe('General > Script Kiddie', function () {
 	const longDomainName = `foo@${longString}.com`;
 
 	before(async function () {
+		await main.before(this);
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		account1Email = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -99,6 +101,14 @@ simple text string in the body
 				</m>
 			</AddMsgRequest>`, account1AuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

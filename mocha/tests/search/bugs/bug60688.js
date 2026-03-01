@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Search > Bugs > Bug60688', function () {
 	this.timeout(60 * 1000);
@@ -10,6 +11,7 @@ describe('Search > Bugs > Bug60688', function () {
 	const timezone = 'America/Los_Angeles';
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -30,11 +32,18 @@ To: ${accountEmail}
 Subject: email02A
 Date: Sun, 15 May 2005 12:00:00 -0700
 MIME-Version: 1.0
-
 Content for email02A mdate test</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

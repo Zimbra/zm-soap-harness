@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Mail Client > ZCO > Invite DL Including Self', function () {
 	this.timeout(120 * 1000);
@@ -14,6 +15,7 @@ describe('Mail Client > ZCO > Invite DL Including Self', function () {
 	const apptSubject = 'Meeting with DL containing self';
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		await soap.makeSOAPEnvelopeAdmin(
@@ -54,6 +56,14 @@ describe('Mail Client > ZCO > Invite DL Including Self', function () {
 				</AddDistributionListMemberRequest>`, adminAuthToken
 			);
 		}
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

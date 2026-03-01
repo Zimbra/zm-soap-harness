@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Mail Client > Auth > External Authentication > LDAP', function () {
 	this.timeout(120 * 1000);
@@ -22,6 +23,7 @@ describe('Mail Client > Auth > External Authentication > LDAP', function () {
 	}
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		const uid = common.getUniqueString();
 
@@ -142,6 +144,14 @@ describe('Mail Client > Auth > External Authentication > LDAP', function () {
 				</AddAccountAliasRequest>`, adminAuthToken
 			);
 		}
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 

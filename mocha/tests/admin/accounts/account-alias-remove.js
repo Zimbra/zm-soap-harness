@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Admin > Accounts > Account Alias Remove', function () {
 	let testAccount1, testAccount2, testAccount3, testAccount4;
@@ -12,6 +13,7 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 	let adminAuthToken;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		testAccount1 = `test1.${common.getUniqueString()}@${config.testDomain}`;
@@ -92,6 +94,14 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 				);
 			}
 		}
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

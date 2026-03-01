@@ -2,18 +2,20 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Search > PersonalShared > Shared', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken, accountEmail, accountAuthToken, accountEmail2, accountAuthToken2;
 
 	// Test data variables (from XML properties)
-	const contact1 = { name: `contact1_${common.getUniqueString()}`, subject: `contact1_${common.getUniqueString()}`, from: accountEmail, content: `contact1_${common.getUniqueString()}`, value: `contact1_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `contact1_id`, toString() { return this.name; } };
-	const folder_trash = { name: `folder_trash_${common.getUniqueString()}`, subject: `folder_trash_${common.getUniqueString()}`, from: accountEmail, content: `folder_trash_${common.getUniqueString()}`, value: `folder_trash_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `folder_trash_id`, toString() { return this.name; } };
-	const subject1 = { name: `subject1_${common.getUniqueString()}`, subject: `subject1_${common.getUniqueString()}`, from: accountEmail, content: `subject1_${common.getUniqueString()}`, value: `subject1_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `subject1_id`, toString() { return this.name; } };
-	const task1 = { name: `task1_${common.getUniqueString()}`, subject: `task1_${common.getUniqueString()}`, from: accountEmail, content: `task1_${common.getUniqueString()}`, value: `task1_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `task1_id`, toString() { return this.name; } };
+	const contact1 = {};
+	const folder_trash = {};
+	const subject1 = `subject1_${common.getUniqueString()}`;
+	const task1 = { subject: `task1_${common.getUniqueString()}` };
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -33,6 +35,14 @@ describe('Search > PersonalShared > Shared', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		accountAuthToken2 = await soap.getAccountAuthToken(accountEmail2);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

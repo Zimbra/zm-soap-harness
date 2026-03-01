@@ -2,29 +2,43 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Search > Contacts > Contact Folder', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken, accountEmail, accountAuthToken;
 
 	// Test data variables (from XML properties)
-	const Spamfirstname = { name: `Spamfirstname_${common.getUniqueString()}`, subject: `Spamfirstname_${common.getUniqueString()}`, from: accountEmail, content: `Spamfirstname_${common.getUniqueString()}`, value: `Spamfirstname_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `Spamfirstname_id`, toString() { return this.name; } };
-	const Trashfirstname = { name: `Trashfirstname_${common.getUniqueString()}`, subject: `Trashfirstname_${common.getUniqueString()}`, from: accountEmail, content: `Trashfirstname_${common.getUniqueString()}`, value: `Trashfirstname_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `Trashfirstname_id`, toString() { return this.name; } };
+	const Spamfirstname = `Spamfirstname_${common.getUniqueString()}`;
+	const Trashfirstname = `Trashfirstname_${common.getUniqueString()}`;
 	const contacts = { name: 'contacts', id: '7', toString() { return this.name; } };
 	const drafts = { name: 'drafts', id: '6', toString() { return this.name; } };
-	const folder1 = { name: `folder1_${common.getUniqueString()}`, subject: `folder1_${common.getUniqueString()}`, from: accountEmail, content: `folder1_${common.getUniqueString()}`, value: `folder1_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `folder1_id`, toString() { return this.name; } };
-	const folder2 = { name: `folder2_${common.getUniqueString()}`, subject: `folder2_${common.getUniqueString()}`, from: accountEmail, content: `folder2_${common.getUniqueString()}`, value: `folder2_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `folder2_id`, toString() { return this.name; } };
-	const folder3 = { name: `folder3_${common.getUniqueString()}`, subject: `folder3_${common.getUniqueString()}`, from: accountEmail, content: `folder3_${common.getUniqueString()}`, value: `folder3_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `folder3_id`, toString() { return this.name; } };
-	const folder4 = { name: `folder4_${common.getUniqueString()}`, subject: `folder4_${common.getUniqueString()}`, from: accountEmail, content: `folder4_${common.getUniqueString()}`, value: `folder4_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `folder4_id`, toString() { return this.name; } };
-	const globals = { name: 'globals', inbox: 'inbox', sent: 'sent', trash: 'trash', spam: 'junk', drafts: 'drafts', calendar: 'calendar', contacts: 'contacts', true: 'TRUE', false: 'FALSE', toString() { return this.name; } };
+	const folder1 = `folder1_${common.getUniqueString()}`;
+	const folder2 = `folder2_${common.getUniqueString()}`;
+	const folder3 = `folder3_${common.getUniqueString()}`;
+	const folder4 = `folder4_${common.getUniqueString()}`;
+	const globals = {
+		name: 'globals',
+		inbox: 'inbox',
+		sent: 'sent',
+		trash: 'trash',
+		spam: 'junk',
+		drafts: 'drafts',
+		calendar: 'calendar',
+		contacts: 'contacts',
+		true: 'TRUE',
+		false: 'FALSE',
+		toString() { return this.name; }
+	};
 	const inbox = { name: 'inbox', id: '2', toString() { return this.name; } };
 	const sent = { name: 'sent', id: '5', toString() { return this.name; } };
 	const spam = { name: 'spam', id: '4', toString() { return this.name; } };
-	const spamtag = { name: `spamtag_${common.getUniqueString()}`, subject: `spamtag_${common.getUniqueString()}`, from: accountEmail, content: `spamtag_${common.getUniqueString()}`, value: `spamtag_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `spamtag_id`, toString() { return this.name; } };
+	const spamtag = `spamtag_${common.getUniqueString()}`;
 	const trash = { name: 'trash', id: '3', toString() { return this.name; } };
-	const trashtag = { name: `trashtag_${common.getUniqueString()}`, subject: `trashtag_${common.getUniqueString()}`, from: accountEmail, content: `trashtag_${common.getUniqueString()}`, value: `trashtag_${common.getUniqueString()}`, address: accountEmail, domainname: config.testDomain, id: `trashtag_id`, toString() { return this.name; } };
+	const trashtag = `trashtag_${common.getUniqueString()}`;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -35,6 +49,14 @@ describe('Search > Contacts > Contact Folder', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

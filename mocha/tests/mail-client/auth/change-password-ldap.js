@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Mail Client > Auth > External Authentication > Change Password LDAP', function () {
 	this.timeout(120 * 1000);
@@ -20,6 +21,7 @@ describe('Mail Client > Auth > External Authentication > Change Password LDAP', 
 	}
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 		const uid = common.getUniqueString();
 
@@ -60,6 +62,14 @@ describe('Mail Client > Auth > External Authentication > Change Password LDAP', 
 				<a n="zimbraAuthLdapExternalDn">uid=authaccount02,ou=people,dc=zin2,dc=lab,dc=zimbra,dc=com</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

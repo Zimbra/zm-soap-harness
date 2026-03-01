@@ -3,6 +3,7 @@ import config from '../../conf/config.js';
 import common from '../../framework/core/common.js';
 import soap from '../../framework/backend/soap-client.js';
 import makeDavRequest from '../../framework/backend/dav-client.js';
+import { main } from '../../pages/main.js';
 
 describe('CalDav > Protocol (RFC Compliance)', function () {
 	this.timeout(60 * 1000);
@@ -12,6 +13,7 @@ describe('CalDav > Protocol (RFC Compliance)', function () {
 	let account1Server;
 
 	before(async function () {
+		await main.before(this);
 		const adminAuthToken = await soap.getAdminAuthToken();
 
 		const account1User = 'test' + common.getUniqueString();
@@ -87,6 +89,14 @@ describe('CalDav > Protocol (RFC Compliance)', function () {
 				</m>
 			</CreateTaskRequest>`, account1Token
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions

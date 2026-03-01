@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
 describe('Search > Basic > Priority', function () {
 	this.timeout(60 * 1000);
@@ -9,6 +10,7 @@ describe('Search > Basic > Priority', function () {
 	let res;
 
 	before(async function () {
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
@@ -30,7 +32,6 @@ Subject: low_prioritymail
 X-Priority: 5
 Importance: low
 MIME-Version: 1.0
-
 Low priority test content</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -46,11 +47,18 @@ Subject: high_prioritymail
 X-Priority: 1
 Importance: high
 MIME-Version: 1.0
-
 High priority test content</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
 		);
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
 	});
 
 	// Applicable zimbra versions
