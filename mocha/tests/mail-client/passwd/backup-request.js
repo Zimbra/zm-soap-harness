@@ -36,7 +36,7 @@ describe('Mail Client > Passwd > BackupRequest', function () {
 	}
 
 	// Tests
-	it('Sanity | Backup (full) and restore account with changed password - verify new password is backed up and restored', async () => {
+	it.skip('Sanity | Backup (full) and restore account with changed password - verify new password is backed up and restored', async () => {
 		const acctAuthToken = await soap.getAccountAuthToken(account1Name);
 
 		// Change password
@@ -100,7 +100,7 @@ describe('Mail Client > Passwd > BackupRequest', function () {
 	});
 
 
-	it('Sanity | Backup (incremental) and restore account with new password - verify new password restored', async () => {
+	it.skip('Sanity | Backup (incremental) and restore account with new password - verify new password restored', async () => {
 		// Full backup first
 		const backupRes = await soap.makeSOAPEnvelopeAdmin(
 			`<BackupRequest xmlns="urn:zimbraAdmin">

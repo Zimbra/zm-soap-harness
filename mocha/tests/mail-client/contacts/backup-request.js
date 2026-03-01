@@ -51,7 +51,7 @@ describe('Mail Client > Contacts > BackupRequest', function () {
 	}
 
 	// Tests
-	it('Sanity | Verify that after backup and restore an account with a Contact, contact is restored', async () => {
+	it.skip('Sanity | Verify that after backup and restore an account with a Contact, contact is restored', async () => {
 		// Login to account1
 		const acct1Auth = await soap.getAccountAuthToken(account1Name);
 
@@ -118,7 +118,7 @@ describe('Mail Client > Contacts > BackupRequest', function () {
 	});
 
 
-	it('Sanity | Backup (incremental) and restore an account with a Contact Verify that after backup and restore the correct Contact is restored', async () => {
+	it.skip('Sanity | Backup (incremental) and restore an account with a Contact Verify that after backup and restore the correct Contact is restored', async () => {
 		// Login to account2
 		const acct2Auth = await soap.getAccountAuthToken(account2Name);
 

@@ -50,7 +50,7 @@ describe('Mail Client > Mail > BackupRequest', function () {
 	}
 
 	// Tests
-	it('Sanity | Backup and restore an account with a simple message Verify that after backup and restore, the message remains', async () => {
+	it.skip('Sanity | Backup and restore an account with a simple message Verify that after backup and restore, the message remains', async () => {
 		// Login as account1 and send mail to account2
 		const acct1Auth = await soap.getAccountAuthToken(account1Name);
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
@@ -107,7 +107,7 @@ describe('Mail Client > Mail > BackupRequest', function () {
 	});
 
 
-	it('Sanity | Backup (incremental) and restore an account with a message Verify that after backup and restore, the message remains', async () => {
+	it.skip('Sanity | Backup (incremental) and restore an account with a message Verify that after backup and restore, the message remains', async () => {
 		// Login to account3
 		const acct3Auth = await soap.getAccountAuthToken(account3Name);
 

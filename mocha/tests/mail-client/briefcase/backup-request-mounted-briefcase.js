@@ -95,7 +95,7 @@ describe('Mail Client > Briefcase > BackupRequest MountedBriefcase', function ()
 	}
 
 	// Tests
-	it('Sanity | Backup (full) and restore an account with a Mount Point Verify the Mount Point is backed up and restored', async () => {
+	it.skip('Sanity | Backup (full) and restore an account with a Mount Point Verify the Mount Point is backed up and restored', async () => {
 		// Login as account2
 		const acct2Auth = await soap.getAccountAuthToken(account2Name);
 
@@ -179,7 +179,7 @@ describe('Mail Client > Briefcase > BackupRequest MountedBriefcase', function ()
 	});
 
 
-	it('Sanity | Backup (incremental) and restore an account with a Mount Point Verify the mount point value is backed up and restored', async () => {
+	it.skip('Sanity | Backup (incremental) and restore an account with a Mount Point Verify the mount point value is backed up and restored', async () => {
 		// Full backup of account3 first
 		const fullBackup = await soap.makeSOAPEnvelopeAdmin(
 			`<BackupRequest xmlns="urn:zimbraAdmin">

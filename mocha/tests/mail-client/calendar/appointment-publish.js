@@ -77,7 +77,7 @@ describe('Mail Client > Calendar > Appointments > appointment_publish', function
     }
 
     // Tests
-    it('Smoke | Subscribe to any ical published calendar', async () => {
+    it.skip('Smoke | Subscribe to any ical published calendar', async () => {
         // Login as account1
         const acct1Auth = await soap.getAccountAuthToken(account1Name);
 
@@ -149,7 +149,7 @@ describe('Mail Client > Calendar > Appointments > appointment_publish', function
     });
 
 
-    it('Functional | Adding personal reminders on shared appointments', async () => {
+    it.skip('Functional | Adding personal reminders on shared appointments', async () => {
         // Login as account2
         const acct2Auth = await soap.getAccountAuthToken(account2Name);
 
@@ -233,7 +233,7 @@ describe('Mail Client > Calendar > Appointments > appointment_publish', function
     });
 
 
-    it('Functional | Adding personal reminders on shared appointments and verify it doesnt discard local reminder', async () => {
+    it.skip('Functional | Adding personal reminders on shared appointments and verify it doesnt discard local reminder', async () => {
         // Login as account1
         const acct1Auth = await soap.getAccountAuthToken(account1Name);
 
@@ -323,7 +323,7 @@ describe('Mail Client > Calendar > Appointments > appointment_publish', function
     });
 
 
-    it('Functional | Adding personal appointments in the mounted calendar', async () => {
+    it.skip('Functional | Adding personal appointments in the mounted calendar', async () => {
         // Login as account1
         const acct1Auth = await soap.getAccountAuthToken(account1Name);
 

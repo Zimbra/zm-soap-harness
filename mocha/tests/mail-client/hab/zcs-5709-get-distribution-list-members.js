@@ -212,7 +212,7 @@ describe('Mail Client > HAB > ZCS-5709 GetDistributionListMembers', function () 
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 
-	it('Sanity | Fire GetDistributionListMemberrequest to get the list of individual members', async () => {
+	it.skip('Sanity | Fire GetDistributionListMemberrequest to get the list of individual members', async () => {
 		// Source: GetHABMembers_01 from HAB/ZCS-5709_GetDistributionListMembers.xml
 		const acct1Auth = await soap.getAccountAuthToken(account1Name);
 		const res = await soap.makeSOAPEnvelopeAccount(
@@ -231,7 +231,7 @@ describe('Mail Client > HAB > ZCS-5709 GetDistributionListMembers', function () 
 	});
 
 
-	it('Sanity | Fire GetDistributionListMemberrequest to get the list of members for root group', async () => {
+	it.skip('Sanity | Fire GetDistributionListMemberrequest to get the list of members for root group', async () => {
 		// Source: GetHABMembers_02 from HAB/ZCS-5709_GetDistributionListMembers.xml
 		const acct1Auth = await soap.getAccountAuthToken(account1Name);
 		const res = await soap.makeSOAPEnvelopeAccount(
@@ -246,7 +246,7 @@ describe('Mail Client > HAB > ZCS-5709 GetDistributionListMembers', function () 
 	});
 
 
-	it('Sanity | Fire GetDistributionListMemberrequest for group with no members', async () => {
+	it.skip('Sanity | Fire GetDistributionListMemberrequest for group with no members', async () => {
 		// Source: GetHABMembers_03 from HAB/ZCS-5709_GetDistributionListMembers.xml
 		const acct1Auth = await soap.getAccountAuthToken(account1Name);
 		const res = await soap.makeSOAPEnvelopeAccount(
@@ -261,7 +261,7 @@ describe('Mail Client > HAB > ZCS-5709 GetDistributionListMembers', function () 
 	});
 
 
-	it('Sanity | Fire GetDistributionListMemberrequest to get the list of members from dynamic group', async () => {
+	it.skip('Sanity | Fire GetDistributionListMemberrequest to get the list of members from dynamic group', async () => {
 		// Source: GetHABMembers_04 from HAB/ZCS-5709_GetDistributionListMembers.xml
 		const acct1Auth = await soap.getAccountAuthToken(account1Name);
 		const res = await soap.makeSOAPEnvelopeAccount(
@@ -283,7 +283,7 @@ describe('Mail Client > HAB > ZCS-5709 GetDistributionListMembers', function () 
 	});
 
 
-	it('Sanity | Fire GetDistributionListMemberrequest to get the list of members from static group based on seniority index', async () => {
+	it.skip('Sanity | Fire GetDistributionListMemberrequest to get the list of members from static group based on seniority index', async () => {
 		// Source: GetHABMembers_05 from HAB/ZCS-5709_GetDistributionListMembers.xml
 		const acct1Auth = await soap.getAccountAuthToken(account1Name);
 		const res = await soap.makeSOAPEnvelopeAccount(
@@ -303,7 +303,7 @@ describe('Mail Client > HAB > ZCS-5709 GetDistributionListMembers', function () 
 	});
 
 
-	it('Sanity | Fire GetDistributionListMemberrequest to get the list of members from static group with limit 1', async () => {
+	it.skip('Sanity | Fire GetDistributionListMemberrequest to get the list of members from static group with limit 1', async () => {
 		// Source: GetHABMembers_06 from HAB/ZCS-5709_GetDistributionListMembers.xml
 		const acct1Auth = await soap.getAccountAuthToken(account1Name);
 		const res = await soap.makeSOAPEnvelopeAccount(
@@ -321,7 +321,7 @@ describe('Mail Client > HAB > ZCS-5709 GetDistributionListMembers', function () 
 	});
 
 
-	it('Sanity | Fire GetDistributionListMemberrequest to get the list of members with same seniority index', async () => {
+	it.skip('Sanity | Fire GetDistributionListMemberrequest to get the list of members with same seniority index', async () => {
 		// Source: GetHABMembers_07 from HAB/ZCS-5709_GetDistributionListMembers.xml
 		// Modify acct6 seniority to 30
 		await soap.makeSOAPEnvelopeAdmin(

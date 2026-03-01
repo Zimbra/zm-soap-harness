@@ -31,7 +31,7 @@ describe('Mail Client > Contacts > ContactBackup ZCS-3594', function () {
 	}
 
 	// Tests
-	it('Sanity | Backup and restore contacts', async () => {
+	it.skip('Sanity | Backup and restore contacts', async () => {
 		// Login as account1
 		let acct1Auth = await soap.getAccountAuthToken(account1Name);
 

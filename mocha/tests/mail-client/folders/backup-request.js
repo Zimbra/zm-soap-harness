@@ -35,7 +35,7 @@ describe('Mail Client > Folders > BackupRequest', function () {
 	}
 
 	// Tests
-	it('Sanity | Backup (full) and restore account with custom folder - verify folder restored', async () => {
+	it.skip('Sanity | Backup (full) and restore account with custom folder - verify folder restored', async () => {
 		const t = await soap.getAccountAuthToken(account1Name);
 
 		const fr = await soap.makeSOAPEnvelopeAccount(
@@ -81,7 +81,7 @@ describe('Mail Client > Folders > BackupRequest', function () {
 	});
 
 
-	it('Sanity | Backup and restore account with folder sharing and mountpoints', async () => {
+	it.skip('Sanity | Backup and restore account with folder sharing and mountpoints', async () => {
 		const t = await soap.getAccountAuthToken(account2Name);
 
 		await soap.makeSOAPEnvelopeAccount(

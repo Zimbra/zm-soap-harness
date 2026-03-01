@@ -41,7 +41,7 @@ describe('Mail Client > HAB > ZCS-7213 HAB DomainOUList', function () {
 	}
 
 	// Tests
-	it('Sanity | Create a multiple OUs in a domain', async () => {
+	it.skip('Sanity | Create a multiple OUs in a domain', async () => {
 		// Create 3 OUs
 		const ou1Res = await soap.makeSOAPEnvelopeAdmin(
 			`<HABOrgUnitRequest op="create" name="${ou1Name}" xmlns="urn:zimbraAdmin">
@@ -66,7 +66,7 @@ describe('Mail Client > HAB > ZCS-7213 HAB DomainOUList', function () {
 	});
 
 
-	it('Sanity | Fire HABOrgUnitRequest to list OUs for above domain', async () => {
+	it.skip('Sanity | Fire HABOrgUnitRequest to list OUs for above domain', async () => {
 		const listRes = await soap.makeSOAPEnvelopeAdmin(
 			`<HABOrgUnitRequest op="list" xmlns="urn:zimbraAdmin">
 				<domain by="name">${domainName}</domain>

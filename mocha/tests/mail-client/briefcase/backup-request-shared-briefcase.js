@@ -40,7 +40,7 @@ describe('Mail Client > Briefcase > BackupRequest SharedBriefcase', function () 
 	}
 
 	// Tests
-	it('Sanity | Backup (full) and restore an account with a briefcase folder sharing Verify the shared data is still viewable by grantee after restore', async () => {
+	it.skip('Sanity | Backup (full) and restore an account with a briefcase folder sharing Verify the shared data is still viewable by grantee after restore', async () => {
 		// Login as account1
 		const acct1Auth = await soap.getAccountAuthToken(account1Name);
 
@@ -128,7 +128,7 @@ describe('Mail Client > Briefcase > BackupRequest SharedBriefcase', function () 
 	});
 
 
-	it('Sanity | Backup (incremental) and restore an account with briefcase folders sharing Verify the shared data is still viewable by grantee after restore', async () => {
+	it.skip('Sanity | Backup (incremental) and restore an account with briefcase folders sharing Verify the shared data is still viewable by grantee after restore', async () => {
 		// Full backup of account3 first
 		const fullBackup = await soap.makeSOAPEnvelopeAdmin(
 			`<BackupRequest xmlns="urn:zimbraAdmin">

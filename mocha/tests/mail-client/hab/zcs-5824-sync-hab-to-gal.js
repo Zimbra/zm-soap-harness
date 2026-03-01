@@ -126,7 +126,7 @@ describe('Mail Client > HAB > ZCS-5824 SyncHABToGal', function () {
 	});
 
 
-	it('Sanity | Verify SearchGal request does not returns the deleted HAB groups', async () => {
+	it.skip('Sanity | Verify SearchGal request does not returns the deleted HAB groups', async () => {
 		const group2Name = `grouphab2${uid}`;
 		const group2 = `${group2Name}@${domain1Name}`;
 

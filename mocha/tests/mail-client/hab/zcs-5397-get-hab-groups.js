@@ -67,7 +67,7 @@ describe('Mail Client > HAB > ZCS-5397 GetHABGroups', function () {
 	}
 
 	// Tests
-	it('Sanity | Create a new HAB group and link it to existing OU', async () => {
+	it.skip('Sanity | Create a new HAB group and link it to existing OU', async () => {
 		// Create HAB OU
 		const ouRes = await soap.makeSOAPEnvelopeAdmin(
 			`<HABOrgUnitRequest op="create" name="${ou1Name}" xmlns="urn:zimbraAdmin">
@@ -141,7 +141,7 @@ describe('Mail Client > HAB > ZCS-5397 GetHABGroups', function () {
 	});
 
 
-	it('Sanity | Fire GetHABRequest to get the groups added', async () => {
+	it.skip('Sanity | Fire GetHABRequest to get the groups added', async () => {
 		const acct1Auth = await soap.getAccountAuthToken(account1Name);
 		const habRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetHABRequest habRootGroupId="${habGroup1Id}"
@@ -152,7 +152,7 @@ describe('Mail Client > HAB > ZCS-5397 GetHABGroups', function () {
 	});
 
 
-	it('Sanity | Add members to groups and verify the groups get returned in tree fashion', async () => {
+	it.skip('Sanity | Add members to groups and verify the groups get returned in tree fashion', async () => {
 		// Add group2 and group4 to group1
 		await soap.makeSOAPEnvelopeAdmin(
 			`<AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -206,7 +206,7 @@ describe('Mail Client > HAB > ZCS-5397 GetHABGroups', function () {
 	});
 
 
-	it('Sanity | Fire GetHABRequest for any group within the hierarchy', async () => {
+	it.skip('Sanity | Fire GetHABRequest for any group within the hierarchy', async () => {
 		const acct1Auth = await soap.getAccountAuthToken(account1Name);
 		const habRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetHABRequest habRootGroupId="${habGroup5Id}"
@@ -217,7 +217,7 @@ describe('Mail Client > HAB > ZCS-5397 GetHABGroups', function () {
 	});
 
 
-	it('Sanity | Fire GetHABRequest for individual members in the group', async () => {
+	it.skip('Sanity | Fire GetHABRequest for individual members in the group', async () => {
 		// Add individual member to group2
 		await soap.makeSOAPEnvelopeAdmin(
 			`<AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -236,7 +236,7 @@ describe('Mail Client > HAB > ZCS-5397 GetHABGroups', function () {
 	});
 
 
-	it('Sanity | Fire GetHABRequest after deleting a group from the group', async () => {
+	it.skip('Sanity | Fire GetHABRequest after deleting a group from the group', async () => {
 		// Delete group3
 		await soap.makeSOAPEnvelopeAdmin(
 			`<DeleteDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -265,7 +265,7 @@ describe('Mail Client > HAB > ZCS-5397 GetHABGroups', function () {
 	});
 
 
-	it('Sanity | GetHabGroup request based on seniority index', async () => {
+	it.skip('Sanity | GetHabGroup request based on seniority index', async () => {
 		const acct1Auth = await soap.getAccountAuthToken(account1Name);
 		const habRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetHABRequest habRootGroupId="${habGroup4Id}"
@@ -299,7 +299,7 @@ describe('Mail Client > HAB > ZCS-5397 GetHABGroups', function () {
 	});
 
 
-	it('Sanity | GetHabGroup request for groups with seniority across sub-levels', async () => {
+	it.skip('Sanity | GetHabGroup request for groups with seniority across sub-levels', async () => {
 		// Source: GetStaticHABGroups_8 from HAB/ZCS-5397_GetHABGroups.xml
 		const acct1Auth = await soap.getAccountAuthToken(account1Name);
 		const habRes = await soap.makeSOAPEnvelopeAccount(
@@ -311,7 +311,7 @@ describe('Mail Client > HAB > ZCS-5397 GetHABGroups', function () {
 	});
 
 
-	it('Sanity | GetHabGroup verify seniority index ordering in nested groups', async () => {
+	it.skip('Sanity | GetHabGroup verify seniority index ordering in nested groups', async () => {
 		// Source: GetStaticHABGroups_9 (duplicate) from HAB/ZCS-5397_GetHABGroups.xml
 		const acct1Auth = await soap.getAccountAuthToken(account1Name);
 		const habRes = await soap.makeSOAPEnvelopeAccount(

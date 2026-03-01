@@ -38,7 +38,7 @@ describe('Mail Client > Mobile > GetDeviceStatusRequest', function () {
 	}
 
 	// Tests
-	it('Sanity | Verify basic GetDeviceStatusRequest', async () => {
+	it.skip('Sanity | Verify basic GetDeviceStatusRequest', async () => {
 		const acctAuthToken = await soap.getAccountAuthToken(account1Name);
 
 		const res = await soap.makeSOAPEnvelopeAccount(

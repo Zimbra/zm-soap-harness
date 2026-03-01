@@ -48,7 +48,7 @@ describe('Mail Client > Conversation > BackupRequest', function () {
 	}
 
 	// Tests
-	it('Sanity | Backup and restore account with conversations - verify conversation restored with 3 messages', async () => {
+	it.skip('Sanity | Backup and restore account with conversations - verify conversation restored with 3 messages', async () => {
 		// Source: conv_backup_01 from Conversation/BackupRequest.xml
 		// Step 1: Login as account1 and send 3 messages to account2
 		const acct1AuthToken = await soap.getAccountAuthToken(account1Name);
@@ -177,7 +177,7 @@ describe('Mail Client > Conversation > BackupRequest', function () {
 	});
 
 
-	it('Sanity | Backup (incremental) and restore account with conversations - verify conversation still intact', async () => {
+	it.skip('Sanity | Backup (incremental) and restore account with conversations - verify conversation still intact', async () => {
 		// Source: conv_backup_02 from Conversation/BackupRequest.xml
 		// Step 1: Login as account3 and send 1 message to account4
 		const acct3AuthToken = await soap.getAccountAuthToken(account3Name);

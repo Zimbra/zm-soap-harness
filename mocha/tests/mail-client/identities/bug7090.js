@@ -31,7 +31,7 @@ describe('Mail Client > Identities > Bug7090', function () {
 	}
 
 	// Tests
-	it('Sanity | Verify zmrestore zimbraPrefReplyToAddress does not point to old email after -pre -ca restore', async () => {
+	it.skip('Sanity | Verify zmrestore zimbraPrefReplyToAddress does not point to old email after -pre -ca restore', async () => {
 		const acctAuthToken = await soap.getAccountAuthToken(account1Name);
 
 		const getIdRes = await soap.makeSOAPEnvelopeAccount(

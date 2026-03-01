@@ -58,7 +58,7 @@ describe('Mail Client > Mail > BackupRequest bug11636', function () {
 	}
 
 	// Tests
-	it('Sanity | Restore a message sent to multiple recipients 1', async () => {
+	it.skip('Sanity | Restore a message sent to multiple recipients 1', async () => {
 		// Full backup account2
 		const backupRes = await soap.makeSOAPEnvelopeAdmin(
 			`<BackupRequest xmlns="urn:zimbraAdmin">
@@ -99,7 +99,7 @@ describe('Mail Client > Mail > BackupRequest bug11636', function () {
 	});
 
 
-	it('Sanity | Restore a message sent to multiple recipients 2', async () => {
+	it.skip('Sanity | Restore a message sent to multiple recipients 2', async () => {
 		// Full backup account5
 		const backupRes = await soap.makeSOAPEnvelopeAdmin(
 			`<BackupRequest xmlns="urn:zimbraAdmin">

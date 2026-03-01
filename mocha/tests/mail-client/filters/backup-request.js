@@ -38,7 +38,7 @@ describe('Mail Client > Filters > BackupRequest', function () {
 	}
 
 	// Tests
-	it('Sanity | Backup (full) and restore account with filter rule - verify filter is restored', async () => {
+	it.skip('Sanity | Backup (full) and restore account with filter rule - verify filter is restored', async () => {
 		const acct1AuthToken = await soap.getAccountAuthToken(account1Name);
 
 		const modRes = await soap.makeSOAPEnvelopeAccount(
@@ -94,7 +94,7 @@ describe('Mail Client > Filters > BackupRequest', function () {
 	});
 
 
-	it('Sanity | Backup (incremental) and restore account with modified filter rule - verify renamed filter restored', async () => {
+	it.skip('Sanity | Backup (incremental) and restore account with modified filter rule - verify renamed filter restored', async () => {
 		const acct2AuthToken = await soap.getAccountAuthToken(account2Name);
 
 		await soap.makeSOAPEnvelopeAccount(

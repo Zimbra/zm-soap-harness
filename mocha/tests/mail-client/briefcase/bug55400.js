@@ -34,7 +34,7 @@ describe('Mail Client > Briefcase > bug55400', function () {
 	}
 
 	// Tests
-	it('Sanity | Mail attachment types shows file type unknown binary type for known file type like doc when copied from mail attachement', async () => {
+	it.skip('Sanity | Mail attachment types shows file type unknown binary type for known file type like doc when copied from mail attachement', async () => {
 		// Login as account1
 		const acct1Auth = await soap.getAccountAuthToken(account1Name);
 

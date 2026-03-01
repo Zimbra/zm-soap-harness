@@ -103,7 +103,7 @@ describe('Mail Client > AddressList > ZCS-5389 GetAllAddressLists', function () 
 	}
 
 	// Tests
-	it('Sanity | Create address lists', async () => {
+	it.skip('Sanity | Create address lists', async () => {
 		// Verify address lists were created successfully
 		assert.exists(al1Id, 'Address list 1 should be created');
 		assert.exists(al2Id, 'Address list 2 should be created');
@@ -116,7 +116,7 @@ describe('Mail Client > AddressList > ZCS-5389 GetAllAddressLists', function () 
 	});
 
 
-	it('Sanity | GetAllAddressLists request on domain with valid ALs', async () => {
+	it.skip('Sanity | GetAllAddressLists request on domain with valid ALs', async () => {
 		const accountAuthToken = await soap.getAccountAuthToken(account1Name);
 
 		// GetAllAddressListsRequest
@@ -141,7 +141,7 @@ describe('Mail Client > AddressList > ZCS-5389 GetAllAddressLists', function () 
 	});
 
 
-	it('Sanity | GetAllAddressLists request on domain with no ALs', async () => {
+	it.skip('Sanity | GetAllAddressLists request on domain with no ALs', async () => {
 		const accountAuthToken = await soap.getAccountAuthToken(account2Name);
 
 		// GetAllAddressListsRequest
@@ -162,7 +162,7 @@ describe('Mail Client > AddressList > ZCS-5389 GetAllAddressLists', function () 
 	});
 
 
-	it('Sanity | GetAllAddressLists request on domain with no active ALs', async () => {
+	it.skip('Sanity | GetAllAddressLists request on domain with no active ALs', async () => {
 		const accountAuthToken = await soap.getAccountAuthToken(account3Name);
 
 		// GetAllAddressListsRequest

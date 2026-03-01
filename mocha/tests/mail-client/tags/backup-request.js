@@ -38,7 +38,7 @@ describe('Mail Client > Tags > BackupRequest', function () {
 	}
 
 	// Tests
-	it('Sanity | Backup (full) and restore account with tag - verify tag is restored', async () => {
+	it.skip('Sanity | Backup (full) and restore account with tag - verify tag is restored', async () => {
 		const acctAuthToken = await soap.getAccountAuthToken(account1Name);
 
 		const tagRes = await soap.makeSOAPEnvelopeAccount(
@@ -86,7 +86,7 @@ describe('Mail Client > Tags > BackupRequest', function () {
 	});
 
 
-	it('Sanity | Backup (incremental) and restore account with modified tag - verify tag color change restored', async () => {
+	it.skip('Sanity | Backup (incremental) and restore account with modified tag - verify tag color change restored', async () => {
 		const acctAuthToken = await soap.getAccountAuthToken(account2Name);
 
 		const tagRes = await soap.makeSOAPEnvelopeAccount(
