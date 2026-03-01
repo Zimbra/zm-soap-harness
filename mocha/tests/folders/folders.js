@@ -29,7 +29,7 @@ describe('Folders > Folders', function () {
 	}
 
 	// Tests
-	it('Smoke | Create a folder with valid name', async function () {
+	it('Smoke | Create a folder with valid name', async () => {
 		const folderName = `folder.${common.getUniqueString()}`;
 		const createFolderRequest =
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
@@ -44,7 +44,7 @@ describe('Folders > Folders', function () {
 	});
 
 
-	it('Functional | Create a folder with blank folder name', async function () {
+	it('Functional | Create a folder with blank folder name', async () => {
 		const createFolderRequest2 =
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="" l="${rootId}"/>
@@ -58,7 +58,7 @@ describe('Folders > Folders', function () {
 	});
 
 
-	it('Functional | Create a folder with all spaces in folder name', async function () {
+	it('Functional | Create a folder with all spaces in folder name', async () => {
 		const createFolderRequest3 =
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name=" " l="${rootId}"/>
@@ -72,7 +72,7 @@ describe('Folders > Folders', function () {
 	});
 
 
-	it('Functional | Create a folder with special characters in folder name', async function () {
+	it('Functional | Create a folder with special characters in folder name', async () => {
 		const createFolderRequest4 =
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name=":/\\.;&lt;*''" l="${rootId}"/>
@@ -86,7 +86,7 @@ describe('Folders > Folders', function () {
 	});
 
 
-	it('Functional | Create a folder with duplicate folder name', async function () {
+	it('Functional | Create a folder with duplicate folder name', async () => {
 		const folderName = `folder.${common.getUniqueString()}`;
 		const createFolderRequest5 =
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
@@ -109,7 +109,7 @@ describe('Folders > Folders', function () {
 	});
 
 
-	it('Functional | Create a folder with nonexisting parent folder name', async function () {
+	it('Functional | Create a folder with nonexisting parent folder name', async () => {
 		const folderName = `folder.${common.getUniqueString()}`;
 		const createFolderRequest7 =
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
@@ -124,7 +124,7 @@ describe('Folders > Folders', function () {
 	});
 
 
-	it('Regression | Create a folder with blank parent folder name', async function () {
+	it('Regression | Create a folder with blank parent folder name', async () => {
 		const folderName = `folder.${common.getUniqueString()}`;
 		const createFolderRequest8 =
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
@@ -140,7 +140,7 @@ describe('Folders > Folders', function () {
 	});
 
 
-	it('Regression | Create a folder with No parent folder name', async function () {
+	it('Regression | Create a folder with No parent folder name', async () => {
 		const folderName = `folder.${common.getUniqueString()}`;
 		const createFolderRequest9 =
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
@@ -155,7 +155,7 @@ describe('Folders > Folders', function () {
 	});
 
 
-	it('Smoke | Rename a folder to unique name', async function () {
+	it('Smoke | Rename a folder to unique name', async () => {
 		const folderName = `folder.${common.getUniqueString()}`;
 		const newName = `folder.${common.getUniqueString()}`;
 		const createFolderRequest10 =
@@ -181,7 +181,7 @@ describe('Folders > Folders', function () {
 	});
 
 
-	it('Functional | Rename a folder to duplicate name', async function () {
+	it('Functional | Rename a folder to duplicate name', async () => {
 		const folder1Name = `folder.${common.getUniqueString()}`;
 		const folder2Name = `folder.${common.getUniqueString()}`;
 
@@ -215,7 +215,7 @@ describe('Folders > Folders', function () {
 	});
 
 
-	it('Regression | Rename a folder with nonexisting folder id', async function () {
+	it('Regression | Rename a folder with nonexisting folder id', async () => {
 		const folderName = `folder.${common.getUniqueString()}`;
 		const folderActionRequest3 =
 			`<FolderActionRequest xmlns="urn:zimbraMail">
@@ -230,7 +230,7 @@ describe('Folders > Folders', function () {
 	});
 
 
-	it('Sanity | Move a folder within some existing folder', async function () {
+	it('Sanity | Move a folder within some existing folder', async () => {
 		const folderParentName = `folder.${common.getUniqueString()}`;
 		const folderChildName = `folder.${common.getUniqueString()}`;
 
@@ -265,7 +265,7 @@ describe('Folders > Folders', function () {
 	});
 
 
-	it('Functional | Move a folder within itself', async function () {
+	it('Functional | Move a folder within itself', async () => {
 		const folderName = `folder.${common.getUniqueString()}`;
 		const createFolderRequest15 =
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
@@ -289,7 +289,7 @@ describe('Folders > Folders', function () {
 	});
 
 
-	it('Smoke | Delete a Folder,ie move it to trash', async function () {
+	it('Smoke | Delete a Folder,ie move it to trash', async () => {
 		const folderName = `folder.${common.getUniqueString()}`;
 		const createFolderRequest16 =
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
@@ -324,7 +324,7 @@ describe('Folders > Folders', function () {
 	});
 
 
-	it('Regression | Move a folder within a non existing folder', async function () {
+	it('Regression | Move a folder within a non existing folder', async () => {
 		const folderName = `folder.${common.getUniqueString()}`;
 		const createFolderRequest17 =
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
@@ -348,7 +348,7 @@ describe('Folders > Folders', function () {
 	});
 
 
-	it('Smoke | Delete a folder', async function () {
+	it('Smoke | Delete a folder', async () => {
 		// First delete a real folder to know it's gone
 		const folderName = `folder.${common.getUniqueString()}`;
 		const createFolderRequest18 =

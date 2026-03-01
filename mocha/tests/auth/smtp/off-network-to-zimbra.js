@@ -74,7 +74,7 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 
 	// Serial tests
 	if (config.serial === true && String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-		it('Verify zimbraMtaTlsSecurityLevel may, zimbraMtaSaslAuthEnable TRUE, zimbraMtaTlsAuthOnly TRUE settings', async function () {
+		it('Verify zimbraMtaTlsSecurityLevel may, zimbraMtaSaslAuthEnable TRUE, zimbraMtaTlsAuthOnly TRUE settings', async () => {
 			this.timeout(120 * 1000);
 
 			// ModifyConfigRequest
@@ -105,7 +105,7 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 		});
 
 
-		it('Verify zimbraMtaTlsSecurityLevel may, zimbraMtaSaslAuthEnable TRUE, zimbraMtaTlsAuthOnly FALSE settings', async function () {
+		it('Verify zimbraMtaTlsSecurityLevel may, zimbraMtaSaslAuthEnable TRUE, zimbraMtaTlsAuthOnly FALSE settings', async () => {
 			this.timeout(120 * 1000);
 
 			// ModifyConfigRequest
@@ -136,7 +136,7 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 		});
 
 
-		it('Verify zimbraMtaTlsSecurityLevel may, zimbraMtaSaslAuthEnable FALSE, zimbraMtaTlsAuthOnly FALSE settings', async function () {
+		it('Verify zimbraMtaTlsSecurityLevel may, zimbraMtaSaslAuthEnable FALSE, zimbraMtaTlsAuthOnly FALSE settings', async () => {
 			this.timeout(120 * 1000);
 
 			// ModifyConfigRequest
@@ -167,7 +167,7 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 		});
 
 
-		it('Verify zimbraMtaTlsSecurityLevel none, zimbraMtaSaslAuthEnable FALSE, zimbraMtaTlsAuthOnly FALSE settings', async function () {
+		it('Verify zimbraMtaTlsSecurityLevel none, zimbraMtaSaslAuthEnable FALSE, zimbraMtaTlsAuthOnly FALSE settings', async () => {
 			this.timeout(120 * 1000);
 
 			// ModifyConfigRequest

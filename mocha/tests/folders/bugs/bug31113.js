@@ -34,7 +34,7 @@ describe('Folders > Bugs > Bug 31113', function () {
 	}
 
 	// Tests
-	it('Create a folder, give read permissions', async function () {
+	it('Create a folder, give read permissions', async () => {
 		const folderName = `folder${common.getUniqueString()}`;
 
 		// 1. Create Folder

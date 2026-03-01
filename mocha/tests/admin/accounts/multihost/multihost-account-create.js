@@ -16,7 +16,7 @@ describe('Admin > Accounts > Multihost > Account Create', function () {
 		return;
 	}
 
-	it('Sanity | Create two accounts - one on HostA, one on HostB', async function () {
+	it('Sanity | Create two accounts - one on HostA, one on HostB', async () => {
 		const serverAName = config.mailboxServerHost1;
 		const serverBName = config.mailboxServerHost2;
 		const account1Name = 'multihost' + common.getUniqueString() + '@' + config.testDomain;

@@ -73,7 +73,7 @@ describe('Folders > Sharing > Bugs > Bug 92407', function () {
 	}
 
 	// Tests
-	it('Sanity | Error on sharing any folder with none permission', async function () {
+	it('Sanity | Error on sharing any folder with none permission', async () => {
 		// Share with 'none' using empty perm attribute
 		const folderActionRequest =
 			`<FolderActionRequest xmlns="urn:zimbraMail">

@@ -78,7 +78,7 @@ describe('Folders > Sharing > Bugs > Bug 77298', function () {
 	}
 
 	// Tests
-	it('Sanity | Verify external share can not be accessed without a password 1', async function () {
+	it('Sanity | Verify external share can not be accessed without a password 1', async () => {
 		// Share with gt=guest and pw=""
 		const folderActionRequest =
 			`<FolderActionRequest xmlns="urn:zimbraMail">
@@ -111,7 +111,7 @@ describe('Folders > Sharing > Bugs > Bug 77298', function () {
 	});
 
 
-	it('Sanity | Verify external share can not be accessed without a password 2', async function () {
+	it('Sanity | Verify external share can not be accessed without a password 2', async () => {
 		// Share with gt=guest and without pw attribute
 		const folderActionRequest2 =
 			`<FolderActionRequest xmlns="urn:zimbraMail">

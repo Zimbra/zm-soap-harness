@@ -27,7 +27,7 @@ describe('Folders > Folder Loop', function () {
 	}
 
 	// Tests
-	it('Functional | Creating 500 search folders at root level', async function () {
+	it('Functional | Creating 500 search folders at root level', async () => {
 		this.timeout(300 * 1000);
 		const count = 50;
 

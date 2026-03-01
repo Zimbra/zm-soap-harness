@@ -1,0 +1,49 @@
+import { assert } from 'chai';
+import config from '../../../../conf/config.js';
+import common from '../../../../framework/core/common.js';
+import soap from '../../../../framework/backend/soap-client.js';
+
+describe('Contacts > GAL > GALAccount > AutoComplete > Bug 62353', function () {
+	this.timeout(120 * 1000);
+	let adminAuthToken, accountEmail, accountToken;
+
+	before(async function () {
+		adminAuthToken = await soap.getAdminAuthToken();
+
+		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
+		await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${accountEmail}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		accountToken = await soap.getAccountAuthToken(accountEmail);
+	});
+
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
+
+	// Tests
+	it('Sanity | Bug 62353 GAL autocomplete fix', async () => {
+		const res = await soap.makeSOAPEnvelopeAccount(
+			`<AutoCompleteRequest xmlns="urn:zimbraMail">
+				<name>test</name>
+			</AutoCompleteRequest>`, accountToken
+		);
+		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
+	});
+
+
+	it('Sanity | Bug 62353 GAL autocomplete with multiple chars', async () => {
+		const res = await soap.makeSOAPEnvelopeAccount(
+			`<AutoCompleteRequest xmlns="urn:zimbraMail">
+				<name>admin</name>
+			</AutoCompleteRequest>`, accountToken
+		);
+		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
+	});
+});

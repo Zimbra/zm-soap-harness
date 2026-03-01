@@ -1,0 +1,47 @@
+import { assert } from 'chai';
+import config from '../../../conf/config.js';
+import common from '../../../framework/core/common.js';
+import soap from '../../../framework/backend/soap-client.js';
+
+describe('Contacts > Bugs > Bug 32222 - Import custom CSV format', function () {
+	this.timeout(120 * 1000);
+	let adminAuthToken, accountEmail, accountToken;
+
+	before(async function () {
+		adminAuthToken = await soap.getAdminAuthToken();
+
+		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
+		await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${accountEmail}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		accountToken = await soap.getAccountAuthToken(accountEmail);
+	});
+
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
+
+	// Tests
+	it('Functional | Import contacts with custom CSV header fields', async () => {
+		const csvContent = 'First Name,Last Name,E-mail Address,Job Title\nJeff,Schoenfeld,jeff@test.com,Engineer';
+
+		const importRes = await soap.makeSOAPEnvelopeAccount(
+			`<ImportContactsRequest xmlns="urn:zimbraMail" ct="csv">
+				<content>${csvContent}</content>
+			</ImportContactsRequest>`, accountToken
+		);
+		assert.notExists(importRes.Fault, 'Import should not be a Fault');
+
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="contact" limit="100">
+				<query>in:contacts</query>
+			</SearchRequest>`, accountToken
+		);
+		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
+		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
+	});
+});

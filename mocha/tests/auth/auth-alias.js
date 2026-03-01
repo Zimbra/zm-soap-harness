@@ -128,7 +128,7 @@ describe('Auth > Auth Alias', function () {
 
 	// Serial tests
 	if (config.serial === true && String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-		it('Verify below points when "alias_login_enabled" local config value is set to false - 1. Alias login will blocked 2. Login with email address would work.', async function () {
+		it('Verify below points when "alias_login_enabled" local config value is set to false - 1. Alias login will blocked 2. Login with email address would work.', async () => {
 			this.timeout(120 * 1000);
 
 			// Set alias_login_enabled to false

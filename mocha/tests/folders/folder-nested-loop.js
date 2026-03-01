@@ -27,7 +27,7 @@ describe('Folders > Folder Nested Loop', function () {
 	}
 
 	// Tests
-	it('Functional | Creating 1000 nested folders', async function () {
+	it('Functional | Creating 1000 nested folders', async () => {
 		this.timeout(300 * 1000);
 		const count = 100;
 		let parentId = rootId;

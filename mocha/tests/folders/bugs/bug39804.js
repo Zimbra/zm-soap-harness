@@ -45,7 +45,7 @@ describe('Folders > Bugs > Bug 39804', function () {
 	}
 
 	// Tests
-	it('Functional | Verify login after deleting shared-to account', async function () {
+	it('Functional | Verify login after deleting shared-to account', async () => {
 
 		const folderCount = 10; // Scaled down from 2000
 

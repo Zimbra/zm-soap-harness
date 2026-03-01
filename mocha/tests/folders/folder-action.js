@@ -1378,7 +1378,7 @@ describe('Folders > Folder Action', function () {
 	});
 
 
-	it('Functional | Verify that emptying a folder occurs quickly (bug 11731)', async function () {
+	it('Functional | Verify that emptying a folder occurs quickly (bug 11731)', async () => {
 		this.timeout(60 * 1000);
 
 		// Get inbox and trash ids

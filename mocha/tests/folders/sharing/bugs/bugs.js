@@ -34,7 +34,7 @@ describe('Folders > Sharing > Bugs > Bugs', function () {
 	}
 
 	// Tests
-	it('Sanity | Verify key grantee type for folder ACL', async function () {
+	it('Sanity | Verify key grantee type for folder ACL', async () => {
 		// 1. Create subfolder of inbox for account2
 		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 
@@ -148,7 +148,7 @@ describe('Folders > Sharing > Bugs > Bugs', function () {
 	});
 
 
-	it('Sanity | Verify Searching Shared Folders that have subfolder works fine', async function () {
+	it('Sanity | Verify Searching Shared Folders that have subfolder works fine', async () => {
 		// Create folder
 		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 

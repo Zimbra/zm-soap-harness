@@ -64,7 +64,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Cos', function () {
 	}
 
 	// Tests
-	it('Sanity | Share a folder to a COS. Verify that COS users have access.', async function () {
+	it('Sanity | Share a folder to a COS. Verify that COS users have access.', async () => {
 		// Setup Folder
 		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 
@@ -108,7 +108,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Cos', function () {
 	});
 
 
-	it('Sanity | Unshare a folder to a COS. Verify that COS users no longer have access.', async function () {
+	it('Sanity | Unshare a folder to a COS. Verify that COS users no longer have access.', async () => {
 		// Create folder
 		const getFolderRequest2 = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 

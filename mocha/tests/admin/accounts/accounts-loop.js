@@ -272,7 +272,7 @@ describe('Admin > Accounts > Accounts Loop', function () {
 	});
 
 
-	it('Functional | Test for GetAllAdminAccountsRequest', async function () {
+	it('Functional | Test for GetAllAdminAccountsRequest', async () => {
 		this.timeout(60000);
 
 		// GetAllAdminAccountsRequest

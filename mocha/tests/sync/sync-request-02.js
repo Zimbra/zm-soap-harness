@@ -40,7 +40,6 @@ describe('Sync > Sync Request 02', function () {
 
 	// Helper: get sync token
 	async function getSyncToken(authToken) {
-
 		// SyncRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<SyncRequest xmlns="urn:zimbraMail"/>', authToken
@@ -53,7 +52,6 @@ describe('Sync > Sync Request 02', function () {
 
 	// Helper: sync with token
 	async function syncWithToken(token, authToken) {
-
 		// SyncRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<SyncRequest xmlns="urn:zimbraMail" token="${token}"/>`, authToken
@@ -65,8 +63,6 @@ describe('Sync > Sync Request 02', function () {
 	}
 
 	// Tests
-
-
 	it('Functional | SyncRequest after moving a contact to sent folder', async () => {
 		// CreateContactRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(

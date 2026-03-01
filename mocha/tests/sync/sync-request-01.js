@@ -37,7 +37,6 @@ describe('Sync > Sync Request 01', function () {
 
 	// Helper: get sync token
 	async function getSyncToken(authToken) {
-
 		// SyncRequest
 		const res = await soap.makeSOAPEnvelopeAccount(
 			'<SyncRequest xmlns="urn:zimbraMail"/>', authToken

@@ -16,7 +16,7 @@ describe('Admin > Accounts > Create Account Multinode 1', function () {
 		return;
 	}
 
-	it('Sanity | Verify that the accounts with COS having 2 servers(A and B) in the server Pool and created using zimbraMailHost(A) has mail boxes on mail server(A).', async function () {
+	it('Sanity | Verify that the accounts with COS having 2 servers(A and B) in the server Pool and created using zimbraMailHost(A) has mail boxes on mail server(A).', async () => {
 		const serverAName = config.mailboxServerHost1;
 		const serverBName = config.mailboxServerHost2;
 		const cosName = 'multihostcos' + common.getUniqueString();

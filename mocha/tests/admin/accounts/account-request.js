@@ -281,7 +281,7 @@ describe('Admin > Accounts > Account Request', function () {
 	});
 
 
-	it('Sanity | Sanity test for GetAllAdminAccountsRequest', async function () {
+	it('Sanity | Sanity test for GetAllAdminAccountsRequest', async () => {
 		this.timeout(60000);
 
 		// GetAllAdminAccountsRequest

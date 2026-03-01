@@ -16,7 +16,7 @@ describe('Admin > Accounts > Create Account Multinode 2', function () {
 		return;
 	}
 
-	it('Sanity | Verify that the accounts with COS having server(A) in the server Pool has mail boxes on mail server(A)', async function () {
+	it('Sanity | Verify that the accounts with COS having server(A) in the server Pool has mail boxes on mail server(A)', async () => {
 		const serverAName = config.mailboxServerHost1;
 		const cosName = 'cos' + common.getUniqueString();
 		const account1Name = 'multihost' + common.getUniqueString() + '@' + config.testDomain;

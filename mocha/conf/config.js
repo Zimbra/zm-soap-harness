@@ -9,6 +9,7 @@ const config = require('./environment.json');
 
 // Project root
 config.projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
+config.data = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'data');
 
 // Args
 const argv = yargs(hideBin(process.argv)).option('serial', { type: 'boolean' })

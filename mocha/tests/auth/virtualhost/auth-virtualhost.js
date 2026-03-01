@@ -326,7 +326,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 	// Serial tests
 	if (config.serial === true && String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-		it('Basic Test - AuthRequest - login using default, good password - Adding and removing virtual host', async function () {
+		it('Basic Test - AuthRequest - login using default, good password - Adding and removing virtual host', async () => {
 			this.timeout(600 * 1000);
 
 			const virtualHost02 = 'v' + common.getUniqueString() + '.virtual.com';

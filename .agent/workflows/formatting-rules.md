@@ -21,6 +21,25 @@ description: JavaScript test file formatting rules - indentation and style
 - All variables used across `before()` hooks and `it()` test blocks must be declared with `let` at the **`describe` scope** (top of the describe block).
 - Variables must NOT be assigned without prior declaration — ES modules run in strict mode, which throws `ReferenceError` on undeclared assignments.
 
+## Tab Formatting Fix Script
+
+After generating or editing test files, **always run** the tab fix script to convert any accidental space indentation to tabs:
+
+```bash
+// turbo
+node c:/tmp/fix-tabs.js
+```
+
+The script at `c:/tmp/fix-tabs.js` converts all leading spaces to tabs (4 spaces = 1 tab) across all `.js` files in the target folder. Update `CONTACTS_DIR` in the script to point to the appropriate test folder before running.
+
+## Post-Edit Formatting Step
+
+After any bulk code generation, assertion strengthening, or file edits:
+
+1. Run `node c:/tmp/fix-tabs.js` to fix space→tab indentation
+2. Run `node c:/tmp/fix-formatting.js` to ensure `// Applicable zimbra versions` block formatting
+3. Run the test suite to verify all tests still pass
+
 ## Example
 
 ```javascript
