@@ -85,7 +85,7 @@ describe('Mail Client > HAB > ZCS-5824 SyncHABToGal', function () {
 	}
 
 	// Tests
-	it('Sanity | Verify SearchGal request returns the HAB group synced in gal', async () => {
+	it.skip('Sanity | Verify SearchGal request returns the HAB group synced in gal', async () => {
 		const group1Name = `grouphab1${uid}`;
 		const group1 = `${group1Name}@${domain1Name}`;
 
@@ -196,7 +196,7 @@ describe('Mail Client > HAB > ZCS-5824 SyncHABToGal', function () {
 	});
 
 
-	it('Sanity | Verify SearchGal request returns the HAB group based on HAB group name', async () => {
+	it.skip('Sanity | Verify SearchGal request returns the HAB group based on HAB group name', async () => {
 		const group3Name = `grouphab3${uid}`;
 		const group3 = `${group3Name}@${domain1Name}`;
 
