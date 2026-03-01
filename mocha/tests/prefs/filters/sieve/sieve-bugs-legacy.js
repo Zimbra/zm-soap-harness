@@ -14,9 +14,12 @@ describe('Sieve-Bugs-Legacy', function () {
 		adminAuthToken = await soap.getAdminAuthToken();
 	});
 
+	// Applicable zimbra versions
 	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;
 	}
+
+	// Tests
 
 	async function createAccountAndAuth() {
 		const email = `test.${common.getUniqueString()}@${testDomain}`;

@@ -14,21 +14,29 @@ describe('Multiple-Actions', function () {
 		adminAuthToken = await soap.getAdminAuthToken();
 	});
 
+	// Applicable zimbra versions
 	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;
 	}
 
+	// Tests
 	it('Functional | Create filter with multiple actions (flag + fileinto)', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
 
 		const folderName = `multi${common.getUniqueString()}`;
+
+		// Create a folder
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="1"/>
@@ -36,6 +44,8 @@ describe('Multiple-Actions', function () {
 		);
 
 		const filterName = `filter${common.getUniqueString()}`;
+
+		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
@@ -52,26 +62,38 @@ describe('Multiple-Actions', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, authToken
 		);
+
+		// Verify the response
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest multiple actions should not fault');
 
+		// Get filter rules
 		const getRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetFilterRulesRequest xmlns="urn:zimbraMail"/>`, authToken
 		);
+
+		// Verify the response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
 		assert.exists(getRes.GetFilterRulesResponse, 'GetFilterRulesResponse should exist');
 	});
 
+
 	it('Functional | Create filter with tag + redirect + keep actions', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
 
 		const tagName = `tag${common.getUniqueString()}`;
+
+		// Create a tag
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tagName}" color="5"/>
@@ -79,6 +101,8 @@ describe('Multiple-Actions', function () {
 		);
 
 		const filterName = `filter${common.getUniqueString()}`;
+
+		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
@@ -95,6 +119,8 @@ describe('Multiple-Actions', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, authToken
 		);
+
+		// Verify the response
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest combo actions should not fault');
 	});
 });

@@ -14,22 +14,30 @@ describe('ApplyFilterRulesRequest', function () {
 		adminAuthToken = await soap.getAdminAuthToken();
 	});
 
+	// Applicable zimbra versions
 	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;
 	}
 
+	// Tests
 	it('Functional | Apply multiple filter rules', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
 
 		const filter1 = `filter1_${common.getUniqueString()}`;
 		const filter2 = `filter2_${common.getUniqueString()}`;
+
+		// Modify filter rules
 		await soap.makeSOAPEnvelopeAccount(
 			`<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
@@ -49,6 +57,7 @@ describe('ApplyFilterRulesRequest', function () {
 			</ModifyFilterRulesRequest>`, authToken
 		);
 
+		// Apply filter rules
 		const applyRes = await soap.makeSOAPEnvelopeAccount(
 			`<ApplyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
@@ -57,19 +66,27 @@ describe('ApplyFilterRulesRequest', function () {
 				<query>in:inbox</query>
 			</ApplyFilterRulesRequest>`, authToken
 		);
+
+		// Verify the response
 		assert.notExists(applyRes.Fault, 'ApplyFilterRulesRequest should not fault');
 	});
 
+
 	it('Functional | Apply non-existent filter rule', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
 
+		// Apply filter rules
 		const applyRes = await soap.makeSOAPEnvelopeAccount(
 			`<ApplyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
@@ -77,6 +94,8 @@ describe('ApplyFilterRulesRequest', function () {
 				</filterRules>
 			</ApplyFilterRulesRequest>`, authToken
 		);
+
+		// Verify the response
 		assert.exists(applyRes.Fault, 'Apply non-existent filter should fault');
 	});
 });

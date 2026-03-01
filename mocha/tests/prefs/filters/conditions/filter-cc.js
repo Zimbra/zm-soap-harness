@@ -14,19 +14,27 @@ describe('Filter-Cc', function () {
 		adminAuthToken = await soap.getAdminAuthToken();
 	});
 
+	// Applicable zimbra versions
 	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;
 	}
 
+	// Tests
 	it('Sanity | Create filter with cc header test', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
+
+		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
@@ -39,19 +47,28 @@ describe('Filter-Cc', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, authToken
 		);
+
+		// Verify the response
 		assert.notExists(modRes.Fault, 'Cc header test should not fault');
 		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 	});
 
+
 	it('Functional | Create filter with cc is comparison', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
+
+		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
@@ -64,6 +81,8 @@ describe('Filter-Cc', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, authToken
 		);
+
+		// Verify the response
 		assert.notExists(modRes.Fault, 'Cc is comparison should not fault');
 	});
 });

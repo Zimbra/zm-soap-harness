@@ -14,26 +14,36 @@ describe('Create-Identity', function () {
 		adminAuthToken = await soap.getAdminAuthToken();
 	});
 
+	// Applicable zimbra versions
 	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;
 	}
 
+	// Tests
 	it('Smoke | Create basic identity', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		const identityName = `id${common.getUniqueString()}`;
+
+		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name="${identityName}"/>
 			</CreateIdentityRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -41,15 +51,21 @@ describe('Create-Identity', function () {
 
 	it('Sanity | Create identity with from display name', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		const identityName = `id${common.getUniqueString()}`;
+
+		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name="${identityName}">
@@ -57,6 +73,8 @@ describe('Create-Identity', function () {
 				</identity>
 			</CreateIdentityRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -64,15 +82,21 @@ describe('Create-Identity', function () {
 
 	it('Sanity | Create identity with from address', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		const identityName = `id${common.getUniqueString()}`;
+
+		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name="${identityName}">
@@ -80,6 +104,8 @@ describe('Create-Identity', function () {
 				</identity>
 			</CreateIdentityRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest with from address should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -87,15 +113,21 @@ describe('Create-Identity', function () {
 
 	it('Sanity | Create identity with reply-to enabled', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		const identityName = `id${common.getUniqueString()}`;
+
+		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name="${identityName}">
@@ -105,6 +137,8 @@ describe('Create-Identity', function () {
 				</identity>
 			</CreateIdentityRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest reply-to should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -112,15 +146,19 @@ describe('Create-Identity', function () {
 
 	it('Sanity | Create identity with signature', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
-		// Create a signature first
+		// Create a signature
 		const sigRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateSignatureRequest xmlns="urn:zimbraAccount">
 				<signature name="TestSig${common.getUniqueString()}">
@@ -128,10 +166,14 @@ describe('Create-Identity', function () {
 				</signature>
 			</CreateSignatureRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(sigRes.Fault, 'CreateSignatureRequest should not fault');
 		const sigId = sigRes.CreateSignatureResponse.signature[0].id;
 
 		const identityName = `id${common.getUniqueString()}`;
+
+		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name="${identityName}">
@@ -139,6 +181,8 @@ describe('Create-Identity', function () {
 				</identity>
 			</CreateIdentityRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest with sig should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -146,15 +190,21 @@ describe('Create-Identity', function () {
 
 	it('Functional | Create identity with all fields', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		const identityName = `id${common.getUniqueString()}`;
+
+		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name="${identityName}">
@@ -166,6 +216,8 @@ describe('Create-Identity', function () {
 				</identity>
 			</CreateIdentityRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest all fields should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -173,15 +225,21 @@ describe('Create-Identity', function () {
 
 	it('Functional | Create duplicate identity name should fail', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		const identityName = `id${common.getUniqueString()}`;
+
+		// Create an identity
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name="${identityName}"/>
@@ -192,40 +250,55 @@ describe('Create-Identity', function () {
 				<identity name="${identityName}"/>
 			</CreateIdentityRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.exists(dupRes.Fault, 'Duplicate identity name should fault');
 	});
 
 
 	it('Functional | Create identity named DEFAULT should fail', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
+		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name="DEFAULT"/>
 			</CreateIdentityRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.exists(createRes.Fault, 'Creating identity named DEFAULT should fault');
 	});
 
 
 	it('Sanity | Create identity with zimbraPrefMailForwardingAddress', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		const identityName = `id${common.getUniqueString()}`;
+
+		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name="${identityName}">
@@ -233,6 +306,8 @@ describe('Create-Identity', function () {
 				</identity>
 			</CreateIdentityRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -240,15 +315,21 @@ describe('Create-Identity', function () {
 
 	it('Sanity | Create identity with send on behalf', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		const identityName = `id${common.getUniqueString()}`;
+
+		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name="${identityName}">
@@ -257,6 +338,8 @@ describe('Create-Identity', function () {
 				</identity>
 			</CreateIdentityRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -264,15 +347,21 @@ describe('Create-Identity', function () {
 
 	it('Functional | Create identity with when sent to address', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		const identityName = `id${common.getUniqueString()}`;
+
+		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name="${identityName}">
@@ -281,6 +370,8 @@ describe('Create-Identity', function () {
 				</identity>
 			</CreateIdentityRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest when-sent-to should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -288,15 +379,21 @@ describe('Create-Identity', function () {
 
 	it('Functional | Create identity with when in folder attributes', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		const identityName = `id${common.getUniqueString()}`;
+
+		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name="${identityName}">
@@ -305,21 +402,29 @@ describe('Create-Identity', function () {
 				</identity>
 			</CreateIdentityRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.exists(createRes.Fault, 'CreateIdentityRequest with zimbraPrefWhenInFolderEnabled should fault as unsupported');
 	});
 
 
 	it('Sanity | Create identity with mail composition preferences', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		const identityName = `id${common.getUniqueString()}`;
+
+		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name="${identityName}">
@@ -327,6 +432,8 @@ describe('Create-Identity', function () {
 				</identity>
 			</CreateIdentityRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -334,6 +441,8 @@ describe('Create-Identity', function () {
 
 	it('Functional | Create identity and verify via admin GetAccount', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
@@ -341,9 +450,13 @@ describe('Create-Identity', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		const accountId = createAcctRes.CreateAccountResponse.account[0].id;
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		const identityName = `id${common.getUniqueString()}`;
+
+		// Create an identity
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name="${identityName}">
@@ -352,11 +465,14 @@ describe('Create-Identity', function () {
 			</CreateIdentityRequest>`, accountAuthToken
 		);
 
+		// Get account details
 		const getRes = await soap.makeSOAPEnvelopeAdmin(
 			`<GetAccountRequest xmlns="urn:zimbraAdmin">
 				<account by="id">${accountId}</account>
 			</GetAccountRequest>`, adminAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(getRes.Fault, 'GetAccountRequest should not fault');
 		assert.exists(getRes.GetAccountResponse, 'GetAccountResponse should exist');
 	});
@@ -364,36 +480,47 @@ describe('Create-Identity', function () {
 
 	it('Sanity | Create identity with empty name should fail', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
+		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name=""/>
 			</CreateIdentityRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.exists(createRes.Fault, 'Empty identity name should fault');
 	});
 
 
 	it('Functional | Create maximum identities', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
-		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
-		// Create multiple identities
+		// Authenticate account
+		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 		for (let i = 0; i < 5; i++) {
 			const identityName = `maxid${i}_${common.getUniqueString()}`;
+
+			// Create an identity
 			await soap.makeSOAPEnvelopeAccount(
 				`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 					<identity name="${identityName}">
@@ -403,9 +530,12 @@ describe('Create-Identity', function () {
 			);
 		}
 
+		// Get identities
 		const getRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetIdentitiesRequest xmlns="urn:zimbraAccount"/>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(getRes.Fault, 'GetIdentitiesRequest should not fault');
 		assert.exists(getRes.GetIdentitiesResponse, 'GetIdentitiesResponse should exist');
 	});
@@ -413,15 +543,21 @@ describe('Create-Identity', function () {
 
 	it('Sanity | Create identity with different from display values', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		const identityName = `id${common.getUniqueString()}`;
+
+		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name="${identityName}">
@@ -430,6 +566,8 @@ describe('Create-Identity', function () {
 				</identity>
 			</CreateIdentityRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -437,14 +575,19 @@ describe('Create-Identity', function () {
 
 	it('Functional | Create identity with forward reply signature', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
+		// Create a signature
 		const sigRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateSignatureRequest xmlns="urn:zimbraAccount">
 				<signature name="FwdSig${common.getUniqueString()}">
@@ -452,10 +595,14 @@ describe('Create-Identity', function () {
 				</signature>
 			</CreateSignatureRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(sigRes.Fault, 'CreateSignatureRequest should not fault');
 		const sigId = sigRes.CreateSignatureResponse.signature[0].id;
 
 		const identityName = `id${common.getUniqueString()}`;
+
+		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name="${identityName}">
@@ -463,6 +610,8 @@ describe('Create-Identity', function () {
 				</identity>
 			</CreateIdentityRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest fwd sig should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -470,15 +619,21 @@ describe('Create-Identity', function () {
 
 	it('Sanity | Create identity with custom mail signature position', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		const identityName = `id${common.getUniqueString()}`;
+
+		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name="${identityName}">
@@ -486,6 +641,8 @@ describe('Create-Identity', function () {
 				</identity>
 			</CreateIdentityRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest sig position should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -493,20 +650,28 @@ describe('Create-Identity', function () {
 
 	it('Functional | Verify identity ID is returned on create', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		const identityName = `id${common.getUniqueString()}`;
+
+		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name="${identityName}"/>
 			</CreateIdentityRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 		assert.exists(createRes.CreateIdentityResponse.identity, 'identity should exist in response');
 		assert.exists(createRes.CreateIdentityResponse.identity[0].id, 'identity id should exist');
@@ -515,15 +680,21 @@ describe('Create-Identity', function () {
 
 	it('Sanity | Create identity with read receipt setting', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		const identityName = `id${common.getUniqueString()}`;
+
+		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name="${identityName}">
@@ -531,6 +702,8 @@ describe('Create-Identity', function () {
 				</identity>
 			</CreateIdentityRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -538,20 +711,28 @@ describe('Create-Identity', function () {
 
 	it('Functional | Create identity with long name', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		const identityName = `longidentityname_${common.getUniqueString()}_${'x'.repeat(50)}`;
+
+		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name="${identityName}"/>
 			</CreateIdentityRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest long name should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -559,20 +740,28 @@ describe('Create-Identity', function () {
 
 	it('Sanity | Create identity with underscore and dash', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		const identityName = `test_identity-name_${common.getUniqueString()}`;
+
+		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name="${identityName}"/>
 			</CreateIdentityRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest special chars should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
@@ -580,20 +769,28 @@ describe('Create-Identity', function () {
 
 	it('Functional | Create identity and verify name in response', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		const identityName = `id${common.getUniqueString()}`;
+
+		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name="${identityName}"/>
 			</CreateIdentityRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 		assert.equal(createRes.CreateIdentityResponse.identity[0].name, identityName, 'Identity name should match');
 	});
@@ -601,15 +798,21 @@ describe('Create-Identity', function () {
 
 	it('Sanity | Create identity with compose format HTML', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		const identityName = `id${common.getUniqueString()}`;
+
+		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name="${identityName}">
@@ -617,21 +820,30 @@ describe('Create-Identity', function () {
 				</identity>
 			</CreateIdentityRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
 
+
 	it('Sanity | Create identity with WhenSentToEnabled', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		const identityName = `id${common.getUniqueString()}`;
+
+		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name="${identityName}">
@@ -641,6 +853,8 @@ describe('Create-Identity', function () {
 				</identity>
 			</CreateIdentityRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});

@@ -22,16 +22,22 @@ describe('Prefs > Filters > Bugs > Bug66704', function () {
 	// Tests
 	it('Sanity | Creating a rule without action -- greater than serviceINVALIDREQUEST', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
 
 		const filterName = `filter${common.getUniqueString()}`;
 		const subject = `subj${common.getUniqueString()}`;
+
+		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
@@ -44,6 +50,8 @@ describe('Prefs > Filters > Bugs > Bug66704', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, authToken
 		);
+
+		// Verify the response
 		assert.exists(modRes.Fault, 'Request should fault with INVALID_REQUEST');
 		const code = modRes.Fault.Detail.Error.Code;
 		assert.include(code, 'service.INVALID_REQUEST', 'Error code should be INVALID_REQUEST');
@@ -52,16 +60,22 @@ describe('Prefs > Filters > Bugs > Bug66704', function () {
 
 	it('Sanity | Creating a rule with blank attribute value for any action -- greater than serviceINVALIDREQUEST', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
 
 		const filterName = `filter${common.getUniqueString()}`;
 		const subject = `subj${common.getUniqueString()}`;
+
+		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
@@ -74,6 +88,8 @@ describe('Prefs > Filters > Bugs > Bug66704', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, authToken
 		);
+
+		// Verify the response
 		assert.exists(modRes.Fault, 'Request should fault with INVALID_REQUEST');
 		const code = modRes.Fault.Detail.Error.Code;
 		assert.include(code, 'service.INVALID_REQUEST', 'Error code should be INVALID_REQUEST');
@@ -82,16 +98,22 @@ describe('Prefs > Filters > Bugs > Bug66704', function () {
 
 	it('Sanity | Creating a rule with blank value for any action -- greater than serviceINVALIDREQUEST', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
 
 		const filterName = `filter${common.getUniqueString()}`;
 		const subject = `subj${common.getUniqueString()}`;
+
+		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
@@ -104,6 +126,8 @@ describe('Prefs > Filters > Bugs > Bug66704', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, authToken
 		);
+
+		// Verify the response
 		assert.exists(modRes.Fault, 'Request should fault with INVALID_REQUEST');
 		const code = modRes.Fault.Detail.Error.Code;
 		assert.include(code, 'service.INVALID_REQUEST', 'Error code should be INVALID_REQUEST');

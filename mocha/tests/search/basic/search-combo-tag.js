@@ -265,8 +265,8 @@ Content for ${mail8.name}</content>
 		// CreateTagRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
-                <tag name="${tag1.name}" color="0"/>
-            </CreateTagRequest>`, accountAuthToken
+				<tag name="${tag1.name}" color="0"/>
+			</CreateTagRequest>`, accountAuthToken
 		);
 
 		// Verify response

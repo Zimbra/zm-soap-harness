@@ -21,17 +21,20 @@ describe('Bug47767', function () {
 
 	// Tests
 	it('Sanity | Verify signature names are not case sensitive', async () => {
-		// Create account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
-		// Create signature "aaa"
+		// Create a signature
 		const createRes1 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateSignatureRequest xmlns="urn:zimbraAccount">
 				<signature name="aaa">
@@ -39,10 +42,12 @@ describe('Bug47767', function () {
 				</signature>
 			</CreateSignatureRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(createRes1.Fault, 'CreateSignatureRequest aaa should not fault');
 		assert.exists(createRes1.CreateSignatureResponse, 'CreateSignatureResponse should exist');
 
-		// Create signature "bbb"
+		// Create a signature
 		const createRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateSignatureRequest xmlns="urn:zimbraAccount">
 				<signature name="bbb">
@@ -50,9 +55,11 @@ describe('Bug47767', function () {
 				</signature>
 			</CreateSignatureRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(createRes2.Fault, 'CreateSignatureRequest bbb should not fault');
 
-		// Create signature "Bbb" (case-insensitive duplicate) - should fail
+		// Create a signature
 		const createRes3 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateSignatureRequest xmlns="urn:zimbraAccount">
 				<signature name="Bbb">
@@ -60,6 +67,8 @@ describe('Bug47767', function () {
 				</signature>
 			</CreateSignatureRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.exists(createRes3.Fault, 'CreateSignatureRequest Bbb should fault');
 		assert.equal(createRes3.Fault.Detail.Error.Code, 'account.SIGNATURE_EXISTS',
 			'Error code should be account.SIGNATURE_EXISTS');
@@ -67,17 +76,20 @@ describe('Bug47767', function () {
 
 
 	it('Sanity | Verify signature type with invalid values', async () => {
-		// Create account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
-		// Blank signature type
+		// Create a signature
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateSignatureRequest xmlns="urn:zimbraAccount">
 				<signature name="test${common.getUniqueString()}">
@@ -85,11 +97,13 @@ describe('Bug47767', function () {
 				</signature>
 			</CreateSignatureRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.exists(res1.Fault, 'Blank signature type should fault');
 		assert.equal(res1.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Error code should be service.INVALID_REQUEST');
 
-		// Incorrect signature type
+		// Create a signature
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateSignatureRequest xmlns="urn:zimbraAccount">
 				<signature name="test${common.getUniqueString()}">
@@ -97,11 +111,13 @@ describe('Bug47767', function () {
 				</signature>
 			</CreateSignatureRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.exists(res2.Fault, 'Invalid signature type should fault');
 		assert.equal(res2.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Error code should be service.INVALID_REQUEST');
 
-		// Blank signature name
+		// Create a signature
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateSignatureRequest xmlns="urn:zimbraAccount">
 				<signature name=" ">
@@ -109,6 +125,8 @@ describe('Bug47767', function () {
 				</signature>
 			</CreateSignatureRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.exists(res3.Fault, 'Blank signature name should fault');
 		assert.equal(res3.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Error code should be service.INVALID_REQUEST');

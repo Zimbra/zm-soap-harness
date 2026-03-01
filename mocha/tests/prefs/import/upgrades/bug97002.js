@@ -14,10 +14,12 @@ describe('Bug97002 - Import Upgrades', function () {
 		adminAuthToken = await soap.getAdminAuthToken();
 	});
 
+	// Applicable zimbra versions
 	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;
 	}
 
+	// Tests
 	it('Sanity | NPE if X-Zimbra-Calendar-Intended-For account is not present - TGZ import', async () => {
 		const backupEmail = `test.${common.getUniqueString()}@${testDomain}`;
 		await soap.makeSOAPEnvelopeAdmin(
@@ -35,6 +37,7 @@ describe('Bug97002 - Import Upgrades', function () {
 		assert.notExists(folderRes.Fault, 'GetFolderRequest should not fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 	});
+
 
 	it('Sanity | Calendar invite forwarding after account deletion', async () => {
 		const account1Email = `test.${common.getUniqueString()}@${testDomain}`;

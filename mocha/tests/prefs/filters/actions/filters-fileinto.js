@@ -14,29 +14,41 @@ describe('Filters-Fileinto', function () {
 		adminAuthToken = await soap.getAdminAuthToken();
 	});
 
+	// Applicable zimbra versions
 	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;
 	}
 
+	// Tests
 	it('Smoke | Create filter rule with fileinto action', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
 
 		const folderName = `filed${common.getUniqueString()}`;
+
+		// Create a folder
 		const createFolderRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="1"/>
 			</CreateFolderRequest>`, authToken
 		);
+
+		// Verify the response
 		assert.notExists(createFolderRes.Fault, 'CreateFolderRequest should not fault');
 
 		const filterName = `filter${common.getUniqueString()}`;
+
+		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
@@ -51,21 +63,30 @@ describe('Filters-Fileinto', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, authToken
 		);
+
+		// Verify the response
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
 		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 	});
 
+
 	it('Sanity | Verify fileinto filter rule via GetFilterRules', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
 
 		const filterName = `filter${common.getUniqueString()}`;
+
+		// Modify filter rules
 		await soap.makeSOAPEnvelopeAccount(
 			`<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
@@ -81,24 +102,34 @@ describe('Filters-Fileinto', function () {
 			</ModifyFilterRulesRequest>`, authToken
 		);
 
+		// Get filter rules
 		const getRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetFilterRulesRequest xmlns="urn:zimbraMail"/>`, authToken
 		);
+
+		// Verify the response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
 		assert.exists(getRes.GetFilterRulesResponse, 'GetFilterRulesResponse should exist');
 	});
 
+
 	it('Functional | Create fileinto filter to subfolder', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
 
 		const folderName = `sub${common.getUniqueString()}`;
+
+		// Create a folder
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
 				<folder name="${folderName}" l="2"/>
@@ -106,6 +137,8 @@ describe('Filters-Fileinto', function () {
 		);
 
 		const filterName = `filter${common.getUniqueString()}`;
+
+		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
@@ -120,20 +153,29 @@ describe('Filters-Fileinto', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, authToken
 		);
+
+		// Verify the response
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest subfolder should not fault');
 	});
 
+
 	it('Functional | Create fileinto filter with non-existent folder', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
 
 		const filterName = `filter${common.getUniqueString()}`;
+
+		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
@@ -148,7 +190,8 @@ describe('Filters-Fileinto', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, authToken
 		);
-		// Server may accept the filter rule even if folder doesn't exist
+
+		// Verify the response
 		assert.isTrue(
 			(modRes.ModifyFilterRulesResponse !== undefined) || (modRes.Fault !== undefined),
 			'Should return a proper response'

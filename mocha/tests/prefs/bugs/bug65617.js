@@ -21,21 +21,25 @@ describe('Bug65617', function () {
 
 	// Tests
 	it('Sanity | GetShareInfo NPE', async () => {
-		// Create account and auth
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
-		// GetShareInfoRequest - verify no NPE (original bug)
+		// Send get share info request
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<GetShareInfoRequest xmlns="urn:zimbraAccount"/>`, accountAuthToken
 		);
-		// Original bug was NPE - verify we get a proper response (no server crash)
+
+		// Verify the response
 		assert.isTrue(
 			(res.GetShareInfoResponse !== undefined) || (res.Fault !== undefined),
 			'Server should return a proper response without NPE'

@@ -14,21 +14,29 @@ describe('Attachment-Identity', function () {
 		adminAuthToken = await soap.getAdminAuthToken();
 	});
 
+	// Applicable zimbra versions
 	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;
 	}
 
+	// Tests
 	it('Functional | Create identity with attachment settings', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		const identityName = `attach${common.getUniqueString()}`;
+
+		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name="${identityName}">
@@ -37,6 +45,8 @@ describe('Attachment-Identity', function () {
 				</identity>
 			</CreateIdentityRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});

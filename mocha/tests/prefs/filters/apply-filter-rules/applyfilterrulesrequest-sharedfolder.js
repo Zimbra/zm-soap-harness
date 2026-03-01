@@ -14,21 +14,29 @@ describe('ApplyFilterRulesRequest-SharedFolder', function () {
 		adminAuthToken = await soap.getAdminAuthToken();
 	});
 
+	// Applicable zimbra versions
 	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;
 	}
 
+	// Tests
 	it('Functional | Apply filter rules with shared folder query', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
 
 		const filterName = `filter${common.getUniqueString()}`;
+
+		// Modify filter rules
 		await soap.makeSOAPEnvelopeAccount(
 			`<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
@@ -42,6 +50,7 @@ describe('ApplyFilterRulesRequest-SharedFolder', function () {
 			</ModifyFilterRulesRequest>`, authToken
 		);
 
+		// Apply filter rules
 		const applyRes = await soap.makeSOAPEnvelopeAccount(
 			`<ApplyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
@@ -50,21 +59,30 @@ describe('ApplyFilterRulesRequest-SharedFolder', function () {
 				<query>in:inbox</query>
 			</ApplyFilterRulesRequest>`, authToken
 		);
+
+		// Verify the response
 		assert.notExists(applyRes.Fault, 'ApplyFilterRulesRequest should not fault');
 		assert.exists(applyRes.ApplyFilterRulesResponse, 'ApplyFilterRulesResponse should exist');
 	});
 
+
 	it('Functional | Apply filter rules to sent folder', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
 
 		const filterName = `filter${common.getUniqueString()}`;
+
+		// Modify filter rules
 		await soap.makeSOAPEnvelopeAccount(
 			`<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
@@ -78,6 +96,7 @@ describe('ApplyFilterRulesRequest-SharedFolder', function () {
 			</ModifyFilterRulesRequest>`, authToken
 		);
 
+		// Apply filter rules
 		const applyRes = await soap.makeSOAPEnvelopeAccount(
 			`<ApplyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
@@ -86,6 +105,8 @@ describe('ApplyFilterRulesRequest-SharedFolder', function () {
 				<query>in:sent</query>
 			</ApplyFilterRulesRequest>`, authToken
 		);
+
+		// Verify the response
 		assert.notExists(applyRes.Fault, 'ApplyFilterRulesRequest sent folder should not fault');
 	});
 });

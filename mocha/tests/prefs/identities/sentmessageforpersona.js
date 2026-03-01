@@ -14,13 +14,17 @@ describe('SentMessageForPersona', function () {
 		adminAuthToken = await soap.getAdminAuthToken();
 	});
 
+	// Applicable zimbra versions
 	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;
 	}
 
+	// Tests
 	it('Smoke | Send message using persona identity', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
 		const recipientEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
@@ -33,8 +37,12 @@ describe('SentMessageForPersona', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
 		const idName = `persona${common.getUniqueString()}`;
+
+		// Create an identity
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateIdentityRequest xmlns="urn:zimbraAccount">
 				<identity name="${idName}">
@@ -43,9 +51,13 @@ describe('SentMessageForPersona', function () {
 				</identity>
 			</CreateIdentityRequest>`, authToken
 		);
+
+		// Verify the response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
 
 		const subject = `persona.${common.getUniqueString()}`;
+
+		// Send the message
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -55,13 +67,18 @@ describe('SentMessageForPersona', function () {
 				</m>
 			</SendMsgRequest>`, authToken
 		);
+
+		// Verify the response
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
 	});
 
+
 	it('Sanity | Verify sent message in Sent folder for persona', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
 		const recipientEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
@@ -74,9 +91,13 @@ describe('SentMessageForPersona', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
 
 		const subject = `sent.${common.getUniqueString()}`;
+
+		// Send the message
 		await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -87,18 +108,24 @@ describe('SentMessageForPersona', function () {
 			</SendMsgRequest>`, authToken
 		);
 
+		// Search for the item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject}) in:sent</query>
 			</SearchRequest>`, authToken
 		);
+
+		// Verify the response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
+
 	it('Regression | Send message with persona and verify recipient receives it', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
 		const recipientEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
@@ -111,10 +138,14 @@ describe('SentMessageForPersona', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
 		const recipientAuthToken = await soap.getAccountAuthToken(recipientEmail);
 
 		const subject = `recv.${common.getUniqueString()}`;
+
+		// Send the message
 		await soap.makeSOAPEnvelopeAccount(
 			`<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
@@ -126,11 +157,15 @@ describe('SentMessageForPersona', function () {
 		);
 
 		await common.delay(2000);
+
+		// Search for the item
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, recipientAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});

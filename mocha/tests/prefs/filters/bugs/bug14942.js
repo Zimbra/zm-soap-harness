@@ -83,7 +83,7 @@ describe('Prefs > Filters > Bugs > Bug14942', function () {
 		);
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 
-		await common.delay(3000);
+		await common.delay(5000);
 
 		// Verify message in folder
 		const searchRes = await soap.makeSOAPEnvelopeAccount(

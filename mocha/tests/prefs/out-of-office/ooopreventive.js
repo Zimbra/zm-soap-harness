@@ -22,20 +22,27 @@ describe('OOOPreventive', function () {
 	// Tests
 	it('Sanity | Set OOO preferences', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
+		// Modify preferences
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyPrefsRequest xmlns="urn:zimbraAccount">
 				<pref name="zimbraPrefOutOfOfficeReplyEnabled">TRUE</pref>
 				<pref name="zimbraPrefOutOfOfficeReply">I am out of office</pref>
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest should not fault');
 		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
@@ -43,14 +50,19 @@ describe('OOOPreventive', function () {
 
 	it('Sanity | Set OOO with future date 2025', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
+		// Modify preferences
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyPrefsRequest xmlns="urn:zimbraAccount">
 				<pref name="zimbraPrefOutOfOfficeReplyEnabled">TRUE</pref>
@@ -59,6 +71,8 @@ describe('OOOPreventive', function () {
 				<pref name="zimbraPrefOutOfOfficeUntilDate">20271231235959Z</pref>
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest with future date should not fault');
 		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
@@ -66,15 +80,19 @@ describe('OOOPreventive', function () {
 
 	it('Sanity | Verify OOO with external domain', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
-		// Enable OOO with external reply
+		// Modify preferences
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyPrefsRequest xmlns="urn:zimbraAccount">
 				<pref name="zimbraPrefOutOfOfficeReplyEnabled">TRUE</pref>
@@ -83,6 +101,8 @@ describe('OOOPreventive', function () {
 				<pref name="zimbraPrefOutOfOfficeExternalReply">External reply</pref>
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest external should not fault');
 		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
@@ -90,21 +110,27 @@ describe('OOOPreventive', function () {
 
 	it('Sanity | Verify OOO with distribution list', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
-		// Enable OOO
+		// Modify preferences
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyPrefsRequest xmlns="urn:zimbraAccount">
 				<pref name="zimbraPrefOutOfOfficeReplyEnabled">TRUE</pref>
 				<pref name="zimbraPrefOutOfOfficeReply">OOO for DL test</pref>
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest should not fault');
 		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
@@ -112,22 +138,28 @@ describe('OOOPreventive', function () {
 
 	it('Sanity | Set LC zimbraFeatureOutOfOfficeReplyEnabled True', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
 		const accountId = createRes.CreateAccountResponse.account[0].id;
 
-		// Set LC attribute via admin
+		// Modify the account
 		const modRes = await soap.makeSOAPEnvelopeAdmin(
 			`<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${accountId}</id>
 				<a n="zimbraFeatureOutOfOfficeReplyEnabled">TRUE</a>
 			</ModifyAccountRequest>`, adminAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(modRes.Fault, 'ModifyAccountRequest should not fault');
 		assert.exists(modRes.ModifyAccountResponse, 'ModifyAccountResponse should exist');
 	});
@@ -135,15 +167,19 @@ describe('OOOPreventive', function () {
 
 	it('Sanity | Set zimbraPrefOutOfOfficeSuppressExternalReply True', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
-		// Set suppress external reply
+		// Modify preferences
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyPrefsRequest xmlns="urn:zimbraAccount">
 				<pref name="zimbraPrefOutOfOfficeReplyEnabled">TRUE</pref>
@@ -151,6 +187,8 @@ describe('OOOPreventive', function () {
 				<pref name="zimbraPrefOutOfOfficeSuppressExternalReply">TRUE</pref>
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest suppress should not fault');
 		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
@@ -158,26 +196,33 @@ describe('OOOPreventive', function () {
 
 	it('Sanity | Verify OOO suppress external reply via GetPrefs', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
-		// Set and verify suppress external reply
+		// Modify preferences
 		await soap.makeSOAPEnvelopeAccount(
 			`<ModifyPrefsRequest xmlns="urn:zimbraAccount">
 				<pref name="zimbraPrefOutOfOfficeSuppressExternalReply">TRUE</pref>
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
 
+		// Get preferences
 		const getRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetPrefsRequest xmlns="urn:zimbraAccount">
 				<pref name="zimbraPrefOutOfOfficeSuppressExternalReply"/>
 			</GetPrefsRequest>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(getRes.Fault, 'GetPrefsRequest should not fault');
 		assert.exists(getRes.GetPrefsResponse, 'GetPrefsResponse should exist');
 	});

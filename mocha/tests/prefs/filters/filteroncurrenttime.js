@@ -79,7 +79,7 @@ describe('Prefs > Filters > FilterOnCurrentTime', function () {
 		);
 
 		// Search for the message and verify it is flagged
-		await common.delay(3000);
+		await common.delay(5000);
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${filterSubject})</query>
@@ -152,7 +152,7 @@ describe('Prefs > Filters > FilterOnCurrentTime', function () {
 		);
 
 		// Search for the message and verify it is flagged
-		await common.delay(3000);
+		await common.delay(5000);
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${filterSubject})</query>
@@ -229,7 +229,7 @@ describe('Prefs > Filters > FilterOnCurrentTime', function () {
 		);
 
 		// Search for the message and verify it is flagged
-		await common.delay(3000);
+		await common.delay(5000);
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${filterSubject})</query>
@@ -307,7 +307,7 @@ describe('Prefs > Filters > FilterOnCurrentTime', function () {
 		);
 
 		// Search for the message and verify it is NOT flagged
-		await common.delay(3000);
+		await common.delay(5000);
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${filterSubject})</query>
@@ -378,7 +378,7 @@ describe('Prefs > Filters > FilterOnCurrentTime', function () {
 		);
 
 		// Search for the message and verify it is flagged
-		await common.delay(3000);
+		await common.delay(5000);
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${filterSubject})</query>
@@ -450,7 +450,7 @@ describe('Prefs > Filters > FilterOnCurrentTime', function () {
 		);
 
 		// Search for the message and verify it is NOT flagged
-		await common.delay(3000);
+		await common.delay(5000);
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${filterSubject})</query>

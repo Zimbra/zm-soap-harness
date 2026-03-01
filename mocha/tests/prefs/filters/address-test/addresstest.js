@@ -74,7 +74,7 @@ describe('Prefs > Filters > AddressTest > AddressTest', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 
 		// Wait for delivery
-		await common.delay(3000);
+		await common.delay(5000);
 
 		// Search and verify message is flagged
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
@@ -156,7 +156,7 @@ describe('Prefs > Filters > AddressTest > AddressTest', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 
 		// Wait for delivery
-		await common.delay(3000);
+		await common.delay(5000);
 
 		// Search in folder
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
@@ -238,7 +238,7 @@ describe('Prefs > Filters > AddressTest > AddressTest', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 
 		// Wait for delivery
-		await common.delay(3000);
+		await common.delay(5000);
 
 		// Search in folder
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
@@ -321,7 +321,7 @@ describe('Prefs > Filters > AddressTest > AddressTest', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 
 		// Wait for delivery
-		await common.delay(3000);
+		await common.delay(5000);
 
 		// Search in folder
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
@@ -404,7 +404,7 @@ describe('Prefs > Filters > AddressTest > AddressTest', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 
 		// Wait for delivery
-		await common.delay(3000);
+		await common.delay(5000);
 
 		// Search in folder
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
@@ -486,7 +486,7 @@ describe('Prefs > Filters > AddressTest > AddressTest', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 
 		// Wait for delivery
-		await common.delay(3000);
+		await common.delay(5000);
 
 		// Search in folder
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
@@ -568,7 +568,7 @@ describe('Prefs > Filters > AddressTest > AddressTest', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 
 		// Wait for delivery
-		await common.delay(3000);
+		await common.delay(5000);
 
 		// Search in folder
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
@@ -650,7 +650,7 @@ describe('Prefs > Filters > AddressTest > AddressTest', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 
 		// Wait for delivery
-		await common.delay(3000);
+		await common.delay(5000);
 
 		// Search in folder
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
@@ -732,7 +732,7 @@ describe('Prefs > Filters > AddressTest > AddressTest', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 
 		// Wait for delivery
-		await common.delay(3000);
+		await common.delay(5000);
 
 		// Search in folder
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
@@ -814,7 +814,7 @@ describe('Prefs > Filters > AddressTest > AddressTest', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 
 		// Wait for delivery
-		await common.delay(3000);
+		await common.delay(5000);
 
 		// Search in folder
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
@@ -896,7 +896,7 @@ describe('Prefs > Filters > AddressTest > AddressTest', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 
 		// Wait for delivery
-		await common.delay(3000);
+		await common.delay(5000);
 
 		// Search in folder
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
@@ -979,7 +979,7 @@ describe('Prefs > Filters > AddressTest > AddressTest', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 
 		// Wait for delivery
-		await common.delay(3000);
+		await common.delay(5000);
 
 		// Search in folder
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
@@ -1062,7 +1062,7 @@ describe('Prefs > Filters > AddressTest > AddressTest', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 
 		// Wait for delivery
-		await common.delay(3000);
+		await common.delay(5000);
 
 		// Search in folder
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
@@ -1144,7 +1144,7 @@ describe('Prefs > Filters > AddressTest > AddressTest', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 
 		// Wait for delivery
-		await common.delay(3000);
+		await common.delay(5000);
 
 		// Search in folder
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
@@ -1226,7 +1226,7 @@ describe('Prefs > Filters > AddressTest > AddressTest', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 
 		// Wait for delivery
-		await common.delay(3000);
+		await common.delay(5000);
 
 		// Search in folder
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
@@ -1309,7 +1309,7 @@ describe('Prefs > Filters > AddressTest > AddressTest', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 
 		// Wait for delivery
-		await common.delay(3000);
+		await common.delay(5000);
 
 		// Search in folder
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
@@ -1392,7 +1392,7 @@ describe('Prefs > Filters > AddressTest > AddressTest', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 
 		// Wait for delivery
-		await common.delay(3000);
+		await common.delay(5000);
 
 		// Search in folder
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
@@ -1474,7 +1474,7 @@ describe('Prefs > Filters > AddressTest > AddressTest', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 
 		// Wait for delivery
-		await common.delay(3000);
+		await common.delay(5000);
 
 		// Search in folder
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
@@ -1556,7 +1556,7 @@ describe('Prefs > Filters > AddressTest > AddressTest', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 
 		// Wait for delivery
-		await common.delay(3000);
+		await common.delay(5000);
 
 		// Search in folder
 		const searchRes = await soap.makeSOAPEnvelopeAccount(

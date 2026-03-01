@@ -21,27 +21,34 @@ describe('Bug75785', function () {
 
 	// Tests
 	it('Sanity | GetShareInfoRequest gives serviceFAILURE mailbox not found for account', async () => {
-		// Create account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+
+		// Authenticate account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
-		// GetFolderRequest
+		// Get the folder
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetFolderRequest xmlns="urn:zimbraMail"/>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(folderRes.Fault, 'GetFolderRequest should not fault');
 		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 
-		// GetShareInfoRequest
+		// Send get share info request
 		const shareRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetShareInfoRequest xmlns="urn:zimbraAccount"/>`, accountAuthToken
 		);
+
+		// Verify the response
 		assert.notExists(shareRes.Fault, 'GetShareInfoRequest should not fault');
 		assert.exists(shareRes.GetShareInfoResponse, 'GetShareInfoResponse should exist');
 	});

@@ -378,8 +378,8 @@ Content for ${mail9.name}</content>
 		// CreateFolderRequest
 		const res15 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateFolderRequest xmlns="urn:zimbraMail">
-                <folder name="${folder1.name}" l="${root.id}"/>
-            </CreateFolderRequest>`, accountAuthToken
+				<folder name="${folder1.name}" l="${root.id}"/>
+			</CreateFolderRequest>`, accountAuthToken
 		);
 
 		// Verify response

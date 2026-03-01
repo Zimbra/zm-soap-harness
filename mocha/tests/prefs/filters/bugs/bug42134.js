@@ -22,17 +22,21 @@ describe('Prefs > Filters > Bugs > Bug42134', function () {
 	// Tests
 	it('Sanity | Create a filter with value contains backslash', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
+
+		// Create an account
 		await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
-		const authToken = await soap.getAccountAuthToken(accountEmail);
 
-		// Create filter with backslash in value
+		// Authenticate account
+		const authToken = await soap.getAccountAuthToken(accountEmail);
 		const filterName = `filter${common.getUniqueString()}`;
 		const filterSubject = `filter \\\\${common.getUniqueString()}\\\\`;
+
+		// Modify filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
 				<filterRules>
@@ -48,11 +52,16 @@ describe('Prefs > Filters > Bugs > Bug42134', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, authToken
 		);
+
+		// Verify the response
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
 
+		// Get filter rules
 		const getRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetFilterRulesRequest xmlns="urn:zimbraMail"/>`, authToken
 		);
+
+		// Verify the response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
 		assert.exists(getRes.GetFilterRulesResponse, 'Response should exist');
 	});

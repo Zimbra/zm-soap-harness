@@ -22,51 +22,123 @@ const files = getAllJsFiles(TARGET_DIR);
 let fixed = 0;
 let skipped = 0;
 let alreadyHas = 0;
+let commentAdded = 0;
 
 for (const file of files) {
     let content = fs.readFileSync(file, 'utf8');
-
-    if (content.includes('// Applicable zimbra versions')) {
-        alreadyHas++;
-        continue;
-    }
-
-    // Find the first it(' occurrence
-    const firstItMatch = content.match(/(\r?\n)(\s*)(it\()/);
-    if (!firstItMatch) {
-        console.log('SKIP (no it found): ' + file);
-        skipped++;
-        continue;
-    }
-
-    const firstItIndex = content.indexOf(firstItMatch[0]);
-
-    // Find the }); before the first it - this is the before() closing
-    const beforeSection = content.substring(0, firstItIndex);
-    const lastClosingBrace = beforeSection.lastIndexOf('});');
-
-    if (lastClosingBrace === -1) {
-        console.log('SKIP (no }); found): ' + file);
-        skipped++;
-        continue;
-    }
-
-    // Detect indentation of it()
-    const indent = firstItMatch[2];
     const newline = content.includes('\r\n') ? '\r\n' : '\n';
+    let changed = false;
 
-    // Insert point is after '});'
-    const insertPoint = lastClosingBrace + 3;
+    // --- STEP 1: Ensure Applicable block exists ---
+    const hasComment = content.includes('// Applicable zimbra versions');
+    const hasIfBlock = content.includes('config.serial === true') ||
+        content.includes('config.serverEnvironment');
 
-    // Build the formatting block
-    const block = newline + newline + indent + '// Applicable zimbra versions' + newline + indent + 'if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {' + newline + indent + '\treturn;' + newline + indent + '}' + newline + newline + indent + '// Tests' + newline;
+    if (hasComment && hasIfBlock) {
+        alreadyHas++;
+    } else if (!hasComment && hasIfBlock) {
+        const ifPattern = /^([ \t]*)(if\s*\(\s*config\.serial\s*===\s*true)/m;
+        const ifMatch = content.match(ifPattern);
+        if (ifMatch) {
+            const indent = ifMatch[1];
+            const ifIndex = content.indexOf(ifMatch[0]);
+            content = content.substring(0, ifIndex)
+                + indent + '// Applicable zimbra versions' + newline
+                + content.substring(ifIndex);
+            changed = true;
+            commentAdded++;
+            console.log('COMMENT ADDED: ' + path.relative(TARGET_DIR, file));
+        } else {
+            console.log('SKIP (if block pattern not matched): ' + path.relative(TARGET_DIR, file));
+            skipped++;
+            continue;
+        }
+    } else {
+        const firstItMatch = content.match(/(\r?\n)(\s*)(it\()/);
+        if (!firstItMatch) {
+            console.log('SKIP (no it found): ' + path.relative(TARGET_DIR, file));
+            skipped++;
+            continue;
+        }
 
-    // Replace content between }); and first it(
-    content = content.substring(0, insertPoint) + block + indent + content.substring(firstItIndex).trimStart();
+        const firstItIndex = content.indexOf(firstItMatch[0]);
+        const beforeSection = content.substring(0, firstItIndex);
+        const lastClosingBrace = beforeSection.lastIndexOf('});');
 
-    fs.writeFileSync(file, content, 'utf8');
-    fixed++;
-    console.log('FIXED: ' + path.relative(TARGET_DIR, file));
+        if (lastClosingBrace === -1) {
+            console.log('SKIP (no }); found): ' + path.relative(TARGET_DIR, file));
+            skipped++;
+            continue;
+        }
+
+        const indent = firstItMatch[2];
+        const insertPoint = lastClosingBrace + 3;
+
+        const block = newline + newline + indent + '// Applicable zimbra versions'
+            + newline + indent + 'if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {'
+            + newline + indent + '\treturn;'
+            + newline + indent + '}';
+
+        content = content.substring(0, insertPoint) + block + content.substring(insertPoint);
+        changed = true;
+        fixed++;
+        console.log('FIXED: ' + path.relative(TARGET_DIR, file));
+    }
+
+    // --- STEP 2: Ensure // Tests comment exists after the if block's closing } ---
+    if (!content.includes('// Tests')) {
+        const ifClosePattern = /^([ \t]*)if\s*\(config\.serial[\s\S]*?\n([ \t]*)\}/m;
+        const ifCloseMatch = content.match(ifClosePattern);
+        if (ifCloseMatch) {
+            const closeBraceIndex = content.indexOf(ifCloseMatch[0]) + ifCloseMatch[0].length;
+            const indent = ifCloseMatch[2];
+            content = content.substring(0, closeBraceIndex)
+                + newline + newline + indent + '// Tests'
+                + content.substring(closeBraceIndex);
+            changed = true;
+        }
+    }
+
+    // --- STEP 3: Fix spacing between blocks ---
+    const lines = content.split(/\r?\n/);
+    const fixedLines = [];
+    for (let i = 0; i < lines.length; i++) {
+        fixedLines.push(lines[i]);
+
+        // Look ahead to find the next non-blank line
+        let j = i + 1;
+        while (j < lines.length && lines[j].trim() === '') {
+            j++;
+        }
+        if (j >= lines.length) continue;
+
+        const nextNonBlank = lines[j].trim();
+        const currentTrimmed = lines[i].trim();
+        const blankCount = j - i - 1;
+
+        // Rule: // Tests -> it( = NO blank line between them
+        if (currentTrimmed === '// Tests' && nextNonBlank.startsWith('it(')) {
+            if (blankCount !== 0) {
+                i = j - 1;
+                changed = true;
+            }
+        }
+
+        // Rule: }); -> it( = exactly 2 blank lines
+        if (currentTrimmed === '});' && nextNonBlank.startsWith('it(')) {
+            if (blankCount !== 2) {
+                i = j - 1;
+                fixedLines.push('');
+                fixedLines.push('');
+                changed = true;
+            }
+        }
+    }
+
+    if (changed) {
+        const finalContent = fixedLines.join(newline);
+        fs.writeFileSync(file, finalContent, 'utf8');
+    }
 }
 
-console.log('\nDone! Fixed: ' + fixed + ', Already had: ' + alreadyHas + ', Skipped: ' + skipped);
+console.log('\nDone! Fixed: ' + fixed + ', Comment added: ' + commentAdded + ', Already had: ' + alreadyHas + ', Skipped: ' + skipped);

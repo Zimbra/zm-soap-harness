@@ -109,15 +109,15 @@ describe('Search > PersonalShared > Shared', function () {
 		// AddMsgRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<AddMsgRequest xmlns="urn:zimbraMail">
-                <m l="3">
-                    <content>To: foo@example.com
+				<m l="3">
+					<content>To: foo@example.com
 From: bar@example.com
 Subject: ${subject1}
 Date: Wed, 15 Aug 2007 10:11:05 -0700 (PDT)
 Hello how r u?
-                    </content>
-                </m>
-            </AddMsgRequest>`, accountAuthToken
+					</content>
+				</m>
+			</AddMsgRequest>`, accountAuthToken
 		);
 
 		// Verify response

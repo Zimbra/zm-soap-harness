@@ -3,7 +3,7 @@ const path = require('path');
 
 const targetDir = process.argv[2];
 if (!targetDir) {
-    console.error('Usage: node clean-inline-comments-v3.cjs <dir>');
+    console.error('Usage: node inline-comments.cjs <dir>');
     process.exit(1);
 }
 
@@ -26,11 +26,18 @@ function getSoapComment(requestType) {
         'CreateAppointmentRequest': 'Create an appointment',
         'CreateContactRequest': 'Create a contact',
         'CreateTagRequest': 'Create a tag',
+        'CreateIdentityRequest': 'Create an identity',
+        'CreateSignatureRequest': 'Create a signature',
+        'CreateDataSourceRequest': 'Create a data source',
+        'CreateFilterRulesRequest': 'Create filter rules',
         'ModifyAccountRequest': 'Modify the account',
         'ModifyPrefsRequest': 'Modify preferences',
         'ModifyAppointmentRequest': 'Modify the appointment',
         'ModifyContactRequest': 'Modify the contact',
+        'ModifyIdentityRequest': 'Modify the identity',
+        'ModifyFilterRulesRequest': 'Modify filter rules',
         'DeleteAccountRequest': 'Delete the account',
+        'DeleteIdentityRequest': 'Delete the identity',
         'GetAccountRequest': 'Get account details',
         'GetAccountInfoRequest': 'Get account info',
         'GetInfoRequest': 'Get info',
@@ -38,6 +45,8 @@ function getSoapComment(requestType) {
         'GetMsgRequest': 'Get the message',
         'GetFolderRequest': 'Get the folder',
         'GetContactsRequest': 'Get the contact',
+        'GetIdentitiesRequest': 'Get identities',
+        'GetFilterRulesRequest': 'Get filter rules',
         'GetCustomMetadataRequest': 'Get custom metadata',
         'GetMailboxMetadataRequest': 'Get mailbox metadata',
         'SetCustomMetadataRequest': 'Set custom metadata',
@@ -69,16 +78,59 @@ function getSoapComment(requestType) {
         'AdminDestroyWaitSetRequest': 'Admin destroy wait set',
         'GrantRightsRequest': 'Grant rights',
         'RevokeRightsRequest': 'Revoke rights',
-        'DelegateAuthRequest': 'Delegate auth'
+        'DelegateAuthRequest': 'Delegate auth',
+        'GetWhiteBlackListRequest': 'Get white/black list',
+        'ModifyWhiteBlackListRequest': 'Modify white/black list',
+        'GetOutgoingFilterRulesRequest': 'Get outgoing filter rules',
+        'ModifyOutgoingFilterRulesRequest': 'Modify outgoing filter rules',
+        'ApplyFilterRulesRequest': 'Apply filter rules',
+        'GetDataSourcesRequest': 'Get data sources',
+        'ImportDataRequest': 'Import data',
+        'TestDataSourceRequest': 'Test data source',
+        'DeleteDataSourceRequest': 'Delete data source',
+        'ModifyDataSourceRequest': 'Modify data source',
+        'ImportContactsRequest': 'Import contacts',
+        'ExportContactsRequest': 'Export contacts',
+        'GetAvailableSkinsRequest': 'Get available skins',
     };
     return map[requestType] || null;
 }
 
+function hasProperInlineComments(content) {
+    const properPatterns = [
+        /^\s*\/\/ Create/m,
+        /^\s*\/\/ Get /m,
+        /^\s*\/\/ Verify/m,
+        /^\s*\/\/ Send /m,
+        /^\s*\/\/ Search/m,
+        /^\s*\/\/ Modify/m,
+        /^\s*\/\/ Delete/m,
+        /^\s*\/\/ Authenticate/m,
+        /^\s*\/\/ Inject/m,
+        /^\s*\/\/ Perform/m,
+        /^\s*\/\/ Set /m,
+        /^\s*\/\/ Grant/m,
+        /^\s*\/\/ Revoke/m,
+        /^\s*\/\/ Save /m,
+    ];
+    let matchCount = 0;
+    for (const pattern of properPatterns) {
+        if (pattern.test(content)) matchCount++;
+    }
+    return matchCount >= 2;
+}
+
 function processFile(filePath) {
     const content = fs.readFileSync(filePath, 'utf8');
+
+    // Skip files that already have proper inline comments
+    if (hasProperInlineComments(content)) {
+        return false;
+    }
+
     const rawLines = content.split(/\r?\n/);
 
-    // PASS 1: Remove all inline comments strictly inside `it` blocks (except `// Tests` or `// Applicable`)
+    // PASS 1: Strip all inline comments inside it() blocks (except Applicable/Tests)
     const cleanLines = [];
     let inIt = false;
     let itDepth = 0;
@@ -114,11 +166,14 @@ function processFile(filePath) {
         cleanLines.push(line);
     }
 
-    // PASS 2: Inject grouped comments triggered strictly by `await soap.` declarations.
+    // PASS 2: Inject operation and assertion comments
     const lines = cleanLines;
     const newLines = [];
     inIt = false;
     itDepth = 0;
+    let inAssertBlock = false;
+    let lastActionComment = null;
+    let isFirstActionInIt = false;
 
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
@@ -127,6 +182,9 @@ function processFile(filePath) {
         if (t.startsWith('it(') && t.includes('async')) {
             inIt = true;
             itDepth = 0;
+            inAssertBlock = false;
+            lastActionComment = null;
+            isFirstActionInIt = true;
             newLines.push(line);
             continue;
         }
@@ -141,17 +199,14 @@ function processFile(filePath) {
                 continue;
             }
 
-            // Looking for triggers:
-            // `const res = await soap.make...`
-            // `let res = await soap.make...`
-            // `await soap.make...`
             const isSoapCallStart = t.includes('await soap.makeSOAPEnvelope') ||
                 t.includes('await soap.getAccountAuthToken') ||
                 t.includes('await soap.getAdminAuthToken');
 
             if (isSoapCallStart) {
+                inAssertBlock = false;
+
                 let commentStr = null;
-                // Look ahead to find the specific XML request
                 for (let j = i; j < Math.min(i + 15, lines.length); j++) {
                     const match = lines[j].match(/<([A-Za-z0-9_]+Request)/);
                     if (match) {
@@ -164,7 +219,6 @@ function processFile(filePath) {
                     }
                     if (lines[j].includes('getAccountAuthToken')) { commentStr = '// Authenticate account'; break; }
                     if (lines[j].includes('getAdminAuthToken')) { commentStr = '// Authenticate as admin'; break; }
-                    // Stop looking if we hit an assert or another await soap before finding XML
                     const nextLine = lines[j].trim();
                     if (j > i && (nextLine.startsWith('assert.') || nextLine.includes('await soap.'))) break;
                 }
@@ -173,19 +227,85 @@ function processFile(filePath) {
                     commentStr = '// Perform SOAP request';
                 }
 
-                const indent = line.match(/^(\t*)/)[1];
-                // Add blank line if we are not at the very top of `it(` and previous line isn't blank
-                const prevLine = newLines[newLines.length - 1].trim();
-                if (prevLine !== '' && !prevLine.startsWith('it(') && !prevLine.startsWith('//')) {
-                    newLines.push('');
+                if (commentStr === lastActionComment) {
+                    while (newLines.length > 0 && newLines[newLines.length - 1].trim() === '') {
+                        newLines.pop();
+                    }
+                    newLines.push(line);
+                } else {
+                    const indent = line.match(/^(\t*)/)[1] || '\t\t';
+                    const prevLine = newLines.length > 0 ? newLines[newLines.length - 1].trim() : '';
+
+                    if (isFirstActionInIt) {
+                        newLines.push(line);
+                        lastActionComment = commentStr;
+                    } else {
+                        if (prevLine !== '' && !prevLine.startsWith('it(') && !prevLine.startsWith('//')) {
+                            newLines.push('');
+                        }
+                        newLines.push(indent + commentStr);
+                        newLines.push(line);
+                        lastActionComment = commentStr;
+                    }
                 }
-                newLines.push(indent + commentStr);
+
+                isFirstActionInIt = false;
+                continue;
+            }
+
+            // Assertion group trigger
+            if (t.startsWith('assert.') && !inAssertBlock) {
+                inAssertBlock = true;
+                lastActionComment = null;
+
+                const indent = line.match(/^(\t*)/)[1] || '\t\t';
+                const prevLine = newLines.length > 0 ? newLines[newLines.length - 1].trim() : '';
+
+                if (!isFirstActionInIt) {
+                    if (prevLine !== '' && !prevLine.startsWith('it(') && !prevLine.startsWith('//')) {
+                        newLines.push('');
+                    }
+                    newLines.push(indent + '// Verify the response');
+                }
+            }
+
+            if (t !== '' && !t.startsWith('//')) {
+                isFirstActionInIt = false;
             }
 
             newLines.push(line);
 
         } else {
             newLines.push(line);
+        }
+    }
+
+    // PASS 3: Replace any remaining "// Unknown" comments with actual SOAP request names
+    for (let i = 0; i < newLines.length - 1; i++) {
+        const trimmed = newLines[i].trimEnd();
+        if (trimmed.endsWith('// Unknown')) {
+            let requestName = null;
+            for (let j = i + 1; j < Math.min(i + 6, newLines.length); j++) {
+                const xmlMatch = newLines[j].trim().match(/<(\w+Request)\s/);
+                if (xmlMatch) {
+                    const text = getSoapComment(xmlMatch[1]);
+                    requestName = text
+                        ? `// ${text}`
+                        : `// ${xmlMatch[1]}`;
+                    break;
+                }
+            }
+            if (requestName) {
+                const indent = newLines[i].match(/^(\s*)/)[1];
+                newLines[i] = indent + requestName;
+            }
+        }
+    }
+
+    // PASS 4: Remove "// XPath expression removed (not valid JS)" lines
+    for (let i = newLines.length - 1; i >= 0; i--) {
+        if (newLines[i].trim() === '// XPath expression removed (not valid JS)') {
+            newLines.splice(i, 1);
         }
     }
 
