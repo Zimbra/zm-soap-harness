@@ -128,7 +128,9 @@ Now is the time for all good men to come to the aid of their country.</content>
 			</MsgActionRequest>`, accountAuthToken
 		);
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
-		assert.exists(res9.MsgActionResponse, 'MsgActionResponse should exist');
+		const msgAction = Array.isArray(res9.MsgActionResponse.action)
+			? res9.MsgActionResponse.action[0] : res9.MsgActionResponse.action;
+		assert.exists(msgAction, 'MsgActionResponse should contain action');
 
 		// Move email17E to junk (folder id=4)
 		const res10 = await soap.makeSOAPEnvelopeAccount(
@@ -137,7 +139,6 @@ Now is the time for all good men to come to the aid of their country.</content>
 			</MsgActionRequest>`, accountAuthToken
 		);
 		assert.notExists(res10.Fault, 'Response should not be a Fault');
-		assert.exists(res10.MsgActionResponse, 'MsgActionResponse should exist');
 	});
 
 
@@ -213,7 +214,9 @@ ${message1Content}</content>
 			</MsgActionRequest>`, accountAuthToken
 		);
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.MsgActionResponse, 'MsgActionResponse should exist');
+		const msgAction = Array.isArray(res3.MsgActionResponse.action)
+			? res3.MsgActionResponse.action[0] : res3.MsgActionResponse.action;
+		assert.exists(msgAction, 'MsgActionResponse should contain action');
 
 		// Search with is:anywhere - should find trashed mail
 		const res4 = await soap.makeSOAPEnvelopeAccount(

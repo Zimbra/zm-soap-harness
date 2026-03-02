@@ -503,8 +503,10 @@ describe('Admin > Accounts > Account Alias Remove', function () {
 
 		// Verify response
 		assert.notExists(sendResponse.Fault, 'Response should not be a Fault');
-		assert.exists(sendResponse.SendMsgResponse,
-			'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendResponse.SendMsgResponse.m)
+			? sendResponse.SendMsgResponse.m[0] : sendResponse.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// RemoveAccountAliasRequest
 		await soap.makeSOAPEnvelopeAdmin(

@@ -509,8 +509,7 @@ describe('EWS > Delete Mail From EWS', function () {
 		);
 
 		// Verify response
-		assert.exists(searchDumpsterRes.SearchResponse,
-			'SearchResponse should exist');
+		assert.exists(searchDumpsterRes.SearchResponse, 'SearchResponse should exist');
 		const dumpsterSu = searchDumpsterRes.SearchResponse?.m?.su
 			|| (Array.isArray(searchDumpsterRes.SearchResponse?.m)
 				? searchDumpsterRes.SearchResponse.m[0]?.su : undefined);

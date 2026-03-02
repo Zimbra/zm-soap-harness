@@ -88,7 +88,9 @@ describe('Mail > Bugs > Bug 11331', function () {
 			</GetMsgRequest>`, authToken
 		);
 		assert.notExists(getMsgPartRes.Fault, 'GetMsgRequest with part should not fault');
-		assert.exists(getMsgPartRes.GetMsgResponse, 'GetMsgResponse should exist');
+		const getMsg = Array.isArray(getMsgPartRes.GetMsgResponse.m)
+			? getMsgPartRes.GetMsgResponse.m[0] : getMsgPartRes.GetMsgResponse.m;
+		assert.exists(getMsg, 'GetMsgResponse should contain m');
 		const partMsg = Array.isArray(getMsgPartRes.GetMsgResponse.m) ? getMsgPartRes.GetMsgResponse.m[0] : getMsgPartRes.GetMsgResponse.m;
 		assert.exists(partMsg, 'Message with part should exist');
 		assert.include(partMsg.su, 'visit to saint andrews 18', 'Subject should contain expected text');

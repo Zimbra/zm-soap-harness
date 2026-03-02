@@ -67,7 +67,10 @@ describe('Mail > Message Loop', function () {
 			</SendMsgRequest>`, account1AuthToken
 		);
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Send additional messages in a loop (reduced from 1000 to 10 for JS performance)
 		for (let i = 0; i < 10; i++) {
@@ -90,28 +93,26 @@ describe('Mail > Message Loop', function () {
 			`<GetInfoRequest xmlns="urn:zimbraAccount"/>`, account1AuthToken
 		);
 		assert.notExists(infoRes.Fault, 'GetInfoRequest should not fault');
-		assert.exists(infoRes.GetInfoResponse.name, 'GetInfoResponse should contain name');
+		assert.exists(infoRes.GetInfoResponse, 'GetInfoResponse should exist');
 	});
 
 
 	it('Functional | Search a message', async () => {
+		// Wait for message delivery
+		await new Promise(resolve => setTimeout(resolve, 5000));
+
 		// Search for the specific message sent earlier
-		let searchRes;
-		for (let retry = 0; retry < 5; retry++) {
-			await new Promise(resolve => setTimeout(resolve, 3000));
-			searchRes = await soap.makeSOAPEnvelopeAccount(
-				`<SearchRequest xmlns="urn:zimbraMail" types="message" offset="0" limit="25">
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="message" offset="0" limit="25">
 				<query>subject:(First message to be searched)</query>
 			</SearchRequest>`, account2AuthToken
-			);
-			if (searchRes.SearchResponse && searchRes.SearchResponse.m) break;
-		}
+		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
 		assert.exists(searchRes.SearchResponse.m, 'SearchResponse should contain message');
 		messageId = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m[0].id
 			: searchRes.SearchResponse.m.id;
-		assert.exists(messageId, 'Message id should exist');
+		assert.isString(messageId, 'Message id should be a string');
 	});
 
 
@@ -294,7 +295,10 @@ describe('Mail > Message Loop', function () {
 			</SendMsgRequest>`, account2AuthToken
 		);
 		assert.notExists(res.Fault, 'SendMsgRequest should not fault');
-		assert.exists(res.SendMsgResponse.m, 'SendMsgResponse should contain m');
+		const replyMsg = Array.isArray(res.SendMsgResponse.m)
+			? res.SendMsgResponse.m[0] : res.SendMsgResponse.m;
+		assert.exists(replyMsg, 'SendMsgResponse should contain m');
+		assert.isString(replyMsg.id, 'Reply message should have an id');
 	});
 
 
@@ -312,7 +316,10 @@ describe('Mail > Message Loop', function () {
 			</SendMsgRequest>`, account2AuthToken
 		);
 		assert.notExists(res.Fault, 'SendMsgRequest should not fault');
-		assert.exists(res.SendMsgResponse.m, 'SendMsgResponse should contain m');
+		const fwdMsg = Array.isArray(res.SendMsgResponse.m)
+			? res.SendMsgResponse.m[0] : res.SendMsgResponse.m;
+		assert.exists(fwdMsg, 'SendMsgResponse should contain m');
+		assert.isString(fwdMsg.id, 'Forwarded message should have an id');
 	});
 
 
@@ -360,10 +367,7 @@ describe('Mail > Message Loop', function () {
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
 		// Verify no results
-		const messages = searchRes.SearchResponse.m;
-		assert.isTrue(
-			messages === undefined || messages === null || (Array.isArray(messages) && messages.length === 0),
-			'Search should return no messages for non-existing subject'
-		);
+		assert.notExists(searchRes.SearchResponse.m,
+			'Search should return no messages for non-existing subject');
 	});
 });

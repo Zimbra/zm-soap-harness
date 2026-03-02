@@ -44,7 +44,8 @@ describe('Mail > Bugs > Bug 83780', function () {
 			`<GetInfoRequest xmlns="urn:zimbraAccount" sections="attrs"/>`, authToken
 		);
 		assert.notExists(res.Fault, 'GetInfoRequest should not fault');
-		assert.exists(res.GetInfoResponse, 'GetInfoResponse should exist');
+		assert.exists(res.GetInfoResponse.name || res.GetInfoResponse.id,
+			'GetInfoResponse should contain identity data');
 
 		// Check zimbraAttachmentsViewInHtmlOnly is in attrs
 		const attrs = res.GetInfoResponse.attrs._attrs || res.GetInfoResponse.attrs;

@@ -332,11 +332,9 @@ describe('Mail > Conversation > Conversation Loop', function () {
 			</SearchRequest>`, acct2AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		if (searchRes.SearchResponse.c) {
-			const convs = Array.isArray(searchRes.SearchResponse.c)
-				? searchRes.SearchResponse.c : [searchRes.SearchResponse.c];
-			const match = convs.find(c => c && c.id === convId);
-			assert.notExists(match, 'Should not find the deleted conversation');
-		}
+const convs = Array.isArray(searchRes.SearchResponse.c)
+			? searchRes.SearchResponse.c : [searchRes.SearchResponse.c];
+		const match = convs.find(c => c && c.id === convId);
+		assert.notExists(match, 'Should not find the deleted conversation');
 	});
 });

@@ -72,7 +72,10 @@ describe('Mail > Bugs > Bug 22712', function () {
 			</SendMsgRequest>`, senderAuth
 		);
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Verify recipient with trailing dot received the message
 		if (createRes2 && !createRes2.Fault) {

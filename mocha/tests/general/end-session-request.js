@@ -47,8 +47,8 @@ describe('General > End Session Request', function () {
 
 		// Verify response
 		assert.notExists(getInfoRes.Fault, 'GetInfoRequest should not be a Fault');
-		assert.exists(getInfoRes.GetInfoResponse,
-			'GetInfoResponse should exist');
+		assert.exists(getInfoRes.GetInfoResponse.name || getInfoRes.GetInfoResponse.id,
+			'GetInfoResponse should contain identity data');
 
 		// End the session
 		const endSessionRes = await soap.makeSOAPEnvelopeAccount(

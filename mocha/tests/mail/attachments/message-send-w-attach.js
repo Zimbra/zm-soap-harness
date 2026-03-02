@@ -73,7 +73,10 @@ describe('Mail > Attachments > Message Send W Attach', function () {
 			</SendMsgRequest>`, account1Token
 		);
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 
 
@@ -365,7 +368,9 @@ describe('Mail > Attachments > Message Send W Attach', function () {
 			</GetMsgRequest>`, account1Token
 		);
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
-		assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
+		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		assert.exists(getMsg, 'GetMsgResponse should contain m');
 	});
 
 
@@ -415,6 +420,9 @@ describe('Mail > Attachments > Message Send W Attach', function () {
 			</SendMsgRequest>`, account1Token
 		);
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 });

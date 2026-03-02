@@ -51,7 +51,9 @@ describe('Tags > Itemaction Tag', function () {
 
 		// Verify response
 		assert.notExists(deleteRes.Fault, 'Response should not be a Fault');
-		assert.exists(deleteRes.ItemActionResponse, 'ItemActionResponse should exist');
+		const itemAction = Array.isArray(deleteRes.ItemActionResponse.action)
+			? deleteRes.ItemActionResponse.action[0] : deleteRes.ItemActionResponse.action;
+		assert.exists(itemAction, 'ItemActionResponse should contain action');
 		assert.exists(deleteRes.ItemActionResponse.action, 'Action should exist');
 		assert.equal(deleteRes.ItemActionResponse.action.op, 'delete',
 			'Action op should be delete');
@@ -71,7 +73,9 @@ describe('Tags > Itemaction Tag', function () {
 		if (!deleteRes.Fault) {
 
 			// Verify response
-			assert.exists(deleteRes.ItemActionResponse, 'ItemActionResponse should exist');
+			const itemAction = Array.isArray(deleteRes.ItemActionResponse.action)
+				? deleteRes.ItemActionResponse.action[0] : deleteRes.ItemActionResponse.action;
+			assert.exists(itemAction, 'ItemActionResponse should contain action');
 		}
 	});
 
@@ -88,7 +92,9 @@ describe('Tags > Itemaction Tag', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateTagResponse, 'CreateTagResponse should exist');
+		const createdTag = Array.isArray(createRes.CreateTagResponse.tag)
+			? createRes.CreateTagResponse.tag[0] : createRes.CreateTagResponse.tag;
+		assert.exists(createdTag, 'CreateTagResponse should contain tag');
 		const tagId = createRes.CreateTagResponse.tag[0].id;
 
 		// Try to move tag - should fail or be ignored since tags don't live in folders
@@ -101,7 +107,9 @@ describe('Tags > Itemaction Tag', function () {
 		if (!moveRes.Fault) {
 
 			// Verify response
-			assert.exists(moveRes.ItemActionResponse, 'ItemActionResponse should exist');
+			const itemAction = Array.isArray(moveRes.ItemActionResponse.action)
+				? moveRes.ItemActionResponse.action[0] : moveRes.ItemActionResponse.action;
+			assert.exists(itemAction, 'ItemActionResponse should contain action');
 		}
 	});
 
@@ -129,7 +137,9 @@ describe('Tags > Itemaction Tag', function () {
 
 		// Verify response
 		assert.notExists(readRes.Fault, 'Response should not be a Fault');
-		assert.exists(readRes.ItemActionResponse, 'ItemActionResponse should exist');
+		const itemAction = Array.isArray(readRes.ItemActionResponse.action)
+			? readRes.ItemActionResponse.action[0] : readRes.ItemActionResponse.action;
+		assert.exists(itemAction, 'ItemActionResponse should contain action');
 		assert.exists(readRes.ItemActionResponse.action, 'Action should exist');
 		assert.equal(readRes.ItemActionResponse.action.op, 'read',
 			'Action op should be read');
@@ -175,7 +185,9 @@ describe('Tags > Itemaction Tag', function () {
 		if (!tagRes.Fault) {
 
 			// Verify response
-			assert.exists(tagRes.ItemActionResponse, 'ItemActionResponse should exist');
+			const itemAction = Array.isArray(tagRes.ItemActionResponse.action)
+				? tagRes.ItemActionResponse.action[0] : tagRes.ItemActionResponse.action;
+			assert.exists(itemAction, 'ItemActionResponse should contain action');
 		}
 	});
 
@@ -203,6 +215,8 @@ describe('Tags > Itemaction Tag', function () {
 
 		// Verify response
 		assert.notExists(updateRes.Fault, 'Response should not be a Fault');
-		assert.exists(updateRes.ItemActionResponse, 'ItemActionResponse should exist');
+		const itemAction = Array.isArray(updateRes.ItemActionResponse.action)
+			? updateRes.ItemActionResponse.action[0] : updateRes.ItemActionResponse.action;
+		assert.exists(itemAction, 'ItemActionResponse should contain action');
 	});
 });

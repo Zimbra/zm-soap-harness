@@ -94,8 +94,7 @@ Third message content
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse,
-			'SearchResponse should exist');
+		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		// Send modify config request
 		await soap.makeSOAPEnvelopeAdmin(
@@ -169,8 +168,7 @@ Fourth message content
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse,
-			'SearchResponse should exist');
+		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		// Send modify config request
 		await soap.makeSOAPEnvelopeAdmin(

@@ -165,7 +165,9 @@ describe('EWS > Modify Draft From Zwc', function () {
 
 		// Verify response
 		assert.notExists(saveDraftRes.Fault, 'SaveDraftRequest should not be a Fault');
-		assert.exists(saveDraftRes.SaveDraftResponse, 'SaveDraftResponse should exist');
+		const draftMsg = Array.isArray(saveDraftRes.SaveDraftResponse.m)
+			? saveDraftRes.SaveDraftResponse.m[0] : saveDraftRes.SaveDraftResponse.m;
+		assert.exists(draftMsg, 'SaveDraftResponse should contain m');
 		const getFolderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>
@@ -367,7 +369,9 @@ describe('EWS > Modify Draft From Zwc', function () {
 
 		// Verify response
 		assert.notExists(saveDraftRes.Fault, 'SaveDraftRequest should not be a Fault');
-		assert.exists(saveDraftRes.SaveDraftResponse, 'SaveDraftResponse should exist');
+		const draftMsg = Array.isArray(saveDraftRes.SaveDraftResponse.m)
+			? saveDraftRes.SaveDraftResponse.m[0] : saveDraftRes.SaveDraftResponse.m;
+		assert.exists(draftMsg, 'SaveDraftResponse should contain m');
 		const getFolderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>

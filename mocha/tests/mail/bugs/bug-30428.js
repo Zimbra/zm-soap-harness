@@ -84,8 +84,7 @@ describe('Mail > Bugs > Bug 30428', function () {
 			</GetMsgRequest>`, authToken
 		);
 		assert.notExists(getMsgRes2.Fault, 'GetMsgRequest should not fault');
-		const getMsg2 = Array.isArray(getMsgRes2.GetMsgResponse.m) ? getMsgRes2.GetMsgResponse.m[0] : getMsgRes2.GetMsgResponse.m;
-		const parts = JSON.stringify(getMsg2.mp);
+		const parts = JSON.stringify(getMsg.mp);
 		assert.include(parts, 'application/pdf', 'Should have PDF content type');
 		assert.include(parts, 'こんにちは、世界！.pdf', 'Should have Japanese filename');
 	});

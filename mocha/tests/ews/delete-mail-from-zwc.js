@@ -463,8 +463,7 @@ describe('EWS > Delete Mail From Zwc', function () {
 		// Verify response
 		assert.notExists(searchDumpsterRes.Fault,
 			'SearchRequest should not be a Fault');
-		assert.exists(searchDumpsterRes.SearchResponse,
-			'SearchResponse should exist');
+		assert.exists(searchDumpsterRes.SearchResponse, 'SearchResponse should exist');
 		const dumpsterSu = searchDumpsterRes.SearchResponse?.m?.su
 			|| (Array.isArray(searchDumpsterRes.SearchResponse?.m)
 				? searchDumpsterRes.SearchResponse.m[0]?.su : undefined);

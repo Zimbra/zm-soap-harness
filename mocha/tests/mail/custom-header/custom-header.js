@@ -101,7 +101,10 @@ describe('Mail > Custom Header > Custom Header', function () {
 
 		// Verify send succeeded
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Login as account2 and search for the message (allow delivery time)
 		const account2AuthToken = await soap.getAccountAuthToken(account2Email);
@@ -113,7 +116,6 @@ describe('Mail > Custom Header > Custom Header', function () {
 					<query>subject:(${subject})</query>
 				</SearchRequest>`, account2AuthToken
 			);
-			if (searchRes.SearchResponse && searchRes.SearchResponse.m) break;
 		}
 
 		// Verify message found
@@ -136,7 +138,9 @@ describe('Mail > Custom Header > Custom Header', function () {
 
 		// Verify custom headers
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
-		assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
+		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		assert.exists(getMsg, 'GetMsgResponse should contain m');
 		const msg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
 		const headers = msg.header ? (Array.isArray(msg.header) ? msg.header : [msg.header]) : [];
@@ -242,7 +246,9 @@ describe('Mail > Custom Header > Custom Header', function () {
 
 		// Verify draft saved
 		assert.notExists(draftRes.Fault, 'SaveDraftRequest should not fault');
-		assert.exists(draftRes.SaveDraftResponse, 'SaveDraftResponse should exist');
+		const draftMsg = Array.isArray(draftRes.SaveDraftResponse.m)
+			? draftRes.SaveDraftResponse.m[0] : draftRes.SaveDraftResponse.m;
+		assert.exists(draftMsg, 'SaveDraftResponse should contain m');
 		const draftId = Array.isArray(draftRes.SaveDraftResponse.m)
 			? draftRes.SaveDraftResponse.m[0].id : draftRes.SaveDraftResponse.m.id;
 
@@ -384,7 +390,6 @@ describe('Mail > Custom Header > Custom Header', function () {
 				<query>subject:${subject}</query>
 			</SearchRequest>`, account2AuthToken
 			);
-			if (searchRes.SearchResponse && searchRes.SearchResponse.m) break;
 		}
 
 		// Verify appointment found

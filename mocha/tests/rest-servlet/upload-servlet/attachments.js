@@ -121,10 +121,10 @@ describe('Rest Servlet > Upload Servlet > Attachments', function () {
 
 		// Verify response
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
-			? sendRes.SendMsgResponse.m[0]
-			: sendRes.SendMsgResponse.m;
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Verify response
 		assert.exists(sentMsg.id, 'Sent message should have an id');
@@ -138,7 +138,9 @@ describe('Rest Servlet > Upload Servlet > Attachments', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
-		assert.exists(getRes.GetMsgResponse, 'GetMsgResponse should exist');
+		const getMsg = Array.isArray(getRes.GetMsgResponse.m)
+			? getRes.GetMsgResponse.m[0] : getRes.GetMsgResponse.m;
+		assert.exists(getMsg, 'GetMsgResponse should contain m');
 		const msg = Array.isArray(getRes.GetMsgResponse.m)
 			? getRes.GetMsgResponse.m[0]
 			: getRes.GetMsgResponse.m;

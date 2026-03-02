@@ -125,7 +125,10 @@ describe('Auth > Jwt > Jwt ZCS 3258', function () {
 			assert.fail('Should be able to send message: ' + sendRes.Fault.Reason.Text);
 		}
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Wait for message delivery
 		await new Promise(resolve => setTimeout(resolve, 5000));
@@ -210,7 +213,10 @@ describe('Auth > Jwt > Jwt ZCS 3258', function () {
 
 		// Verify response
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Wait for message delivery
 		await new Promise(resolve => setTimeout(resolve, 5000));

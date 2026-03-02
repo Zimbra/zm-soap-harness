@@ -70,7 +70,9 @@ describe('Mail > Bugs > Bug 8055', function () {
 
 		// Verify message and TNEF attachment
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
-		assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
+		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		assert.exists(getMsg, 'GetMsgResponse should contain m');
 		const msg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
 		assert.equal(msg.id, msgId, 'Message id should match');

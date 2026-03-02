@@ -65,10 +65,10 @@ describe('Mail > Read Receipt > Send Msg Request', function () {
 			</SendMsgRequest>`, acct1AuthToken
 		);
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'Message should exist in response');
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Verify Disposition-Notification-To header via REST servlet
 		const restRes = await rest.makeRestRequest(acct1AuthToken, {

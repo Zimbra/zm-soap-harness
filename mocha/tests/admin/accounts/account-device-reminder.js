@@ -79,8 +79,8 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
-		assert.exists(modRes.ModifyAccountResponse,
-			'ModifyAccountResponse should exist');
+		assert.exists(modRes.ModifyAccountResponse.account,
+			'ModifyAccountResponse should contain account');
 		const account = Array.isArray(modRes.ModifyAccountResponse.account)
 			? modRes.ModifyAccountResponse.account[0]
 			: modRes.ModifyAccountResponse.account;
@@ -126,8 +126,8 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
-		assert.exists(modRes.ModifyAccountResponse,
-			'ModifyAccountResponse should exist');
+		assert.exists(modRes.ModifyAccountResponse.account,
+			'ModifyAccountResponse should contain account');
 		const account = Array.isArray(modRes.ModifyAccountResponse.account)
 			? modRes.ModifyAccountResponse.account[0]
 			: modRes.ModifyAccountResponse.account;
@@ -179,8 +179,8 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
-		assert.exists(modRes.ModifyAccountResponse,
-			'ModifyAccountResponse should exist');
+		assert.exists(modRes.ModifyAccountResponse.account,
+			'ModifyAccountResponse should contain account');
 		const account = Array.isArray(modRes.ModifyAccountResponse.account)
 			? modRes.ModifyAccountResponse.account[0]
 			: modRes.ModifyAccountResponse.account;
@@ -214,8 +214,8 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
-		assert.exists(modRes.ModifyAccountResponse,
-			'ModifyAccountResponse should exist');
+		assert.exists(modRes.ModifyAccountResponse.account,
+			'ModifyAccountResponse should contain account');
 		const account = Array.isArray(modRes.ModifyAccountResponse.account)
 			? modRes.ModifyAccountResponse.account[0]
 			: modRes.ModifyAccountResponse.account;

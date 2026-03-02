@@ -80,7 +80,10 @@ describe('Sync > Bug 81962', function () {
 
 		// Verify response
 		assert.notExists(sendRes1.Fault, 'Response should not be a Fault');
-		assert.exists(sendRes1.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes1.SendMsgResponse.m)
+			? sendRes1.SendMsgResponse.m[0] : sendRes1.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 		const msgId1 = sendRes1.SendMsgResponse.m[0].id;
 
 		// Verify response
@@ -125,7 +128,7 @@ describe('Sync > Bug 81962', function () {
 
 		// Verify response
 		assert.notExists(sendRes2.Fault, 'Response should not be a Fault');
-		assert.exists(sendRes2.SendMsgResponse, 'SendMsgResponse should exist');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 		const msgId2 = sendRes2.SendMsgResponse.m[0].id;
 
 		// Back to account1 - sync should show deleted ids
@@ -181,7 +184,7 @@ describe('Sync > Bug 81962', function () {
 
 		// Verify response
 		assert.notExists(sendRes3.Fault, 'Response should not be a Fault');
-		assert.exists(sendRes3.SendMsgResponse, 'SendMsgResponse should exist');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// account2 replies again
 		const sendRes4 = await soap.makeSOAPEnvelopeAccount(
@@ -198,7 +201,7 @@ describe('Sync > Bug 81962', function () {
 
 		// Verify response
 		assert.notExists(sendRes4.Fault, 'Response should not be a Fault');
-		assert.exists(sendRes4.SendMsgResponse, 'SendMsgResponse should exist');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Back to account1 - full sync and verify
 		const syncFinal = await soap.makeSOAPEnvelopeAccount(

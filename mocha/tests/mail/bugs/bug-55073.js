@@ -82,7 +82,9 @@ dGVzdA==
 			</GetMsgRequest>`, authToken
 		);
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
-		assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
+		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		assert.exists(getMsg, 'GetMsgResponse should contain m');
 
 		// Verify attachment has Chinese filename
 		const msg = Array.isArray(getMsgRes.GetMsgResponse.m) ? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;

@@ -104,7 +104,9 @@ describe('Sharing > Bugs > Bug 84420', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'FolderActionRequest grant should not fault');
-		assert.exists(res.FolderActionResponse, 'FolderActionResponse should exist');
+		const folderAction = Array.isArray(res.FolderActionResponse.action)
+			? res.FolderActionResponse.action[0] : res.FolderActionResponse.action;
+		assert.exists(folderAction, 'FolderActionResponse should contain action');
 
 		// Send share notification
 		res = await soap.makeSOAPEnvelopeAccount(

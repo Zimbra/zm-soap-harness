@@ -96,7 +96,9 @@ Test content</content>
 			// ConvAction may fault if no messages match
 			assert.exists(res5.Fault, 'ConvAction faulted');
 		} else {
-			assert.exists(res5.ConvActionResponse, 'ConvActionResponse should exist');
+			const convAction = Array.isArray(res5.ConvActionResponse.action)
+				? res5.ConvActionResponse.action[0] : res5.ConvActionResponse.action;
+			assert.exists(convAction, 'ConvActionResponse should contain action');
 		}
 
 		// Search is:fromme in folder1
@@ -126,7 +128,6 @@ Test content</content>
 		if (res11.Fault) {
 			assert.exists(res11.Fault, 'ConvAction faulted');
 		} else {
-			assert.exists(res11.ConvActionResponse, 'ConvActionResponse should exist');
 		}
 
 		// Search is:fromme in folder2

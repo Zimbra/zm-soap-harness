@@ -70,7 +70,10 @@ describe('EWS > Sync Mail Properties', function () {
 			</SendMsgRequest>`, account2AuthToken
 		);
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		await soap.waitFor(5000);
 	});
@@ -661,7 +664,9 @@ describe('EWS > Sync Mail Properties', function () {
 			</CreateTagRequest>`, account1AuthToken
 		);
 		assert.notExists(createTagRes.Fault, 'CreateTagRequest should not be a Fault');
-		assert.exists(createTagRes.CreateTagResponse, 'CreateTagResponse should exist');
+		const createdTag = Array.isArray(createTagRes.CreateTagResponse.tag)
+			? createTagRes.CreateTagResponse.tag[0] : createTagRes.CreateTagResponse.tag;
+		assert.exists(createdTag, 'CreateTagResponse should contain tag');
 		const tagId = createTagRes.CreateTagResponse.tag[0].id;
 		assert.equal(
 			createTagRes.CreateTagResponse.tag[0].color, tagColor, 'Tag color should match'
@@ -846,7 +851,9 @@ describe('EWS > Sync Mail Properties', function () {
 			</GetMsgRequest>`, account1AuthToken
 		);
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not be a Fault');
-		assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
+		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		assert.exists(getMsg, 'GetMsgResponse should contain m');
 		const msg = getMsgRes.GetMsgResponse.m[0];
 		assert.notExists(msg.tn, 'Message should have no tag names (tn)');
 	});

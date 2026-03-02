@@ -114,11 +114,9 @@ describe('Mail > Conversation > Conversation Search Fetch', function () {
 					<query>subject:${subject1}</query>
 				</SearchRequest>`, acct2AuthToken
 			);
-			if (searchMsgRes.SearchResponse && searchMsgRes.SearchResponse.m) {
-				const m = Array.isArray(searchMsgRes.SearchResponse.m)
-					? searchMsgRes.SearchResponse.m : [searchMsgRes.SearchResponse.m];
-				if (m.length >= 2) break;
-			}
+const m = Array.isArray(searchMsgRes.SearchResponse.m)
+				? searchMsgRes.SearchResponse.m : [searchMsgRes.SearchResponse.m];
+			if (m.length >= 2) break;
 			retriesLeft--;
 		}
 		assert.exists(searchMsgRes.SearchResponse.m, 'Should find messages');

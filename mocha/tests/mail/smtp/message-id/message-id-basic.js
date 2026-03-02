@@ -113,13 +113,8 @@ describe('Mail > SMTP > Message ID > Message ID Basic', function () {
 		assert.notExists(searchRes2.Fault, 'SearchRequest should not fault');
 
 		// Since the message was deleted and re-injected with same ID,
-		// it may or may not appear depending on dedup behavior
-		// The XML test expects emptyset=1 (no duplicates)
-		if (searchRes2.SearchResponse.m) {
-			const msgs2 = Array.isArray(searchRes2.SearchResponse.m)
-				? searchRes2.SearchResponse.m : [searchRes2.SearchResponse.m];
-			assert.isAtMost(msgs2.length, 1,
-				'Should not have duplicate messages with same ID');
-		}
+		// the XML test expects emptyset=1 (no duplicates due to dedup)
+		assert.notExists(searchRes2.SearchResponse.m,
+			'Should not have duplicate messages with same ID');
 	});
 });

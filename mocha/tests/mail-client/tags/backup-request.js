@@ -57,7 +57,9 @@ describe('Mail Client > Tags > Backup Request', function () {
 			</CreateTagRequest>`, acctAuthToken
 		);
 		assert.notExists(tagRes.Fault, 'CreateTagRequest should not fault');
-		assert.exists(tagRes.CreateTagResponse, 'CreateTagResponse should exist');
+		const createdTag = Array.isArray(tagRes.CreateTagResponse.tag)
+			? tagRes.CreateTagResponse.tag[0] : tagRes.CreateTagResponse.tag;
+		assert.exists(createdTag, 'CreateTagResponse should contain tag');
 		const tagId = tagRes.CreateTagResponse?.tag?.id;
 
 		const backupRes = await soap.makeSOAPEnvelopeAdmin(
@@ -105,7 +107,9 @@ describe('Mail Client > Tags > Backup Request', function () {
 			</CreateTagRequest>`, acctAuthToken
 		);
 		assert.notExists(tagRes.Fault, 'CreateTagRequest should not fault');
-		assert.exists(tagRes.CreateTagResponse, 'CreateTagResponse should exist');
+		const createdTag = Array.isArray(tagRes.CreateTagResponse.tag)
+			? tagRes.CreateTagResponse.tag[0] : tagRes.CreateTagResponse.tag;
+		assert.exists(createdTag, 'CreateTagResponse should contain tag');
 		const tagId = tagRes.CreateTagResponse?.tag?.id;
 
 		const backupRes = await soap.makeSOAPEnvelopeAdmin(

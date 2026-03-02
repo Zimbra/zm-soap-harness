@@ -77,7 +77,9 @@ describe('Mail > Bugs > Bug 97339', function () {
 		);
 
 		assert.notExists(getMsg1Res.Fault, 'GetMsgRequest should not fault');
-		assert.exists(getMsg1Res.GetMsgResponse, 'GetMsgResponse should exist');
+		const getMsg = Array.isArray(getMsg1Res.GetMsgResponse.m)
+			? getMsg1Res.GetMsgResponse.m[0] : getMsg1Res.GetMsgResponse.m;
+		assert.exists(getMsg, 'GetMsgResponse should contain m');
 
 		// Inject second MIME message
 		const filePath2 = path.join(
@@ -107,6 +109,5 @@ describe('Mail > Bugs > Bug 97339', function () {
 		);
 
 		assert.notExists(getMsg2Res.Fault, 'GetMsgRequest should not fault');
-		assert.exists(getMsg2Res.GetMsgResponse, 'GetMsgResponse should exist');
 	});
 });

@@ -92,7 +92,9 @@ describe('Prefs > Data Source > Datasource Import', function () {
 			</CreateFolderRequest>`, accountAuthToken
 		);
 		assert.notExists(createFolderRes.Fault, 'CreateFolderRequest should not fault');
-		assert.exists(createFolderRes.CreateFolderResponse, 'CreateFolderResponse should exist');
+		const createdFolder = Array.isArray(createFolderRes.CreateFolderResponse.folder)
+			? createFolderRes.CreateFolderResponse.folder[0] : createFolderRes.CreateFolderResponse.folder;
+		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
 	});
 
 
@@ -114,7 +116,9 @@ describe('Prefs > Data Source > Datasource Import', function () {
 			</CreateFolderRequest>`, accountAuthToken
 		);
 		assert.notExists(createFolderRes.Fault, 'CreateFolderRequest should not fault');
-		assert.exists(createFolderRes.CreateFolderResponse, 'CreateFolderResponse should exist');
+		const createdFolder = Array.isArray(createFolderRes.CreateFolderResponse.folder)
+			? createFolderRes.CreateFolderResponse.folder[0] : createFolderRes.CreateFolderResponse.folder;
+		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
 	});
 
 

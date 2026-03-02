@@ -49,6 +49,8 @@ describe('General > Headers > Context > Nonotify', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateTagRequest should not fault');
-		assert.exists(createRes.CreateTagResponse, 'CreateTagResponse should exist');
+		const createdTag = Array.isArray(createRes.CreateTagResponse.tag)
+			? createRes.CreateTagResponse.tag[0] : createRes.CreateTagResponse.tag;
+		assert.exists(createdTag, 'CreateTagResponse should contain tag');
 	});
 });

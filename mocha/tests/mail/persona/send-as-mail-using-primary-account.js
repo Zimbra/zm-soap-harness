@@ -92,7 +92,10 @@ describe('Mail > Persona > Send As Mail Using Primary Account', function () {
 
 		// Verify send succeeded
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 		const msgId = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0].id : sendRes.SendMsgResponse.m.id;
 
@@ -113,15 +116,12 @@ describe('Mail > Persona > Send As Mail Using Primary Account', function () {
 		// Verify recipient received the message (allow delivery time)
 		const account3AuthToken = await soap.getAccountAuthToken(account3Email);
 		let searchRes;
-		for (let retry = 0; retry < 5; retry++) {
 			await new Promise(r => setTimeout(r, 3000));
 			searchRes = await soap.makeSOAPEnvelopeAccount(
 				`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>from:(${account2Email})</query>
 			</SearchRequest>`, account3AuthToken
 			);
-			if (searchRes.SearchResponse && searchRes.SearchResponse.m) break;
-		}
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		assert.exists(searchRes.SearchResponse.m, 'Message should exist');
@@ -197,7 +197,10 @@ describe('Mail > Persona > Send As Mail Using Primary Account', function () {
 
 		// Verify send succeeded
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 		const msgId = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0].id : sendRes.SendMsgResponse.m.id;
 

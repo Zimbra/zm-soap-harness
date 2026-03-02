@@ -81,7 +81,9 @@ Content-Type: text/html
 			</GetMsgRequest>`, authToken
 		);
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
-		assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
+		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		assert.exists(getMsg, 'GetMsgResponse should contain m');
 	});
 
 
@@ -129,6 +131,8 @@ Content-Type: text/html; charset="utf-8"
 			</GetMsgRequest>`, authToken
 		);
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
-		assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
+		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		assert.exists(getMsg, 'GetMsgResponse should contain m');
 	});
 });

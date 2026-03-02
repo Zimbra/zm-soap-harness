@@ -187,7 +187,10 @@ describe('EWS > Forward Mail Including Original Mail As Attachment From Zwc', fu
 			</SendMsgRequest>`, account2AuthToken
 		);
 		assert.notExists(fwdRes.Fault, 'Response should not be a Fault');
-		assert.exists(fwdRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(fwdRes.SendMsgResponse.m)
+			? fwdRes.SendMsgResponse.m[0] : fwdRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Verify on ZWC sent folder that mail has attachment
 		const searchSentRes = await soap.makeSOAPEnvelopeAccount(
@@ -208,7 +211,6 @@ describe('EWS > Forward Mail Including Original Mail As Attachment From Zwc', fu
 			</GetMsgRequest>`, account2AuthToken
 		);
 		assert.notExists(getSentRes.Fault, 'Response should not be a Fault');
-		const sentMsg = getSentRes.GetMsgResponse.m;
 		const sentMsgObj = Array.isArray(sentMsg) ? sentMsg[0] : sentMsg;
 		const emailAddrs = Array.isArray(sentMsgObj.e) ? sentMsgObj.e : [sentMsgObj.e];
 		const fromAddr = emailAddrs.find(e => e.t === 'f');

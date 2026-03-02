@@ -149,10 +149,8 @@ describe('Mail > Persona > Send As Mail Using Persona From Nonexisting Mail ID',
 			</SearchRequest>`, account1AuthToken
 		);
 		assert.notExists(draftSearchRes.Fault, 'SearchRequest should not fault');
-		if (draftSearchRes.SearchResponse.m) {
-			const draftMsgs = Array.isArray(draftSearchRes.SearchResponse.m)
-				? draftSearchRes.SearchResponse.m : [draftSearchRes.SearchResponse.m];
-			assert.equal(draftMsgs.length, 0, 'Drafts folder should be empty');
-		}
+const draftMsgs = Array.isArray(draftSearchRes.SearchResponse.m)
+			? draftSearchRes.SearchResponse.m : [draftSearchRes.SearchResponse.m];
+		assert.equal(draftMsgs.length, 0, 'Drafts folder should be empty');
 	});
 });

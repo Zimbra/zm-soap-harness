@@ -127,7 +127,9 @@ describe('Briefcase > Briefcase Send Files', function () {
 
 		// Verify response
 		assert.notExists(draftRes.Fault, 'Response should not be a Fault');
-		assert.exists(draftRes.SaveDraftResponse, 'SaveDraftResponse should exist');
+		const draftMsg = Array.isArray(draftRes.SaveDraftResponse.m)
+			? draftRes.SaveDraftResponse.m[0] : draftRes.SaveDraftResponse.m;
+		assert.exists(draftMsg, 'SaveDraftResponse should contain m');
 
 		const draft = Array.isArray(draftRes.SaveDraftResponse.m)
 			? draftRes.SaveDraftResponse.m[0] : draftRes.SaveDraftResponse.m;
@@ -149,7 +151,10 @@ describe('Briefcase > Briefcase Send Files', function () {
 
 		// Verify response
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		const sent = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
@@ -164,7 +169,9 @@ describe('Briefcase > Briefcase Send Files', function () {
 
 		// Verify response
 		assert.notExists(getMsgRes.Fault, 'Response should not be a Fault');
-		assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
+		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		assert.exists(getMsg, 'GetMsgResponse should contain m');
 
 		const msg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
@@ -203,7 +210,9 @@ describe('Briefcase > Briefcase Send Files', function () {
 
 		// Verify response
 		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
-		assert.exists(shareRes.FolderActionResponse, 'FolderActionResponse should exist');
+		const folderAction = Array.isArray(shareRes.FolderActionResponse.action)
+			? shareRes.FolderActionResponse.action[0] : shareRes.FolderActionResponse.action;
+		assert.exists(folderAction, 'FolderActionResponse should contain action');
 
 		// Send the document as a link
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
@@ -220,7 +229,10 @@ describe('Briefcase > Briefcase Send Files', function () {
 
 		// Verify response
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		const sent = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
@@ -235,7 +247,9 @@ describe('Briefcase > Briefcase Send Files', function () {
 
 		// Verify response
 		assert.notExists(getMsgRes.Fault, 'Response should not be a Fault');
-		assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
+		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		assert.exists(getMsg, 'GetMsgResponse should contain m');
 
 		const msg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;

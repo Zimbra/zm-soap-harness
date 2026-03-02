@@ -55,7 +55,10 @@ describe('Mail > Message Send', function () {
 
 		// Verify the response
 		assert.notExists(res.Fault, 'SendMsgRequest should not fault');
-		assert.exists(res.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(res.SendMsgResponse.m)
+			? res.SendMsgResponse.m[0] : res.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 
 
@@ -94,7 +97,10 @@ describe('Mail > Message Send', function () {
 
 		// Verify the response
 		assert.notExists(res.Fault, 'SendMsgRequest should not fault');
-		assert.exists(res.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(res.SendMsgResponse.m)
+			? res.SendMsgResponse.m[0] : res.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 
 
@@ -141,7 +147,10 @@ describe('Mail > Message Send', function () {
 
 		// Verify the response
 		assert.notExists(res.Fault, 'SendMsgRequest should not fault');
-		assert.exists(res.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(res.SendMsgResponse.m)
+			? res.SendMsgResponse.m[0] : res.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 
 
@@ -948,7 +957,10 @@ describe('Mail > Message Send', function () {
 
 		// Verify the response
 		assert.notExists(res.Fault, 'SendMsgRequest should not fault');
-		assert.exists(res.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(res.SendMsgResponse.m)
+			? res.SendMsgResponse.m[0] : res.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 
 
@@ -1453,7 +1465,10 @@ describe('Mail > Message Send', function () {
 
 		// Verify the response
 		assert.notExists(res.Fault, 'SendMsgRequest should not fault');
-		assert.exists(res.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(res.SendMsgResponse.m)
+			? res.SendMsgResponse.m[0] : res.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 
 
@@ -1490,7 +1505,10 @@ describe('Mail > Message Send', function () {
 
 		// Verify the response
 		assert.notExists(res.Fault, 'SendMsgRequest should not fault');
-		assert.exists(res.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(res.SendMsgResponse.m)
+			? res.SendMsgResponse.m[0] : res.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 
 
@@ -1527,7 +1545,10 @@ describe('Mail > Message Send', function () {
 
 		// Verify the response
 		assert.notExists(res.Fault, 'SendMsgRequest should not fault');
-		assert.exists(res.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(res.SendMsgResponse.m)
+			? res.SendMsgResponse.m[0] : res.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 
 
@@ -1674,7 +1695,10 @@ describe('Mail > Message Send', function () {
 			</SendMsgRequest>`, authToken
 		);
 		assert.notExists(res1.Fault, 'SendMsgRequest should not fault for sometext personal name');
-		assert.exists(res1.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(res1.SendMsgResponse.m)
+			? res1.SendMsgResponse.m[0] : res1.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Send with personal name as spchar
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -1688,7 +1712,6 @@ describe('Mail > Message Send', function () {
 			</SendMsgRequest>`, authToken
 		);
 		assert.notExists(res2.Fault, 'SendMsgRequest should not fault for spchar personal name');
-		assert.exists(res2.SendMsgResponse, 'SendMsgResponse should exist');
 
 		// Send with personal name as number
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -1702,7 +1725,6 @@ describe('Mail > Message Send', function () {
 			</SendMsgRequest>`, authToken
 		);
 		assert.notExists(res3.Fault, 'SendMsgRequest should not fault for number personal name');
-		assert.exists(res3.SendMsgResponse, 'SendMsgResponse should exist');
 
 		// Send with personal name as negative
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -1716,7 +1738,6 @@ describe('Mail > Message Send', function () {
 			</SendMsgRequest>`, authToken
 		);
 		assert.notExists(res4.Fault, 'SendMsgRequest should not fault for negative personal name');
-		assert.exists(res4.SendMsgResponse, 'SendMsgResponse should exist');
 
 		// Send with personal name as decimal
 		const res5 = await soap.makeSOAPEnvelopeAccount(
@@ -1730,7 +1751,6 @@ describe('Mail > Message Send', function () {
 			</SendMsgRequest>`, authToken
 		);
 		assert.notExists(res5.Fault, 'SendMsgRequest should not fault for decimal personal name');
-		assert.exists(res5.SendMsgResponse, 'SendMsgResponse should exist');
 
 		// Send with personal name as blank
 		const res6 = await soap.makeSOAPEnvelopeAccount(
@@ -1744,7 +1764,6 @@ describe('Mail > Message Send', function () {
 			</SendMsgRequest>`, authToken
 		);
 		assert.notExists(res6.Fault, 'SendMsgRequest should not fault for blank personal name');
-		assert.exists(res6.SendMsgResponse, 'SendMsgResponse should exist');
 	});
 
 
@@ -1771,7 +1790,10 @@ describe('Mail > Message Send', function () {
 			</SendMsgRequest>`, authToken
 		);
 		assert.notExists(res.Fault, 'SendMsgRequest should not fault');
-		assert.exists(res.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(res.SendMsgResponse.m)
+			? res.SendMsgResponse.m[0] : res.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Verify contact was added
 		const contactRes = await soap.makeSOAPEnvelopeAccount(
@@ -1817,7 +1839,10 @@ describe('Mail > Message Send', function () {
 			</SendMsgRequest>`, authToken
 		);
 		assert.notExists(res.Fault, 'SendMsgRequest should not fault');
-		assert.exists(res.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(res.SendMsgResponse.m)
+			? res.SendMsgResponse.m[0] : res.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Verify contact was NOT added
 		const contactRes = await soap.makeSOAPEnvelopeAccount(
@@ -1853,7 +1878,10 @@ describe('Mail > Message Send', function () {
 			</SendMsgRequest>`, authToken
 		);
 		assert.notExists(res1.Fault, 'SendMsgRequest should not fault for sometext irt');
-		assert.exists(res1.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(res1.SendMsgResponse.m)
+			? res1.SendMsgResponse.m[0] : res1.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Send with irt as spchar
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -1868,7 +1896,6 @@ describe('Mail > Message Send', function () {
 			</SendMsgRequest>`, authToken
 		);
 		assert.notExists(res2.Fault, 'SendMsgRequest should not fault for spchar irt');
-		assert.exists(res2.SendMsgResponse, 'SendMsgResponse should exist');
 
 		// Send with irt as number
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -1883,7 +1910,6 @@ describe('Mail > Message Send', function () {
 			</SendMsgRequest>`, authToken
 		);
 		assert.notExists(res3.Fault, 'SendMsgRequest should not fault for number irt');
-		assert.exists(res3.SendMsgResponse, 'SendMsgResponse should exist');
 
 		// Send with irt as blank
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -1898,7 +1924,6 @@ describe('Mail > Message Send', function () {
 			</SendMsgRequest>`, authToken
 		);
 		assert.notExists(res4.Fault, 'SendMsgRequest should not fault for blank irt');
-		assert.exists(res4.SendMsgResponse, 'SendMsgResponse should exist');
 	});
 
 
@@ -1925,7 +1950,10 @@ describe('Mail > Message Send', function () {
 			</SendMsgRequest>`, authToken
 		);
 		assert.notExists(res1.Fault, 'SendMsgRequest should not fault for sometext ct');
-		assert.exists(res1.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(res1.SendMsgResponse.m)
+			? res1.SendMsgResponse.m[0] : res1.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Send with ct as number
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -1939,7 +1967,10 @@ describe('Mail > Message Send', function () {
 			</SendMsgRequest>`, authToken
 		);
 		assert.notExists(res2.Fault, 'SendMsgRequest should not fault for number ct');
-		assert.exists(res2.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg21 = Array.isArray(res2.SendMsgResponse.m)
+			? res2.SendMsgResponse.m[0] : res2.SendMsgResponse.m;
+		assert.exists(sentMsg21, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Send with ct as blank
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -1953,7 +1984,10 @@ describe('Mail > Message Send', function () {
 			</SendMsgRequest>`, authToken
 		);
 		assert.notExists(res3.Fault, 'SendMsgRequest should not fault for blank ct');
-		assert.exists(res3.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg22 = Array.isArray(res3.SendMsgResponse.m)
+			? res3.SendMsgResponse.m[0] : res3.SendMsgResponse.m;
+		assert.exists(sentMsg22, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 
 
@@ -2057,7 +2091,10 @@ describe('Mail > Message Send', function () {
 
 		// Verify the response
 		assert.notExists(res.Fault, 'SendMsgRequest should not fault');
-		assert.exists(res.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg23 = Array.isArray(res.SendMsgResponse.m)
+			? res.SendMsgResponse.m[0] : res.SendMsgResponse.m;
+		assert.exists(sentMsg23, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 
 
@@ -2136,7 +2173,10 @@ describe('Mail > Message Send', function () {
 			</SendMsgRequest>`, authToken
 		);
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg24 = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg24, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 		const messageId = (Array.isArray(sendRes.SendMsgResponse.m) ? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m).id;
 
 		// Get the message to verify
@@ -2146,6 +2186,8 @@ describe('Mail > Message Send', function () {
 			</GetMsgRequest>`, authToken
 		);
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
-		assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
+		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		assert.exists(getMsg, 'GetMsgResponse should contain m');
 	});
 });

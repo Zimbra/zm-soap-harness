@@ -133,11 +133,8 @@ simple text string in the body
 
 		// Verify no messages remain in trash
 		assert.notExists(searchTrash2.Fault, 'SearchRequest should not fault');
-		if (searchTrash2.SearchResponse.m) {
-			const msgs = Array.isArray(searchTrash2.SearchResponse.m)
-				? searchTrash2.SearchResponse.m : [searchTrash2.SearchResponse.m];
-			assert.equal(msgs.length, 0, 'Trash should be empty after purge');
-		}
+		assert.notExists(searchTrash2.SearchResponse.m,
+			'Trash should be empty after purge');
 	});
 
 

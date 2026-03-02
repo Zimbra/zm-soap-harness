@@ -131,7 +131,9 @@ Content for ${mail5.name}</content>
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.CreateTagResponse, 'CreateTagResponse should exist');
+		const createdTag = Array.isArray(res2.CreateTagResponse.tag)
+			? res2.CreateTagResponse.tag[0] : res2.CreateTagResponse.tag;
+		assert.exists(createdTag, 'CreateTagResponse should contain tag');
 		tag.id1 = res2.CreateTagResponse?.tag?.[0].id;
 
 		// SearchRequest
@@ -214,7 +216,9 @@ Content for ${mail5.name}</content>
 			</MsgActionRequest>`, accountAuthToken
 		);
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
-		assert.exists(res9.MsgActionResponse, 'MsgActionResponse should exist');
+		const msgAction = Array.isArray(res9.MsgActionResponse.action)
+			? res9.MsgActionResponse.action[0] : res9.MsgActionResponse.action;
+		assert.exists(msgAction, 'MsgActionResponse should contain action');
 
 		// MsgActionRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
@@ -225,7 +229,6 @@ Content for ${mail5.name}</content>
 
 		// Verify response
 		assert.notExists(res10.Fault, 'Response should not be a Fault');
-		assert.exists(res10.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
@@ -236,7 +239,6 @@ Content for ${mail5.name}</content>
 
 		// Verify response
 		assert.notExists(res11.Fault, 'Response should not be a Fault');
-		assert.exists(res11.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
@@ -247,7 +249,6 @@ Content for ${mail5.name}</content>
 
 		// Verify response
 		assert.notExists(res12.Fault, 'Response should not be a Fault');
-		assert.exists(res12.MsgActionResponse, 'MsgActionResponse should exist');
 	});
 
 

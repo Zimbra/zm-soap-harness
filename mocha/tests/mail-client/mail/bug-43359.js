@@ -54,7 +54,9 @@ describe('Mail Client > Mail > Bug 43359', function () {
 			</CreateFolderRequest>`, acct1Auth
 		);
 		assert.notExists(folderRes.Fault, 'CreateFolderRequest should not fault');
-		assert.exists(folderRes.CreateFolderResponse, 'CreateFolderResponse should exist');
+		const createdFolder = Array.isArray(folderRes.CreateFolderResponse.folder)
+			? folderRes.CreateFolderResponse.folder[0] : folderRes.CreateFolderResponse.folder;
+		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
 	});
 
 
@@ -95,6 +97,8 @@ describe('Mail Client > Mail > Bug 43359', function () {
 			</CreateFolderRequest>`, acct4Auth
 		);
 		assert.notExists(folderRes.Fault, 'CreateFolderRequest should not fault');
-		assert.exists(folderRes.CreateFolderResponse, 'CreateFolderResponse should exist');
+		const createdFolder = Array.isArray(folderRes.CreateFolderResponse.folder)
+			? folderRes.CreateFolderResponse.folder[0] : folderRes.CreateFolderResponse.folder;
+		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
 	});
 });

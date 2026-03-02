@@ -101,8 +101,7 @@ X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
-		assert.exists(res.SearchResponse,
-			'SearchResponse should exist');
+		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -129,8 +128,7 @@ X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
-		assert.exists(res.SearchResponse,
-			'SearchResponse should exist');
+		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
 
 

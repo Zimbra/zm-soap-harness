@@ -77,7 +77,9 @@ describe('Tasks > Tags > Tag Tasks Basic', function () {
 
 		// Verify response
 		assert.notExists(tagRes.Fault, 'Response should not be a Fault');
-		assert.exists(tagRes.ItemActionResponse, 'ItemActionResponse should exist');
+		const itemAction = Array.isArray(tagRes.ItemActionResponse.action)
+			? tagRes.ItemActionResponse.action[0] : tagRes.ItemActionResponse.action;
+		assert.exists(itemAction, 'ItemActionResponse should contain action');
 
 		// Verify tag is applied via search
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
@@ -124,7 +126,9 @@ describe('Tasks > Tags > Tag Tasks Basic', function () {
 
 		// Verify response
 		assert.notExists(untagRes.Fault, 'Response should not be a Fault');
-		assert.exists(untagRes.ItemActionResponse, 'ItemActionResponse should exist');
+		const itemAction = Array.isArray(untagRes.ItemActionResponse.action)
+			? untagRes.ItemActionResponse.action[0] : untagRes.ItemActionResponse.action;
+		assert.exists(itemAction, 'ItemActionResponse should contain action');
 	});
 
 
@@ -170,7 +174,9 @@ describe('Tasks > Tags > Tag Tasks Basic', function () {
 
 		// Verify response
 		assert.notExists(tagRes2.Fault, 'Response should not be a Fault');
-		assert.exists(tagRes2.ItemActionResponse, 'ItemActionResponse should exist');
+		const itemAction = Array.isArray(tagRes2.ItemActionResponse.action)
+			? tagRes2.ItemActionResponse.action[0] : tagRes2.ItemActionResponse.action;
+		assert.exists(itemAction, 'ItemActionResponse should contain action');
 	});
 
 

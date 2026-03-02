@@ -71,7 +71,10 @@ describe('Mail > Msg LMTP Inject Multinode', function () {
 		);
 
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse.m, 'Message should exist in search results');
+		const msgs = Array.isArray(searchRes.SearchResponse.m)
+			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
+		assert.exists(msgs[0], 'SearchResponse should contain message');
+		assert.isString(msgs[0].id, 'Message should have an id');
 	});
 
 
@@ -117,6 +120,9 @@ describe('Mail > Msg LMTP Inject Multinode', function () {
 		);
 
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse.m, 'Message should exist in search results');
+		const msgs = Array.isArray(searchRes.SearchResponse.m)
+			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
+		assert.exists(msgs[0], 'SearchResponse should contain message');
+		assert.isString(msgs[0].id, 'Message should have an id');
 	});
 });

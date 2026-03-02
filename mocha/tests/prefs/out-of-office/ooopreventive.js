@@ -169,7 +169,8 @@ describe('Prefs > Out Of Office > Ooopreventive', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyAccountRequest should not fault');
-		assert.exists(modRes.ModifyAccountResponse, 'ModifyAccountResponse should exist');
+		assert.exists(modRes.ModifyAccountResponse.account,
+			'ModifyAccountResponse should contain account');
 	});
 
 

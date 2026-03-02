@@ -71,7 +71,9 @@ describe('Briefcase > Tags > Tag Briefcase Docs', function () {
 
 		// Verify response
 		assert.notExists(tagRes.Fault, 'Response should not be a Fault');
-		assert.exists(tagRes.CreateTagResponse, 'CreateTagResponse should exist');
+		const createdTag = Array.isArray(tagRes.CreateTagResponse.tag)
+			? tagRes.CreateTagResponse.tag[0] : tagRes.CreateTagResponse.tag;
+		assert.exists(createdTag, 'CreateTagResponse should contain tag');
 
 		const tag = Array.isArray(tagRes.CreateTagResponse.tag)
 			? tagRes.CreateTagResponse.tag[0] : tagRes.CreateTagResponse.tag;
@@ -103,7 +105,9 @@ describe('Briefcase > Tags > Tag Briefcase Docs', function () {
 
 		// Verify response
 		assert.notExists(tagActionRes.Fault, 'Response should not be a Fault');
-		assert.exists(tagActionRes.ItemActionResponse, 'ItemActionResponse should exist');
+		const itemAction = Array.isArray(tagActionRes.ItemActionResponse.action)
+			? tagActionRes.ItemActionResponse.action[0] : tagActionRes.ItemActionResponse.action;
+		assert.exists(itemAction, 'ItemActionResponse should contain action');
 
 		// Search for tagged documents
 		const searchRes = await soap.makeSOAPEnvelopeAccount(

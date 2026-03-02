@@ -63,29 +63,28 @@ describe('Mail > Message Routing', function () {
 
 		// Verify send succeeded
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Login as account2 and search for the message
 		const account2AuthToken = await soap.getAccountAuthToken(account2Email);
 
-		let searchRes;
-		for (let retry = 0; retry < 3; retry++) {
-			await new Promise(resolve => setTimeout(resolve, 3000));
-			searchRes = await soap.makeSOAPEnvelopeAccount(
-				`<SearchRequest xmlns="urn:zimbraMail" types="message">
-					<query>in:inbox subject:(${subject})</query>
-				</SearchRequest>`, account2AuthToken
-			);
-			if (searchRes.SearchResponse && searchRes.SearchResponse.m) break;
-		}
+		await new Promise(resolve => setTimeout(resolve, 5000));
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>in:inbox subject:(${subject})</query>
+			</SearchRequest>`, account2AuthToken
+		);
 
 		// Verify message found
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const msgs = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
-		assert.exists(msgs[0], 'Message should exist');
+		assert.exists(msgs[0], 'SearchResponse should contain message');
 		const msgId = msgs[0].id;
+		assert.isString(msgId, 'Message should have an id');
 
 		// Delete the message
 		const deleteRes = await soap.makeSOAPEnvelopeAccount(
@@ -96,7 +95,11 @@ describe('Mail > Message Routing', function () {
 
 		// Verify delete succeeded
 		assert.notExists(deleteRes.Fault, 'MsgActionRequest should not fault');
-		assert.exists(deleteRes.MsgActionResponse, 'MsgActionResponse should exist');
+		const action = Array.isArray(deleteRes.MsgActionResponse.action)
+			? deleteRes.MsgActionResponse.action[0] : deleteRes.MsgActionResponse.action;
+		assert.exists(action, 'MsgActionResponse should contain action');
+		assert.equal(action.op, 'delete', 'Action op should be delete');
+		assert.equal(action.id, msgId, 'Action id should match message id');
 	});
 
 
@@ -127,6 +130,9 @@ describe('Mail > Message Routing', function () {
 
 		// Verify send succeeded
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 });

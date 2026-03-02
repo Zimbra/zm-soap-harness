@@ -117,7 +117,10 @@ describe('Mail > On Behalf Of > Send Msg Request On Behalf Of', function () {
 
 		// Verify send succeeded
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Login as account4 and verify the sent copy (may take time for on-behalf-of delivery)
 		const account4AuthToken = await soap.getAccountAuthToken(account4Email);
@@ -130,7 +133,6 @@ describe('Mail > On Behalf Of > Send Msg Request On Behalf Of', function () {
 				<query>subject:(${subject}) (in:sent OR in:inbox OR is:anywhere)</query>
 			</SearchRequest>`, account4AuthToken
 			);
-			if (searchRes.SearchResponse && searchRes.SearchResponse.m) break;
 		}
 
 		// Sent copy may not appear in account4's mailbox on all server configurations
@@ -147,7 +149,6 @@ describe('Mail > On Behalf Of > Send Msg Request On Behalf Of', function () {
 					<query>subject:(${subject})</query>
 				</SearchRequest>`, account5AuthToken
 				);
-				if (recipientSearch.SearchResponse && recipientSearch.SearchResponse.m) break;
 			}
 			assert.exists(recipientSearch.SearchResponse.m, 'Message should exist in recipient inbox');
 			return;
@@ -215,7 +216,10 @@ describe('Mail > On Behalf Of > Send Msg Request On Behalf Of', function () {
 
 		// Verify send succeeded
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Login as account4 and verify
 		const account4AuthToken = await soap.getAccountAuthToken(account4Email);
@@ -324,7 +328,10 @@ describe('Mail > On Behalf Of > Send Msg Request On Behalf Of', function () {
 
 		// Verify send succeeded
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Login as account4 and verify (may take time for on-behalf-of delivery)
 		const account4AuthToken = await soap.getAccountAuthToken(account4Email);
@@ -336,7 +343,6 @@ describe('Mail > On Behalf Of > Send Msg Request On Behalf Of', function () {
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, account4AuthToken
 			);
-			if (searchRes.SearchResponse && searchRes.SearchResponse.m) break;
 		}
 
 		// Verify message received

@@ -95,17 +95,14 @@ describe('Mail > Bounce Msg Request Basic', function () {
 			</SearchRequest>`, account3AuthToken
 		);
 
-		// Verify bounced message found
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
-		const msgs = Array.isArray(searchRes.SearchResponse.m)
-			? searchRes.SearchResponse.m
-			: searchRes.SearchResponse.c
-				? (Array.isArray(searchRes.SearchResponse.c) ? searchRes.SearchResponse.c : [searchRes.SearchResponse.c])
-				: [searchRes.SearchResponse.m];
-		assert.isAtLeast(msgs.length, 1, 'Should find at least one message');
-		const firstMsg = msgs[0];
-		const msgId = firstMsg.m ? (Array.isArray(firstMsg.m) ? firstMsg.m[0].id : firstMsg.m.id) : firstMsg.id;
+		const convs = Array.isArray(searchRes.SearchResponse.c)
+			? searchRes.SearchResponse.c : [searchRes.SearchResponse.c];
+		assert.exists(convs[0], 'Conversation should exist');
+		const cMsgs = Array.isArray(convs[0].m) ? convs[0].m : [convs[0].m];
+		const msgId = cMsgs[0].id;
+		assert.exists(msgId, 'Message ID should exist');
 
 		// Get the full message and verify headers
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
@@ -116,16 +113,21 @@ describe('Mail > Bounce Msg Request Basic', function () {
 
 		// Verify message headers
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
-		assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
+		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		assert.exists(getMsg, 'GetMsgResponse should contain m');
 		const msg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
 		const emailAddresses = Array.isArray(msg.e) ? msg.e : [msg.e];
 		const toAddr = emailAddresses.find(e => e.t === 't');
 		const fromAddr = emailAddresses.find(e => e.t === 'f');
+		const rfAddr = emailAddresses.find(e => e.t === 'rf');
 		assert.exists(toAddr, 'To address should exist');
 		assert.equal(toAddr.a, account2Email, 'To address should match original recipient');
 		assert.exists(fromAddr, 'From address should exist');
 		assert.equal(fromAddr.a, account1Email, 'From address should match sender');
+		assert.exists(rfAddr, 'Resent-From address should exist');
+		assert.equal(rfAddr.a, account1Email, 'Resent-From should match sender');
 	});
 
 
@@ -171,24 +173,22 @@ describe('Mail > Bounce Msg Request Basic', function () {
 		// Login as account2 and search for message
 		const account2AuthToken = await soap.getAccountAuthToken(account2Email);
 
-		let search2Res;
-		for (let retry = 0; retry < 3; retry++) {
-			await new Promise(resolve => setTimeout(resolve, 5000));
-			search2Res = await soap.makeSOAPEnvelopeAccount(
-				`<SearchRequest xmlns="urn:zimbraMail" types="message">
-					<query>subject:(${subject})</query>
-				</SearchRequest>`, account2AuthToken
-			);
-			if (search2Res.SearchResponse && search2Res.SearchResponse.m) break;
-		}
+		await new Promise(resolve => setTimeout(resolve, 5000));
+		const search2Res = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${subject})</query>
+			</SearchRequest>`, account2AuthToken
+		);
 
 		// Get account2's message ID
 		assert.notExists(search2Res.Fault, 'SearchRequest should not fault');
-		assert.exists(search2Res.SearchResponse.m, 'Message should exist in account2');
-		const msgs2 = Array.isArray(search2Res.SearchResponse.m)
-			? search2Res.SearchResponse.m : [search2Res.SearchResponse.m];
-		const firstMsg2 = msgs2[0];
-		const msg2Id = firstMsg2.id;
+		assert.exists(search2Res.SearchResponse, 'SearchResponse should exist');
+		const convs2 = Array.isArray(search2Res.SearchResponse.c)
+			? search2Res.SearchResponse.c : [search2Res.SearchResponse.c];
+		assert.exists(convs2[0], 'Conversation should exist in account2');
+		const msgs2 = Array.isArray(convs2[0].m) ? convs2[0].m : [convs2[0].m];
+		const msg2Id = msgs2[0].id;
+		assert.exists(msg2Id, 'Message ID should exist');
 
 		// Bounce from account2 to account3
 		const bounceRes = await soap.makeSOAPEnvelopeAccount(
@@ -216,11 +216,12 @@ describe('Mail > Bounce Msg Request Basic', function () {
 		// Verify bounced message found in account3
 		assert.notExists(search3Res.Fault, 'SearchRequest should not fault');
 		assert.exists(search3Res.SearchResponse, 'SearchResponse should exist');
-		const msgs3 = search3Res.SearchResponse.c
-			? (Array.isArray(search3Res.SearchResponse.c) ? search3Res.SearchResponse.c : [search3Res.SearchResponse.c])
-			: (Array.isArray(search3Res.SearchResponse.m) ? search3Res.SearchResponse.m : [search3Res.SearchResponse.m]);
-		const firstMsg3 = msgs3[0];
-		const msg3Id = firstMsg3.m ? (Array.isArray(firstMsg3.m) ? firstMsg3.m[0].id : firstMsg3.m.id) : firstMsg3.id;
+		const convs3 = Array.isArray(search3Res.SearchResponse.c)
+			? search3Res.SearchResponse.c : [search3Res.SearchResponse.c];
+		assert.exists(convs3[0], 'Conversation should exist in account3');
+		const cMsgs3 = Array.isArray(convs3[0].m) ? convs3[0].m : [convs3[0].m];
+		const msg3Id = cMsgs3[0].id;
+		assert.exists(msg3Id, 'Message ID should exist');
 
 		// Get message and verify headers show account2 as resent-from
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
@@ -304,11 +305,12 @@ describe('Mail > Bounce Msg Request Basic', function () {
 		// Verify bounced message received
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
-		const msgs = searchRes.SearchResponse.c
-			? (Array.isArray(searchRes.SearchResponse.c) ? searchRes.SearchResponse.c : [searchRes.SearchResponse.c])
-			: (Array.isArray(searchRes.SearchResponse.m) ? searchRes.SearchResponse.m : [searchRes.SearchResponse.m]);
-		const firstMsg = msgs[0];
-		const msgId = firstMsg.m ? (Array.isArray(firstMsg.m) ? firstMsg.m[0].id : firstMsg.m.id) : firstMsg.id;
+		const convs = Array.isArray(searchRes.SearchResponse.c)
+			? searchRes.SearchResponse.c : [searchRes.SearchResponse.c];
+		assert.exists(convs[0], 'Conversation should exist');
+		const cMsgs = Array.isArray(convs[0].m) ? convs[0].m : [convs[0].m];
+		const msgId = cMsgs[0].id;
+		assert.exists(msgId, 'Message ID should exist');
 
 		// Get message and verify headers
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
@@ -390,11 +392,12 @@ describe('Mail > Bounce Msg Request Basic', function () {
 		// Verify bounced message found in account2
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
 		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
-		const msgs = searchRes.SearchResponse.c
-			? (Array.isArray(searchRes.SearchResponse.c) ? searchRes.SearchResponse.c : [searchRes.SearchResponse.c])
-			: (Array.isArray(searchRes.SearchResponse.m) ? searchRes.SearchResponse.m : [searchRes.SearchResponse.m]);
-		const firstMsg = msgs[0];
-		const msgId = firstMsg.m ? (Array.isArray(firstMsg.m) ? firstMsg.m[0].id : firstMsg.m.id) : firstMsg.id;
+		const convs = Array.isArray(searchRes.SearchResponse.c)
+			? searchRes.SearchResponse.c : [searchRes.SearchResponse.c];
+		assert.exists(convs[0], 'Conversation should exist in account2');
+		const cMsgs = Array.isArray(convs[0].m) ? convs[0].m : [convs[0].m];
+		const msgId = cMsgs[0].id;
+		assert.exists(msgId, 'Message ID should exist');
 
 		// Get message and verify headers
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
@@ -488,7 +491,7 @@ describe('Mail > Bounce Msg Request Basic', function () {
 		assert.notExists(bounceRes.Fault, 'BounceMsgRequest should not fault');
 		assert.exists(bounceRes.BounceMsgResponse, 'BounceMsgResponse should exist');
 
-		// Verify account4 (To) received the message
+		// Verify account4 (To) received the message and check headers
 		const account4AuthToken = await soap.getAccountAuthToken(account4Email);
 
 		await new Promise(resolve => setTimeout(resolve, 5000));
@@ -499,8 +502,34 @@ describe('Mail > Bounce Msg Request Basic', function () {
 		);
 		assert.notExists(search4Res.Fault, 'SearchRequest should not fault');
 		assert.exists(search4Res.SearchResponse, 'SearchResponse should exist');
+		const convs4 = Array.isArray(search4Res.SearchResponse.c)
+			? search4Res.SearchResponse.c : [search4Res.SearchResponse.c];
+		assert.exists(convs4[0], 'Conversation should exist in account4');
+		const cMsgs4 = Array.isArray(convs4[0].m) ? convs4[0].m : [convs4[0].m];
+		const msg4Id = cMsgs4[0].id;
+		assert.exists(msg4Id, 'Message ID should exist in account4');
 
-		// Verify account5 (CC) received the message
+		// Get message and verify headers for account4
+		const getMsg4Res = await soap.makeSOAPEnvelopeAccount(
+			`<GetMsgRequest xmlns="urn:zimbraMail">
+				<m id="${msg4Id}"/>
+			</GetMsgRequest>`, account4AuthToken
+		);
+		assert.notExists(getMsg4Res.Fault, 'GetMsgRequest should not fault');
+		const msg4 = Array.isArray(getMsg4Res.GetMsgResponse.m)
+			? getMsg4Res.GetMsgResponse.m[0] : getMsg4Res.GetMsgResponse.m;
+		const addrs4 = Array.isArray(msg4.e) ? msg4.e : [msg4.e];
+		const toAddr4 = addrs4.find(e => e.t === 't');
+		const fromAddr4 = addrs4.find(e => e.t === 'f');
+		const rfAddr4 = addrs4.find(e => e.t === 'rf');
+		assert.exists(toAddr4, 'To address should exist in account4');
+		assert.equal(toAddr4.a, account2Email, 'To address should match original recipient');
+		assert.exists(fromAddr4, 'From address should exist in account4');
+		assert.equal(fromAddr4.a, account1Email, 'From address should match sender');
+		assert.exists(rfAddr4, 'Resent-From address should exist in account4');
+		assert.equal(rfAddr4.a, account1Email, 'Resent-From should match sender');
+
+		// Verify account5 (CC) received the message and check headers
 		const account5AuthToken = await soap.getAccountAuthToken(account5Email);
 
 		await new Promise(resolve => setTimeout(resolve, 5000));
@@ -511,8 +540,34 @@ describe('Mail > Bounce Msg Request Basic', function () {
 		);
 		assert.notExists(search5Res.Fault, 'SearchRequest should not fault');
 		assert.exists(search5Res.SearchResponse, 'SearchResponse should exist');
+		const convs5 = Array.isArray(search5Res.SearchResponse.c)
+			? search5Res.SearchResponse.c : [search5Res.SearchResponse.c];
+		assert.exists(convs5[0], 'Conversation should exist in account5');
+		const cMsgs5 = Array.isArray(convs5[0].m) ? convs5[0].m : [convs5[0].m];
+		const msg5Id = cMsgs5[0].id;
+		assert.exists(msg5Id, 'Message ID should exist in account5');
 
-		// Verify account6 (BCC) received the message
+		// Get message and verify headers for account5
+		const getMsg5Res = await soap.makeSOAPEnvelopeAccount(
+			`<GetMsgRequest xmlns="urn:zimbraMail">
+				<m id="${msg5Id}"/>
+			</GetMsgRequest>`, account5AuthToken
+		);
+		assert.notExists(getMsg5Res.Fault, 'GetMsgRequest should not fault');
+		const msg5 = Array.isArray(getMsg5Res.GetMsgResponse.m)
+			? getMsg5Res.GetMsgResponse.m[0] : getMsg5Res.GetMsgResponse.m;
+		const addrs5 = Array.isArray(msg5.e) ? msg5.e : [msg5.e];
+		const toAddr5 = addrs5.find(e => e.t === 't');
+		const fromAddr5 = addrs5.find(e => e.t === 'f');
+		const rfAddr5 = addrs5.find(e => e.t === 'rf');
+		assert.exists(toAddr5, 'To address should exist in account5');
+		assert.equal(toAddr5.a, account2Email, 'To address should match original recipient');
+		assert.exists(fromAddr5, 'From address should exist in account5');
+		assert.equal(fromAddr5.a, account1Email, 'From address should match sender');
+		assert.exists(rfAddr5, 'Resent-From address should exist in account5');
+		assert.equal(rfAddr5.a, account1Email, 'Resent-From should match sender');
+
+		// Verify account6 (BCC) received the message and check headers
 		const account6AuthToken = await soap.getAccountAuthToken(account6Email);
 		const search6Res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -521,6 +576,32 @@ describe('Mail > Bounce Msg Request Basic', function () {
 		);
 		assert.notExists(search6Res.Fault, 'SearchRequest should not fault');
 		assert.exists(search6Res.SearchResponse, 'SearchResponse should exist');
+		const convs6 = Array.isArray(search6Res.SearchResponse.c)
+			? search6Res.SearchResponse.c : [search6Res.SearchResponse.c];
+		assert.exists(convs6[0], 'Conversation should exist in account6');
+		const cMsgs6 = Array.isArray(convs6[0].m) ? convs6[0].m : [convs6[0].m];
+		const msg6Id = cMsgs6[0].id;
+		assert.exists(msg6Id, 'Message ID should exist in account6');
+
+		// Get message and verify headers for account6
+		const getMsg6Res = await soap.makeSOAPEnvelopeAccount(
+			`<GetMsgRequest xmlns="urn:zimbraMail">
+				<m id="${msg6Id}"/>
+			</GetMsgRequest>`, account6AuthToken
+		);
+		assert.notExists(getMsg6Res.Fault, 'GetMsgRequest should not fault');
+		const msg6 = Array.isArray(getMsg6Res.GetMsgResponse.m)
+			? getMsg6Res.GetMsgResponse.m[0] : getMsg6Res.GetMsgResponse.m;
+		const addrs6 = Array.isArray(msg6.e) ? msg6.e : [msg6.e];
+		const toAddr6 = addrs6.find(e => e.t === 't');
+		const fromAddr6 = addrs6.find(e => e.t === 'f');
+		const rfAddr6 = addrs6.find(e => e.t === 'rf');
+		assert.exists(toAddr6, 'To address should exist in account6');
+		assert.equal(toAddr6.a, account2Email, 'To address should match original recipient');
+		assert.exists(fromAddr6, 'From address should exist in account6');
+		assert.equal(fromAddr6.a, account1Email, 'From address should match sender');
+		assert.exists(rfAddr6, 'Resent-From address should exist in account6');
+		assert.equal(rfAddr6.a, account1Email, 'Resent-From should match sender');
 	});
 
 
@@ -578,16 +659,18 @@ describe('Mail > Bounce Msg Request Basic', function () {
 			</SearchRequest>`, account1AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		const msgs = searchRes.SearchResponse.c
-			? (Array.isArray(searchRes.SearchResponse.c) ? searchRes.SearchResponse.c : [searchRes.SearchResponse.c])
-			: (Array.isArray(searchRes.SearchResponse.m) ? searchRes.SearchResponse.m : [searchRes.SearchResponse.m]);
-		const firstMsg = msgs[0];
-		const msgId = firstMsg.m ? (Array.isArray(firstMsg.m) ? firstMsg.m[0].id : firstMsg.m.id) : firstMsg.id;
+		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
+		const convs = Array.isArray(searchRes.SearchResponse.c)
+			? searchRes.SearchResponse.c : [searchRes.SearchResponse.c];
+		assert.exists(convs[0], 'Conversation should exist');
+		const cMsgs = Array.isArray(convs[0].m) ? convs[0].m : [convs[0].m];
+		const srcMsgId = cMsgs[0].id;
+		assert.exists(srcMsgId, 'Message ID should exist');
 
 		// Bounce message to account3
 		const bounceRes = await soap.makeSOAPEnvelopeAccount(
 			`<BounceMsgRequest xmlns="urn:zimbraMail">
-				<m id="${msgId}">
+				<m id="${srcMsgId}">
 					<e t="t" a="${account3Email}"/>
 				</m>
 			</BounceMsgRequest>`, account1AuthToken
@@ -608,5 +691,11 @@ describe('Mail > Bounce Msg Request Basic', function () {
 		);
 		assert.notExists(search3Res.Fault, 'SearchRequest should not fault');
 		assert.exists(search3Res.SearchResponse, 'SearchResponse should exist');
+		const convs3 = Array.isArray(search3Res.SearchResponse.c)
+			? search3Res.SearchResponse.c : [search3Res.SearchResponse.c];
+		assert.exists(convs3[0], 'Conversation should exist in account3');
+		const cMsgs3 = Array.isArray(convs3[0].m) ? convs3[0].m : [convs3[0].m];
+		const msg3Id = cMsgs3[0].id;
+		assert.exists(msg3Id, 'Message ID should exist in account3');
 	});
 });

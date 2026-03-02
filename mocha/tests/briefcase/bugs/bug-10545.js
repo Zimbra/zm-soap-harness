@@ -103,7 +103,9 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 
 		// Verify response
 		assert.notExists(actionRes.Fault, 'Response should not be a Fault');
-		assert.exists(actionRes.ItemActionResponse, 'ItemActionResponse should exist');
+		const itemAction = Array.isArray(actionRes.ItemActionResponse.action)
+			? actionRes.ItemActionResponse.action[0] : actionRes.ItemActionResponse.action;
+		assert.exists(itemAction, 'ItemActionResponse should contain action');
 	});
 
 
@@ -134,7 +136,9 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 
 		// Verify response
 		assert.notExists(updateRes.Fault, 'Response should not be a Fault');
-		assert.exists(updateRes.ItemActionResponse, 'ItemActionResponse should exist');
+		const itemAction = Array.isArray(updateRes.ItemActionResponse.action)
+			? updateRes.ItemActionResponse.action[0] : updateRes.ItemActionResponse.action;
+		assert.exists(itemAction, 'ItemActionResponse should contain action');
 	});
 
 
@@ -165,7 +169,9 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 
 		// Verify response
 		assert.notExists(actionRes.Fault, 'Response should not be a Fault');
-		assert.exists(actionRes.ItemActionResponse, 'ItemActionResponse should exist');
+		const itemAction = Array.isArray(actionRes.ItemActionResponse.action)
+			? actionRes.ItemActionResponse.action[0] : actionRes.ItemActionResponse.action;
+		assert.exists(itemAction, 'ItemActionResponse should contain action');
 	});
 
 

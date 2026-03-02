@@ -173,7 +173,10 @@ describe('Mail > Attachments > Message Send W Attach W Scan Enabled', function (
 				'Should return UPLOAD_REJECTED for virus file');
 		} else {
 			// If scan is not enabled, the send may succeed - either outcome is acceptable
-			assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+			const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+				? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+			assert.exists(sentMsg, 'SendMsgResponse should contain m');
+			assert.isString(sentMsg.id, 'Sent message should have an id');
 		}
 	});
 });

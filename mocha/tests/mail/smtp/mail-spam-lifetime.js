@@ -109,11 +109,7 @@ This is a spam message
 
 		// Verify no messages remain
 		assert.notExists(search2Res.Fault, 'SearchRequest should not fault');
-		assert.exists(search2Res.SearchResponse, 'SearchResponse should exist');
-		if (search2Res.SearchResponse.m) {
-			const msgs = Array.isArray(search2Res.SearchResponse.m)
-				? search2Res.SearchResponse.m : [search2Res.SearchResponse.m];
-			assert.equal(msgs.length, 0, 'No messages should remain after purge');
-		}
+		assert.notExists(search2Res.SearchResponse.m,
+			'No messages should remain after purge');
 	});
 });

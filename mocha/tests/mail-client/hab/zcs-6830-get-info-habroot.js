@@ -120,7 +120,8 @@ describe('Mail Client > Hab > ZCS 6830 Get Info Habroot', function () {
 
 		// Verify response
 		assert.notExists(getInfo.Fault, 'GetInfoRequest should not fault');
-		assert.exists(getInfo.GetInfoResponse, 'GetInfoResponse should exist');
+		assert.exists(getInfo.GetInfoResponse.name || getInfo.GetInfoResponse.id,
+			'GetInfoResponse should contain identity data');
 	});
 
 
@@ -142,6 +143,7 @@ describe('Mail Client > Hab > ZCS 6830 Get Info Habroot', function () {
 
 		// Verify response
 		assert.notExists(getInfo.Fault, 'GetInfoRequest should not fault');
-		assert.exists(getInfo.GetInfoResponse, 'GetInfoResponse should exist');
+		assert.exists(getInfo.GetInfoResponse.name || getInfo.GetInfoResponse.id,
+			'GetInfoResponse should contain identity data');
 	});
 });

@@ -502,7 +502,6 @@ Header test content
 					<query>subject:(${subject})</query>
 				</SearchRequest>`, acct6AuthToken
 			);
-			if (searchRes.SearchResponse && searchRes.SearchResponse.m) break;
 			retries--;
 			await new Promise(resolve => setTimeout(resolve, 2000));
 		}

@@ -293,7 +293,9 @@ describe('Contacts > Contact Item Action', function () {
 			</ItemActionRequest>`, accountToken
 		);
 		assert.notExists(res.Fault, 'Batch move should not be a Fault');
-		assert.exists(res.ItemActionResponse, 'ItemActionResponse should exist');
+		const itemAction = Array.isArray(res.ItemActionResponse.action)
+			? res.ItemActionResponse.action[0] : res.ItemActionResponse.action;
+		assert.exists(itemAction, 'ItemActionResponse should contain action');
 	});
 
 
@@ -329,7 +331,9 @@ describe('Contacts > Contact Item Action', function () {
 			</ItemActionRequest>`, accountToken
 		);
 		assert.notExists(res.Fault, 'Batch tag should not be a Fault');
-		assert.exists(res.ItemActionResponse, 'ItemActionResponse should exist');
+		const itemAction = Array.isArray(res.ItemActionResponse.action)
+			? res.ItemActionResponse.action[0] : res.ItemActionResponse.action;
+		assert.exists(itemAction, 'ItemActionResponse should contain action');
 	});
 
 
@@ -356,6 +360,8 @@ describe('Contacts > Contact Item Action', function () {
 			</ItemActionRequest>`, accountToken
 		);
 		assert.notExists(res.Fault, 'Batch flag should not be a Fault');
-		assert.exists(res.ItemActionResponse, 'ItemActionResponse should exist');
+		const itemAction = Array.isArray(res.ItemActionResponse.action)
+			? res.ItemActionResponse.action[0] : res.ItemActionResponse.action;
+		assert.exists(itemAction, 'ItemActionResponse should contain action');
 	});
 });

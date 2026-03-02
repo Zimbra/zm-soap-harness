@@ -76,8 +76,9 @@ describe('Briefcase > Bugs > Bug 44557', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateFolderResponse,
-			'CreateFolderResponse should exist');
+		const createdFolder = Array.isArray(createRes.CreateFolderResponse.folder)
+			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
+		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
 		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
 		const folderId = folder.id;
@@ -93,6 +94,8 @@ describe('Briefcase > Bugs > Bug 44557', function () {
 
 		// Verify response
 		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
-		assert.exists(shareRes.FolderActionResponse, 'FolderActionResponse should exist');
+		const folderAction = Array.isArray(shareRes.FolderActionResponse.action)
+			? shareRes.FolderActionResponse.action[0] : shareRes.FolderActionResponse.action;
+		assert.exists(folderAction, 'FolderActionResponse should contain action');
 	});
 });

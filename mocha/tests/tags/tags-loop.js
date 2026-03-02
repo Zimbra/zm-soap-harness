@@ -303,6 +303,8 @@ describe('Tags > Tags Loop', function () {
 
 		// Verify response
 		assert.notExists(newRes.Fault, 'New tag should be created after deletion');
-		assert.exists(newRes.CreateTagResponse, 'CreateTagResponse should exist');
+		const createdTag = Array.isArray(newRes.CreateTagResponse.tag)
+			? newRes.CreateTagResponse.tag[0] : newRes.CreateTagResponse.tag;
+		assert.exists(createdTag, 'CreateTagResponse should contain tag');
 	});
 });

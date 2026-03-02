@@ -154,7 +154,9 @@ ${content}
 			</SaveDraftRequest>`, acct2AuthToken
 		);
 		assert.notExists(draftRes.Fault, 'SaveDraftRequest should not fault');
-		assert.exists(draftRes.SaveDraftResponse, 'SaveDraftResponse should exist');
+		const draftMsg = Array.isArray(draftRes.SaveDraftResponse.m)
+			? draftRes.SaveDraftResponse.m[0] : draftRes.SaveDraftResponse.m;
+		assert.exists(draftMsg, 'SaveDraftResponse should contain m');
 		assert.exists(draftRes.SaveDraftResponse.m, 'Draft message should exist');
 	});
 
@@ -284,7 +286,9 @@ ${content}
 			</SaveDraftRequest>`, acct2AuthToken
 		);
 		assert.notExists(draftRes.Fault, 'SaveDraftRequest should not fault');
-		assert.exists(draftRes.SaveDraftResponse, 'SaveDraftResponse should exist');
+		const draftMsg = Array.isArray(draftRes.SaveDraftResponse.m)
+			? draftRes.SaveDraftResponse.m[0] : draftRes.SaveDraftResponse.m;
+		assert.exists(draftMsg, 'SaveDraftResponse should contain m');
 		assert.exists(draftRes.SaveDraftResponse.m, 'Draft message should exist');
 	});
 });

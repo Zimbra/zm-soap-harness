@@ -68,7 +68,10 @@ describe('Prefs > Auto Add Address > Auto Add Address Basic', function () {
 			</SendMsgRequest>`, account1AuthToken
 		);
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Verify account2 now in contacts
 		searchRes = await soap.makeSOAPEnvelopeAccount(

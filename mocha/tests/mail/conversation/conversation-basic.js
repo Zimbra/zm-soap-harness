@@ -317,7 +317,9 @@ Third message in conversation
 			</GetMsgRequest>`, accountAuthToken
 		);
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
-		assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
+		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		assert.exists(getMsg, 'GetMsgResponse should contain m');
 
 		// Search for conversation to verify no crash
 		const searchConvRes = await soap.makeSOAPEnvelopeAccount(

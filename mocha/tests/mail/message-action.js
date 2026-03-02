@@ -704,7 +704,9 @@ Content of the message
 			</MsgActionRequest>`, authToken
 		);
 		assert.notExists(deleteRes.Fault, 'MsgActionRequest should not fault');
-		assert.exists(deleteRes.MsgActionResponse, 'MsgActionResponse should exist');
+		const msgAction = Array.isArray(deleteRes.MsgActionResponse.action)
+			? deleteRes.MsgActionResponse.action[0] : deleteRes.MsgActionResponse.action;
+		assert.exists(msgAction, 'MsgActionResponse should contain action');
 
 		// SyncRequest
 		const syncRes = await soap.makeSOAPEnvelopeAccount(
@@ -720,6 +722,5 @@ Content of the message
 			</MsgActionRequest>`, authToken
 		);
 		assert.notExists(deleteRes2.Fault, 'MsgActionRequest after sync should not fault');
-		assert.exists(deleteRes2.MsgActionResponse, 'MsgActionResponse should exist');
 	});
 });

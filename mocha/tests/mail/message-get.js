@@ -293,10 +293,10 @@ describe('Mail > Message Get', function () {
 			'<m id="' + messageId + '" read="some text" html="0"/>' +
 			'</GetMsgRequest>', authToken, false
 		);
-		assert.isTrue(
-			!!(res1.Fault) || !!(res1.GetMsgResponse),
-			'Should return a Fault or GetMsgResponse for sometext'
-		);
+		assert.notExists(res1.Fault, 'GetMsgRequest with sometext read should not fault');
+		const msg1 = Array.isArray(res1.GetMsgResponse.m)
+			? res1.GetMsgResponse.m[0] : res1.GetMsgResponse.m;
+		assert.exists(msg1.id, 'Message id should exist for sometext read');
 
 		// Test with number
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -304,10 +304,10 @@ describe('Mail > Message Get', function () {
 			'<m id="' + messageId + '" read="123" html="0"/>' +
 			'</GetMsgRequest>', authToken, false
 		);
-		assert.isTrue(
-			!!(res2.Fault) || !!(res2.GetMsgResponse),
-			'Should return a Fault or GetMsgResponse for number'
-		);
+		assert.notExists(res2.Fault, 'GetMsgRequest with number read should not fault');
+		const msg2 = Array.isArray(res2.GetMsgResponse.m)
+			? res2.GetMsgResponse.m[0] : res2.GetMsgResponse.m;
+		assert.exists(msg2.id, 'Message id should exist for number read');
 
 		// Test with spchar
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -315,10 +315,10 @@ describe('Mail > Message Get', function () {
 			'<m id="' + messageId + '" read="//\\\\\'^\%" html="0"/>' +
 			'</GetMsgRequest>', authToken, false
 		);
-		assert.isTrue(
-			!!(res3.Fault) || !!(res3.GetMsgResponse),
-			'Should return a Fault or GetMsgResponse for spchar'
-		);
+		assert.notExists(res3.Fault, 'GetMsgRequest with spchar read should not fault');
+		const msg3 = Array.isArray(res3.GetMsgResponse.m)
+			? res3.GetMsgResponse.m[0] : res3.GetMsgResponse.m;
+		assert.exists(msg3.id, 'Message id should exist for spchar read');
 
 		// Test with negative
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -326,10 +326,10 @@ describe('Mail > Message Get', function () {
 			'<m id="' + messageId + '" read="-2" html="0"/>' +
 			'</GetMsgRequest>', authToken, false
 		);
-		assert.isTrue(
-			!!(res4.Fault) || !!(res4.GetMsgResponse),
-			'Should return a Fault or GetMsgResponse for negative'
-		);
+		assert.notExists(res4.Fault, 'GetMsgRequest with negative read should not fault');
+		const msg4 = Array.isArray(res4.GetMsgResponse.m)
+			? res4.GetMsgResponse.m[0] : res4.GetMsgResponse.m;
+		assert.exists(msg4.id, 'Message id should exist for negative read');
 
 		// Test with blank
 		const res5 = await soap.makeSOAPEnvelopeAccount(
@@ -337,10 +337,10 @@ describe('Mail > Message Get', function () {
 			'<m id="' + messageId + '" read="" html="0"/>' +
 			'</GetMsgRequest>', authToken, false
 		);
-		assert.isTrue(
-			!!(res5.Fault) || !!(res5.GetMsgResponse),
-			'Should return a Fault or GetMsgResponse for blank'
-		);
+		assert.notExists(res5.Fault, 'GetMsgRequest with blank read should not fault');
+		const msg5 = Array.isArray(res5.GetMsgResponse.m)
+			? res5.GetMsgResponse.m[0] : res5.GetMsgResponse.m;
+		assert.exists(msg5.id, 'Message id should exist for blank read');
 	});
 
 
@@ -356,10 +356,10 @@ describe('Mail > Message Get', function () {
 			'<m id="' + messageId + '" read="0" html="some text"/>' +
 			'</GetMsgRequest>', authToken, false
 		);
-		assert.isTrue(
-			!!(res1.Fault) || !!(res1.GetMsgResponse),
-			'Should return a Fault or GetMsgResponse for sometext'
-		);
+		assert.notExists(res1.Fault, 'GetMsgRequest with sometext html should not fault');
+		const htmlMsg1 = Array.isArray(res1.GetMsgResponse.m)
+			? res1.GetMsgResponse.m[0] : res1.GetMsgResponse.m;
+		assert.exists(htmlMsg1.id, 'Message id should exist for sometext html');
 
 		// Test with number
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -367,10 +367,10 @@ describe('Mail > Message Get', function () {
 			'<m id="' + messageId + '" read="0" html="123"/>' +
 			'</GetMsgRequest>', authToken, false
 		);
-		assert.isTrue(
-			!!(res2.Fault) || !!(res2.GetMsgResponse),
-			'Should return a Fault or GetMsgResponse for number'
-		);
+		assert.notExists(res2.Fault, 'GetMsgRequest with number html should not fault');
+		const htmlMsg2 = Array.isArray(res2.GetMsgResponse.m)
+			? res2.GetMsgResponse.m[0] : res2.GetMsgResponse.m;
+		assert.exists(htmlMsg2.id, 'Message id should exist for number html');
 
 		// Test with spchar
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -378,10 +378,10 @@ describe('Mail > Message Get', function () {
 			'<m id="' + messageId + '" read="0" html="//\\\\\'^\%"/>' +
 			'</GetMsgRequest>', authToken, false
 		);
-		assert.isTrue(
-			!!(res3.Fault) || !!(res3.GetMsgResponse),
-			'Should return a Fault or GetMsgResponse for spchar'
-		);
+		assert.notExists(res3.Fault, 'GetMsgRequest with spchar html should not fault');
+		const htmlMsg3 = Array.isArray(res3.GetMsgResponse.m)
+			? res3.GetMsgResponse.m[0] : res3.GetMsgResponse.m;
+		assert.exists(htmlMsg3.id, 'Message id should exist for spchar html');
 
 		// Test with negative
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -389,10 +389,10 @@ describe('Mail > Message Get', function () {
 			'<m id="' + messageId + '" read="0" html="-2"/>' +
 			'</GetMsgRequest>', authToken, false
 		);
-		assert.isTrue(
-			!!(res4.Fault) || !!(res4.GetMsgResponse),
-			'Should return a Fault or GetMsgResponse for negative'
-		);
+		assert.notExists(res4.Fault, 'GetMsgRequest with negative html should not fault');
+		const htmlMsg4 = Array.isArray(res4.GetMsgResponse.m)
+			? res4.GetMsgResponse.m[0] : res4.GetMsgResponse.m;
+		assert.exists(htmlMsg4.id, 'Message id should exist for negative html');
 
 		// Test with blank
 		const res5 = await soap.makeSOAPEnvelopeAccount(
@@ -400,10 +400,10 @@ describe('Mail > Message Get', function () {
 			'<m id="' + messageId + '" read="0" html=""/>' +
 			'</GetMsgRequest>', authToken, false
 		);
-		assert.isTrue(
-			!!(res5.Fault) || !!(res5.GetMsgResponse),
-			'Should return a Fault or GetMsgResponse for blank'
-		);
+		assert.notExists(res5.Fault, 'GetMsgRequest with blank html should not fault');
+		const htmlMsg5 = Array.isArray(res5.GetMsgResponse.m)
+			? res5.GetMsgResponse.m[0] : res5.GetMsgResponse.m;
+		assert.exists(htmlMsg5.id, 'Message id should exist for blank html');
 	});
 
 
@@ -601,11 +601,8 @@ describe('Mail > Message Get', function () {
 		const textPart = mp.find(p => p && p.ct === 'text/plain');
 		assert.exists(textPart, 'text/plain part should exist');
 
-		// Verify content contains the full text
-		const content = textPart.content || (msg.mp && msg.mp.content);
-		if (textPart.truncated) {
-			assert.notEqual(textPart.truncated, '1', 'Body should not be truncated');
-		}
+		// Verify content is not truncated
+		assert.isUndefined(textPart.truncated, 'Body should not be truncated when max exceeds body size');
 	});
 
 
@@ -755,7 +752,9 @@ describe('Mail > Message Get', function () {
 
 		// Verify the response
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
-		assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
+		const msg = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		assert.exists(msg.id, 'Message id should exist');
 	});
 
 

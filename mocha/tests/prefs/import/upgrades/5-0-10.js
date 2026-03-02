@@ -165,7 +165,9 @@ describe('Prefs > Import > Upgrades > 5 0 10', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateTagRequest should not fault');
-		assert.exists(createRes.CreateTagResponse, 'CreateTagResponse should exist');
+		const createdTag = Array.isArray(createRes.CreateTagResponse.tag)
+			? createRes.CreateTagResponse.tag[0] : createRes.CreateTagResponse.tag;
+		assert.exists(createdTag, 'CreateTagResponse should contain tag');
 	});
 
 
@@ -181,7 +183,9 @@ describe('Prefs > Import > Upgrades > 5 0 10', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateFolderRequest wiki should not fault');
-		assert.exists(createRes.CreateFolderResponse, 'CreateFolderResponse should exist');
+		const createdFolder = Array.isArray(createRes.CreateFolderResponse.folder)
+			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
+		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
 	});
 
 
@@ -197,6 +201,8 @@ describe('Prefs > Import > Upgrades > 5 0 10', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateFolderRequest briefcase should not fault');
-		assert.exists(createRes.CreateFolderResponse, 'CreateFolderResponse should exist');
+		const createdFolder = Array.isArray(createRes.CreateFolderResponse.folder)
+			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
+		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
 	});
 });

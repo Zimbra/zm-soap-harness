@@ -70,21 +70,21 @@ describe('Mail > Inline > Insert Inline Images', function () {
 
 		// Verify send succeeded
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Search for the message as account2
 		const account2AuthToken = await soap.getAccountAuthToken(account2Email);
 
 		let searchRes;
-		for (let retry = 0; retry < 3; retry++) {
-			await new Promise(resolve => setTimeout(resolve, 3000));
-			searchRes = await soap.makeSOAPEnvelopeAccount(
+		await new Promise(resolve => setTimeout(resolve, 5000));
+		searchRes = await soap.makeSOAPEnvelopeAccount(
 				`<SearchRequest xmlns="urn:zimbraMail" sortBy="dateDesc" offset="0" limit="10" types="message" fetch="1">
 					<query>subject:(${subject})</query>
 				</SearchRequest>`, account2AuthToken
 			);
-			if (searchRes.SearchResponse && searchRes.SearchResponse.m) break;
-		}
 
 		// Verify the message was found
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
@@ -103,7 +103,9 @@ describe('Mail > Inline > Insert Inline Images', function () {
 
 		// Verify message structure
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
-		assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
+		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		assert.exists(getMsg, 'GetMsgResponse should contain m');
 		assert.exists(getMsgRes.GetMsgResponse.m, 'Message should exist in response');
 	});
 
@@ -150,21 +152,21 @@ describe('Mail > Inline > Insert Inline Images', function () {
 
 		// Verify send succeeded
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Search for the message as account2
 		const account2AuthToken = await soap.getAccountAuthToken(account2Email);
 
 		let searchRes;
-		for (let retry = 0; retry < 3; retry++) {
-			await new Promise(resolve => setTimeout(resolve, 3000));
-			searchRes = await soap.makeSOAPEnvelopeAccount(
+		await new Promise(resolve => setTimeout(resolve, 5000));
+		searchRes = await soap.makeSOAPEnvelopeAccount(
 				`<SearchRequest xmlns="urn:zimbraMail" sortBy="dateDesc" offset="0" limit="10" types="message" fetch="1">
 					<query>subject:(${subject})</query>
 				</SearchRequest>`, account2AuthToken
 			);
-			if (searchRes.SearchResponse && searchRes.SearchResponse.m) break;
-		}
 
 		// Verify the message was found
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
@@ -183,7 +185,9 @@ describe('Mail > Inline > Insert Inline Images', function () {
 
 		// Verify message structure
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
-		assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
+		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		assert.exists(getMsg, 'GetMsgResponse should contain m');
 		assert.exists(getMsgRes.GetMsgResponse.m, 'Message should exist in response');
 	});
 });

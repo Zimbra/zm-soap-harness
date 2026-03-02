@@ -165,7 +165,10 @@ describe('Contacts > Mail > Message Get', function () {
 
 		// Verify response
 		assert.notExists(sendRes.Fault, 'Send should not be a Fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 
 

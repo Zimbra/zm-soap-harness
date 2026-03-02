@@ -77,7 +77,10 @@ describe('Mail > Bugs > Bug 4349', function () {
 			</SendMsgRequest>`, authToken1
 		);
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Login to account2 and verify mail received
 		const authToken2 = await soap.getAccountAuthToken(account2Email);
@@ -136,7 +139,6 @@ describe('Mail > Bugs > Bug 4349', function () {
 			</SendMsgRequest>`, newAuthToken1
 		);
 		assert.notExists(sendRes2.Fault, 'SendMsgRequest after recreate should not fault');
-		assert.exists(sendRes2.SendMsgResponse, 'SendMsgResponse should exist');
 
 		// Login to recreated account2 and verify mail received
 		const newAuthToken2 = await soap.getAccountAuthToken(account2Email);

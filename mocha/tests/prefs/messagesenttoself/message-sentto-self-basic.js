@@ -86,14 +86,10 @@ describe('Prefs > Messagesenttoself > Message Sentto Self Basic', function () {
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
 
-		if (searchRes.SearchResponse.m) {
-			const msgs = Array.isArray(searchRes.SearchResponse.m)
-				? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
-			const inInbox = msgs.some(m => m.l === inboxFolderId);
-			assert.isTrue(inInbox, 'Message should be in the inbox folder');
-		} else {
-			assert.fail('SearchResponse should contain m');
-		}
+		const msgs = Array.isArray(searchRes.SearchResponse.m)
+			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
+		const inInbox = msgs.some(m => m.l === inboxFolderId);
+		assert.isTrue(inInbox, 'Message should be in the inbox folder');
 	});
 
 
@@ -149,14 +145,10 @@ describe('Prefs > Messagesenttoself > Message Sentto Self Basic', function () {
 			</SearchRequest>`, authToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		if (searchRes.SearchResponse.m) {
-			const msgs = Array.isArray(searchRes.SearchResponse.m)
-				? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
-			const inInbox = msgs.some(m => m.l === inboxFolderId);
-			assert.isTrue(inInbox, 'Message should be in the inbox folder');
-		} else {
-			assert.fail('SearchResponse should contain m');
-		}
+		const msgs = Array.isArray(searchRes.SearchResponse.m)
+			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
+		const inInbox = msgs.some(m => m.l === inboxFolderId);
+		assert.isTrue(inInbox, 'Message should be in the inbox folder');
 	});
 
 
@@ -212,14 +204,10 @@ describe('Prefs > Messagesenttoself > Message Sentto Self Basic', function () {
 			</SearchRequest>`, authToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		if (searchRes.SearchResponse.m) {
-			const msgs = Array.isArray(searchRes.SearchResponse.m)
-				? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
-			const inInbox = msgs.some(m => m.l === inboxFolderId);
-			assert.isTrue(inInbox, 'Message should be in the inbox folder');
-		} else {
-			assert.fail('SearchResponse should contain m');
-		}
+		const msgs = Array.isArray(searchRes.SearchResponse.m)
+			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
+		const inInbox = msgs.some(m => m.l === inboxFolderId);
+		assert.isTrue(inInbox, 'Message should be in the inbox folder');
 	});
 
 
@@ -274,14 +262,10 @@ describe('Prefs > Messagesenttoself > Message Sentto Self Basic', function () {
 			</SearchRequest>`, authToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		if (searchRes.SearchResponse.m) {
-			const msgs = Array.isArray(searchRes.SearchResponse.m)
-				? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
-			const inInbox = msgs.some(m => m.l === inboxFolderId);
-			assert.isTrue(inInbox, 'Message should be in the inbox folder');
-		} else {
-			assert.fail('SearchResponse should contain m');
-		}
+		const msgs = Array.isArray(searchRes.SearchResponse.m)
+			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
+		const inInbox = msgs.some(m => m.l === inboxFolderId);
+		assert.isTrue(inInbox, 'Message should be in the inbox folder');
 	});
 
 
@@ -337,14 +321,10 @@ describe('Prefs > Messagesenttoself > Message Sentto Self Basic', function () {
 			</SearchRequest>`, authToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		if (searchRes.SearchResponse.m) {
-			const msgs = Array.isArray(searchRes.SearchResponse.m)
-				? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
-			const inInbox = msgs.some(m => m.l === inboxFolderId);
-			assert.isTrue(inInbox, 'Message should be in the inbox folder');
-		} else {
-			assert.fail('SearchResponse should contain m');
-		}
+		const msgs = Array.isArray(searchRes.SearchResponse.m)
+			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
+		const inInbox = msgs.some(m => m.l === inboxFolderId);
+		assert.isTrue(inInbox, 'Message should be in the inbox folder');
 	});
 
 
@@ -400,12 +380,10 @@ describe('Prefs > Messagesenttoself > Message Sentto Self Basic', function () {
 			</SearchRequest>`, authToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		if (searchRes.SearchResponse.m) {
-			const msgs = Array.isArray(searchRes.SearchResponse.m)
-				? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
-			const inInbox = msgs.some(m => m.l === inboxFolderId);
-			assert.isFalse(inInbox, 'Message should not be in the inbox folder');
-		}
+		const msgs = Array.isArray(searchRes.SearchResponse.m)
+			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
+		const inInbox = msgs.some(m => m.l === inboxFolderId);
+		assert.isFalse(inInbox, 'Message should not be in the inbox folder');
 	});
 
 
@@ -459,12 +437,10 @@ describe('Prefs > Messagesenttoself > Message Sentto Self Basic', function () {
 			</SearchRequest>`, authToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		if (searchRes.SearchResponse.m) {
-			const msgs = Array.isArray(searchRes.SearchResponse.m)
-				? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
-			const inInbox = msgs.some(m => m.l === inboxFolderId);
-			assert.isFalse(inInbox, 'Message should not be in the inbox folder');
-		}
+		const msgs = Array.isArray(searchRes.SearchResponse.m)
+			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
+		const inInbox = msgs.some(m => m.l === inboxFolderId);
+		assert.isFalse(inInbox, 'Message should not be in the inbox folder');
 	});
 
 
@@ -520,12 +496,10 @@ describe('Prefs > Messagesenttoself > Message Sentto Self Basic', function () {
 			</SearchRequest>`, authToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		if (searchRes.SearchResponse.m) {
-			const msgs = Array.isArray(searchRes.SearchResponse.m)
-				? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
-			const inInbox = msgs.some(m => m.l === inboxFolderId);
-			assert.isFalse(inInbox, 'Message should not be in the inbox folder');
-		}
+		const msgs = Array.isArray(searchRes.SearchResponse.m)
+			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
+		const inInbox = msgs.some(m => m.l === inboxFolderId);
+		assert.isFalse(inInbox, 'Message should not be in the inbox folder');
 	});
 
 
@@ -581,12 +555,10 @@ describe('Prefs > Messagesenttoself > Message Sentto Self Basic', function () {
 			</SearchRequest>`, authToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		if (searchRes.SearchResponse.m) {
-			const msgs = Array.isArray(searchRes.SearchResponse.m)
-				? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
-			const inInbox = msgs.some(m => m.l === inboxFolderId);
-			assert.isFalse(inInbox, 'Message should not be in the inbox folder');
-		}
+		const msgs = Array.isArray(searchRes.SearchResponse.m)
+			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
+		const inInbox = msgs.some(m => m.l === inboxFolderId);
+		assert.isFalse(inInbox, 'Message should not be in the inbox folder');
 	});
 
 

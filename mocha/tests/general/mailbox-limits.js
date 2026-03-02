@@ -261,8 +261,9 @@ do it
 
 		// Verify response
 		assert.notExists(addRes.Fault, 'AddMsgRequest should not fault');
-		assert.exists(addRes.AddMsgResponse,
-			'AddMsgResponse should exist');
+		const addedMsg = Array.isArray(addRes.AddMsgResponse.m)
+			? addRes.AddMsgResponse.m[0] : addRes.AddMsgResponse.m;
+		assert.exists(addedMsg, 'AddMsgResponse should contain m');
 	});
 
 
@@ -310,8 +311,10 @@ do it
 
 		// Verify response
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
-		assert.exists(sendRes.SendMsgResponse,
-			'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 
 
@@ -415,7 +418,9 @@ do it
 
 		// Verify response
 		assert.notExists(addRes.Fault, 'AddMsgRequest should not fault');
-		assert.exists(addRes.AddMsgResponse, 'AddMsgResponse should exist');
+		const addedMsg = Array.isArray(addRes.AddMsgResponse.m)
+			? addRes.AddMsgResponse.m[0] : addRes.AddMsgResponse.m;
+		assert.exists(addedMsg, 'AddMsgResponse should contain m');
 	});
 
 

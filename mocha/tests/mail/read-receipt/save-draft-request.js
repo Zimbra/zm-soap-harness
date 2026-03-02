@@ -65,10 +65,9 @@ describe('Mail > Read Receipt > Save Draft Request', function () {
 			</SaveDraftRequest>`, acct1AuthToken
 		);
 		assert.notExists(draftRes.Fault, 'SaveDraftRequest should not fault');
-		assert.exists(draftRes.SaveDraftResponse, 'SaveDraftResponse should exist');
 		const draftMsg = Array.isArray(draftRes.SaveDraftResponse.m)
 			? draftRes.SaveDraftResponse.m[0] : draftRes.SaveDraftResponse.m;
-		assert.exists(draftMsg, 'Draft message should exist');
+		assert.exists(draftMsg, 'SaveDraftResponse should contain m');
 
 		// Verify Disposition-Notification-To header via REST servlet
 		const restRes = await rest.makeRestRequest(acct1AuthToken, {

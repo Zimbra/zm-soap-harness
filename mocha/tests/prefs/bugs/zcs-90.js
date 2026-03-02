@@ -85,7 +85,9 @@ describe('Prefs > Bugs > ZCS 90', function () {
 			</CreateFolderRequest>`, accountAuthToken
 		);
 		assert.notExists(subNewRes.Fault, 'CreateFolderRequest subNew should not fault');
-		assert.exists(subNewRes.CreateFolderResponse, 'CreateFolderResponse should exist');
+		const createdFolder = Array.isArray(subNewRes.CreateFolderResponse.folder)
+			? subNewRes.CreateFolderResponse.folder[0] : subNewRes.CreateFolderResponse.folder;
+		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
 	});
 
 
@@ -408,7 +410,9 @@ describe('Prefs > Bugs > ZCS 90', function () {
 			</FolderActionRequest>`, accountAuthToken
 		);
 		assert.notExists(delRes.Fault, 'FolderActionRequest delete should not fault');
-		assert.exists(delRes.FolderActionResponse, 'FolderActionResponse should exist');
+		const folderAction = Array.isArray(delRes.FolderActionResponse.action)
+			? delRes.FolderActionResponse.action[0] : delRes.FolderActionResponse.action;
+		assert.exists(folderAction, 'FolderActionResponse should contain action');
 	});
 
 

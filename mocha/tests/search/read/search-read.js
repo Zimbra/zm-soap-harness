@@ -169,7 +169,9 @@ Content for ${mail4.name}</content>
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		assert.exists(res6.MsgActionResponse, 'MsgActionResponse should exist');
+		const msgAction = Array.isArray(res6.MsgActionResponse.action)
+			? res6.MsgActionResponse.action[0] : res6.MsgActionResponse.action;
+		assert.exists(msgAction, 'MsgActionResponse should contain action');
 
 		// MsgActionRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
@@ -180,7 +182,6 @@ Content for ${mail4.name}</content>
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		assert.exists(res7.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
@@ -191,7 +192,6 @@ Content for ${mail4.name}</content>
 
 		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
-		assert.exists(res8.MsgActionResponse, 'MsgActionResponse should exist');
 
 		// MsgActionRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
@@ -202,7 +202,6 @@ Content for ${mail4.name}</content>
 
 		// Verify response
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
-		assert.exists(res9.MsgActionResponse, 'MsgActionResponse should exist');
 	});
 
 

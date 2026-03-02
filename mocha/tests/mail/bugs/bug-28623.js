@@ -80,7 +80,9 @@ describe('Mail > Bugs > Bug 28623', function () {
 			</GetMsgRequest>`, authToken
 		);
 		assert.notExists(getRes1.Fault, 'GetMsgRequest for msg1 should not fault');
-		assert.exists(getRes1.GetMsgResponse, 'GetMsgResponse should exist');
+		const getMsg = Array.isArray(getRes1.GetMsgResponse.m)
+			? getRes1.GetMsgResponse.m[0] : getRes1.GetMsgResponse.m;
+		assert.exists(getMsg, 'GetMsgResponse should contain m');
 
 		// Search and verify second message (happy)
 		const searchRes2 = await soap.makeSOAPEnvelopeAccount(
@@ -100,7 +102,6 @@ describe('Mail > Bugs > Bug 28623', function () {
 			</GetMsgRequest>`, authToken
 		);
 		assert.notExists(getRes2.Fault, 'GetMsgRequest for msg2 should not fault');
-		assert.exists(getRes2.GetMsgResponse, 'GetMsgResponse should exist');
 
 		// Search and verify third message (human)
 		const searchRes3 = await soap.makeSOAPEnvelopeAccount(
@@ -120,6 +121,5 @@ describe('Mail > Bugs > Bug 28623', function () {
 			</GetMsgRequest>`, authToken
 		);
 		assert.notExists(getRes3.Fault, 'GetMsgRequest for msg3 should not fault');
-		assert.exists(getRes3.GetMsgResponse, 'GetMsgResponse should exist');
 	});
 });

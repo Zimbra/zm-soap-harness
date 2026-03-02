@@ -53,7 +53,9 @@ describe('Mail Client > Folders > Backup Request', function () {
 				<folder l="1" name="${folderName}"/>
 			</CreateFolderRequest>`, t
 		);
-		assert.exists(fr.CreateFolderResponse, 'CreateFolderResponse should exist');
+		const createdFolder = Array.isArray(fr.CreateFolderResponse.folder)
+			? fr.CreateFolderResponse.folder[0] : fr.CreateFolderResponse.folder;
+		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
 
 		const br = await soap.makeSOAPEnvelopeAdmin(
 			`<BackupRequest xmlns="urn:zimbraAdmin">

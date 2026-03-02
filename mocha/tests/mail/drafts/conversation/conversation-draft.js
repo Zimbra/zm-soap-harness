@@ -91,7 +91,6 @@ describe('Mail > Drafts > Conversation > Conversation Draft', function () {
 					<query>in:inbox</query>
 				</SearchRequest>`, account1AuthToken
 			);
-			if (searchConvRes.SearchResponse && searchConvRes.SearchResponse.c) break;
 		}
 		assert.notExists(searchConvRes.Fault, 'SearchRequest should not fault');
 		assert.exists(searchConvRes.SearchResponse.c, 'Should find conversations');
@@ -203,7 +202,6 @@ describe('Mail > Drafts > Conversation > Conversation Draft', function () {
 					<query>in:inbox</query>
 				</SearchRequest>`, account3AuthToken
 			);
-			if (searchConvRes.SearchResponse && searchConvRes.SearchResponse.c) break;
 		}
 		assert.notExists(searchConvRes.Fault, 'SearchRequest should not fault');
 		assert.exists(searchConvRes.SearchResponse.c, 'Should find conversations');
@@ -312,7 +310,6 @@ describe('Mail > Drafts > Conversation > Conversation Draft', function () {
 					<query>in:inbox</query>
 				</SearchRequest>`, account5AuthToken
 			);
-			if (searchConvRes.SearchResponse && searchConvRes.SearchResponse.c) break;
 		}
 		assert.notExists(searchConvRes.Fault, 'SearchRequest should not fault');
 		assert.exists(searchConvRes.SearchResponse.c, 'Should find conversations');
@@ -427,7 +424,6 @@ describe('Mail > Drafts > Conversation > Conversation Draft', function () {
 					<query>in:inbox</query>
 				</SearchRequest>`, account7AuthToken
 			);
-			if (searchConvRes.SearchResponse && searchConvRes.SearchResponse.c) break;
 		}
 		assert.notExists(searchConvRes.Fault, 'SearchRequest should not fault');
 		assert.exists(searchConvRes.SearchResponse.c, 'Should find conversations');

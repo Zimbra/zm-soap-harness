@@ -40,7 +40,9 @@ describe('Tags > Tags Create', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTagResponse, 'CreateTagResponse should exist');
+		const createdTag = Array.isArray(res.CreateTagResponse.tag)
+			? res.CreateTagResponse.tag[0] : res.CreateTagResponse.tag;
+		assert.exists(createdTag, 'CreateTagResponse should contain tag');
 		assert.exists(res.CreateTagResponse.tag, 'Tag should exist in response');
 		const tag = res.CreateTagResponse.tag[0];
 
@@ -115,7 +117,9 @@ describe('Tags > Tags Create', function () {
 		if (!res.Fault) {
 
 			// Verify response
-			assert.exists(res.CreateTagResponse, 'CreateTagResponse should exist');
+			const createdTag = Array.isArray(res.CreateTagResponse.tag)
+				? res.CreateTagResponse.tag[0] : res.CreateTagResponse.tag;
+			assert.exists(createdTag, 'CreateTagResponse should contain tag');
 		}
 	});
 
@@ -133,7 +137,9 @@ describe('Tags > Tags Create', function () {
 		if (!res.Fault) {
 
 			// Verify response
-			assert.exists(res.CreateTagResponse, 'CreateTagResponse should exist');
+			const createdTag = Array.isArray(res.CreateTagResponse.tag)
+				? res.CreateTagResponse.tag[0] : res.CreateTagResponse.tag;
+			assert.exists(createdTag, 'CreateTagResponse should contain tag');
 		}
 	});
 
@@ -153,7 +159,9 @@ describe('Tags > Tags Create', function () {
 			// Verify response
 			assert.exists(res.Fault, 'Negative color should be a Fault');
 		} else {
-			assert.exists(res.CreateTagResponse, 'CreateTagResponse should exist');
+			const createdTag = Array.isArray(res.CreateTagResponse.tag)
+				? res.CreateTagResponse.tag[0] : res.CreateTagResponse.tag;
+			assert.exists(createdTag, 'CreateTagResponse should contain tag');
 		}
 	});
 
@@ -201,7 +209,9 @@ describe('Tags > Tags Create', function () {
 		if (!res.Fault) {
 
 			// Verify response
-			assert.exists(res.CreateTagResponse, 'CreateTagResponse should exist');
+			const createdTag = Array.isArray(res.CreateTagResponse.tag)
+				? res.CreateTagResponse.tag[0] : res.CreateTagResponse.tag;
+			assert.exists(createdTag, 'CreateTagResponse should contain tag');
 		}
 	});
 
@@ -259,7 +269,9 @@ describe('Tags > Tags Create', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTagResponse, 'CreateTagResponse should exist');
+		const createdTag = Array.isArray(res.CreateTagResponse.tag)
+			? res.CreateTagResponse.tag[0] : res.CreateTagResponse.tag;
+		assert.exists(createdTag, 'CreateTagResponse should contain tag');
 		const tag = res.CreateTagResponse.tag[0];
 
 		// Verify response

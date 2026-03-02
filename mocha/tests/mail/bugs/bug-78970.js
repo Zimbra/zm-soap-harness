@@ -116,15 +116,12 @@ describe('Mail > Bugs > Bug 78970', function () {
 		// Account3 searches for the message (with retries for delivery)
 		const account3AuthToken = await soap.getAccountAuthToken(account3Email);
 		let searchRes;
-		for (let retry = 0; retry < 5; retry++) {
-			await new Promise(resolve => setTimeout(resolve, 3000));
-			searchRes = await soap.makeSOAPEnvelopeAccount(
+		await new Promise(resolve => setTimeout(resolve, 5000));
+		searchRes = await soap.makeSOAPEnvelopeAccount(
 				`<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:(${subject})</query>
 				</SearchRequest>`, account3AuthToken
 			);
-			if (searchRes.SearchResponse && searchRes.SearchResponse.m) break;
-		}
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
 		const msgs = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
@@ -147,7 +144,9 @@ describe('Mail > Bugs > Bug 78970', function () {
 				</GetMsgRequest>`, account3AuthToken
 			);
 			assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
-			assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
+			const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
+				? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+			assert.exists(getMsg, 'GetMsgResponse should contain m');
 			const msg = Array.isArray(getMsgRes.GetMsgResponse.m)
 				? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
 

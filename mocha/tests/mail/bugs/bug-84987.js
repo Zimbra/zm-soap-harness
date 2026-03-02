@@ -53,6 +53,7 @@ describe('Mail > Bugs > Bug 84987', function () {
 			`<GetInfoRequest xmlns="urn:zimbraAccount"/>`, authToken
 		);
 		assert.notExists(infoRes.Fault, 'GetInfoRequest should not fault');
-		assert.exists(infoRes.GetInfoResponse, 'GetInfoResponse should exist');
+		assert.exists(infoRes.GetInfoResponse.name || infoRes.GetInfoResponse.id,
+			'GetInfoResponse should contain identity data');
 	});
 });

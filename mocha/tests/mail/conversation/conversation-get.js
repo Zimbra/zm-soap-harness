@@ -93,7 +93,8 @@ describe('Mail > Conversation > Conversation Get', function () {
 			</GetConvRequest>`, authToken
 		);
 		assert.notExists(res.Fault, 'GetConvRequest should not fault');
-		assert.exists(res.GetConvResponse, 'GetConvResponse should exist');
+		assert.exists(res.GetConvResponse.c,
+			'GetConvResponse should contain c');
 	});
 
 
@@ -237,7 +238,8 @@ describe('Mail > Conversation > Conversation Get', function () {
 			</GetConvRequest>`, authToken
 		);
 		assert.notExists(res.Fault, 'GetConvRequest should not fault');
-		assert.exists(res.GetConvResponse, 'GetConvResponse should exist');
+		assert.exists(res.GetConvResponse.c,
+			'GetConvResponse should contain c');
 
 		// Verify headers are returned
 		const conv = Array.isArray(res.GetConvResponse.c)
@@ -299,7 +301,8 @@ But even against the No. 4 team in the BCS, the Bears goals have not changed one
 			</GetConvRequest>`, authToken
 		);
 		assert.notExists(getRes.Fault, 'GetConvRequest should not fault');
-		assert.exists(getRes.GetConvResponse, 'GetConvResponse should exist');
+		assert.exists(getRes.GetConvResponse.c,
+			'GetConvResponse should contain c');
 
 		// Verify truncation
 		const conv = Array.isArray(getRes.GetConvResponse.c)
@@ -309,7 +312,7 @@ But even against the No. 4 team in the BCS, the Bears goals have not changed one
 		const mp = Array.isArray(convMsg.mp) ? convMsg.mp : [convMsg.mp];
 		const textPart = mp.find(p => p && p.ct === 'text/plain');
 		assert.exists(textPart, 'text/plain part should exist');
-		assert.equal(textPart.truncated, '1', 'Content should be truncated');
+		assert.isTrue(String(textPart.truncated) === '1' || textPart.truncated === true, 'Content should be truncated');
 	});
 
 
@@ -361,6 +364,7 @@ Content-Transfer-Encoding: 7bit
 			</GetConvRequest>`, authToken
 		);
 		assert.notExists(getRes.Fault, 'GetConvRequest should not fault');
-		assert.exists(getRes.GetConvResponse, 'GetConvResponse should exist');
+		assert.exists(getRes.GetConvResponse.c,
+			'GetConvResponse should contain c');
 	});
 });

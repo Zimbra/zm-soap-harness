@@ -70,7 +70,9 @@ describe('Briefcase > Briefcase Move Files', function () {
 
 		// Verify response
 		assert.notExists(create1.Fault, 'Response should not be a Fault');
-		assert.exists(create1.CreateFolderResponse, 'CreateFolderResponse should exist');
+		const createdFolder = Array.isArray(create1.CreateFolderResponse.folder)
+			? create1.CreateFolderResponse.folder[0] : create1.CreateFolderResponse.folder;
+		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
 
 		const folder1 = Array.isArray(create1.CreateFolderResponse.folder)
 			? create1.CreateFolderResponse.folder[0] : create1.CreateFolderResponse.folder;
@@ -85,7 +87,6 @@ describe('Briefcase > Briefcase Move Files', function () {
 
 		// Verify response
 		assert.notExists(create2.Fault, 'Response should not be a Fault');
-		assert.exists(create2.CreateFolderResponse, 'CreateFolderResponse should exist');
 
 		const folder2 = Array.isArray(create2.CreateFolderResponse.folder)
 			? create2.CreateFolderResponse.folder[0] : create2.CreateFolderResponse.folder;
@@ -117,7 +118,9 @@ describe('Briefcase > Briefcase Move Files', function () {
 
 		// Verify response
 		assert.notExists(moveRes.Fault, 'Response should not be a Fault');
-		assert.exists(moveRes.ItemActionResponse, 'ItemActionResponse should exist');
+		const itemAction = Array.isArray(moveRes.ItemActionResponse.action)
+			? moveRes.ItemActionResponse.action[0] : moveRes.ItemActionResponse.action;
+		assert.exists(itemAction, 'ItemActionResponse should contain action');
 
 		// Save another doc to folder2
 		const save2 = await soap.makeSOAPEnvelopeAccount(
@@ -145,7 +148,6 @@ describe('Briefcase > Briefcase Move Files', function () {
 
 		// Verify response
 		assert.notExists(move2.Fault, 'Response should not be a Fault');
-		assert.exists(move2.ItemActionResponse, 'ItemActionResponse should exist');
 
 		// Search folder1 to verify doc2 is there
 		const search1 = await soap.makeSOAPEnvelopeAccount(

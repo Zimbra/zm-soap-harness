@@ -101,8 +101,7 @@ describe('Mail > Spam > Dspam Basic', function () {
         assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
         assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
-        // If message was delivered, mark it as spam to verify spam action works
-        if (searchRes.SearchResponse.m) {
+        // Mark the message as spam to verify spam action works
             const msgs = Array.isArray(searchRes.SearchResponse.m)
                 ? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
             const msgId = msgs[0].id;
@@ -124,7 +123,6 @@ describe('Mail > Spam > Dspam Basic', function () {
             );
             assert.notExists(junkRes.Fault, 'SearchRequest junk should not fault');
             assert.exists(junkRes.SearchResponse.m, 'Spam message should be in junk folder');
-        }
     });
 
 
@@ -158,8 +156,7 @@ describe('Mail > Spam > Dspam Basic', function () {
         assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
         assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
-        // If message was delivered, mark it as spam to verify spam action works
-        if (searchRes.SearchResponse.m) {
+        // Mark the message as spam to verify spam action works
             const msgs = Array.isArray(searchRes.SearchResponse.m)
                 ? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
             const msgId = msgs[0].id;
@@ -181,6 +178,5 @@ describe('Mail > Spam > Dspam Basic', function () {
             );
             assert.notExists(junkRes.Fault, 'SearchRequest junk should not fault');
             assert.exists(junkRes.SearchResponse.m, 'Spam message should be in junk folder');
-        }
     });
 });

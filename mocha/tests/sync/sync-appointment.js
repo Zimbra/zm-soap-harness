@@ -575,7 +575,9 @@ describe('Sync > Sync Appointment', function () {
 
 		// Verify response
 		assert.notExists(moveRes.Fault, 'Response should not be a Fault');
-		assert.exists(moveRes.ItemActionResponse, 'ItemActionResponse should exist');
+		const itemAction = Array.isArray(moveRes.ItemActionResponse.action)
+			? moveRes.ItemActionResponse.action[0] : moveRes.ItemActionResponse.action;
+		assert.exists(itemAction, 'ItemActionResponse should contain action');
 
 		// Sync - verify move reflected
 		const syncRes3 = await soap.makeSOAPEnvelopeAccount(

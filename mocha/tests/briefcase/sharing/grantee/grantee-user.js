@@ -82,7 +82,9 @@ describe('Briefcase > Sharing > Grantee > Grantee User', function () {
 
 		// Verify response
 		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
-		assert.exists(shareRes.FolderActionResponse, 'FolderActionResponse should exist');
+		const folderAction = Array.isArray(shareRes.FolderActionResponse.action)
+			? shareRes.FolderActionResponse.action[0] : shareRes.FolderActionResponse.action;
+		assert.exists(folderAction, 'FolderActionResponse should contain action');
 	});
 
 
@@ -120,7 +122,8 @@ describe('Briefcase > Sharing > Grantee > Grantee User', function () {
 
 		// Verify response
 		assert.notExists(revokeRes.Fault, 'Response should not be a Fault');
-		assert.exists(revokeRes.FolderActionResponse,
-			'FolderActionResponse should exist');
+		const folderAction = Array.isArray(revokeRes.FolderActionResponse.action)
+			? revokeRes.FolderActionResponse.action[0] : revokeRes.FolderActionResponse.action;
+		assert.exists(folderAction, 'FolderActionResponse should contain action');
 	});
 });

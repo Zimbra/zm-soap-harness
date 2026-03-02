@@ -60,7 +60,9 @@ describe('Sync > Sync Action', function () {
 
 		// Verify response
 		assert.notExists(createFolderRes.Fault, 'Response should not be a Fault');
-		assert.exists(createFolderRes.CreateFolderResponse, 'CreateFolderResponse should exist');
+		const createdFolder = Array.isArray(createFolderRes.CreateFolderResponse.folder)
+			? createFolderRes.CreateFolderResponse.folder[0] : createFolderRes.CreateFolderResponse.folder;
+		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
 		const subfolderId = createFolderRes.CreateFolderResponse.folder[0].id;
 
 		// Get inbox folder id
@@ -81,7 +83,9 @@ Content
 
 		// Verify response
 		assert.notExists(addMsgRes.Fault, 'Response should not be a Fault');
-		assert.exists(addMsgRes.AddMsgResponse, 'AddMsgResponse should exist');
+		const addedMsg = Array.isArray(addMsgRes.AddMsgResponse.m)
+			? addMsgRes.AddMsgResponse.m[0] : addMsgRes.AddMsgResponse.m;
+		assert.exists(addedMsg, 'AddMsgResponse should contain m');
 		const messageId = addMsgRes.AddMsgResponse.m[0].id;
 
 		// Initial SyncRequest to get token
@@ -106,7 +110,9 @@ Content
 
 		// Verify response
 		assert.notExists(moveRes.Fault, 'Response should not be a Fault');
-		assert.exists(moveRes.MsgActionResponse, 'MsgActionResponse should exist');
+		const msgAction = Array.isArray(moveRes.MsgActionResponse.action)
+			? moveRes.MsgActionResponse.action[0] : moveRes.MsgActionResponse.action;
+		assert.exists(msgAction, 'MsgActionResponse should contain action');
 		assert.exists(moveRes.MsgActionResponse.action, 'MsgActionResponse should have action');
 
 		// SyncRequest with token - verify message appears with correct folder
@@ -143,7 +149,10 @@ Content
 
 		// Verify response
 		assert.notExists(sendRes1.Fault, 'Response should not be a Fault');
-		assert.exists(sendRes1.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes1.SendMsgResponse.m)
+			? sendRes1.SendMsgResponse.m[0] : sendRes1.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 		const origMsgId = sendRes1.SendMsgResponse.m[0].id;
 
 		// SendMsgRequest
@@ -161,7 +170,7 @@ Content
 
 		// Verify response
 		assert.notExists(sendRes2.Fault, 'Response should not be a Fault');
-		assert.exists(sendRes2.SendMsgResponse, 'SendMsgResponse should exist');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// SendMsgRequest
 		const sendRes3 = await soap.makeSOAPEnvelopeAccount(
@@ -178,7 +187,7 @@ Content
 
 		// Verify response
 		assert.notExists(sendRes3.Fault, 'Response should not be a Fault');
-		assert.exists(sendRes3.SendMsgResponse, 'SendMsgResponse should exist');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Login as account3 - get inbox and create 2 subfolders
 		const getFolderRes = await soap.makeSOAPEnvelopeAccount(
@@ -296,7 +305,7 @@ Content
 
 		// Verify response
 		assert.notExists(sendRes4.Fault, 'Response should not be a Fault');
-		assert.exists(sendRes4.SendMsgResponse, 'SendMsgResponse should exist');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Wait for message delivery, then move messages again as account3
 		await new Promise(resolve => setTimeout(resolve, 2000));

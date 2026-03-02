@@ -171,7 +171,9 @@ Content for email02A mdate test</content>
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.MsgActionResponse, 'MsgActionResponse should exist');
+		const msgAction = Array.isArray(res2.MsgActionResponse.action)
+			? res2.MsgActionResponse.action[0] : res2.MsgActionResponse.action;
+		assert.exists(msgAction, 'MsgActionResponse should contain action');
 
 		// Search with mdate
 		const now = new Date();

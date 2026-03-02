@@ -49,31 +49,29 @@ describe('Mail > Message Send Multinode', function () {
 			</SendMsgRequest>`, senderAuthToken
 		);
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
-		// Wait briefly for delivery
-		await new Promise(resolve => setTimeout(resolve, 2000));
+		// Wait for delivery
+		await new Promise(resolve => setTimeout(resolve, 5000));
 
-		// Search for the message with retry
-		let found = false;
-		for (let retry = 0; retry < 5; retry++) {
-			const searchRes = await soap.makeSOAPEnvelopeAccount(
-				`<SearchRequest xmlns="urn:zimbraMail" types="message">
-					<query>from:${senderEmail} in:inbox</query>
-				</SearchRequest>`, recipientAuthToken
-			);
-			if (!searchRes.Fault && searchRes.SearchResponse && searchRes.SearchResponse.m) {
-				const msgs = Array.isArray(searchRes.SearchResponse.m)
-					? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
-				if (msgs[0] && msgs[0].su) {
-					assert.include(msgs[0].su, 'MultiHost testing subject line', 'Subject should match');
-					found = true;
-					break;
-				}
-			}
-			await new Promise(resolve => setTimeout(resolve, 2000));
-		}
-		assert.isTrue(found, 'Message should be found in recipient inbox');
+		// Search for the message
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>from:${senderEmail} in:inbox</query>
+			</SearchRequest>`, recipientAuthToken
+		);
+
+		// Verify message found
+		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
+		const msgs = Array.isArray(searchRes.SearchResponse.m)
+			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
+		assert.exists(msgs[0], 'SearchResponse should contain message');
+		assert.isString(msgs[0].id, 'Message should have an id');
+		assert.include(msgs[0].su, 'MultiHost testing subject line',
+			'Subject should match');
 	}
 
 	// Tests

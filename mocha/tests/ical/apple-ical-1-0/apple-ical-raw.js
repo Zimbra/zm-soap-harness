@@ -80,6 +80,8 @@ describe('ICAL > Apple ICAL 1 0 > Apple ICAL Raw', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'GetMsgRequest should not fault');
-		assert.exists(res.GetMsgResponse, 'GetMsgResponse should exist');
+		const getMsg = Array.isArray(res.GetMsgResponse.m)
+			? res.GetMsgResponse.m[0] : res.GetMsgResponse.m;
+		assert.exists(getMsg, 'GetMsgResponse should contain m');
 	});
 });

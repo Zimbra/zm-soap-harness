@@ -73,7 +73,9 @@ describe('Mail Client > Briefcase > Bug 55400', function () {
 			</GetMsgRequest>`, acct1Auth
 		);
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
-		assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
+		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		assert.exists(getMsg, 'GetMsgResponse should contain m');
 
 		// Get briefcase folder id
 		const folderRes = await soap.makeSOAPEnvelopeAccount(

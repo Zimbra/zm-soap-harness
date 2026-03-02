@@ -60,9 +60,13 @@ describe('Mail > Item Get', function () {
 			</GetItemRequest>`, account1AuthToken
 		);
 
-		// Verify GetItemResponse exists for ID lookup
+		// Verify GetItemResponse has folder details for ID lookup
 		assert.notExists(getByIdRes.Fault, 'GetItemRequest by ID should not fault');
-		assert.exists(getByIdRes.GetItemResponse, 'GetItemResponse should exist');
+		const folderById = Array.isArray(getByIdRes.GetItemResponse.folder)
+			? getByIdRes.GetItemResponse.folder[0] : getByIdRes.GetItemResponse.folder;
+		assert.exists(folderById, 'GetItemResponse should contain folder');
+		assert.equal(folderById.id, inboxId, 'Folder ID should match inbox ID');
+		assert.equal(folderById.name, 'Inbox', 'Folder name should be Inbox');
 
 		// Get item by path
 		const getByPathRes = await soap.makeSOAPEnvelopeAccount(
@@ -71,9 +75,13 @@ describe('Mail > Item Get', function () {
 			</GetItemRequest>`, account1AuthToken
 		);
 
-		// Verify GetItemResponse exists for path lookup
+		// Verify GetItemResponse has folder details for path lookup
 		assert.notExists(getByPathRes.Fault, 'GetItemRequest by path should not fault');
-		assert.exists(getByPathRes.GetItemResponse, 'GetItemResponse should exist');
+		const folderByPath = Array.isArray(getByPathRes.GetItemResponse.folder)
+			? getByPathRes.GetItemResponse.folder[0] : getByPathRes.GetItemResponse.folder;
+		assert.exists(folderByPath, 'GetItemResponse should contain folder');
+		assert.equal(folderByPath.id, inboxId, 'Folder ID should match inbox ID');
+		assert.equal(folderByPath.name, 'Inbox', 'Folder name should be Inbox');
 	});
 
 
@@ -155,9 +163,13 @@ describe('Mail > Item Get', function () {
 			</GetItemRequest>`, account2AuthToken
 		);
 
-		// Verify GetItemResponse exists for ID lookup
+		// Verify GetItemResponse has link/folder details for ID lookup
 		assert.notExists(getByIdRes.Fault, 'GetItemRequest by ID should not fault');
-		assert.exists(getByIdRes.GetItemResponse, 'GetItemResponse should exist');
+		const linkById = getByIdRes.GetItemResponse.link
+			? (Array.isArray(getByIdRes.GetItemResponse.link) ? getByIdRes.GetItemResponse.link[0] : getByIdRes.GetItemResponse.link)
+			: (Array.isArray(getByIdRes.GetItemResponse.folder) ? getByIdRes.GetItemResponse.folder[0] : getByIdRes.GetItemResponse.folder);
+		assert.exists(linkById, 'GetItemResponse should contain link or folder');
+		assert.equal(linkById.id, delegatedId, 'Link ID should match delegated ID');
 
 		// Get item by path
 		const getByPathRes = await soap.makeSOAPEnvelopeAccount(
@@ -166,8 +178,12 @@ describe('Mail > Item Get', function () {
 			</GetItemRequest>`, account2AuthToken
 		);
 
-		// Verify GetItemResponse exists for path lookup
+		// Verify GetItemResponse has link/folder details for path lookup
 		assert.notExists(getByPathRes.Fault, 'GetItemRequest by path should not fault');
-		assert.exists(getByPathRes.GetItemResponse, 'GetItemResponse should exist');
+		const linkByPath = getByPathRes.GetItemResponse.link
+			? (Array.isArray(getByPathRes.GetItemResponse.link) ? getByPathRes.GetItemResponse.link[0] : getByPathRes.GetItemResponse.link)
+			: (Array.isArray(getByPathRes.GetItemResponse.folder) ? getByPathRes.GetItemResponse.folder[0] : getByPathRes.GetItemResponse.folder);
+		assert.exists(linkByPath, 'GetItemResponse should contain link or folder');
+		assert.equal(linkByPath.id, delegatedId, 'Link ID should match delegated ID');
 	});
 });

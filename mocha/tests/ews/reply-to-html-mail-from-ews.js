@@ -65,7 +65,10 @@ describe('EWS > Reply To HTML Mail From EWS', function () {
 			</SendMsgRequest>`, account1AuthToken
 		);
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		await soap.waitFor(5000);
 

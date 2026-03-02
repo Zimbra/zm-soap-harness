@@ -185,7 +185,9 @@ END:VCALENDAR`,
 
 		// Verify response
 		assert.notExists(getMsgRes.Fault, 'Response should not be a Fault');
-		assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
+		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		assert.exists(getMsg, 'GetMsgResponse should contain m');
 		const msg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0]
 			: getMsgRes.GetMsgResponse.m;

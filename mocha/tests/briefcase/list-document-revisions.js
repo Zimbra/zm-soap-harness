@@ -343,7 +343,9 @@ describe('Briefcase > List Document Revisions', function () {
 
 		// Verify response
 		assert.notExists(trashRes.Fault, 'Response should not be a Fault');
-		assert.exists(trashRes.ItemActionResponse, 'ItemActionResponse should exist');
+		const itemAction = Array.isArray(trashRes.ItemActionResponse.action)
+			? trashRes.ItemActionResponse.action[0] : trashRes.ItemActionResponse.action;
+		assert.exists(itemAction, 'ItemActionResponse should contain action');
 
 		// List revisions of trashed document
 		const listRes = await soap.makeSOAPEnvelopeAccount(

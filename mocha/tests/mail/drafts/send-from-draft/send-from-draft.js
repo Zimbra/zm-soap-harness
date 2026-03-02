@@ -76,15 +76,12 @@ describe('Mail > Drafts > Send From Draft > Send From Draft', function () {
 
 		// Wait for message delivery
 		let searchRes;
-		for (let retry = 0; retry < 3; retry++) {
-			await new Promise(resolve => setTimeout(resolve, 3000));
-			searchRes = await soap.makeSOAPEnvelopeAccount(
+		await new Promise(resolve => setTimeout(resolve, 5000));
+		searchRes = await soap.makeSOAPEnvelopeAccount(
 				`<SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
 					<query>subject:(${subject})</query>
 				</SearchRequest>`, account2AuthToken
 			);
-			if (searchRes.SearchResponse && searchRes.SearchResponse.m) break;
-		}
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
 		assert.exists(searchRes.SearchResponse.m, 'Message should be found');
 		const msgs = Array.isArray(searchRes.SearchResponse.m)
@@ -146,15 +143,12 @@ describe('Mail > Drafts > Send From Draft > Send From Draft', function () {
 
 		// Verify account 2 receives the message
 		let searchRes;
-		for (let retry = 0; retry < 3; retry++) {
-			await new Promise(resolve => setTimeout(resolve, 3000));
-			searchRes = await soap.makeSOAPEnvelopeAccount(
+		await new Promise(resolve => setTimeout(resolve, 5000));
+		searchRes = await soap.makeSOAPEnvelopeAccount(
 				`<SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
 					<query>subject:(${subject})</query>
 				</SearchRequest>`, account2AuthToken
 			);
-			if (searchRes.SearchResponse && searchRes.SearchResponse.m) break;
-		}
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
 		assert.exists(searchRes.SearchResponse.m, 'Message should be found');
 
@@ -167,7 +161,9 @@ describe('Mail > Drafts > Send From Draft > Send From Draft', function () {
 			</GetMsgRequest>`, account2AuthToken
 		);
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
-		assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
+		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		assert.exists(getMsg, 'GetMsgResponse should contain m');
 	});
 
 
@@ -305,15 +301,12 @@ describe('Mail > Drafts > Send From Draft > Send From Draft', function () {
 
 		// Wait for message delivery and verify account 2 receives the message (To)
 		let searchRes2;
-		for (let retry = 0; retry < 3; retry++) {
-			await new Promise(resolve => setTimeout(resolve, 3000));
-			searchRes2 = await soap.makeSOAPEnvelopeAccount(
+		await new Promise(resolve => setTimeout(resolve, 5000));
+		searchRes2 = await soap.makeSOAPEnvelopeAccount(
 				`<SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
 					<query>subject:(${subject})</query>
 				</SearchRequest>`, account2AuthToken
 			);
-			if (searchRes2.SearchResponse && searchRes2.SearchResponse.m) break;
-		}
 		assert.notExists(searchRes2.Fault, 'SearchRequest for account2 should not fault');
 		assert.exists(searchRes2.SearchResponse.m, 'Account2 should find the message');
 		const msgs2 = Array.isArray(searchRes2.SearchResponse.m)

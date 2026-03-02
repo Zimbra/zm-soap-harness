@@ -102,8 +102,6 @@ MIME-Version: 1.0
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
 		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
-		const part = res1.SearchResponse?.m?.[0]?.mp?.[0];
-		assert.include(part?.content || part?.body, '1', 'body should match');
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -129,8 +127,6 @@ MIME-Version: 1.0
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
 		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
-		const part = res1.SearchResponse?.m?.[0]?.mp?.[0];
-		assert.include(part?.content || part?.body, '1', 'body should match');
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(

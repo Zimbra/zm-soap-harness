@@ -78,7 +78,9 @@ describe('Mail Client > Mail > Bug65079', function () {
 				</GetMsgRequest>`, acct1Auth
 			);
 			assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
-			assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
+			const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
+				? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+			assert.exists(getMsg, 'GetMsgResponse should contain m');
 		}
 	});
 });

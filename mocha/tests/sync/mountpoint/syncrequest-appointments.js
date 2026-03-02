@@ -196,8 +196,9 @@ describe('Sync > Mountpoint > Syncrequest Appointments', function () {
 
 		// Verify response
 		assert.notExists(deleteRes.Fault, 'Response should not be a Fault');
-		assert.exists(deleteRes.ItemActionResponse,
-			'ItemActionResponse should exist');
+		const itemAction = Array.isArray(deleteRes.ItemActionResponse.action)
+			? deleteRes.ItemActionResponse.action[0] : deleteRes.ItemActionResponse.action;
+		assert.exists(itemAction, 'ItemActionResponse should contain action');
 
 		// Sync as account2 - verify deleted
 		const syncRes2 = await soap.makeSOAPEnvelopeAccount(
@@ -266,7 +267,9 @@ describe('Sync > Mountpoint > Syncrequest Appointments', function () {
 
 		// Verify response
 		assert.notExists(moveRes.Fault, 'Response should not be a Fault');
-		assert.exists(moveRes.ItemActionResponse, 'ItemActionResponse should exist');
+		const itemAction = Array.isArray(moveRes.ItemActionResponse.action)
+			? moveRes.ItemActionResponse.action[0] : moveRes.ItemActionResponse.action;
+		assert.exists(itemAction, 'ItemActionResponse should contain action');
 
 		// Sync as account2 - verify moved appointment appears
 		const syncRes2 = await soap.makeSOAPEnvelopeAccount(

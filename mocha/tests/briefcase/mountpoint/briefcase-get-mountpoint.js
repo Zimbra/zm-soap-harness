@@ -91,8 +91,9 @@ describe('Briefcase > Mountpoint > Briefcase Get Mountpoint', function () {
 
 		// Verify response
 		assert.notExists(createFolderRes.Fault, 'Response should not be a Fault');
-		assert.exists(createFolderRes.CreateFolderResponse,
-			'CreateFolderResponse should exist');
+		const createdFolder = Array.isArray(createFolderRes.CreateFolderResponse.folder)
+			? createFolderRes.CreateFolderResponse.folder[0] : createFolderRes.CreateFolderResponse.folder;
+		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
 		const folder1 = Array.isArray(createFolderRes.CreateFolderResponse.folder)
 			? createFolderRes.CreateFolderResponse.folder[0]
 			: createFolderRes.CreateFolderResponse.folder;

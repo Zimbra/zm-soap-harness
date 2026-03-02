@@ -88,8 +88,9 @@ describe('General > Headers > Notification Block > Folder Action Request ACL', f
 
 		// Verify response
 		assert.notExists(grantRes.Fault, 'FolderActionRequest grant should not fault');
-		assert.exists(grantRes.FolderActionResponse,
-			'FolderActionResponse should exist');
+		const folderAction = Array.isArray(grantRes.FolderActionResponse.action)
+			? grantRes.FolderActionResponse.action[0] : grantRes.FolderActionResponse.action;
+		assert.exists(folderAction, 'FolderActionResponse should contain action');
 	});
 
 
@@ -136,7 +137,8 @@ describe('General > Headers > Notification Block > Folder Action Request ACL', f
 
 		// Verify response
 		assert.notExists(revokeRes.Fault, 'Revoke should not fault');
-		assert.exists(revokeRes.FolderActionResponse,
-			'FolderActionResponse should exist');
+		const folderAction = Array.isArray(revokeRes.FolderActionResponse.action)
+			? revokeRes.FolderActionResponse.action[0] : revokeRes.FolderActionResponse.action;
+		assert.exists(folderAction, 'FolderActionResponse should contain action');
 	});
 });

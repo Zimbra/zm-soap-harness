@@ -90,7 +90,10 @@ describe('Mail > Drafts > Bugs > Bug 24772', function () {
 			</SendMsgRequest>`, account1Token
 		);
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Delete the draft
 		await soap.makeSOAPEnvelopeAccount(
@@ -103,15 +106,12 @@ describe('Mail > Drafts > Bugs > Bug 24772', function () {
 		const account2Token = await soap.getAccountAuthToken(account2Email);
 
 		let searchRes;
-		for (let retry = 0; retry < 3; retry++) {
-			await new Promise(resolve => setTimeout(resolve, 3000));
-			searchRes = await soap.makeSOAPEnvelopeAccount(
+		await new Promise(resolve => setTimeout(resolve, 5000));
+		searchRes = await soap.makeSOAPEnvelopeAccount(
 				`<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>subject:(Check sending of draft)</query>
 				</SearchRequest>`, account2Token
 			);
-			if (searchRes.SearchResponse && searchRes.SearchResponse.m) break;
-		}
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
 		assert.exists(searchRes.SearchResponse.m, 'Message should be found');
 		const msgs = Array.isArray(searchRes.SearchResponse.m)

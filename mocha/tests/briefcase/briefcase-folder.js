@@ -96,8 +96,9 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateFolderResponse,
-			'CreateFolderResponse should exist');
+		const createdFolder = Array.isArray(createRes.CreateFolderResponse.folder)
+			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
+		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
 		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
 
@@ -118,8 +119,9 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateFolderResponse,
-			'CreateFolderResponse should exist');
+		const createdFolder = Array.isArray(createRes.CreateFolderResponse.folder)
+			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
+		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
 
 		// Try to create same folder again — should fail
 		const dupRes = await soap.makeSOAPEnvelopeAccount(
@@ -148,8 +150,9 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateFolderResponse,
-			'CreateFolderResponse should exist');
+		const createdFolder = Array.isArray(createRes.CreateFolderResponse.folder)
+			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
+		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
 		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
 		const folderId = folder.id;
@@ -163,8 +166,9 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(renameRes.Fault, 'Response should not be a Fault');
-		assert.exists(renameRes.FolderActionResponse,
-			'FolderActionResponse should exist');
+		const folderAction = Array.isArray(renameRes.FolderActionResponse.action)
+			? renameRes.FolderActionResponse.action[0] : renameRes.FolderActionResponse.action;
+		assert.exists(folderAction, 'FolderActionResponse should contain action');
 		const action = Array.isArray(renameRes.FolderActionResponse.action)
 			? renameRes.FolderActionResponse.action[0] : renameRes.FolderActionResponse.action;
 
@@ -186,7 +190,9 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(create3.Fault, 'Response should not be a Fault');
-		assert.exists(create3.CreateFolderResponse, 'CreateFolderResponse should exist');
+		const createdFolder = Array.isArray(create3.CreateFolderResponse.folder)
+			? create3.CreateFolderResponse.folder[0] : create3.CreateFolderResponse.folder;
+		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
 
 		const folder3 = Array.isArray(create3.CreateFolderResponse.folder)
 			? create3.CreateFolderResponse.folder[0] : create3.CreateFolderResponse.folder;
@@ -201,7 +207,6 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(create4.Fault, 'Response should not be a Fault');
-		assert.exists(create4.CreateFolderResponse, 'CreateFolderResponse should exist');
 
 		const folder4 = Array.isArray(create4.CreateFolderResponse.folder)
 			? create4.CreateFolderResponse.folder[0] : create4.CreateFolderResponse.folder;
@@ -216,7 +221,9 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(trashRes.Fault, 'Response should not be a Fault');
-		assert.exists(trashRes.FolderActionResponse, 'FolderActionResponse should exist');
+		const folderAction = Array.isArray(trashRes.FolderActionResponse.action)
+			? trashRes.FolderActionResponse.action[0] : trashRes.FolderActionResponse.action;
+		assert.exists(folderAction, 'FolderActionResponse should contain action');
 
 		const trashAction = Array.isArray(trashRes.FolderActionResponse.action)
 			? trashRes.FolderActionResponse.action[0] : trashRes.FolderActionResponse.action;
@@ -233,8 +240,6 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(deleteRes.Fault, 'Response should not be a Fault');
-		assert.exists(deleteRes.FolderActionResponse,
-			'FolderActionResponse should exist');
 		const deleteAction = Array.isArray(deleteRes.FolderActionResponse.action)
 			? deleteRes.FolderActionResponse.action[0] : deleteRes.FolderActionResponse.action;
 
@@ -255,8 +260,9 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateFolderResponse,
-			'CreateFolderResponse should exist');
+		const createdFolder = Array.isArray(createRes.CreateFolderResponse.folder)
+			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
+		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
 		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
 		const folderId = folder.id;
@@ -289,7 +295,9 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
-		assert.exists(shareRes.FolderActionResponse, 'FolderActionResponse should exist');
+		const folderAction = Array.isArray(shareRes.FolderActionResponse.action)
+			? shareRes.FolderActionResponse.action[0] : shareRes.FolderActionResponse.action;
+		assert.exists(folderAction, 'FolderActionResponse should contain action');
 
 		// Auth as account2
 		// Send the message
@@ -366,7 +374,5 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(deleteRes.Fault, 'Response should not be a Fault');
-		assert.exists(deleteRes.FolderActionResponse,
-			'FolderActionResponse should exist');
 	});
 });

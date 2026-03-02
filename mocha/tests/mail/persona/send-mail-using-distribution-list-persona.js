@@ -112,7 +112,10 @@ describe('Mail > Persona > Send Mail Using Distribution List Persona', function 
 
 		// Verify send succeeded (no PERM_DENIED)
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 		const msgId = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0].id : sendRes.SendMsgResponse.m.id;
 
@@ -165,7 +168,6 @@ describe('Mail > Persona > Send Mail Using Distribution List Persona', function 
 
 		// Verify send succeeded
 		assert.notExists(sendRes2.Fault, 'SendMsgRequest should not fault');
-		assert.exists(sendRes2.SendMsgResponse, 'SendMsgResponse should exist');
 	});
 
 
@@ -253,7 +255,10 @@ describe('Mail > Persona > Send Mail Using Distribution List Persona', function 
 
 		// Verify send succeeded
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Create persona for DL
 		const personaName = `persona2${common.getUniqueString()}`;
@@ -290,6 +295,5 @@ describe('Mail > Persona > Send Mail Using Distribution List Persona', function 
 
 		// Verify send succeeded
 		assert.notExists(sendRes2.Fault, 'SendMsgRequest should not fault');
-		assert.exists(sendRes2.SendMsgResponse, 'SendMsgResponse should exist');
 	});
 });

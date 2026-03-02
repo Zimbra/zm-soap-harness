@@ -71,7 +71,9 @@ Test content for ${subject}
 		const action = Array.isArray(deleteRes.ItemActionResponse.action)
 			? deleteRes.ItemActionResponse.action[0]
 			: deleteRes.ItemActionResponse.action;
+		assert.exists(action, 'ItemActionResponse should contain action');
 		assert.equal(action.op, 'delete', 'Op should be delete');
+		assert.equal(action.id, msgId, 'Action id should match message id');
 
 		// Verify message is gone
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
@@ -79,6 +81,7 @@ Test content for ${subject}
 				<query>${subject}</query>
 			</SearchRequest>`, authToken
 		);
+		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
 		assert.notExists(searchRes.SearchResponse.m,
 			'Message should not be found after hard delete');
 	});

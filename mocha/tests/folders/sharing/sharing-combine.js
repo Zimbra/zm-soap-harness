@@ -148,21 +148,16 @@ describe('Folders > Sharing > Sharing Combine', function () {
 		// MsgActionRequest
 		const searchResp = await soap.makeSOAPEnvelopeAccount(searchRequest, auth2);
 
-		if (searchResp.SearchResponse && searchResp.SearchResponse.m) {
-			const msgId = searchResp.SearchResponse.m[0].id;
-			// Try DELETE
-			const msgActionRequest =
-				`<MsgActionRequest xmlns="urn:zimbraMail">
-					<action id="${msgId}" op="delete"/>
-				</MsgActionRequest>`;
+		const msgId = searchResp.SearchResponse.m[0].id;
+		// Try DELETE
+		const msgActionRequest =
+			`<MsgActionRequest xmlns="urn:zimbraMail">
+				<action id="${msgId}" op="delete"/>
+			</MsgActionRequest>`;
 
-			// GetFolderRequest
-			await soap.makeSOAPEnvelopeAccount(msgActionRequest, auth2);
-			// Success if no error
-		} else {
-			// Might be no messages if search failed or indexing delay?
-			// "AddMsgRequest" is immediate.
-		}
+		// GetFolderRequest
+		await soap.makeSOAPEnvelopeAccount(msgActionRequest, auth2);
+		// Success if no error
 	});
 
 
@@ -225,16 +220,14 @@ describe('Folders > Sharing > Sharing Combine', function () {
 		// MsgActionRequest
 		const searchResp = await soap.makeSOAPEnvelopeAccount(searchRequest2, auth3);
 
-		if (searchResp.SearchResponse && searchResp.SearchResponse.m) {
-			const msgId = searchResp.SearchResponse.m[0].id;
-			const msgActionRequest2 =
-				`<MsgActionRequest xmlns="urn:zimbraMail">
-					<action id="${msgId}" op="delete"/>
-				</MsgActionRequest>`;
+		const msgId = searchResp.SearchResponse.m[0].id;
+		const msgActionRequest2 =
+			`<MsgActionRequest xmlns="urn:zimbraMail">
+				<action id="${msgId}" op="delete"/>
+			</MsgActionRequest>`;
 
-			// CreateFolderRequest
-			await soap.makeSOAPEnvelopeAccount(msgActionRequest2, auth3);
-		}
+		// CreateFolderRequest
+		await soap.makeSOAPEnvelopeAccount(msgActionRequest2, auth3);
 	});
 
 

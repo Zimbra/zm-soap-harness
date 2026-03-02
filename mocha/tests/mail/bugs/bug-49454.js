@@ -148,7 +148,9 @@ describe('Mail > Bugs > Bug 49454', function () {
 			</GetMsgRequest>`, authToken2
 		);
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
-		assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
+		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		assert.exists(getMsg, 'GetMsgResponse should contain m');
 
 		// Verify account1 does NOT receive read receipt (no notification for shared access)
 		const searchReceipt = await soap.makeSOAPEnvelopeAccount(
@@ -158,12 +160,11 @@ describe('Mail > Bugs > Bug 49454', function () {
 		);
 		assert.notExists(searchReceipt.Fault, 'SearchRequest should not fault');
 		// Per the XML test, account1 inbox should be empty (no read receipt)
-		if (searchReceipt.SearchResponse.m) {
-			const receiptMsgs = Array.isArray(searchReceipt.SearchResponse.m)
-				? searchReceipt.SearchResponse.m : [searchReceipt.SearchResponse.m];
-			// Verify no read receipt notification arrived
-			const hasReceipt = receiptMsgs.some(m => m.su && m.su.includes('Read-Receipt'));
-			assert.isFalse(hasReceipt, 'Account1 should not receive read receipt from shared access');
-		}
+		const receiptMsgs = searchReceipt.SearchResponse.m
+			? (Array.isArray(searchReceipt.SearchResponse.m) ? searchReceipt.SearchResponse.m : [searchReceipt.SearchResponse.m])
+			: [];
+		// Verify no read receipt notification arrived
+		const hasReceipt = receiptMsgs.some(m => m.su && m.su.includes('Read-Receipt'));
+		assert.isFalse(hasReceipt, 'Account1 should not receive read receipt from shared access');
 	});
 });

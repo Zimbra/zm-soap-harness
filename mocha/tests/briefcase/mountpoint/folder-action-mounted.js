@@ -132,7 +132,8 @@ describe('Briefcase > Mountpoint > Folder Action Mounted', function () {
 
 		// Verify response
 		assert.notExists(deleteRes.Fault, 'Response should not be a Fault');
-		assert.exists(deleteRes.FolderActionResponse,
-			'FolderActionResponse should exist');
+		const folderAction = Array.isArray(deleteRes.FolderActionResponse.action)
+			? deleteRes.FolderActionResponse.action[0] : deleteRes.FolderActionResponse.action;
+		assert.exists(folderAction, 'FolderActionResponse should contain action');
 	});
 });

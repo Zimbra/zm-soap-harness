@@ -71,7 +71,9 @@ This is a junk message for testing</content>
 			</MsgActionRequest>`, accountAuthToken
 		);
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.MsgActionResponse, 'MsgActionResponse should exist');
+		const msgAction = Array.isArray(res2.MsgActionResponse.action)
+			? res2.MsgActionResponse.action[0] : res2.MsgActionResponse.action;
+		assert.exists(msgAction, 'MsgActionResponse should contain action');
 
 		// Search for the junk message subject - should now be findable
 		const res3 = await soap.makeSOAPEnvelopeAccount(

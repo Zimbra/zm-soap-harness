@@ -72,7 +72,9 @@ describe('General > Headers > Context > Notify', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateFolderRequest should not fault');
-		assert.exists(createRes.CreateFolderResponse, 'CreateFolderResponse should exist');
+		const createdFolder = Array.isArray(createRes.CreateFolderResponse.folder)
+			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
+		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
 		const folderId = createRes.CreateFolderResponse.folder[0].id;
 
 		// Verify response
@@ -123,7 +125,9 @@ describe('General > Headers > Context > Notify', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateTagRequest should not fault');
-		assert.exists(createRes.CreateTagResponse, 'CreateTagResponse should exist');
+		const createdTag = Array.isArray(createRes.CreateTagResponse.tag)
+			? createRes.CreateTagResponse.tag[0] : createRes.CreateTagResponse.tag;
+		assert.exists(createdTag, 'CreateTagResponse should contain tag');
 		const tagId = createRes.CreateTagResponse.tag[0].id;
 
 		// Verify response
@@ -180,7 +184,10 @@ describe('General > Headers > Context > Notify', function () {
 
 		// Verify response
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
-		assert.exists(sendRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
+			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 
 
@@ -292,7 +299,9 @@ ${content}</content>
 
 		// Verify response
 		assert.notExists(addRes.Fault, 'AddMsgRequest should not fault');
-		assert.exists(addRes.AddMsgResponse, 'AddMsgResponse should exist');
+		const addedMsg = Array.isArray(addRes.AddMsgResponse.m)
+			? addRes.AddMsgResponse.m[0] : addRes.AddMsgResponse.m;
+		assert.exists(addedMsg, 'AddMsgResponse should contain m');
 	});
 
 
@@ -864,7 +873,10 @@ ${content}</content>
 
 		// Verify response
 		assert.notExists(replyRes.Fault, 'Reply SendMsgRequest should not fault');
-		assert.exists(replyRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(replyRes.SendMsgResponse.m)
+			? replyRes.SendMsgResponse.m[0] : replyRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 
 
@@ -903,6 +915,9 @@ ${content}</content>
 
 		// Verify response
 		assert.notExists(fwdRes.Fault, 'Forward SendMsgRequest should not fault');
-		assert.exists(fwdRes.SendMsgResponse, 'SendMsgResponse should exist');
+		const sentMsg = Array.isArray(fwdRes.SendMsgResponse.m)
+			? fwdRes.SendMsgResponse.m[0] : fwdRes.SendMsgResponse.m;
+		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 });

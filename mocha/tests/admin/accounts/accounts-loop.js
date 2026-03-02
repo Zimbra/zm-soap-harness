@@ -119,8 +119,8 @@ describe('Admin > Accounts > Accounts Loop', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.ModifyAccountResponse,
-			'ModifyAccountResponse should exist');
+		assert.exists(response.ModifyAccountResponse.account,
+			'ModifyAccountResponse should contain account');
 		const account = Array.isArray(response.ModifyAccountResponse.account)
 			? response.ModifyAccountResponse.account[0]
 			: response.ModifyAccountResponse.account;

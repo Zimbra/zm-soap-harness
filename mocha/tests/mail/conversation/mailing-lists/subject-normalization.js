@@ -272,11 +272,9 @@ ${content}
 					<query>content:(${content})</query>
 				</SearchRequest>`, authToken
 			);
-			if (searchRes.SearchResponse && searchRes.SearchResponse.m) {
-				const m = Array.isArray(searchRes.SearchResponse.m)
-					? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
-				if (m.length >= 4) break;
-			}
+const m = Array.isArray(searchRes.SearchResponse.m)
+				? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
+			if (m.length >= 4) break;
 			retries--;
 			await new Promise(resolve => setTimeout(resolve, 2000));
 		}
@@ -324,7 +322,6 @@ ${content}
 					<query>content:content1</query>
 				</SearchRequest>`, authToken
 			);
-			if (searchRes1.SearchResponse && searchRes1.SearchResponse.m) break;
 			retries1--;
 			await new Promise(resolve => setTimeout(resolve, 2000));
 		}

@@ -105,10 +105,9 @@ describe('Rest Servlet > Upload Servlet > Add Msg Request', function () {
 
 		// Verify response
 		assert.notExists(addRes.Fault, 'Response should not be a Fault');
-		assert.exists(addRes.AddMsgResponse, 'AddMsgResponse should exist');
 		const addedMsg = Array.isArray(addRes.AddMsgResponse.m)
-			? addRes.AddMsgResponse.m[0]
-			: addRes.AddMsgResponse.m;
+			? addRes.AddMsgResponse.m[0] : addRes.AddMsgResponse.m;
+		assert.exists(addedMsg, 'AddMsgResponse should contain m');
 
 		// Verify response
 		assert.exists(addedMsg.id, 'Added message should have an id');
@@ -122,12 +121,11 @@ describe('Rest Servlet > Upload Servlet > Add Msg Request', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
-		assert.exists(getRes.GetMsgResponse, 'GetMsgResponse should exist');
-		const msg = Array.isArray(getRes.GetMsgResponse.m)
-			? getRes.GetMsgResponse.m[0]
-			: getRes.GetMsgResponse.m;
+		const getMsg = Array.isArray(getRes.GetMsgResponse.m)
+			? getRes.GetMsgResponse.m[0] : getRes.GetMsgResponse.m;
+		assert.exists(getMsg, 'GetMsgResponse should contain m');
 
 		// Verify response
-		assert.equal(msg.id, addedMsg.id, 'Message id should match');
+		assert.equal(getMsg.id, addedMsg.id, 'Message id should match');
 	});
 });
