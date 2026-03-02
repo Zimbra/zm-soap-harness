@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('General > MetaData > Set Mailbox Metadata Request', function () {
+describe('General > Metadata > Set Mailbox Metadata Request Basic', function () {
 	this.timeout(60 * 1000);
 	let accountAuthToken;
 

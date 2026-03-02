@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Mail Client > HAB > ZCS-5397 GetHABGroups', function () {
+describe('Mail Client > Hab > ZCS 5397 Get Hab Groups', function () {
 	this.timeout(300 * 1000);
 	let adminAuthToken;
 	let account1Name, account2Name;

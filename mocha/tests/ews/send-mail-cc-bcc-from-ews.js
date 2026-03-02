@@ -5,7 +5,7 @@ import soap from '../../framework/backend/soap-client.js';
 import ews from '../../framework/backend/ews.js';
 import { main } from '../../pages/main.js';
 
-describe('EWS > Send Mail CC BCC From EWS', function () {
+describe('EWS > Send Mail Cc Bcc From EWS', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken, account1Email, account2Email, account3Email, account4Email, accountPassword;
 	const messageSubject = 'Test mail for CC,BCC test';

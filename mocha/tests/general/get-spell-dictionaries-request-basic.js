@@ -4,7 +4,7 @@ import common from '../../framework/core/common.js';
 import soap from '../../framework/backend/soap-client.js';
 import { main } from '../../pages/main.js';
 
-describe('General > Get Spell Dictionaries Request', function () {
+describe('General > Get Spell Dictionaries Request Basic', function () {
 	this.timeout(30 * 1000);
 	let accountAuthToken;
 

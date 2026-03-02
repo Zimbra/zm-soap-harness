@@ -8,7 +8,7 @@ import { main } from '../../../pages/main.js';
 
 const dataRoot = path.join(config.projectRoot, 'mocha/data/tests');
 
-describe('Rest Servlet > Contacts > Post VCF', function () {
+describe('Rest Servlet > Contacts > Basic Vcf', function () {
 	this.timeout(120 * 1000);
 	let account1Email, account1Token;
 

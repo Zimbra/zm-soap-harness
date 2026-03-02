@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Contacts > Bugs > Bug 77914 - Contact modification', function () {
+describe('Contacts > Bugs > Bug 77914', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken, accountEmail, accountToken;
 

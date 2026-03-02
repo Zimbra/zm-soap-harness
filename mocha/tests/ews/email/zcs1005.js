@@ -5,7 +5,7 @@ import soap from '../../../framework/backend/soap-client.js';
 import ews from '../../../framework/backend/ews.js';
 import { main } from '../../../pages/main.js';
 
-describe('EWS > Email > ZCS1005', function () {
+describe('EWS > Email > Zcs1005', function () {
 	this.timeout(300 * 1000);
 	let account1Email, account1Password, account2Email, account2Password;
 	const messageContent = 'Message 1 test content';

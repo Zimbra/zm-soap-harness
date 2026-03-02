@@ -5,7 +5,7 @@ import soap from '../../../framework/backend/soap-client.js';
 import rest from '../../../framework/backend/rest-servlet.js';
 import { main } from '../../../pages/main.js';
 
-describe('Rest Servlet > User > REST User', function () {
+describe('Rest Servlet > User > Rest User', function () {
 	this.timeout(120 * 1000);
 	let account1Email, account1Token;
 

@@ -9,7 +9,7 @@ import { main } from '../../../../../pages/main.js';
 const IMAGE_CONTENT = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==';
 const IMAGE_CONTENT_ID = 'image001.png@01DBD4E3.AB0FB680';
 
-describe('EWS > Calendar > Inline > ZCS-16898 > Create Appointment With Inline Attachment', function () {
+describe('EWS > Calendar > Inline > ZCS 16898 > Create Appointment With Inline Attachment', function () {
 	this.timeout(300 * 1000);
 	let adminAuthToken, account1Email, accountPassword;
 

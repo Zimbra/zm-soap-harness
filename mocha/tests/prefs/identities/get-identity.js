@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Prefs > Identities > Get-Identity', function () {
+describe('Prefs > Identities > Get Identity', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken;
 	const testDomain = config.testDomain;

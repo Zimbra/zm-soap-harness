@@ -4,7 +4,7 @@ import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
 import { main } from '../../../../pages/main.js';
 
-describe('Contacts > AutoComplete > Ranking > RankingActionRequest Reset', function () {
+describe('Contacts > Autocomplete > Ranking > Ranking Action Reset', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken, account1Email, account1Token;
 	let account2Email;

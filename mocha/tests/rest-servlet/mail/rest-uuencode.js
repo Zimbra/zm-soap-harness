@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Rest Servlet > Mail > Uuencode', function () {
+describe('Rest Servlet > Mail > Rest Uuencode', function () {
 	this.timeout(120 * 1000);
 	let account1Email, account1Token;
 	let account2Email, account2Token;

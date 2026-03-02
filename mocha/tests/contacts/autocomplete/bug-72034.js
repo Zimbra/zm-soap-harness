@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Contacts > AutoComplete > Bug 72034 - AutoComplete fix', function () {
+describe('Contacts > Autocomplete > Bug 72034', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken, accountEmail, accountToken;
 

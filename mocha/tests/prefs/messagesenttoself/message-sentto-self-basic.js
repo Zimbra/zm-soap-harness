@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Prefs > MessageSentToSelf > Message-Sentto-Self-Basic', function () {
+describe('Prefs > Messagesenttoself > Message Sentto Self Basic', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken;
 

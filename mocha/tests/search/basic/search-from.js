@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Search > Basic > From', function () {
+describe('Search > Basic > Search From', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken, accountEmail, accountAuthToken;
 	let res;

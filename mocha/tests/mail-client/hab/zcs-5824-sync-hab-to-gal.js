@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Mail Client > HAB > ZCS-5824 SyncHABToGal', function () {
+describe('Mail Client > Hab > ZCS 5824 Sync Hab To GAL', function () {
 	this.timeout(300 * 1000);
 	let adminAuthToken;
 	const uid = common.getUniqueString();

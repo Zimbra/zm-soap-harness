@@ -3,7 +3,7 @@ import config from '../conf/config.js';
 import { main } from '../pages/main.js';
 import { soap, server } from '../framework/backend/index.js';
 
-describe('Admin > Server > Zimbra Status', function () {
+describe('Zimbra Status', function () {
 	this.timeout(60 * 1000);
 
 	before(async () => {

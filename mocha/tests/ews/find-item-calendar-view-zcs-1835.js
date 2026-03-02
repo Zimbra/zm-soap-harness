@@ -5,7 +5,7 @@ import soap from '../../framework/backend/soap-client.js';
 import ews from '../../framework/backend/ews.js';
 import { main } from '../../pages/main.js';
 
-describe('EWS > FindItem CalendarView ZCS-1835', function () {
+describe('EWS > Find Item Calendar View ZCS 1835', function () {
 	this.timeout(180 * 1000);
 	let account1Email, account1Password, account2Email;
 	let apptSubject, apptSubject1, apptSubject2, apptSubject3, apptSubject4, apptSubject5;

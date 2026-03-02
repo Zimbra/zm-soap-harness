@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('General > WaitSet > Bug 17306', function () {
+describe('General > Waitset > Bug 17306', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken;
 	let accountEmail;

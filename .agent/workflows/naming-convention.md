@@ -47,7 +47,11 @@ description: Strict naming convention rules for all JS test files and folders
    - `Freebusy` → `-freebusy` (keep as one word — domain term)
    - `Minical` → `minical` (keep as one word — domain abbreviation)
 
-3. **Bug files** — Keep as `bug12345.js` (no hyphen between "bug" and number)
+3. **Bug files** — MUST have a hyphen between "bug" and the number:
+   ```
+   ✅ CORRECT: bug-12345.js
+   ❌ WRONG:  bug12345.js
+   ```
 
 4. **Numbers** — Separate numbers from words with a hyphen:
    ```
@@ -75,6 +79,27 @@ XML filenames use CamelCase. To convert:
 3. Example: `CreateAppointmentRequest-RecurrenceMonthly.xml` → `create-appointment-request-recurrence-monthly.js`
 4. Example: `CounterAppointmentRequest.xml` → `counter-appointment-request.js`
 5. Example: `DismissCalendarItemAlarmRequest.xml` → `dismiss-calendar-item-alarm-request.js`
+
+## Describe Block Naming Rules
+
+1. **`describe()` string MUST match the file's path** from `mocha/tests/`
+2. Each folder segment and file basename becomes a `>` separated Title Case segment
+3. Hyphens become spaces, each word is Title Cased
+4. Acronyms (LMTP, SMTP, IMAP, EWS, DAV, MIME, XML, HTML, PDF, etc.) stay UPPERCASE
+5. Example: `mocha/tests/calendar/meeting-request/cancel-meeting-request.js`
+   → `describe('Calendar > Meeting Request > Cancel Meeting Request', ...)`
+6. Example: `mocha/tests/mail/lmtp/mime-basic/inject-mime.js`
+   → `describe('Mail > LMTP > MIME Basic > Inject MIME', ...)`
+
+> [!IMPORTANT]
+> After any rename or new file creation, run the update-describes script to ensure consistency.
+
+## Scripts (MUST USE after bulk operations)
+
+- **Rename all**: `node .agent/scripts/rename-all-folders-kebab.cjs` — **dynamically** finds and renames any non-kebab-case folders/files
+- **Update all describes**: `node .agent/scripts/modify-all-describe-kebab.cjs` — **dynamically** updates all describe() names
+- Both scripts are safe to re-run (idempotent — skip anything already correct)
+- Run from repo root: `cd /c/git/zm-soap-harness && node .agent/scripts/rename-all-folders-kebab.cjs && node .agent/scripts/modify-all-describe-kebab.cjs`
 
 ## Reference: Correctly Named Modules
 

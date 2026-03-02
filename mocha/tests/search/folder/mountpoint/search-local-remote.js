@@ -4,7 +4,7 @@ import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
 import { main } from '../../../../pages/main.js';
 
-describe('Search > Folder > Mountpoint > Local Remote', function () {
+describe('Search > Folder > Mountpoint > Search Local Remote', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken;
 	let accountEmail, accountEmail2, accountEmail3, accountEmail4;

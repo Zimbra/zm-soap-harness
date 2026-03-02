@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Mail Client > Mail > ZCS-1870 Attachments', function () {
+describe('Mail Client > Mail > ZCS 1870', function () {
 	this.timeout(300 * 1000);
 	let adminAuthToken;
 	const uid = common.getUniqueString();

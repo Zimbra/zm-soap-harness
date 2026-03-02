@@ -3,7 +3,7 @@ import config from '../../conf/config.js';
 import soap from '../../framework/backend/soap-client.js';
 import { main } from '../../pages/main.js';
 
-describe('SanityTest > Check Request Sanity', function () {
+describe('Sanity Test > Check Request Sanity', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken;
 

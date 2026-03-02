@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Contacts > Bugs > Bug 67327 - Modify contact tag operations', function () {
+describe('Contacts > Bugs > Bug 67327', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken, accountEmail, accountToken;
 	let tag1Name, tag2Name, tag3Name;

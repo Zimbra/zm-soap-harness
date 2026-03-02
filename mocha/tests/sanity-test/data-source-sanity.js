@@ -4,7 +4,7 @@ import common from '../../framework/core/common.js';
 import soap from '../../framework/backend/soap-client.js';
 import { main } from '../../pages/main.js';
 
-describe('SanityTest > Data Source Sanity', function () {
+describe('Sanity Test > Data Source Sanity', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken, accountAuthToken;
 	let accountEmail, accountId;

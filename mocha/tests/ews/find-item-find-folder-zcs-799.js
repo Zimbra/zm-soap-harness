@@ -5,7 +5,7 @@ import soap from '../../framework/backend/soap-client.js';
 import ews from '../../framework/backend/ews.js';
 import { main } from '../../pages/main.js';
 
-describe('EWS > FindItem FindFolder ZCS-799', function () {
+describe('EWS > Find Item Find Folder ZCS 799', function () {
 	this.timeout(300 * 1000);
 	let account1Email, account1Password, account1AuthToken;
 	let folder1Name, folder2Name, folder3Name, folder4Name;

@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Contacts > GAL > SyncGalRequest Basic', function () {
+describe('Contacts > GAL > Sync GAL Request Basic', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken, accountEmail, accountToken;
 

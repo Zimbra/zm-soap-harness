@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Auth > Jwt > Jwt Zcs 3676', function () {
+describe('Auth > Jwt > Jwt ZCS 3676', function () {
 	this.timeout(30 * 1000);
 	let adminAuthToken;
 	let account1Name;

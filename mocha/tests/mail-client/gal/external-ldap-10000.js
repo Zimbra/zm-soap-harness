@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Mail Client > GAL > ExternalLDAP_10000', function () {
+describe('Mail Client > GAL > External LDAP 10000', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken;
 	let account1Name, account2Name;

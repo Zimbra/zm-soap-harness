@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Search > DelayedIndexing > ZCS 8515 8517', function () {
+describe('Search > Delayedindexing > ZCS 8515 8517', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken;
 	const test_account1 = {};

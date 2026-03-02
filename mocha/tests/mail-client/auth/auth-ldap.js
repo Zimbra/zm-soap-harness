@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Mail Client > Auth > External Authentication > LDAP', function () {
+describe('Mail Client > Auth > Auth LDAP', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken;
 	let domain1Name, domain2Name, domain3Name, domain6Name;

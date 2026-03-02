@@ -4,7 +4,7 @@ import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
 import { main } from '../../../../pages/main.js';
 
-describe('Folders > Sharing > Grantee > Sharing Grantee Cos', function () {
+describe('Folders > Sharing > Grantee > Sharing Grantee COS', function () {
 	let testAccount1, cosAccount;
 	let auth1, cosAuth;
 	let account1Id;

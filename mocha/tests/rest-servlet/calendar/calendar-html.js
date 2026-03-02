@@ -5,7 +5,7 @@ import soap from '../../../framework/backend/soap-client.js';
 import rest from '../../../framework/backend/rest-servlet.js';
 import { main } from '../../../pages/main.js';
 
-describe('Rest Servlet > Calendar > HTML Format', function () {
+describe('Rest Servlet > Calendar > Calendar HTML', function () {
 	this.timeout(120 * 1000);
 	let account1Email, account1Token, appt01Id, appt02Id;
 

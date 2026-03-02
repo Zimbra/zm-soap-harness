@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Mail Client > Smime > bugZCS160', function () {
+describe('Mail Client > SMIME > Bug Zcs160', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken;
 	let account1Name, account2Name;

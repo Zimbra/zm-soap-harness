@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Search > Bugs > BulkAction ZCS 3954', function () {
+describe('Search > Bugs > Search Bulk Action ZCS 3954', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken, accountEmail, accountAuthToken;
 	let res;

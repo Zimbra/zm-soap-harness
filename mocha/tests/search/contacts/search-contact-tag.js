@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Search > Contacts > Contact Tag', function () {
+describe('Search > Contacts > Search Contact Tag', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken, accountEmail, accountAuthToken;
 

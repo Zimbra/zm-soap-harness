@@ -4,7 +4,7 @@ import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
 import { main } from '../../../../pages/main.js';
 
-describe('Folders > Sharing > Grantee > Sharing Grantee Dl', function () {
+describe('Folders > Sharing > Grantee > Sharing Grantee DL', function () {
 	let testAccount1, testAccount2;
 	let auth1, auth2;
 	let account1Id;

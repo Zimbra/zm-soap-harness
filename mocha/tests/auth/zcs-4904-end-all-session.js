@@ -4,7 +4,7 @@ import common from '../../framework/core/common.js';
 import soap from '../../framework/backend/soap-client.js';
 import { main } from '../../pages/main.js';
 
-describe('Auth > Zcs 4904 End All Session', function () {
+describe('Auth > ZCS 4904 End All Session', function () {
 	this.timeout(30 * 1000);
 	let adminAuthToken;
 	let account1Name;

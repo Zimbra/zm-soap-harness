@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Mail Client > Auth > External Authentication > Change Password LDAP', function () {
+describe('Mail Client > Auth > Change Password LDAP', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken;
 	let domain1Name, account1Name, account2Name;

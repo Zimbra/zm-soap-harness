@@ -4,7 +4,7 @@ import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
 import { main } from '../../../../pages/main.js';
 
-describe('Sieve-ZCS-1300plus', function () {
+describe('Prefs > Filters > Sieve > Sieve ZCS 1300plus', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken;
 	const testDomain = config.testDomain;

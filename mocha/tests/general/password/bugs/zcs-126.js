@@ -4,7 +4,7 @@ import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
 import { main } from '../../../../pages/main.js';
 
-describe('General > Password > Bugs > ZCS-126', function () {
+describe('General > Password > Bugs > ZCS 126', function () {
 	this.timeout(300 * 1000);
 	let adminAuthToken;
 

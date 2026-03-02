@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Mail Client > Mail > BackupRequest bug11636', function () {
+describe('Mail Client > Mail > Backup Request Bug11636', function () {
 	this.timeout(300 * 1000);
 	let adminAuthToken;
 	const uid = common.getUniqueString();

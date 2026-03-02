@@ -4,7 +4,7 @@ import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
 import { main } from '../../../../pages/main.js';
 
-describe('Import Upgrades 5-0-16', function () {
+describe('Prefs > Import > Upgrades > 5 0 16', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken;
 	const testDomain = config.testDomain;

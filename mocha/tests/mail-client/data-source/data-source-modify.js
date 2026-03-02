@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Mail Client > DataSource > DataSource_modify', function () {
+describe('Mail Client > Data Source > Data Source Modify', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken;
 	let account1Name, account2Name;

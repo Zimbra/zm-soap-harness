@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Search > Basic > Combo Date', function () {
+describe('Search > Basic > Search Combo Date', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken, accountEmail, accountAuthToken;
 

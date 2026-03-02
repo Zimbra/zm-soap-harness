@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Mail Client > ZCO > Invite DL Including Self', function () {
+describe('Mail Client > Zco > Zco Invite DL Including Self', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken;
 	const uid = common.getUniqueString();

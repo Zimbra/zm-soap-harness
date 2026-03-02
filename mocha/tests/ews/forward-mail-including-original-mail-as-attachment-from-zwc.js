@@ -5,7 +5,7 @@ import soap from '../../framework/backend/soap-client.js';
 import ews from '../../framework/backend/ews.js';
 import { main } from '../../pages/main.js';
 
-describe('EWS > Forward Mail Including Original Mail As Attachment From ZWC', function () {
+describe('EWS > Forward Mail Including Original Mail As Attachment From Zwc', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken, account1Email, account2Email, account3Email, accountPassword;
 	const messageSubject = 'Message 1 test subject';

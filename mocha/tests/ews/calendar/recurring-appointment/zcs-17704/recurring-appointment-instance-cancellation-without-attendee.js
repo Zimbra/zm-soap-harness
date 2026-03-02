@@ -5,7 +5,7 @@ import soap from '../../../../../framework/backend/soap-client.js';
 import ews from '../../../../../framework/backend/ews.js';
 import { main } from '../../../../../pages/main.js';
 
-describe('EWS > Calendar > RecurringAppointment > ZCS-17704 > Recurring Appointment Instance Cancellation Without Attendee', function () {
+describe('EWS > Calendar > Recurring Appointment > ZCS 17704 > Recurring Appointment Instance Cancellation Without Attendee', function () {
 	this.timeout(300 * 1000);
 	let adminAuthToken, account1Email, accountPassword;
 

@@ -4,7 +4,7 @@ import config from '../conf/config.js';
 import { soap } from '../framework/backend/soap-client.js';
 import { main } from '../pages/main.js';
 
-describe('Mail > Mime > Inject MIME', function () {
+describe('Inject MIME', function () {
 	this.timeout(30 * 1000);
 
 	before(async () => {

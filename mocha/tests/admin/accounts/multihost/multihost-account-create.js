@@ -4,7 +4,7 @@ import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
 import { main } from '../../../../pages/main.js';
 
-describe('Admin > Accounts > Multihost > Account Create', function () {
+describe('Admin > Accounts > Multihost > Multihost Account Create', function () {
 	this.timeout(30 * 1000);
 	let adminAuth;
 

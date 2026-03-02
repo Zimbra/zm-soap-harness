@@ -5,7 +5,7 @@ import soap from '../../framework/backend/soap-client.js';
 import ews from '../../framework/backend/ews.js';
 import { main } from '../../pages/main.js';
 
-describe('EWS > Modify Draft From ZWC', function () {
+describe('EWS > Modify Draft From Zwc', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken, accountEmail, accountPassword, account2Email;
 	const messageSubject = 'Create draft with only subject-subject';

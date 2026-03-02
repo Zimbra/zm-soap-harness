@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Mail Client > Calendar > Exchange2010 GetFreeBusy', function () {
+describe('Mail Client > Calendar > Exchange2010 Getfreebusy', function () {
 	this.timeout(300 * 1000);
 	let adminAuthToken;
 	let account1Domain1, account1Domain2;

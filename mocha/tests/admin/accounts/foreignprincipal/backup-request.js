@@ -4,7 +4,7 @@ import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
 import { main } from '../../../../pages/main.js';
 
-describe('Admin > Accounts > ForeignPrincipal > Backup Request', function () {
+describe('Admin > Accounts > Foreignprincipal > Backup Request', function () {
 	this.timeout(120 * 1000);
 	let adminAuth;
 

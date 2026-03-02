@@ -5,7 +5,7 @@ import soap from '../../framework/backend/soap-client.js';
 import ews from '../../framework/backend/ews.js';
 import { main } from '../../pages/main.js';
 
-describe('EWS > Remove Attachment ZCS-2622', function () {
+describe('EWS > Remove Attachment ZCS 2622', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken, accountEmail, accountPassword;
 

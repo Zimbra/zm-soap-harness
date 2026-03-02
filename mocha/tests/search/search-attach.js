@@ -4,7 +4,7 @@ import common from '../../framework/core/common.js';
 import soap from '../../framework/backend/soap-client.js';
 import { main } from '../../pages/main.js';
 
-describe('Search > Attach', function () {
+describe('Search > Search Attach', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken, accountEmail, accountAuthToken;
 	let res;

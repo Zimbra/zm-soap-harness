@@ -5,7 +5,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('iCal > Apple iCal 1.0 > Apple Ical Raw', function () {
+describe('ICAL > Apple ICAL 1 0 > Apple ICAL Raw', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken;
 	const testDomain = config.testDomain;

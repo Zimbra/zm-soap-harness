@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Search > PersonalShared > Shared', function () {
+describe('Search > Personalshared > Search Shared', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken, accountEmail, accountAuthToken, accountEmail2, accountAuthToken2;
 

@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Available Skins Get', function () {
+describe('Prefs > Skins > Availableskins Get', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken;
 	const testDomain = config.testDomain;

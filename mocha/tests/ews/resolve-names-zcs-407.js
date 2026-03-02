@@ -6,7 +6,7 @@ import soap from '../../framework/backend/soap-client.js';
 import ews from '../../framework/backend/ews.js';
 import { main } from '../../pages/main.js';
 
-describe('EWS > Resolve Names ZCS-407', function () {
+describe('EWS > Resolve Names ZCS 407', function () {
 	this.timeout(180 * 1000);
 	let adminAuthToken, account1Email, accountPassword;
 	let firstnameContact1, lastnameContact1, firstnameAccount1, lastnameAccount1;

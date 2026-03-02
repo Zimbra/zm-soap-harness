@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Mail Client > Briefcase > BackupRequest SharedBriefcase', function () {
+describe('Mail Client > Briefcase > Backup Request Shared Briefcase', function () {
 	this.timeout(300 * 1000);
 	let adminAuthToken;
 	let account1Name, account2Name, account3Name, account4Name;

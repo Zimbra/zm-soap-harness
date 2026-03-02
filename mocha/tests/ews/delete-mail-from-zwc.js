@@ -5,7 +5,7 @@ import soap from '../../framework/backend/soap-client.js';
 import ews from '../../framework/backend/ews.js';
 import { main } from '../../pages/main.js';
 
-describe('EWS > Delete Mail From ZWC', function () {
+describe('EWS > Delete Mail From Zwc', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken, account1Email, account2Email, accountPassword;
 

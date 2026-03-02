@@ -4,7 +4,7 @@ import common from '../../framework/core/common.js';
 import soap from '../../framework/backend/soap-client.js';
 import { main } from '../../pages/main.js';
 
-describe('General > Zimbra Message Id Dedupe Cache Timeout', function () {
+describe('General > Zimbra Message ID Dedupe Cache Timeout', function () {
 	this.timeout(180 * 1000);
 	let adminAuthToken;
 

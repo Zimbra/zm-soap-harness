@@ -5,7 +5,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Rest Servlet > Auth > Admin Preauth', function () {
+describe('Rest Servlet > Auth > Preauth Admin', function () {
 	this.timeout(120 * 1000);
 	let account1Email, account2Email, preauthKey, domainName;
 

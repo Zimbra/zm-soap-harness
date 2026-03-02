@@ -5,7 +5,7 @@ import soap from '../../framework/backend/soap-client.js';
 import ews from '../../framework/backend/ews.js';
 import { main } from '../../pages/main.js';
 
-describe('EWS > Send Mail CC BCC From ZWC', function () {
+describe('EWS > Send Mail Cc Bcc From Zwc', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken, account1Email, account2Email, account3Email, account4Email, accountPassword;
 	let messageSubject;

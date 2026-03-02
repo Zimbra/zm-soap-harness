@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Mail Client > Contacts > ContactBackup ZCS-3594', function () {
+describe('Mail Client > Contacts > Contact Backup ZCS 3594', function () {
 	this.timeout(300 * 1000);
 	let adminAuthToken;
 	let account1Name;

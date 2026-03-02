@@ -4,7 +4,7 @@ import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
 import { main } from '../../../../pages/main.js';
 
-describe('Search > Folder > Mountpoint > Task Mountpoint', function () {
+describe('Search > Folder > Mountpoint > Search Task Mountpoint', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken, accountAuthToken, accountAuthToken2;
 	let accountEmail, accountEmail2;

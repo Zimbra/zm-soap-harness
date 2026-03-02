@@ -5,7 +5,7 @@ import soap from '../../../../framework/backend/soap-client.js';
 import ews from '../../../../framework/backend/ews.js';
 import { main } from '../../../../pages/main.js';
 
-describe('EWS > Calendar > FreeBusy > Get Free Busy Status For Account', function () {
+describe('EWS > Calendar > Free Busy > Get Free Busy Status For Account', function () {
 	this.timeout(300 * 1000);
 	let adminAuthToken, account1Email, account2Email, account3Email, accountPassword;
 

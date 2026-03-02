@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Mail Client > Folders > GetEffectiveFolderPermsRequest_Basic', function () {
+describe('Mail Client > Folders > Get Effective Folder Perms Request Basic', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken;
 	let account1Name, account2Name;

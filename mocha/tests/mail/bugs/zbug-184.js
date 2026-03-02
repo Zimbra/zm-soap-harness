@@ -1,0 +1,86 @@
+import path from 'node:path';
+import { assert } from 'chai';
+import config from '../../../conf/config.js';
+import common from '../../../framework/core/common.js';
+import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
+
+describe('Mail > Bugs > ZBUG 184', function () {
+	this.timeout(60 * 1000);
+	let adminAuthToken;
+	const testDomain = config.testDomain;
+
+	before(async function () {
+		await main.before(this.ctx);
+		adminAuthToken = await soap.getAdminAuthToken();
+	});
+
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
+
+	afterEach(async function () {
+		await main.afterEach(this);
+	});
+
+	// Applicable zimbra versions
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
+
+	// Tests
+	it('Sanity | Verify message with repetitive () character is returned in GetMsgRequest', async () => {
+		// Create accounts
+		const account1Email = `test1.${common.getUniqueString()}@${testDomain}`;
+		const account2Email = `test2.${common.getUniqueString()}@${testDomain}`;
+		await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1Email}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account2Email}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+
+		// Get account auth token
+		const account1AuthToken = await soap.getAccountAuthToken(account1Email);
+
+		// Inject MIME message
+		const filePath = path.join(
+			config.projectRoot, 'mocha/data/zbug184/210460-1031412.msg'
+		);
+		await soap.injectMime(account1AuthToken, filePath);
+
+		// Search for the injected message
+		const messageSubject = 'RE:FW: Rubber Fenders from Changzhou Meridian';
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:"${messageSubject}"</query>
+			</SearchRequest>`, account1AuthToken
+		);
+
+		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
+		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
+		const msgs = Array.isArray(searchRes.SearchResponse.m)
+			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
+		assert.exists(msgs[0], 'Message should be found');
+		const msgId = msgs[0].id;
+
+		// Get injected message and verify subject
+		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
+			`<GetMsgRequest xmlns="urn:zimbraMail">
+				<m id="${msgId}"/>
+			</GetMsgRequest>`, account1AuthToken
+		);
+
+		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
+		assert.exists(getMsgRes.GetMsgResponse, 'GetMsgResponse should exist');
+		const msg = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		assert.equal(msg.su, messageSubject, 'Subject should match');
+	});
+});

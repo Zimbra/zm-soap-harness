@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Auth > Forgetpassword > Zcs 4798', function () {
+describe('Auth > Forgetpassword > ZCS 4798', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken;
 	let account1Name;

@@ -5,7 +5,7 @@ import soap from '../../../framework/backend/soap-client.js';
 import ews from '../../../framework/backend/ews.js';
 import { main } from '../../../pages/main.js';
 
-describe('EWS > Calendar > Modify Meeting Invite From ZWC', function () {
+describe('EWS > Calendar > Modify Meeting Invite From Zwc', function () {
 	this.timeout(300 * 1000);
 	let adminAuthToken, account1Email, account2Email, account3Email, accountPassword;
 

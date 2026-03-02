@@ -5,7 +5,7 @@ import soap from '../../../framework/backend/soap-client.js';
 import rest from '../../../framework/backend/rest-servlet.js';
 import { main } from '../../../pages/main.js';
 
-describe('Rest Servlet > Auth > Basic Auth', function () {
+describe('Rest Servlet > Auth > Rest Auth Basic Auth', function () {
 	this.timeout(120 * 1000);
 	let account1Email, account1Token, msgId;
 

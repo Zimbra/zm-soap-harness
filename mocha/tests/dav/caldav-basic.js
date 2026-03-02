@@ -5,7 +5,7 @@ import soap from '../../framework/backend/soap-client.js';
 import makeDavRequest from '../../framework/backend/dav-client.js';
 import { main } from '../../pages/main.js';
 
-describe('CalDav > Basic Folders', function () {
+describe('DAV > Caldav Basic', function () {
 	this.timeout(60 * 1000);
 	let account1Name;
 	let account1NameEncoded;

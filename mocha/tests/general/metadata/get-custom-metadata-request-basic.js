@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('General > MetaData > Get Custom Metadata Request', function () {
+describe('General > Metadata > Get Custom Metadata Request Basic', function () {
 	this.timeout(60 * 1000);
 	let accountAuthToken, accountEmail;
 

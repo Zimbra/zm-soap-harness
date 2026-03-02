@@ -5,7 +5,7 @@ import soap from '../../framework/backend/soap-client.js';
 import makeDavRequest from '../../framework/backend/dav-client.js';
 import { main } from '../../pages/main.js';
 
-describe('CardDav', function () {
+describe('DAV > Carddav', function () {
 	this.timeout(60 * 1000);
 	let account1Name;
 	let account1NameEncoded;

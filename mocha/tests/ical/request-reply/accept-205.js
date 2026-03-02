@@ -5,7 +5,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('iCal > RequestReply > Accept 205', function () {
+describe('ICAL > Request Reply > Accept 205', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken;
 	const testDomain = config.testDomain;

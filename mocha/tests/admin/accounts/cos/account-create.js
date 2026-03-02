@@ -4,7 +4,7 @@ import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
 import { main } from '../../../../pages/main.js';
 
-describe('Admin > Accounts > Cos > Account Create', function () {
+describe('Admin > Accounts > COS > Account Create', function () {
 	let adminAuthToken;
 
 	before(async function () {

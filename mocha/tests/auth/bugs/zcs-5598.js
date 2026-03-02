@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import soap from '../../../framework/backend/soap-client.js';
 
-describe('Auth > Bugs > ZCS-5598', function () {
+describe('Auth > Bugs > ZCS 5598', function () {
 	this.timeout(60 * 1000);
 
 	// Applicable zimbra versions

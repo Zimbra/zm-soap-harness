@@ -5,7 +5,7 @@ import soap from '../../framework/backend/soap-client.js';
 import ews from '../../framework/backend/ews.js';
 import { main } from '../../pages/main.js';
 
-describe('EWS > Bug ZCS-693', function () {
+describe('EWS > Bug Zcs693', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken, account1Email, account2Email, account1Password, account2Password, messageSubject;
 

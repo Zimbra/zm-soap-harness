@@ -8,7 +8,7 @@ import { main } from '../../../pages/main.js';
 
 const dataRoot = path.join(config.projectRoot, 'mocha/data/tests');
 
-describe('Rest Servlet > Calendar > Post Basic', function () {
+describe('Rest Servlet > Calendar > Calendar Post Basic', function () {
 	this.timeout(120 * 1000);
 	let account1Email, account1Token;
 

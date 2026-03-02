@@ -5,7 +5,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('iCal > MS Outlook 2003 > Outlook Ical Recur', function () {
+describe('ICAL > Ms Outlook 2003 > Outlook ICAL Recur', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken;
 	const testDomain = config.testDomain;

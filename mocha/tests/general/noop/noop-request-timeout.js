@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('General > NoOp > NoOp Request Timeout', function () {
+describe('General > Noop > Noop Request Timeout', function () {
 	this.timeout(120 * 1000);
 	let accountAuthToken;
 

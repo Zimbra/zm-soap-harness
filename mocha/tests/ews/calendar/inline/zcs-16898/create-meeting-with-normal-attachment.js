@@ -7,7 +7,7 @@ import { main } from '../../../../../pages/main.js';
 
 const IMAGE_CONTENT = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==';
 
-describe('EWS > Calendar > Inline > ZCS-16898 > Create Meeting With Normal Attachment', function () {
+describe('EWS > Calendar > Inline > ZCS 16898 > Create Meeting With Normal Attachment', function () {
 	this.timeout(300 * 1000);
 	let adminAuthToken, account1Email, accountPassword;
 

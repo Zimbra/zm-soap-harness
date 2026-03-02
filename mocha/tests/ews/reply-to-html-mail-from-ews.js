@@ -5,7 +5,7 @@ import soap from '../../framework/backend/soap-client.js';
 import ews from '../../framework/backend/ews.js';
 import { main } from '../../pages/main.js';
 
-describe('EWS > Reply To Html Mail From EWS', function () {
+describe('EWS > Reply To HTML Mail From EWS', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken, account1Email, account2Email, accountPassword;
 	const messageSubject = 'Test message subject1';

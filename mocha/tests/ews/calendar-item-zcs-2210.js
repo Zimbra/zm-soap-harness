@@ -5,7 +5,7 @@ import soap from '../../framework/backend/soap-client.js';
 import ews from '../../framework/backend/ews.js';
 import { main } from '../../pages/main.js';
 
-describe('EWS > CalendarItem ZCS-2210', function () {
+describe('EWS > Calendar Item ZCS 2210', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken, account1Email, account1Password;
 	let account2Email, account2Password;

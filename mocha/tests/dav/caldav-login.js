@@ -5,7 +5,7 @@ import soap from '../../framework/backend/soap-client.js';
 import makeDavRequest from '../../framework/backend/dav-client.js';
 import { main } from '../../pages/main.js';
 
-describe('CalDav > Login', function () {
+describe('DAV > Caldav Login', function () {
 	this.timeout(30 * 1000);
 	let account1Name;
 	let account2Name;

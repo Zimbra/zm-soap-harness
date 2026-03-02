@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Mail Client > HAB > ZCS-7213 HAB DomainOUList', function () {
+describe('Mail Client > Hab > ZCS 7213 Hab Domain Ou List', function () {
 	this.timeout(300 * 1000);
 	let adminAuthToken;
 	const uid = common.getUniqueString();

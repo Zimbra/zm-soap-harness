@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Tasks > Tags > TagTasksBasic', function () {
+describe('Tasks > Tags > Tag Tasks Basic', function () {
 	this.timeout(60 * 1000);
 	let accountEmail = null, accountAuthToken = null;
 	let account2Email = null, account2AuthToken = null;

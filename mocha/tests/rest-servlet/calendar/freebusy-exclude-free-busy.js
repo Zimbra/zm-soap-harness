@@ -5,7 +5,7 @@ import soap from '../../../framework/backend/soap-client.js';
 import rest from '../../../framework/backend/rest-servlet.js';
 import { main } from '../../../pages/main.js';
 
-describe('Rest Servlet > Calendar > FreeBusy Exclude', function () {
+describe('Rest Servlet > Calendar > Freebusy Exclude Free Busy', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken;
 	let account1Email, account1Token;

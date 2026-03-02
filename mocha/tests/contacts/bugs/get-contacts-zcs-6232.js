@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Contacts > Bugs > ZCS-6232 - GetContacts deny view', function () {
+describe('Contacts > Bugs > Get Contacts ZCS 6232', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken, account1Email, account1Token;
 	let dlName;

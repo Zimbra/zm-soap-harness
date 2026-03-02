@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Contacts > AutoComplete > AutoComplete GAL and Shared Contacts', function () {
+describe('Contacts > Autocomplete > Autocomplete GAL Shared', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken, account1Email, account1Token, account1Id;
 	let account2Email, account2Token;

@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Sync > Mountpoint > SyncRequest Contacts', function () {
+describe('Sync > Mountpoint > Syncrequest Contacts', function () {
 	this.timeout(60 * 1000);
 	let adminAuthToken = null;
 	let account1Email = null, account1AuthToken = null, account1Id = null;

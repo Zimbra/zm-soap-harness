@@ -4,7 +4,7 @@ import common from '../../../../framework/core/common.js';
 import soap from '../../../../framework/backend/soap-client.js';
 import { main } from '../../../../pages/main.js';
 
-describe('Prefs > Filters > ApplyFilterRules > ApplyFilterRulesRequest-Basic', function () {
+describe('Prefs > Filters > Apply Filter Rules > Applyfilterrulesrequest Basic', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken;
 	const testDomain = config.testDomain;
