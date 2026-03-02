@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Calendar > Mountpoint > Calendar-Rights', function () {
+describe('Calendar > Mountpoint > New-Calendar-Rights', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken;
 	const testDomain = config.testDomain;
@@ -55,44 +55,52 @@ describe('Calendar > Mountpoint > Calendar-Rights', function () {
 		const root = Array.isArray(r.GetFolderResponse.folder)
 			? r.GetFolderResponse.folder[0]
 			: r.GetFolderResponse.folder;
-		const subs = Array.isArray(root.folder)
-			? root.folder : [root.folder];
-		return {
-			rootId: root.id,
-			calId: subs.find(f => f.name === 'Calendar').id
-		};
+		return { rootId: root.id };
 	}
 
-	async function shareAndMount(owner, sharee, perm) {
-		const ownerCal = await getCalFolder(owner.token);
+	async function createSubCalAndShare(owner, sharee, perm) {
+		// Create new sub-calendar
+		const fRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateFolderRequest xmlns="urn:zimbraMail">
+				<folder name="SubCal${common.getUniqueString()}"
+					l="1" view="appointment"/>
+			</CreateFolderRequest>`, owner.token
+		);
+		const ownerCalId = fRes.CreateFolderResponse.folder[0]
+			? fRes.CreateFolderResponse.folder[0].id
+			: fRes.CreateFolderResponse.folder.id;
+
+		// Grant
 		await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
-				<action id="${ownerCal.calId}" op="grant">
+				<action id="${ownerCalId}" op="grant">
 					<grant d="${sharee.email}" gt="usr"
 						perm="${perm}"/>
 				</action>
 			</FolderActionRequest>`, owner.token
 		);
+
+		// Mount
 		const shareeCal = await getCalFolder(sharee.token);
 		const mpRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="${shareeCal.rootId}"
 					name="SC${common.getUniqueString()}"
-					view="appointment" rid="${ownerCal.calId}"
+					view="appointment" rid="${ownerCalId}"
 					zid="${owner.id}"/>
 			</CreateMountpointRequest>`, sharee.token
 		);
 		return {
-			calId: ownerCal.calId,
+			calId: ownerCalId,
 			mpId: mpRes.CreateMountpointResponse.link[0].id
 		};
 	}
 
 
-	it('Sanity | Read-only access to shared calendar', async () => {
+	it('Sanity | Read-only access to new shared calendar', async () => {
 		const owner = await makeAcct('own');
 		const sharee = await makeAcct('shr');
-		const mp = await shareAndMount(owner, sharee, 'r');
+		const mp = await createSubCalAndShare(owner, sharee, 'r');
 		const now = Date.now();
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<GetApptSummariesRequest xmlns="urn:zimbraMail"
@@ -103,10 +111,10 @@ describe('Calendar > Mountpoint > Calendar-Rights', function () {
 	});
 
 
-	it('Sanity | Write denied on read-only shared calendar', async () => {
+	it('Sanity | Write denied on read-only new shared calendar', async () => {
 		const owner = await makeAcct('own');
 		const sharee = await makeAcct('shr');
-		const mp = await shareAndMount(owner, sharee, 'r');
+		const mp = await createSubCalAndShare(owner, sharee, 'r');
 		const t1 = futureTime(3600000);
 		const t2 = futureTime(7200000);
 		const res = await soap.makeSOAPEnvelopeAccount(
@@ -127,10 +135,10 @@ describe('Calendar > Mountpoint > Calendar-Rights', function () {
 	});
 
 
-	it('Sanity | Read-write access to shared calendar', async () => {
+	it('Sanity | Read-write access to new shared calendar', async () => {
 		const owner = await makeAcct('own');
 		const sharee = await makeAcct('shr');
-		const mp = await shareAndMount(owner, sharee, 'rwidx');
+		const mp = await createSubCalAndShare(owner, sharee, 'rwidx');
 		const now = Date.now();
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<GetApptSummariesRequest xmlns="urn:zimbraMail"
@@ -141,10 +149,10 @@ describe('Calendar > Mountpoint > Calendar-Rights', function () {
 	});
 
 
-	it('Sanity | Create appointment in RW shared calendar', async () => {
+	it('Sanity | Create appointment in RW new shared calendar', async () => {
 		const owner = await makeAcct('own');
 		const sharee = await makeAcct('shr');
-		const mp = await shareAndMount(owner, sharee, 'rwidx');
+		const mp = await createSubCalAndShare(owner, sharee, 'rwidx');
 		const t1 = futureTime(3600000);
 		const t2 = futureTime(7200000);
 		const subject = `Subj${common.getUniqueString()}`;
@@ -166,16 +174,16 @@ describe('Calendar > Mountpoint > Calendar-Rights', function () {
 	});
 
 
-	it('Sanity | Delete from RW shared calendar', async () => {
+	it('Sanity | Delete from RW new shared calendar', async () => {
 		const owner = await makeAcct('own');
 		const sharee = await makeAcct('shr');
-		const mp = await shareAndMount(owner, sharee, 'rwidx');
+		const mp = await createSubCalAndShare(owner, sharee, 'rwidx');
 		const t1 = futureTime(3600000);
 		const t2 = futureTime(7200000);
 		const subject = `Subj${common.getUniqueString()}`;
 		const appt = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
-				<m>
+				<m l="${mp.calId}">
 					<inv>
 						<comp name="${subject}" fb="B" transp="O">
 							<s d="${t1}"/><e d="${t2}"/>
@@ -197,10 +205,10 @@ describe('Calendar > Mountpoint > Calendar-Rights', function () {
 	});
 
 
-	it('Sanity | Admin rights to shared calendar', async () => {
+	it('Sanity | Admin rights to new shared calendar', async () => {
 		const owner = await makeAcct('own');
 		const sharee = await makeAcct('shr');
-		const mp = await shareAndMount(owner, sharee, 'rwidxa');
+		const mp = await createSubCalAndShare(owner, sharee, 'rwidxa');
 		const now = Date.now();
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<GetApptSummariesRequest xmlns="urn:zimbraMail"
@@ -211,24 +219,34 @@ describe('Calendar > Mountpoint > Calendar-Rights', function () {
 	});
 
 
-	it('Sanity | Revoke share access', async () => {
+	it('Sanity | Revoke share access on new calendar', async () => {
 		const owner = await makeAcct('own');
 		const sharee = await makeAcct('shr');
-		const ownerCal = await getCalFolder(owner.token);
-		// Grant then revoke
+
+		const fRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateFolderRequest xmlns="urn:zimbraMail">
+				<folder name="SubCal${common.getUniqueString()}"
+					l="1" view="appointment"/>
+			</CreateFolderRequest>`, owner.token
+		);
+		const ownerCalId = fRes.CreateFolderResponse.folder[0]
+			? fRes.CreateFolderResponse.folder[0].id
+			: fRes.CreateFolderResponse.folder.id;
+
+		// Grant
 		const grantRes = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
-				<action id="${ownerCal.calId}" op="grant">
+				<action id="${ownerCalId}" op="grant">
 					<grant d="${sharee.email}" gt="usr"
 						perm="rwidx"/>
 				</action>
 			</FolderActionRequest>`, owner.token
 		);
-		const grantId = grantRes.FolderActionResponse.action.id;
+
 		// Revoke
 		const revokeRes = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
-				<action id="${ownerCal.calId}" op="!grant"
+				<action id="${ownerCalId}" op="!grant"
 					zid="${sharee.id}"/>
 			</FolderActionRequest>`, owner.token
 		);
@@ -238,10 +256,10 @@ describe('Calendar > Mountpoint > Calendar-Rights', function () {
 	});
 
 
-	it('Sanity | View-only free/busy rights', async () => {
+	it('Sanity | View-only free/busy rights on new calendar', async () => {
 		const owner = await makeAcct('own');
 		const sharee = await makeAcct('shr');
-		const mp = await shareAndMount(owner, sharee, 'r');
+		const mp = await createSubCalAndShare(owner, sharee, 'r');
 		const now = Date.now();
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<GetFreeBusyRequest xmlns="urn:zimbraMail"
@@ -252,21 +270,31 @@ describe('Calendar > Mountpoint > Calendar-Rights', function () {
 	});
 
 
-	it('Sanity | Multiple grantees on same calendar', async () => {
+	it('Sanity | Multiple grantees on same new calendar', async () => {
 		const owner = await makeAcct('own');
 		const sharee1 = await makeAcct('sh1');
 		const sharee2 = await makeAcct('sh2');
-		const ownerCal = await getCalFolder(owner.token);
+
+		const fRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateFolderRequest xmlns="urn:zimbraMail">
+				<folder name="SubCal${common.getUniqueString()}"
+					l="1" view="appointment"/>
+			</CreateFolderRequest>`, owner.token
+		);
+		const ownerCalId = fRes.CreateFolderResponse.folder[0]
+			? fRes.CreateFolderResponse.folder[0].id
+			: fRes.CreateFolderResponse.folder.id;
+
 		await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
-				<action id="${ownerCal.calId}" op="grant">
+				<action id="${ownerCalId}" op="grant">
 					<grant d="${sharee1.email}" gt="usr" perm="r"/>
 				</action>
 			</FolderActionRequest>`, owner.token
 		);
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
-				<action id="${ownerCal.calId}" op="grant">
+				<action id="${ownerCalId}" op="grant">
 					<grant d="${sharee2.email}" gt="usr"
 						perm="rwidx"/>
 				</action>
@@ -276,12 +304,21 @@ describe('Calendar > Mountpoint > Calendar-Rights', function () {
 	});
 
 
-	it('Sanity | Public grant on calendar', async () => {
+	it('Sanity | Public grant on new calendar', async () => {
 		const owner = await makeAcct('own');
-		const ownerCal = await getCalFolder(owner.token);
+		const fRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateFolderRequest xmlns="urn:zimbraMail">
+				<folder name="SubCal${common.getUniqueString()}"
+					l="1" view="appointment"/>
+			</CreateFolderRequest>`, owner.token
+		);
+		const ownerCalId = fRes.CreateFolderResponse.folder[0]
+			? fRes.CreateFolderResponse.folder[0].id
+			: fRes.CreateFolderResponse.folder.id;
+
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
-				<action id="${ownerCal.calId}" op="grant">
+				<action id="${ownerCalId}" op="grant">
 					<grant gt="pub" perm="r"/>
 				</action>
 			</FolderActionRequest>`, owner.token
@@ -290,10 +327,10 @@ describe('Calendar > Mountpoint > Calendar-Rights', function () {
 	});
 
 
-	it('Sanity | Insert-only rights', async () => {
+	it('Sanity | Insert-only rights on new calendar', async () => {
 		const owner = await makeAcct('own');
 		const sharee = await makeAcct('shr');
-		const mp = await shareAndMount(owner, sharee, 'rwi');
+		const mp = await createSubCalAndShare(owner, sharee, 'rwi');
 		const now = Date.now();
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<GetApptSummariesRequest xmlns="urn:zimbraMail"
@@ -304,10 +341,10 @@ describe('Calendar > Mountpoint > Calendar-Rights', function () {
 	});
 
 
-	it('Sanity | Read-only user cannot write to shared calendar', async () => {
+	it('Sanity | Read-only user cannot write to new shared calendar', async () => {
 		const owner = await makeAcct('own');
 		const sharee = await makeAcct('shr');
-		const mp = await shareAndMount(owner, sharee, 'r');
+		const mp = await createSubCalAndShare(owner, sharee, 'r');
 		const t1 = futureTime(7200000);
 		const t2 = futureTime(10800000);
 		const subject = `Subj${common.getUniqueString()}`;
@@ -333,14 +370,23 @@ describe('Calendar > Mountpoint > Calendar-Rights', function () {
 	});
 
 
-	it('Sanity | Modify rights on shared calendar', async () => {
+	it('Sanity | Modify rights on new shared calendar', async () => {
 		const owner = await makeAcct('own');
 		const sharee = await makeAcct('shr');
-		const ownerCal = await getCalFolder(owner.token);
+		const fRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateFolderRequest xmlns="urn:zimbraMail">
+				<folder name="SubCal${common.getUniqueString()}"
+					l="1" view="appointment"/>
+			</CreateFolderRequest>`, owner.token
+		);
+		const ownerCalId = fRes.CreateFolderResponse.folder[0]
+			? fRes.CreateFolderResponse.folder[0].id
+			: fRes.CreateFolderResponse.folder.id;
+
 		// Grant read initially
 		await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
-				<action id="${ownerCal.calId}" op="grant">
+				<action id="${ownerCalId}" op="grant">
 					<grant d="${sharee.email}" gt="usr" perm="r"/>
 				</action>
 			</FolderActionRequest>`, owner.token
@@ -348,7 +394,7 @@ describe('Calendar > Mountpoint > Calendar-Rights', function () {
 		// Update to rwidx
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
-				<action id="${ownerCal.calId}" op="grant">
+				<action id="${ownerCalId}" op="grant">
 					<grant d="${sharee.email}" gt="usr"
 						perm="rwidx"/>
 				</action>
@@ -358,13 +404,22 @@ describe('Calendar > Mountpoint > Calendar-Rights', function () {
 	});
 
 
-	it('Sanity | Verify GetFolder shows grant', async () => {
+	it('Sanity | Verify GetFolder shows grant for new calendar', async () => {
 		const owner = await makeAcct('own');
 		const sharee = await makeAcct('shr');
-		const ownerCal = await getCalFolder(owner.token);
+		const fRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateFolderRequest xmlns="urn:zimbraMail">
+				<folder name="SubCal${common.getUniqueString()}"
+					l="1" view="appointment"/>
+			</CreateFolderRequest>`, owner.token
+		);
+		const ownerCalId = fRes.CreateFolderResponse.folder[0]
+			? fRes.CreateFolderResponse.folder[0].id
+			: fRes.CreateFolderResponse.folder.id;
+
 		await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
-				<action id="${ownerCal.calId}" op="grant">
+				<action id="${ownerCalId}" op="grant">
 					<grant d="${sharee.email}" gt="usr"
 						perm="rwidx"/>
 				</action>
@@ -378,12 +433,21 @@ describe('Calendar > Mountpoint > Calendar-Rights', function () {
 	});
 
 
-	it('Sanity | Guest access to shared calendar', async () => {
+	it('Sanity | Guest access to new shared calendar', async () => {
 		const owner = await makeAcct('own');
-		const ownerCal = await getCalFolder(owner.token);
+		const fRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateFolderRequest xmlns="urn:zimbraMail">
+				<folder name="SubCal${common.getUniqueString()}"
+					l="1" view="appointment"/>
+			</CreateFolderRequest>`, owner.token
+		);
+		const ownerCalId = fRes.CreateFolderResponse.folder[0]
+			? fRes.CreateFolderResponse.folder[0].id
+			: fRes.CreateFolderResponse.folder.id;
+
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
-				<action id="${ownerCal.calId}" op="grant">
+				<action id="${ownerCalId}" op="grant">
 					<grant gt="guest" d="guest@example.com"
 						perm="r" pw="password"/>
 				</action>
@@ -393,12 +457,21 @@ describe('Calendar > Mountpoint > Calendar-Rights', function () {
 	});
 
 
-	it('Sanity | Group grantee on shared calendar', async () => {
+	it('Sanity | Group grantee on new shared calendar', async () => {
 		const owner = await makeAcct('own');
-		const ownerCal = await getCalFolder(owner.token);
+		const fRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateFolderRequest xmlns="urn:zimbraMail">
+				<folder name="SubCal${common.getUniqueString()}"
+					l="1" view="appointment"/>
+			</CreateFolderRequest>`, owner.token
+		);
+		const ownerCalId = fRes.CreateFolderResponse.folder[0]
+			? fRes.CreateFolderResponse.folder[0].id
+			: fRes.CreateFolderResponse.folder.id;
+
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
-				<action id="${ownerCal.calId}" op="grant">
+				<action id="${ownerCalId}" op="grant">
 					<grant gt="pub" perm="r"/>
 				</action>
 			</FolderActionRequest>`, owner.token

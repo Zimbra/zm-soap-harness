@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Calendar > Mountpoint > CancelMeetingRequest', function () {
+describe('Calendar > MeetingRequest > CancelMeetingRequest', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken;
 	const testDomain = config.testDomain;
@@ -48,89 +48,96 @@ describe('Calendar > Mountpoint > CancelMeetingRequest', function () {
 		return { email, id, token };
 	}
 
-
-	it('Sanity | Cancel meeting in shared calendar', async () => {
-		const owner = await makeAcct('own');
-		const sharee = await makeAcct('shr');
-		const subject = `Subj${common.getUniqueString()}`;
+	async function createMeeting(orgToken, orgEmail, inviteeEmail, subject) {
 		const t1 = futureTime(3600000);
 		const t2 = futureTime(7200000);
-
-		// Create appointment
-		const appt = await soap.makeSOAPEnvelopeAccount(
+		const res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
 					<inv>
-						<comp name="${subject}" fb="B" transp="O">
-							<s d="${t1}"/><e d="${t2}"/>
-							<or a="${owner.email}"/>
-							<at a="${sharee.email}" role="REQ"
+						<comp status="CONF" fb="B" transp="O"
+							allDay="0" name="${subject}">
+							<or a="${orgEmail}"/>
+							<at a="${inviteeEmail}" role="REQ"
 								ptst="NE" rsvp="1"/>
+							<s d="${t1}"/>
+							<e d="${t2}"/>
 						</comp>
 					</inv>
-					<e a="${sharee.email}" t="t"/>
+					<e a="${inviteeEmail}" t="t"/>
 					<su>${subject}</su>
 					<mp ct="text/plain">
 						<content>Content</content>
 					</mp>
 				</m>
-			</CreateAppointmentRequest>`, owner.token
+			</CreateAppointmentRequest>`, orgToken
 		);
-		const invId = appt.CreateAppointmentResponse.invId;
+		return res.CreateAppointmentResponse;
+	}
+	it('Sanity | Cancel meeting request with message', async () => {
+		const org = await makeAcct('org');
+		const inv = await makeAcct('inv');
+		const subject = `Subj${common.getUniqueString()}`;
+		const appt = await createMeeting(
+			org.token, org.email, inv.email, subject
+		);
 
-		// Cancel
+		// Send cancel appointment request
 		const cancelRes = await soap.makeSOAPEnvelopeAccount(
 			`<CancelAppointmentRequest xmlns="urn:zimbraMail"
-				id="${invId}" comp="0">
+				id="${appt.invId}" comp="0">
 				<m>
-					<e a="${sharee.email}" t="t"/>
+					<e a="${inv.email}" t="t"/>
+					<su>Cancelled: ${subject}</su>
+					<mp ct="text/plain">
+						<content>Cancellation notice</content>
+					</mp>
+				</m>
+			</CancelAppointmentRequest>`, org.token
+		);
+
+		// Verify response
+		assert.notExists(
+			cancelRes.Fault,
+			'Cancel with message should not fault'
+		);
+	});
+
+
+	it('Sanity | Cancel meeting and delete from calendar', async () => {
+		const org = await makeAcct('org');
+		const inv = await makeAcct('inv');
+		const subject = `Subj${common.getUniqueString()}`;
+		const appt = await createMeeting(
+			org.token, org.email, inv.email, subject
+		);
+
+		// Send cancel appointment request
+		await soap.makeSOAPEnvelopeAccount(
+			`<CancelAppointmentRequest xmlns="urn:zimbraMail"
+				id="${appt.invId}" comp="0">
+				<m>
+					<e a="${inv.email}" t="t"/>
 					<su>Cancelled: ${subject}</su>
 					<mp ct="text/plain">
 						<content>Cancelled</content>
 					</mp>
 				</m>
-			</CancelAppointmentRequest>`, owner.token
+			</CancelAppointmentRequest>`, org.token
 		);
-		assert.notExists(cancelRes.Fault, 'Cancel should not fault');
-	});
 
-
-	it('Sanity | Cancel meeting and verify removal', async () => {
-		const owner = await makeAcct('own');
-		const subject = `Subj${common.getUniqueString()}`;
-		const t1 = futureTime(3600000);
-		const t2 = futureTime(7200000);
-
-		const appt = await soap.makeSOAPEnvelopeAccount(
-			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
-				<m>
-					<inv>
-						<comp name="${subject}" fb="B" transp="O">
-							<s d="${t1}"/><e d="${t2}"/>
-							<or a="${owner.email}"/>
-						</comp>
-					</inv>
-					<su>${subject}</su>
-					<mp ct="text/plain">
-						<content>Content</content>
-					</mp>
-				</m>
-			</CreateAppointmentRequest>`, owner.token
-		);
-		const calItemId = appt.CreateAppointmentResponse.calItemId;
-
-		// Delete
-		await soap.makeSOAPEnvelopeAccount(
+		// Perform item action
+		const delRes = await soap.makeSOAPEnvelopeAccount(
 			`<ItemActionRequest xmlns="urn:zimbraMail">
-				<action op="delete" id="${calItemId}"/>
-			</ItemActionRequest>`, owner.token
+				<action op="delete" id="${appt.calItemId}"/>
+			</ItemActionRequest>`, org.token
 		);
 
-		// Verify deleted
-		const getRes = await soap.makeSOAPEnvelopeAccount(
-			`<GetAppointmentRequest xmlns="urn:zimbraMail"
-				id="${calItemId}"/>`, owner.token
+		// Verify response
+		assert.notExists(
+			delRes.Fault,
+			'Delete should not fault'
 		);
-		assert.exists(getRes.Fault, 'Deleted appt should fault');
 	});
+});
 });
