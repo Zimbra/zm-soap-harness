@@ -1,0 +1,78 @@
+import { assert } from 'chai';
+import config from '../../../conf/config.js';
+import common from '../../../framework/core/common.js';
+import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
+
+describe('Calendar > Appointments > CreateAppointmentRequest-Loop', function () {
+    this.timeout(300 * 1000);
+    let adminAuthToken;
+    const testDomain = config.testDomain;
+    const pad = (n) => String(n).padStart(2, '0');
+
+    function icalTimeFromEpoch(epochMs) {
+        const d = new Date(epochMs);
+        return `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
+    }
+
+    before(async function () {
+        await main.before(this);
+        adminAuthToken = await soap.getAdminAuthToken();
+    });
+
+    beforeEach(async function () {
+        await main.beforeEach(this);
+    });
+
+    afterEach(async function () {
+        await main.afterEach(this);
+    });
+
+    if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+        return;
+    }
+
+    it('Functional | Create appointments in a loop', async () => {
+        const accountEmail = `test${common.getUniqueString()}@${testDomain}`;
+        await soap.makeSOAPEnvelopeAdmin(
+            `<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${accountEmail}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+        );
+        const accountToken = await soap.getAccountAuthToken(accountEmail);
+        const baseEpoch = 1514808000000;
+
+        // Create 5 appointments in a loop (reduced from large count)
+        for (let i = 0; i < 5; i++) {
+            const subject = `Subject${common.getUniqueString()}`;
+            const epoch = baseEpoch + i * 86400000;
+            const createRes = await soap.makeSOAPEnvelopeAccount(
+                `<CreateAppointmentRequest xmlns="urn:zimbraMail">
+					<m>
+						<inv>
+							<comp method="REQUEST" type="event" fb="B"
+								transp="O" allDay="0" name="${subject}">
+								<s d="${icalTimeFromEpoch(epoch)}"/>
+								<e d="${icalTimeFromEpoch(epoch + 3600000)}"/>
+								<or a="${accountEmail}"/>
+							</comp>
+						</inv>
+						<mp content-type="text/plain">
+							<content>Content ${i}</content>
+						</mp>
+						<su>${subject}</su>
+					</m>
+				</CreateAppointmentRequest>`, accountToken
+            );
+            assert.notExists(
+                createRes.Fault,
+                `CreateAppointmentRequest ${i} should not fault`
+            );
+            assert.exists(
+                createRes.CreateAppointmentResponse.invId,
+                `invId should exist for appointment ${i}`
+            );
+        }
+    });
+});
