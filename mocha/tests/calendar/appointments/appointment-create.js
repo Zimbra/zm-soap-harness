@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Calendar > Appointments > Appointment-Create', function () {
+describe('Calendar > Appointments > Appointment Create', function () {
     this.timeout(120 * 1000);
     let adminAuthToken;
     let acct1, acct2;

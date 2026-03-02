@@ -10,7 +10,8 @@
 #   bash .agent/scripts/check-test-parity.sh Prefs
 #
 # This script compares the number of tests in each XML file against its
-# corresponding JS file. Shows ✓ for matching counts, ≠ for mismatches,
+# corresponding JS file. JS filenames use kebab-case.
+# Shows ✓ for matching counts, ≠ for mismatches,
 # MISS for missing JS files, and SKIP for XML files with 0 tests.
 
 set -euo pipefail
@@ -32,14 +33,23 @@ if [ ! -d "$XML_DIR" ]; then
   exit 1
 fi
 
-MATCH=0
-MISMATCH=0
-MISS=0
-SKIP=0
-TOTAL_XML_TESTS=0
-TOTAL_JS_TESTS=0
+# Convert CamelCase to kebab-case, with compound word fixes
+to_kebab() {
+  echo "$1" | sed -E '
+    s/([a-z0-9])([A-Z])/\1-\2/g
+    s/([A-Z]+)([A-Z][a-z])/\1-\2/g
+  ' | tr '[:upper:]' '[:lower:]' | sed -E '
+    s/mini-cal/minical/g
+    s/appointmentexception/appointment-exception/g
+    s/getfreebusy/get-freebusy/g
+    s/itemaction/item-action/g
+    s/multinodecal/multi-node-cal/g
+    s/nonaccounts/nonaccounts/g
+    s/freebusy([0-9])/freebusy-\1/g
+  '
+}
 
-# Use temp files to accumulate counts (pipe creates subshell)
+# Use temp file for summary counts
 TMPFILE=$(mktemp)
 trap "rm -f $TMPFILE" EXIT
 
@@ -47,8 +57,10 @@ find "$XML_DIR" -name "*.xml" | sort | while read -r xmlf; do
   rel=$(echo "$xmlf" | sed "s|$XML_DIR/||")
   dir=$(dirname "$rel")
   base=$(basename "$rel" .xml)
-  jsbase=$(echo "$base" | tr '[:upper:]' '[:lower:]')
-  jsdir=$(echo "$dir" | tr '[:upper:]' '[:lower:]')
+
+  # Convert to kebab-case
+  jsbase=$(to_kebab "$base")
+  jsdir=$(to_kebab "$dir")
   jsfile="$JS_DIR/$jsdir/$jsbase.js"
 
   xmltests=$(grep -c 'type="smoke"\|type="sanity"\|type="functional"\|type="regression"' "$xmlf" 2>/dev/null || true)

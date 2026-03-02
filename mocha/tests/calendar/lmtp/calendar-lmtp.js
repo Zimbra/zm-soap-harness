@@ -1,10 +1,10 @@
 import { assert } from 'chai';
-import config from '../../conf/config.js';
-import common from '../../framework/core/common.js';
-import soap from '../../framework/backend/soap-client.js';
-import { main } from '../../pages/main.js';
+import config from '../../../conf/config.js';
+import common from '../../../framework/core/common.js';
+import soap from '../../../framework/backend/soap-client.js';
+import { main } from '../../../pages/main.js';
 
-describe('Calendar > Remaining Subdirs', function () {
+describe('Calendar > LMTP > Calendar LMTP', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken;
 	const testDomain = config.testDomain;

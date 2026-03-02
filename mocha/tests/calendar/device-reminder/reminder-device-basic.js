@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Calendar > Device-Reminder > Reminder-Device-Basic', function () {
+describe('Calendar > Device Reminder > Reminder Device Basic', function () {
     this.timeout(120 * 1000);
     let adminAuthToken;
     const testDomain = config.testDomain;

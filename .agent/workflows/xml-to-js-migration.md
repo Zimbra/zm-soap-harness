@@ -41,8 +41,8 @@ Only `type="smoke"`, `type="sanity"`, `type="functional"`, `type="bhr"`, and `ty
 
 1. **Each XML file → its own JS file** (1:1 mapping). Never merge or split files.
 2. **Each non-excluded `<t:test_case>` → one `it()` block**. Never merge or split.
-3. **File naming**: lowercase with hyphens, e.g. `Folder-Action.xml` → `folder-action.js`
-4. **Directory structure mirrors XML source** using lowercase kebab-case names
+3. **File naming**: **MUST use kebab-case** — insert hyphens at every word boundary. See `/naming-convention` workflow for full rules. Example: `CreateAppointmentRequest-RecurrenceMonthly.xml` → `create-appointment-request-recurrence-monthly.js`. NEVER concatenate words without hyphens (e.g. `createappointmentrequest-recurrencemonthly.js` is WRONG).
+4. **Directory structure mirrors XML source** using lowercase kebab-case names (e.g. `CounterAppointment/` → `counter-appointment/`, `InvitePermissions/` → `invite-permissions/`)
 5. **Data file paths** use `mocha/data/` (NOT `data/soapvalidator/`), files are flat under `mocha/data/{folder}/`
 6. XML tests: `data/soapvalidator/<Module>/*.xml` (with subdirs like `Sharing/`, `Mountpoint/`, `VirtualHost/`)
 7. JS tests: `mocha/tests/<module>/*.js` (with matching subdirs)

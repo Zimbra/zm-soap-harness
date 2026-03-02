@@ -4,7 +4,7 @@ import common from '../../../framework/core/common.js';
 import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
-describe('Calendar > Sharing > Sharing > New-Appointment-Get', function () {
+describe('Calendar > Sharing > New Appointment Get', function () {
 	this.timeout(120 * 1000);
 	let adminAuthToken;
 	const testDomain = config.testDomain;
