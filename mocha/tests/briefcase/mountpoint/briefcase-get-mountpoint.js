@@ -38,6 +38,8 @@ describe('Briefcase > Mountpoint > Briefcase Get Mountpoint', function () {
 			? createRes1.CreateAccountResponse.account[0]
 			: createRes1.CreateAccountResponse.account;
 		assert.exists(acct1Data.id, 'Account1 ID should exist');
+		const host1 = acct1Data.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host1, 'Account1 zimbraMailHost should exist');
 
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
 			? createRes1.CreateAccountResponse.account[0]
@@ -61,6 +63,8 @@ describe('Briefcase > Mountpoint > Briefcase Get Mountpoint', function () {
 			? createRes2.CreateAccountResponse.account[0]
 			: createRes2.CreateAccountResponse.account;
 		assert.exists(acct2Data.id, 'Account2 ID should exist');
+		const host2 = acct2Data.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'Account2 zimbraMailHost should exist');
 
 		// Auth account1
 		account1Token = await soap.getAccountAuthToken(account1Name);
@@ -105,13 +109,14 @@ describe('Briefcase > Mountpoint > Briefcase Get Mountpoint', function () {
 		folder1Id = folder1.id;
 
 		// Share folder with account2
-		await soap.makeSOAPEnvelopeAccount(
+		const shareRes = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action id="${folder1Id}" op="grant">
 					<grant d="${account2Name}" gt="usr" perm="rwidax"/>
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
 
 		// Create sub-folder and save a document in it
 		const subFolderRes = await soap.makeSOAPEnvelopeAccount(
@@ -127,22 +132,24 @@ describe('Briefcase > Mountpoint > Briefcase Get Mountpoint', function () {
 
 		// Save a document in the sub-folder
 		// NOTE: Original XML uses uploadservlettest — using SOAP SaveDocument as substitute
-		await soap.makeSOAPEnvelopeAccount(
+		const saveDocRes = await soap.makeSOAPEnvelopeAccount(
 			`<SaveDocumentRequest xmlns="urn:zimbraMail">
 				<doc name="contact1.txt" l="${subFolderId}">
 					<content>test contact content</content>
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(saveDocRes.Fault, 'Response should not be a Fault');
 
 		// Share the entire briefcase with account2
-		await soap.makeSOAPEnvelopeAccount(
+		const shareBcRes = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action id="${briefcaseFolderId1}" op="grant">
 					<grant d="${account2Name}" gt="usr" perm="rwidax"/>
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(shareBcRes.Fault, 'Response should not be a Fault');
 	});
 
 	beforeEach(async function () {

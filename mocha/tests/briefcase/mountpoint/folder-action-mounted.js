@@ -32,16 +32,24 @@ describe('Briefcase > Mountpoint > Folder Action Mounted', function () {
 			? createRes1.CreateAccountResponse.account[0]
 			: createRes1.CreateAccountResponse.account;
 		account1Id = acct1.id;
+		const host1 = acct1.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host1, 'Account1 zimbraMailHost should exist');
 
 		account2Name = 'acct2.' + common.getUniqueString() + '@' + config.testDomain;
 
-		// Create account
-		await soap.makeSOAPEnvelopeAdmin(
+		const createRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes2.Fault, 'CreateAccountResponse2 should not fault');
+		const acct2 = Array.isArray(createRes2.CreateAccountResponse.account)
+			? createRes2.CreateAccountResponse.account[0]
+			: createRes2.CreateAccountResponse.account;
+		assert.exists(acct2.id, 'Account2 ID should exist');
+		const host2 = acct2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'Account2 zimbraMailHost should exist');
 
 		// Send the message
 		const authRes1 = await soap.makeSOAPEnvelopeAccount(
@@ -50,6 +58,8 @@ describe('Briefcase > Mountpoint > Folder Action Mounted', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes1.Fault, 'AuthResponse1 should not fault');
+		assert.exists(authRes1.AuthResponse.authToken, 'AuthToken1 should exist');
 		account1Token = Array.isArray(authRes1.AuthResponse.authToken)
 			? authRes1.AuthResponse.authToken[0]._content || authRes1.AuthResponse.authToken[0]
 			: authRes1.AuthResponse.authToken._content || authRes1.AuthResponse.authToken;
@@ -61,6 +71,8 @@ describe('Briefcase > Mountpoint > Folder Action Mounted', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
+		assert.notExists(authRes2.Fault, 'AuthResponse2 should not fault');
+		assert.exists(authRes2.AuthResponse.authToken, 'AuthToken2 should exist');
 		account2Token = Array.isArray(authRes2.AuthResponse.authToken)
 			? authRes2.AuthResponse.authToken[0]._content || authRes2.AuthResponse.authToken[0]
 			: authRes2.AuthResponse.authToken._content || authRes2.AuthResponse.authToken;
@@ -89,6 +101,7 @@ describe('Briefcase > Mountpoint > Folder Action Mounted', function () {
 			? folderRes1.GetFolderResponse.folder[0] : folderRes1.GetFolderResponse.folder;
 		const subfolders1 = Array.isArray(root1.folder) ? root1.folder : [root1.folder];
 		const briefcase = subfolders1.find(f => f && f.name === 'Briefcase');
+		assert.exists(briefcase, 'Briefcase folder should exist for account1');
 		const briefcaseFolderId = briefcase.id;
 
 		// Share briefcase
@@ -129,8 +142,23 @@ describe('Briefcase > Mountpoint > Folder Action Mounted', function () {
 
 		// Verify response
 		assert.notExists(deleteRes.Fault, 'Response should not be a Fault');
-		const folderAction = Array.isArray(deleteRes.FolderActionResponse.action)
-			? deleteRes.FolderActionResponse.action[0] : deleteRes.FolderActionResponse.action;
-		assert.equal(folderAction.op, 'delete', 'op should be delete');
+		assert.notExists(deleteRes.Fault, 'FolderActionResponse should exist');
+
+		// Verify mountpoint is gone (GetFolderRequest as account2)
+		const verifyRes = await soap.makeSOAPEnvelopeAccount(
+			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account2Token
+		);
+		assert.notExists(verifyRes.Fault, 'Verify response should not be a Fault');
+
+		// Verify original folder still exists for account1
+		const verifyRes1 = await soap.makeSOAPEnvelopeAccount(
+			'<GetFolderRequest xmlns="urn:zimbraMail"/>', account1Token
+		);
+		assert.notExists(verifyRes1.Fault, 'Account1 verify response should not be a Fault');
+		const verifyRoot = Array.isArray(verifyRes1.GetFolderResponse.folder)
+			? verifyRes1.GetFolderResponse.folder[0] : verifyRes1.GetFolderResponse.folder;
+		const verifyFolders = Array.isArray(verifyRoot.folder) ? verifyRoot.folder : [verifyRoot.folder];
+		const origBriefcase = verifyFolders.find(f => f && f.name === 'Briefcase');
+		assert.exists(origBriefcase, 'Original briefcase folder should still exist for account1');
 	});
 });

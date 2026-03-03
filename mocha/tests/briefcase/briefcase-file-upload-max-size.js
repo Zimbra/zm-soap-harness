@@ -30,7 +30,9 @@ describe('Briefcase > Briefcase File Upload Max Size', function () {
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
+		assert.exists(acct.id, 'Account ID should exist');
 		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const serverName = host ? host._content : config.server;
 
 		// Get server id
@@ -43,8 +45,11 @@ describe('Briefcase > Briefcase File Upload Max Size', function () {
 		// Verify response
 		assert.notExists(serverRes.Fault, 'Response should not be a Fault');
 
-		Array.isArray(serverRes.GetServerResponse.server)
+		const serverObj = Array.isArray(serverRes.GetServerResponse.server)
 			? serverRes.GetServerResponse.server[0] : serverRes.GetServerResponse.server;
+		assert.exists(serverObj.id, 'Server ID should exist');
+		const maxSizeAttr = serverObj.a.find(a => a.n === 'zimbraFileUploadMaxSize');
+		assert.exists(maxSizeAttr, 'zimbraFileUploadMaxSize attribute should exist');
 
 		// Auth as account
 		// Auth request

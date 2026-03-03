@@ -29,6 +29,8 @@ describe('Briefcase > List Document Revisions', function () {
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
 		assert.exists(acct.id, 'Account ID should exist');
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(

@@ -15,27 +15,41 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 		const account1Name = 'acct1.' + common.getUniqueString() + '@' + config.testDomain;
 
 		// Create account
-		await soap.makeSOAPEnvelopeAdmin(
+		const createRes1 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
+		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
+			? createRes1.CreateAccountResponse.account[0]
+			: createRes1.CreateAccountResponse.account;
+		assert.exists(acct1.id, 'Account1 ID should exist');
+		const host1 = acct1.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host1, 'Account1 zimbraMailHost should exist');
 
 		account2Name = 'acct2.' + common.getUniqueString() + '@' + config.testDomain;
 
 		// Create account
-		await soap.makeSOAPEnvelopeAdmin(
+		const createRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
+		const acct2 = Array.isArray(createRes2.CreateAccountResponse.account)
+			? createRes2.CreateAccountResponse.account[0]
+			: createRes2.CreateAccountResponse.account;
+		assert.exists(acct2.id, 'Account2 ID should exist');
+		const host2 = acct2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'Account2 zimbraMailHost should exist');
 
 		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
 			`<AuthRequest xmlns="urn:zimbraAccount">
-				<account by="name">${account2Name}</account>
+				<account by="name">${account1Name}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
@@ -67,18 +81,20 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 				<folder l="1" name="${parentFolder}" view="document"/>
 			</CreateFolderRequest>`, account1Token
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0]
 			: createRes.CreateFolderResponse.folder;
 
 		// FolderActionRequest
-		await soap.makeSOAPEnvelopeAccount(
+		const grantRes = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${folder.id}">
 					<grant gt="usr" d="${account2Name}" perm="r"/>
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(grantRes.Fault, 'Response should not be a Fault');
 
 		// CreateFolderRequest
 		const childRes = await soap.makeSOAPEnvelopeAccount(
@@ -102,18 +118,20 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 				<folder l="1" name="${parentFolder}" view="document"/>
 			</CreateFolderRequest>`, account1Token
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0]
 			: createRes.CreateFolderResponse.folder;
 
 		// FolderActionRequest
-		await soap.makeSOAPEnvelopeAccount(
+		const grantRes = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${folder.id}">
 					<grant gt="dom" d="${config.testDomain}" perm="r"/>
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(grantRes.Fault, 'Response should not be a Fault');
 
 		// CreateFolderRequest
 		const childRes = await soap.makeSOAPEnvelopeAccount(
@@ -137,18 +155,20 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 				<folder l="1" name="${parentFolder}" view="document"/>
 			</CreateFolderRequest>`, account1Token
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0]
 			: createRes.CreateFolderResponse.folder;
 
 		// FolderActionRequest
-		await soap.makeSOAPEnvelopeAccount(
+		const grantRes = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${folder.id}">
 					<grant gt="pub" perm="r"/>
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(grantRes.Fault, 'Response should not be a Fault');
 
 		// CreateFolderRequest
 		const childRes = await soap.makeSOAPEnvelopeAccount(
@@ -172,18 +192,20 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 				<folder l="1" name="${parentFolder}" view="document"/>
 			</CreateFolderRequest>`, account1Token
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0]
 			: createRes.CreateFolderResponse.folder;
 
 		// FolderActionRequest
-		await soap.makeSOAPEnvelopeAccount(
+		const grantRes = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${folder.id}">
 					<grant gt="all" perm="r"/>
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(grantRes.Fault, 'Response should not be a Fault');
 
 		// CreateFolderRequest
 		const childRes = await soap.makeSOAPEnvelopeAccount(
@@ -207,27 +229,30 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 				<folder l="1" name="${parentFolder}" view="document"/>
 			</CreateFolderRequest>`, account1Token
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0]
 			: createRes.CreateFolderResponse.folder;
 
 		// FolderActionRequest
-		await soap.makeSOAPEnvelopeAccount(
+		const grantRes = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${folder.id}">
 					<grant gt="usr" d="${account2Name}" perm="r"/>
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(grantRes.Fault, 'Response should not be a Fault');
 
 		// FolderActionRequest
-		await soap.makeSOAPEnvelopeAccount(
+		const grantPubRes = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${folder.id}">
 					<grant gt="pub" perm="rwd"/>
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(grantPubRes.Fault, 'Response should not be a Fault');
 
 		// CreateFolderRequest
 		const childRes = await soap.makeSOAPEnvelopeAccount(
@@ -251,27 +276,30 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 				<folder l="1" name="${parentFolder}" view="document"/>
 			</CreateFolderRequest>`, account1Token
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0]
 			: createRes.CreateFolderResponse.folder;
 
 		// FolderActionRequest
-		await soap.makeSOAPEnvelopeAccount(
+		const grantRes = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${folder.id}">
 					<grant gt="dom" d="${config.testDomain}" perm="r"/>
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(grantRes.Fault, 'Response should not be a Fault');
 
 		// FolderActionRequest
-		await soap.makeSOAPEnvelopeAccount(
+		const grantAllRes = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${folder.id}">
 					<grant gt="all" perm="rwd"/>
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(grantAllRes.Fault, 'Response should not be a Fault');
 
 		// CreateFolderRequest
 		const childRes = await soap.makeSOAPEnvelopeAccount(

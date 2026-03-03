@@ -25,11 +25,14 @@ describe('Briefcase > Sharing > Grantee > Grantee Alias', function () {
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
+		assert.exists(acct.id, 'Account ID should exist');
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		aliasName = 'alias.' + common.getUniqueString() + '@' + config.testDomain;
 
 		// AddAccountAliasRequest
-		await soap.makeSOAPEnvelopeAdmin(
+		const aliasRes = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${acct.id}
 				</id>
@@ -73,6 +76,7 @@ describe('Briefcase > Sharing > Grantee > Grantee Alias', function () {
 				<folder l="1" name="${folderName}" view="document"/>
 			</CreateFolderRequest>`, account1Token
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0]
 			: createRes.CreateFolderResponse.folder;
@@ -91,7 +95,7 @@ describe('Briefcase > Sharing > Grantee > Grantee Alias', function () {
 		const alias2 = 'alias.' + common.getUniqueString() + '@' + config.testDomain;
 
 		// AddAccountAliasRequest
-		await soap.makeSOAPEnvelopeAdmin(
+		const aliasRes = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${acct2.id}
 				</id>
@@ -126,6 +130,7 @@ describe('Briefcase > Sharing > Grantee > Grantee Alias', function () {
 				<folder l="1" name="${folderName}" view="document"/>
 			</CreateFolderRequest>`, account1Token
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0]
 			: createRes.CreateFolderResponse.folder;
@@ -144,7 +149,7 @@ describe('Briefcase > Sharing > Grantee > Grantee Alias', function () {
 		const alias3 = 'alias.' + common.getUniqueString() + '@' + config.testDomain;
 
 		// AddAccountAliasRequest
-		await soap.makeSOAPEnvelopeAdmin(
+		const aliasRes = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${acct3.id}
 				</id>

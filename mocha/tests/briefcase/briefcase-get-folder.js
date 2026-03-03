@@ -26,6 +26,12 @@ describe('Briefcase > Briefcase Get Folder', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
+		const acct = Array.isArray(createRes.CreateAccountResponse.account)
+			? createRes.CreateAccountResponse.account[0]
+			: createRes.CreateAccountResponse.account;
+		assert.exists(acct.id, 'Account ID should exist');
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Auth as account
 		// Auth request
@@ -105,5 +111,16 @@ describe('Briefcase > Briefcase Get Folder', function () {
 			: getFolderRes.GetFolderResponse.folder;
 
 		assert.exists(rootFolder.id, 'root folder id should exist');
+
+		// Find the created folder and verify attributes
+		const allFolders = Array.isArray(rootFolder.folder) ? rootFolder.folder : [rootFolder.folder];
+		const briefcaseParent = allFolders.find(f => f && f.name === 'Briefcase');
+		assert.exists(briefcaseParent, 'Briefcase parent folder should exist');
+		const subFolders = Array.isArray(briefcaseParent.folder) ? briefcaseParent.folder : (briefcaseParent.folder ? [briefcaseParent.folder] : []);
+		const createdFolder = subFolders.find(f => f && f.id === folderId);
+		assert.exists(createdFolder, 'Created folder should exist in GetFolderResponse');
+		assert.equal(createdFolder.name, folderName, 'Folder name should match');
+		assert.equal(createdFolder.view, 'document', 'Folder view should be document');
+		assert.equal(createdFolder.l, briefcaseFolderId, 'Folder parent id should match briefcase folder id');
 	});
 });

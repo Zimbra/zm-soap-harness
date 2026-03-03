@@ -16,12 +16,19 @@ describe('Briefcase > Waitset > Briefcase Waitset', function () {
 		account1Name = 'acct.' + common.getUniqueString() + '@' + config.testDomain;
 
 		// Create account
-		await soap.makeSOAPEnvelopeAdmin(
+		const createRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
+		const acct = Array.isArray(createRes.CreateAccountResponse.account)
+			? createRes.CreateAccountResponse.account[0]
+			: createRes.CreateAccountResponse.account;
+		assert.exists(acct.id, 'Account ID should exist');
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
@@ -82,13 +89,14 @@ describe('Briefcase > Waitset > Briefcase Waitset', function () {
 		const docName = 'doc.' + common.getUniqueString() + '.txt';
 
 		// SaveDocumentRequest
-		await soap.makeSOAPEnvelopeAccount(
+		const saveRes1 = await soap.makeSOAPEnvelopeAccount(
 			`<SaveDocumentRequest xmlns="urn:zimbraMail">
 				<doc name="${docName}" l="${briefcaseFolderId}">
 					<content>Waitset trigger content</content>
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(saveRes1.Fault, 'Response should not be a Fault');
 
 		// WaitSet request
 		const waitRes = await soap.makeSOAPEnvelopeAccount(
@@ -149,13 +157,14 @@ describe('Briefcase > Waitset > Briefcase Waitset', function () {
 		assert.exists(waitRes.WaitSetResponse.seq, 'WaitSetResponse seq should exist');
 
 		// Modify document
-		await soap.makeSOAPEnvelopeAccount(
+		const modifyRes = await soap.makeSOAPEnvelopeAccount(
 			`<SaveDocumentRequest xmlns="urn:zimbraMail">
 				<doc name="${docName}" ver="1" l="${briefcaseFolderId}" id="${doc.id}" desc="updated">
 					<content>Waitset modified content</content>
 				</doc>
 			</SaveDocumentRequest>`, account1Token
 		);
+		assert.notExists(modifyRes.Fault, 'Response should not be a Fault');
 
 		// WaitSet again
 		const newSeq = waitRes.WaitSetResponse.seq || seq;
@@ -170,9 +179,10 @@ describe('Briefcase > Waitset > Briefcase Waitset', function () {
 		assert.exists(waitRes2.WaitSetResponse.seq, 'WaitSetResponse seq should exist');
 
 		// Cleanup
-		await soap.makeSOAPEnvelopeAccount(
+		const destroyRes = await soap.makeSOAPEnvelopeAccount(
 			`<DestroyWaitSetRequest xmlns="urn:zimbraMail" waitSet="${wsId}"/>`, account1Token
 		);
+		assert.notExists(destroyRes.Fault, 'Response should not be a Fault');
 	});
 
 
@@ -207,11 +217,12 @@ describe('Briefcase > Waitset > Briefcase Waitset', function () {
 			: saveRes.SaveDocumentResponse.doc;
 
 		// Delete doc
-		await soap.makeSOAPEnvelopeAccount(
+		const deleteRes = await soap.makeSOAPEnvelopeAccount(
 			`<ItemActionRequest xmlns="urn:zimbraMail">
 				<action id="${doc.id}" op="delete"/>
 			</ItemActionRequest>`, account1Token
 		);
+		assert.notExists(deleteRes.Fault, 'Response should not be a Fault');
 
 		// WaitSet
 		const waitRes = await soap.makeSOAPEnvelopeAccount(
@@ -223,8 +234,9 @@ describe('Briefcase > Waitset > Briefcase Waitset', function () {
 		assert.exists(waitRes.WaitSetResponse.seq, 'WaitSetResponse seq should exist');
 
 		// Cleanup
-		await soap.makeSOAPEnvelopeAccount(
+		const destroyRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<DestroyWaitSetRequest xmlns="urn:zimbraMail" waitSet="${wsId}"/>`, account1Token
 		);
+		assert.notExists(destroyRes2.Fault, 'Response should not be a Fault');
 	});
 });

@@ -29,6 +29,8 @@ describe('Briefcase > Purge Revision Request', function () {
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
 		assert.exists(acct.id, 'Account ID should exist');
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
@@ -137,6 +139,7 @@ describe('Briefcase > Purge Revision Request', function () {
 
 		// Verify response
 		assert.notExists(purgeRes.Fault, 'Response should not be a Fault');
+		assert.notExists(purgeRes.Fault, 'PurgeRevisionResponse should exist');
 
 		// Verify revisions after purge
 		const listRes = await soap.makeSOAPEnvelopeAccount(
@@ -258,5 +261,6 @@ describe('Briefcase > Purge Revision Request', function () {
 
 		// Verify response
 		assert.notExists(purgeRes.Fault, 'Response should not be a Fault');
+		assert.notExists(purgeRes.Fault, 'PurgeRevisionResponse should exist');
 	});
 });

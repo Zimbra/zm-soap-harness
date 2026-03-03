@@ -41,6 +41,8 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 			? createRes1.CreateAccountResponse.account[0]
 			: createRes1.CreateAccountResponse.account;
 		account1Id = acct1.id;
+		const host1 = acct1.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host1, 'Account1 zimbraMailHost should exist');
 
 		account2Name = 'acct2.' + common.getUniqueString() + '@' + config.testDomain;
 
@@ -54,6 +56,12 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 
 		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
+		const acct2 = Array.isArray(createRes2.CreateAccountResponse.account)
+			? createRes2.CreateAccountResponse.account[0]
+			: createRes2.CreateAccountResponse.account;
+		assert.exists(acct2.id, 'Account2 ID should exist');
+		const host2 = acct2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'Account2 zimbraMailHost should exist');
 
 		// Create account3 and account4 for non-shared folder test
 		account3Name = 'acct3.' + common.getUniqueString() + '@' + config.testDomain;
@@ -73,6 +81,8 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 			? createRes3.CreateAccountResponse.account[0]
 			: createRes3.CreateAccountResponse.account;
 		account3Id = acct3.id;
+		const host3 = acct3.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host3, 'Account3 zimbraMailHost should exist');
 
 		account4Name = 'acct4.' + common.getUniqueString() + '@' + config.testDomain;
 
@@ -86,6 +96,12 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 
 		// Verify response
 		assert.notExists(createRes4.Fault, 'Response should not be a Fault');
+		const acct4 = Array.isArray(createRes4.CreateAccountResponse.account)
+			? createRes4.CreateAccountResponse.account[0]
+			: createRes4.CreateAccountResponse.account;
+		assert.exists(acct4.id, 'Account4 ID should exist');
+		const host4 = acct4.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host4, 'Account4 zimbraMailHost should exist');
 
 		// Get auth tokens
 		// Send the message

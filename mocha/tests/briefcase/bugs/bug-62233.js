@@ -31,6 +31,8 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 			? createRes1.CreateAccountResponse.account[0]
 			: createRes1.CreateAccountResponse.account;
 		const account1Id = acct1.id;
+		const host1 = acct1.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host1, 'Account1 zimbraMailHost should exist');
 
 		account2Name = 'acct2.' + common.getUniqueString() + '@' + config.testDomain;
 
@@ -44,6 +46,12 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 
 		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
+		const acct2 = Array.isArray(createRes2.CreateAccountResponse.account)
+			? createRes2.CreateAccountResponse.account[0]
+			: createRes2.CreateAccountResponse.account;
+		assert.exists(acct2.id, 'Account2 ID should exist');
+		const host2 = acct2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'Account2 zimbraMailHost should exist');
 
 		// Auth as account1
 		// Send the message
@@ -57,6 +65,7 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 		// Verify response
 		assert.notExists(authRes1.Fault, 'Response should not be a Fault');
 		assert.exists(authRes1.AuthResponse.authToken, 'AuthResponse should exist');
+		assert.match(String(authRes1.AuthResponse.lifetime), /^\d+$/, 'lifetime should be numeric');
 
 		account1Token = Array.isArray(authRes1.AuthResponse.authToken)
 			? authRes1.AuthResponse.authToken[0]._content || authRes1.AuthResponse.authToken[0]
@@ -70,6 +79,7 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 			? folderRes.GetFolderResponse.folder[0] : folderRes.GetFolderResponse.folder;
 		const subfolders = Array.isArray(root.folder) ? root.folder : [root.folder];
 		const briefcase = subfolders.find(f => f && f.name === 'Briefcase');
+		assert.exists(briefcase, 'Briefcase folder should exist');
 		const briefcaseFolderId = briefcase.id;
 
 		// Save a document
@@ -83,15 +93,17 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 
 		// Verify response
 		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
+		assert.notExists(saveRes.Fault, 'SaveDocumentResponse should exist');
 
-		// Share briefcase with read access to account2
-		await soap.makeSOAPEnvelopeAccount(
+		const shareRes = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action op="grant" id="${briefcaseFolderId}">
 					<grant gt="usr" d="${account2Name}" perm="r"/>
 				</action>
 			</FolderActionRequest>`, account1Token
 		);
+		assert.notExists(shareRes.Fault, 'FolderActionResponse should not fault');
+		assert.exists(shareRes.FolderActionResponse.action, 'FolderAction should exist');
 
 		// Auth as account2
 		// Send the message
@@ -105,6 +117,7 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 		// Verify response
 		assert.notExists(authRes2.Fault, 'Response should not be a Fault');
 		assert.exists(authRes2.AuthResponse.authToken, 'AuthResponse should exist');
+		assert.match(String(authRes2.AuthResponse.lifetime), /^\d+$/, 'lifetime should be numeric');
 
 		account2Token = Array.isArray(authRes2.AuthResponse.authToken)
 			? authRes2.AuthResponse.authToken[0]._content || authRes2.AuthResponse.authToken[0]
@@ -117,12 +130,15 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 		const rootFolder = Array.isArray(root2.GetFolderResponse.folder)
 			? root2.GetFolderResponse.folder[0] : root2.GetFolderResponse.folder;
 
-		// CreateMountpointRequest
-		await soap.makeSOAPEnvelopeAccount(
+		const mountRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateMountpointRequest xmlns="urn:zimbraMail">
 				<link l="${rootFolder.id}" name="SharedBriefcase.${common.getUniqueString()}" rid="${briefcaseFolderId}" zid="${account1Id}"/>
 			</CreateMountpointRequest>`, account2Token
 		);
+		assert.notExists(mountRes.Fault, 'CreateMountpointResponse should not fault');
+		const link = Array.isArray(mountRes.CreateMountpointResponse.link)
+			? mountRes.CreateMountpointResponse.link[0] : mountRes.CreateMountpointResponse.link;
+		assert.exists(link.id, 'Mount link ID should exist');
 	});
 
 	beforeEach(async function () {

@@ -31,6 +31,8 @@ describe('Briefcase > Bugs > Bug 44557', function () {
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
 		account1Id = acct.id;
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
