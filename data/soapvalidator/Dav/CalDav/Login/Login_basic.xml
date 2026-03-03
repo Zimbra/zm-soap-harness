@@ -1,0 +1,171 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.user" value="user${TIME}${COUNTER}"/>
+<t:property name="account1.name" value="${account1.user}@${defaultdomain.name}"/>
+<t:property name="account1.name.encoded" value="${account1.user}%40${defaultdomain.name}"/>
+
+<t:property name="account2.user" value="user${TIME}${COUNTER}"/>
+<t:property name="account2.name" value="${account2.user}@${defaultdomain.name}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+	<t:objective>create test account</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+	  		<AuthRequest xmlns="urn:zimbraAdmin">
+	    		<name>${admin.user}</name>
+	    		<password>${admin.password}</password>
+	  		</AuthRequest>
+	 	</t:request>
+	 	<t:response>
+	    	<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+	 	</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="displayName">${account2.user}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CalDav_Login_Basic_01" type="sanity" >
+	<t:objective>Basic Test - CalDav login</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:property name="caldav.user" value="${account1.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account1.server}"/>
+
+	<t:caldav >
+		<t:request method="PROPFIND" uri="/principals/users/${account1.name}/">
+			<x0:propfind xmlns:x2="http://calendarserver.org/ns/" xmlns:x1="urn:ietf:params:xml:ns:caldav" xmlns:x0="DAV:">
+				<x0:prop>
+			  		<x1:calendar-home-set/>
+			  		<x1:calendar-user-address-set/>
+			  		<x1:schedule-inbox-URL/>
+			  		<x1:schedule-outbox-URL/>
+			  		<x2:dropbox-home-URL/>
+			  		<x2:notifications-URL/>
+			  		<x0:displayname/>
+			 	</x0:prop>
+			</x0:propfind>
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response/D:href" match="/principals/users/${account1.name.encoded}/"/>
+	 	</t:response>
+	</t:caldav>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CalDav_Login_Basic_02" type="sanity" >
+	<t:objective>CalDav login - verify calendar, address, inbox, sent</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:property name="caldav.user" value="${account1.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account1.server}"/>
+	<t:regex input="${account1.name}" regex="@" group="1" replace="%40" set="account1.parsedName"/>
+	
+	<t:caldav >
+		<t:request method="PROPFIND" uri="/principals/users/${account1.name}/">
+			<x0:propfind xmlns:x2="http://calendarserver.org/ns/" xmlns:x1="urn:ietf:params:xml:ns:caldav" xmlns:x0="DAV:">
+				<x0:prop>
+			  		<x1:calendar-home-set/>
+			  		<x1:calendar-user-address-set/>
+			  		<x1:schedule-inbox-URL/>
+			  		<x1:schedule-outbox-URL/>
+			  		<x2:dropbox-home-URL/>
+			  		<x2:notifications-URL/>
+			  		<x0:displayname/>
+			 	</x0:prop>
+			</x0:propfind>
+	 	</t:request>
+	 	<t:response>
+					<t:select path="//C:calendar-home-set/D:href" match="/dav/${account1.parsedName}/"/>
+					<t:select path="//C:calendar-user-address-set/D:href" match="mailto:${account1.name}"/>
+					<t:select path="//C:schedule-inbox-URL/D:href" match="/dav/${account1.parsedName}/Inbox/"/>
+					<t:select path="//C:schedule-outbox-URL/D:href" match="/dav/${account1.parsedName}/Sent/"/>
+	 	</t:response>
+	</t:caldav>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CalDav_Login_Basic_03" type="sanity" >
+	<t:objective>CalDav login - verify display name</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:property name="caldav.user" value="${account2.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account2.server}"/>
+
+	<t:caldav >
+		<t:request method="PROPFIND" uri="/principals/users/${account2.name}/">
+			<x0:propfind xmlns:x2="http://calendarserver.org/ns/" xmlns:x1="urn:ietf:params:xml:ns:caldav" xmlns:x0="DAV:">
+				<x0:prop>
+			  		<x1:calendar-home-set/>
+			  		<x1:calendar-user-address-set/>
+			  		<x1:schedule-inbox-URL/>
+			  		<x1:schedule-outbox-URL/>
+			  		<x2:dropbox-home-URL/>
+			  		<x2:notifications-URL/>
+			  		<x0:displayname/>
+			 	</x0:prop>
+			</x0:propfind>
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:displayname" match="${account2.user}"/>
+	 	</t:response>
+	</t:caldav>
+
+</t:test_case>
+
+
+
+</t:tests>

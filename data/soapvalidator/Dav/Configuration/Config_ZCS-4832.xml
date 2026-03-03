@@ -1,0 +1,381 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<!-- Following bug is included as part of this test case -->
+	<!-- ZCS-4832: Create configuration file for CalDav and CardDav -->
+
+	<t:property name="account1.uname" value="test.${TIME}.${COUNTER}" />
+	<t:property name="account1.name" value="${account1.uname}@${defaultdomain.name}" />
+	<t:property name="account1.password" value="${defaultpassword.value}" />
+
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+			
+		 <t:test id="ping">
+	        <t:request>
+	            <PingRequest xmlns="urn:zimbraAdmin"/>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:PingResponse"/>
+	        </t:response>
+         </t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="zcs-4832_account_setup" type="tbd">
+		<t:objective>create test account</t:objective>
+
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account1.name}</name>
+					<password>${account1.password}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account1.server" />
+			</t:response>
+		</t:test>
+
+
+	</t:test_case>
+
+	<t:test_case testcaseid="zcs-4832-Caldav" type="tbd">
+		<t:objective>Download the caldav mobile config file using rest api</t:objective>
+		<t:steps>
+			1. Account 1 user hits rest URI to download caldav mobile
+			config file
+			2. Verify common config details in the response.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:resttest>
+			<t:restServletRequest>
+				<configType>caldav</configType>
+				<fmt>mobileconfig</fmt>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select match=".?key>CalDAVAccountDescription.?.?key>"
+					emptyset="0" />
+				<t:select match=".?string>${account1.uname}'s CALDAV.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>CalDAVHostName.?.?key>" emptyset="0" />
+				<t:select match=".?string>${defaultdomain.name}.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>CalDAVPassword.?.?key>" emptyset="0" />
+				<t:select match=".?string.?>" emptyset="0" />
+				<t:select match=".?key>CalDAVPort.?.?key>" emptyset="0" />
+				<t:select match=".?integer>443.?.?integer>" emptyset="0" />
+				<t:select match=".?key>CalDAVPrincipalURL.?.?key>"
+					emptyset="0" />
+				<t:select
+					match=".?string>.?dav.?${account1.uname}@${defaultdomain.name}.?Calendar.?.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>CalDAVUsername.?.?key>" emptyset="0" />
+				<t:select match=".?string>${account1.name}.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>PayloadDisplayName.?.?key>"
+					emptyset="0" />
+				<t:select match=".?string>caldav ${account1.uname}.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>PayloadType.?.?key>" emptyset="0" />
+				<t:select match=".?string>com.apple.caldav.account.?.?string>"
+					emptyset="0" />
+			</t:restServletResponse>
+		</t:resttest>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="zcs-4832-Carddav" type="tbd">
+		<t:objective>Download the carddav mobile config file using rest api</t:objective>
+		<t:steps>
+			1. Account 1 user hits rest URI to download carddav mobile
+			config file
+			2. Verify common config details in the response.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:resttest>
+			<t:restServletRequest>
+				<configType>carddav</configType>
+				<fmt>mobileconfig</fmt>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select match=".?key>CardDAVAccountDescription.?.?key>"
+					emptyset="0" />
+				<t:select match=".?string>${account1.uname}'s CARDDAV.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>CardDAVHostName.?.?key>" emptyset="0" />
+				<t:select match=".?string>${defaultdomain.name}.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>CardDAVPassword.?.?key>" emptyset="0" />
+				<t:select match=".?string.?>" emptyset="0" />
+				<t:select match=".?key>CardDAVPort.?.?key>" emptyset="0" />
+				<t:select match=".?integer>443.?.?integer>" emptyset="0" />
+				<t:select match=".?key>CardDAVPrincipalURL.?.?key>"
+					emptyset="0" />
+				<t:select
+					match=".?string>.?dav.?${account1.uname}@${defaultdomain.name}.?Contacts.?.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>CardDAVUsername.?.?key>" emptyset="0" />
+				<t:select match=".?string>${account1.name}.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>PayloadDisplayName.?.?key>"
+					emptyset="0" />
+				<t:select match=".?string>carddav ${account1.uname}.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>PayloadIdentifier.?.?key>" emptyset="0" />
+				<t:select
+					match=".?string>${account1.server}.carddav.account.${account1.uname}.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>PayloadOrganization.?.?key>"
+					emptyset="0" />
+				<t:select match=".?string>${account1.server}.?.?string>"
+					emptyset="0" />
+			</t:restServletResponse>
+		</t:resttest>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="zcs-4832-Imap" type="tbd">
+		<t:objective>Download the imap mobile config file using rest api</t:objective>
+		<t:steps>
+			1. Account 1 user hits rest URI to download imap mobile
+			config file
+			2. Verify common config details in the response.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:resttest>
+			<t:restServletRequest>
+				<configType>imap</configType>
+				<fmt>mobileconfig</fmt>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select match=".?key>EmailAccountDescription.?.?key>"
+					emptyset="0" />
+				<t:select
+					match=".?string>${account1.uname}'s IMAP email account settings.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>EmailAccountName.?.?key>" emptyset="0" />
+				<t:select match=".?string>${account1.uname} email account.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>EmailAccountType.?.?key>" emptyset="0" />
+				<t:select match=".?string>EmailTypeIMAP.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>EmailAddress.?.?key>" emptyset="0" />
+				<t:select
+					match=".?string>${account1.uname}@${defaultdomain.name}.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>IncomingMailServerAuthentication.?.?key>"
+					emptyset="0" />
+				<t:select match=".?string>EmailAuthPassword.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>IncomingMailServerHostName.?.?key>"
+					emptyset="0" />
+				<t:select match=".?string>${account1.server}.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>IncomingMailServerUsername.?.?key>"
+					emptyset="0" />
+				<t:select match=".?string>${account1.name}.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>OutgoingMailServerAuthentication.?.?key>"
+					emptyset="0" />
+				<t:select match=".?string>EmailAuthPassword.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>OutgoingMailServerHostName.?.?key>"
+					emptyset="0" />
+				<t:select match=".?string>${account1.server}.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>PayloadDisplayName.?.?key>"
+					emptyset="0" />
+				<t:select match=".?string>imap ${account1.uname}.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>PayloadIdentifier.?.?key>" emptyset="0" />
+				<t:select
+					match=".?string>${account1.server}.imap.account.${account1.uname}.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>PayloadOrganization.?.?key>"
+					emptyset="0" />
+				<t:select match=".?string>${account1.server}.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>PayloadType.?.?key>" emptyset="0" />
+				<t:select match=".?string>com.apple.mail.managed.?.?string>"
+					emptyset="0" />
+			</t:restServletResponse>
+		</t:resttest>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="zcs-4832-All" type="tbd">
+		<t:objective>Download the All mobile config file using rest api</t:objective>
+		<t:steps>
+			1. Account 1 user hits rest URI to download All mobile config
+			file
+			2. Verify common config details in the response for
+			carddav,caldav and imap.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:resttest>
+			<t:restServletRequest>
+				<configType>all</configType>
+				<fmt>mobileconfig</fmt>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select match=".?key>EmailAccountDescription.?.?key>"
+					emptyset="0" />
+				<t:select
+					match=".?string>${account1.uname}'s IMAP email account settings.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>EmailAccountName.?.?key>" emptyset="0" />
+				<t:select match=".?string>${account1.uname} email account.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>CardDAVAccountDescription.?.?key>"
+					emptyset="0" />
+				<t:select match=".?string>${account1.uname}'s CARDDAV.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>CardDAVHostName.?.?key>" emptyset="0" />
+				<t:select match=".?string>${defaultdomain.name}.?.?string>"
+					emptyset="0" />	
+				<t:select match=".?key>CalDAVAccountDescription.?.?key>"
+					emptyset="0" />
+				<t:select match=".?string>${account1.uname}'s CALDAV.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>CalDAVHostName.?.?key>" emptyset="0" />
+				<t:select match=".?string>${defaultdomain.name}.?.?string>"
+					emptyset="0" />
+			</t:restServletResponse>
+		</t:resttest>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="zcs-4832-Dav" type="tbd">
+		<t:objective>Download the dav mobile config file using rest api</t:objective>
+		<t:steps>
+			1. Account 1 user hits rest URI to download dav mobile config
+			file
+			2. Verify common config details in the response for carddav,
+			caldav only
+		</t:steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:resttest>
+			<t:restServletRequest>
+				<configType>dav</configType>
+				<fmt>mobileconfig</fmt>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select match=".?key>CalDAVAccountDescription.?.?key>"
+					emptyset="0" />
+				<t:select match=".?string>${account1.uname}'s CALDAV.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>CalDAVHostName.?.?key>" emptyset="0" />
+				<t:select match=".?string>${defaultdomain.name}.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>PayloadDisplayName.?.?key>"
+					emptyset="0" />
+				<t:select match=".?string>caldav ${account1.uname}.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>PayloadType.?.?key>" emptyset="0" />
+				<t:select match=".?string>com.apple.caldav.account.?.?string>"
+					emptyset="0" />					
+				<t:select match=".?key>CardDAVAccountDescription.?.?key>"
+					emptyset="0" />
+				<t:select match=".?string>${account1.uname}'s CARDDAV.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>PayloadIdentifier.?.?key>" emptyset="0" />
+				<t:select
+					match=".?string>${account1.server}.carddav.account.${account1.uname}.?.?string>"
+					emptyset="0" />
+				<t:select match=".?key>PayloadOrganization.?.?key>"
+					emptyset="0" />
+				<t:select match=".?string>${account1.server}.?.?string>"
+					emptyset="0" />
+			</t:restServletResponse>
+		</t:resttest>
+
+	</t:test_case> 
+
+
+</t:tests>

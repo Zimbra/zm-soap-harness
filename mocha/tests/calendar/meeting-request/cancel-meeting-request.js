@@ -1,3 +1,4 @@
+import path from 'node:path';
 import { assert } from 'chai';
 import config from '../../../conf/config.js';
 import common from '../../../framework/core/common.js';
@@ -34,37 +35,50 @@ describe('Calendar > Meeting Request > Cancel Meeting Request', function () {
 	}
 
 	// Tests
-
-	async function makeAcct(prefix) {
-		const email = `${prefix}${common.getUniqueString()}@${testDomain}`;
-		const res = await soap.makeSOAPEnvelopeAdmin(
+	it('Smoke | Verify an incoming lmtp does not cancel the organizers meeting', async () => {
+		// Create organizer account
+		const orgEmail = `org${common.getUniqueString()}@${testDomain}`;
+		const orgRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-				<name>${email}</name>
+				<name>${orgEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
-		const id = res.CreateAccountResponse.account[0].id;
-		const token = await soap.getAccountAuthToken(email);
-		return { email, id, token };
-	}
+		assert.notExists(orgRes.Fault, 'CreateAccountRequest should not fault');
+		const orgId = orgRes.CreateAccountResponse.account[0].id;
+		assert.exists(orgId, 'Organizer account ID should exist');
+		const orgToken = await soap.getAccountAuthToken(orgEmail);
 
-	async function createMeeting(orgToken, orgEmail, inviteeEmail, subject) {
+		// Create invitee account
+		const invEmail = `inv${common.getUniqueString()}@${testDomain}`;
+		const invRes = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${invEmail}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(invRes.Fault, 'CreateAccountRequest should not fault');
+		const invId = invRes.CreateAccountResponse.account[0].id;
+		assert.exists(invId, 'Invitee account ID should exist');
+
+		// Create appointment
+		const subject = `Subj${common.getUniqueString()}`;
 		const t1 = futureTime(3600000);
 		const t2 = futureTime(7200000);
-		const res = await soap.makeSOAPEnvelopeAccount(
+		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
 					<inv>
 						<comp status="CONF" fb="B" transp="O"
 							allDay="0" name="${subject}">
 							<or a="${orgEmail}"/>
-							<at a="${inviteeEmail}" role="REQ"
+							<at a="${invEmail}" role="REQ"
 								ptst="NE" rsvp="1"/>
 							<s d="${t1}"/>
 							<e d="${t2}"/>
 						</comp>
 					</inv>
-					<e a="${inviteeEmail}" t="t"/>
+					<e a="${invEmail}" t="t"/>
 					<su>${subject}</su>
 					<mp ct="text/plain">
 						<content>Content</content>
@@ -72,71 +86,179 @@ describe('Calendar > Meeting Request > Cancel Meeting Request', function () {
 				</m>
 			</CreateAppointmentRequest>`, orgToken
 		);
-		return res.CreateAppointmentResponse;
-	}
-	it('Sanity | Cancel meeting request with message', async () => {
-		const org = await makeAcct('org');
-		const inv = await makeAcct('inv');
-		const subject = `Subj${common.getUniqueString()}`;
-		const appt = await createMeeting(
-			org.token, org.email, inv.email, subject
-		);
+		assert.notExists(createRes.Fault, 'CreateAppointmentRequest should not fault');
+		const appt = createRes.CreateAppointmentResponse;
+		assert.exists(appt.calItemId, 'Appointment calItemId should exist');
+		assert.exists(appt.invId, 'Appointment invId should exist');
 
-		// Send cancel appointment request
-		const cancelRes = await soap.makeSOAPEnvelopeAccount(
-			`<CancelAppointmentRequest xmlns="urn:zimbraMail"
-				id="${appt.invId}" comp="0">
-				<m>
-					<e a="${inv.email}" t="t"/>
-					<su>Cancelled: ${subject}</su>
-					<mp ct="text/plain">
-						<content>Cancellation notice</content>
-					</mp>
-				</m>
-			</CancelAppointmentRequest>`, org.token
+		// Get appointment UID
+		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
+			`<GetMsgRequest xmlns="urn:zimbraMail">
+				<m id="${appt.invId}"/>
+			</GetMsgRequest>`, orgToken
 		);
+		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
+		const msg = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		const uid = msg.inv[0].comp[0].uid;
+		assert.exists(uid, 'Appointment UID should exist');
 
-		// Verify response
-		assert.notExists(
-			cancelRes.Fault,
-			'Cancel with message should not fault'
+		// Inject LMTP cancellation mime
+		const filePath = path.join(config.projectRoot, 'mocha/data/email39/msg01.txt');
+		await soap.injectMime(orgToken, filePath);
+
+		// Verify organizer's meeting still exists
+		const now = Date.now();
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail"
+				calExpandInstStart="${now - 86400000}"
+				calExpandInstEnd="${now + 2 * 86400000}"
+				types="appointment">
+				<query>${subject}</query>
+			</SearchRequest>`, orgToken
 		);
+		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
+		const appts = searchRes.SearchResponse.appt;
+		assert.exists(appts, 'Organizer meeting should still exist after LMTP cancel');
 	});
 
 
-	it('Sanity | Cancel meeting and delete from calendar', async () => {
-		const org = await makeAcct('org');
-		const inv = await makeAcct('inv');
-		const subject = `Subj${common.getUniqueString()}`;
-		const appt = await createMeeting(
-			org.token, org.email, inv.email, subject
+	it('Sanity | Verify a cancelation to a DL does not cancel the organizers meeting', async () => {
+		// Create organizer account
+		const orgEmail = `org${common.getUniqueString()}@${testDomain}`;
+		const orgRes = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${orgEmail}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(orgRes.Fault, 'CreateAccountRequest should not fault');
+		const orgId = orgRes.CreateAccountResponse.account[0].id;
+		assert.exists(orgId, 'Organizer account ID should exist');
+		const orgToken = await soap.getAccountAuthToken(orgEmail);
 
-		// Send cancel appointment request
-		await soap.makeSOAPEnvelopeAccount(
-			`<CancelAppointmentRequest xmlns="urn:zimbraMail"
-				id="${appt.invId}" comp="0">
+		// Create invitee account
+		const invEmail = `inv${common.getUniqueString()}@${testDomain}`;
+		const invRes = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${invEmail}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(invRes.Fault, 'CreateAccountRequest should not fault');
+		const invId = invRes.CreateAccountResponse.account[0].id;
+		assert.exists(invId, 'Invitee account ID should exist');
+
+		// Create distribution list
+		const dlName = `dl${common.getUniqueString()}@${testDomain}`;
+		const dlRes = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+				<name>${dlName}</name>
+				<a n="description">A test distribution list</a>
+			</CreateDistributionListRequest>`, adminAuthToken
+		);
+		assert.notExists(dlRes.Fault, 'CreateDistributionListRequest should not fault');
+		const dlId = dlRes.CreateDistributionListResponse.dl[0].id;
+		assert.exists(dlId, 'DL ID should exist');
+
+		// Add organizer to DL
+		const addMemberRes = await soap.makeSOAPEnvelopeAdmin(
+			`<AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+				<id>${dlId}</id>
+				<dlm>${orgEmail}</dlm>
+			</AddDistributionListMemberRequest>`, adminAuthToken
+		);
+		assert.notExists(addMemberRes.Fault, 'AddDistributionListMemberRequest should not fault');
+
+		// Create appointment with invitee and DL
+		const subject = `Subj${common.getUniqueString()}`;
+		const t1 = futureTime(3600000);
+		const t2 = futureTime(7200000);
+		const createRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
-					<e a="${inv.email}" t="t"/>
-					<su>Cancelled: ${subject}</su>
+					<inv>
+						<comp status="CONF" fb="B" transp="O"
+							allDay="0" name="${subject}">
+							<or a="${orgEmail}"/>
+							<at a="${invEmail}" role="REQ"
+								ptst="NE" rsvp="1"/>
+							<at a="${dlName}" role="REQ"
+								ptst="NE" rsvp="1"/>
+							<s d="${t1}"/>
+							<e d="${t2}"/>
+						</comp>
+					</inv>
+					<e a="${invEmail}" t="t"/>
+					<e a="${dlName}" t="t"/>
+					<su>${subject}</su>
 					<mp ct="text/plain">
-						<content>Cancelled</content>
+						<content>Content</content>
 					</mp>
 				</m>
-			</CancelAppointmentRequest>`, org.token
+			</CreateAppointmentRequest>`, orgToken
 		);
+		assert.notExists(createRes.Fault, 'CreateAppointmentRequest should not fault');
+		const appt = createRes.CreateAppointmentResponse;
+		assert.exists(appt.calItemId, 'Appointment calItemId should exist');
+		assert.exists(appt.invId, 'Appointment invId should exist');
 
-		// Perform item action
-		const delRes = await soap.makeSOAPEnvelopeAccount(
-			`<ItemActionRequest xmlns="urn:zimbraMail">
-				<action op="delete" id="${appt.calItemId}"/>
-			</ItemActionRequest>`, org.token
+		// Get compNum for modify
+		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
+			`<GetMsgRequest xmlns="urn:zimbraMail">
+				<m id="${appt.invId}"/>
+			</GetMsgRequest>`, orgToken
 		);
+		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
+		const msg = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		const compNum = msg.inv[0].comp[0].compNum || 0;
 
-		// Verify response
-		assert.notExists(
-			delRes.Fault,
-			'Delete should not fault'
+		// Modify appointment - remove DL, keep only invitee (simulates DL cancellation)
+		const modRes = await soap.makeSOAPEnvelopeAccount(
+			`<ModifyAppointmentRequest xmlns="urn:zimbraMail"
+				id="${appt.invId}" comp="${compNum}">
+				<m>
+					<inv>
+						<comp status="CONF" fb="B" transp="O"
+							allDay="0" name="${subject}">
+							<or a="${orgEmail}"/>
+							<at a="${invEmail}" role="REQ"
+								ptst="NE" rsvp="1"/>
+							<s d="${t1}"/>
+							<e d="${t2}"/>
+						</comp>
+					</inv>
+					<e a="${dlName}" t="t"/>
+					<su>CANCEL ${subject}</su>
+					<mp ct="text/plain">
+						<content>Content</content>
+					</mp>
+				</m>
+			</ModifyAppointmentRequest>`, orgToken
 		);
+		assert.notExists(modRes.Fault, 'ModifyAppointmentRequest should not fault');
+
+		// Verify organizer's meeting still exists
+		const now = Date.now();
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail"
+				calExpandInstStart="${now - 86400000}"
+				calExpandInstEnd="${now + 2 * 86400000}"
+				types="appointment">
+				<query>${subject}</query>
+			</SearchRequest>`, orgToken
+		);
+		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
+		const appts = searchRes.SearchResponse.appt;
+		assert.exists(appts, 'Organizer meeting should still exist after DL cancellation');
+
+		// Verify organizer can still get the appointment details
+		const verifyRes = await soap.makeSOAPEnvelopeAccount(
+			`<GetMsgRequest xmlns="urn:zimbraMail">
+				<m id="${appt.invId}"/>
+			</GetMsgRequest>`, orgToken
+		);
+		assert.notExists(verifyRes.Fault, 'GetMsgRequest should not fault');
 	});
 });

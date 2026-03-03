@@ -34,84 +34,210 @@ describe('Calendar > Meeting Request > Minical > Minical Attendee Appts', functi
 	}
 
 	// Tests
-
-	async function makeAcct(prefix) {
-		const email = `${prefix}${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+	it('Sanity | Verify all status responses are available to the organizer 1', async () => {
+		// Create organizer and invitee
+		const orgEmail = `org${common.getUniqueString()}@${testDomain}`;
+		const orgRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-				<name>${email}</name>
+				<name>${orgEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
-		const token = await soap.getAccountAuthToken(email);
-		return { email, token };
-	}
+		assert.notExists(orgRes.Fault, 'CreateAccountRequest should not fault');
+		const orgToken = await soap.getAccountAuthToken(orgEmail);
 
-	async function createMeeting(orgToken, orgEmail, invEmail, subj) {
+		const invEmail = `inv${common.getUniqueString()}@${testDomain}`;
+		const invRes = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${invEmail}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(invRes.Fault, 'CreateAccountRequest should not fault');
+		const invToken = await soap.getAccountAuthToken(invEmail);
+
+		// Get invitee calendar folder
+		const folderRes = await soap.makeSOAPEnvelopeAccount(
+			`<GetFolderRequest xmlns="urn:zimbraMail"/>`, invToken
+		);
+		assert.notExists(folderRes.Fault, 'GetFolderRequest should not fault');
+
+		// Create 3 appointments on different days
+		const baseTime = Date.now() + 86400000;
+		const subjects = [];
+		const invIds = [];
+
+		for (let i = 0; i < 3; i++) {
+			const subject = `Subj${common.getUniqueString()}`;
+			subjects.push(subject);
+			const startMs = baseTime + i * 86400000;
+			const d = new Date(startMs);
+			const startStr = `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
+			const d2 = new Date(startMs + 3600000);
+			const endStr = `${d2.getFullYear()}${pad(d2.getMonth() + 1)}${pad(d2.getDate())}T${pad(d2.getHours())}${pad(d2.getMinutes())}00`;
+
+			const createRes = await soap.makeSOAPEnvelopeAccount(
+				`<CreateAppointmentRequest xmlns="urn:zimbraMail">
+					<m>
+						<inv>
+							<comp status="CONF" fb="B" transp="O"
+								allDay="0" name="${subject}">
+								<or a="${orgEmail}"/>
+								<at a="${invEmail}" role="REQ"
+									ptst="NE" rsvp="1"/>
+								<s d="${startStr}"/>
+								<e d="${endStr}"/>
+							</comp>
+						</inv>
+						<e a="${invEmail}" t="t"/>
+						<su>${subject}</su>
+						<mp ct="text/plain">
+							<content>Content</content>
+						</mp>
+					</m>
+				</CreateAppointmentRequest>`, orgToken
+			);
+			assert.notExists(createRes.Fault, `CreateAppointmentRequest ${i + 1} should not fault`);
+		}
+
+		// As invitee, search for all 3 appointments
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail"
+				calExpandInstStart="${baseTime - 86400000}"
+				calExpandInstEnd="${baseTime + 5 * 86400000}"
+				types="appointment">
+				<query>is:anywhere</query>
+			</SearchRequest>`, invToken
+		);
+		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
+		const appts = Array.isArray(searchRes.SearchResponse.appt)
+			? searchRes.SearchResponse.appt : [searchRes.SearchResponse.appt];
+		assert.isAtLeast(appts.length, 3, 'Should have at least 3 appointments');
+
+		// Accept first, Tentative second, Decline third
+		const verbs = ['ACCEPT', 'TENTATIVE', 'DECLINE'];
+		for (let i = 0; i < 3; i++) {
+			const matchAppt = appts.find(a => a.name === subjects[i]);
+			assert.exists(matchAppt, `Appointment ${i + 1} should be found`);
+
+			const replyRes = await soap.makeSOAPEnvelopeAccount(
+				`<SendInviteReplyRequest xmlns="urn:zimbraMail"
+					verb="${verbs[i]}" id="${matchAppt.invId}"
+					compNum="0" updateOrganizer="TRUE">
+					<m rt="r">
+						<e t="t" a="${orgEmail}"/>
+						<su>${verbs[i]}: ${subjects[i]}</su>
+						<mp ct="text/plain">
+							<content>${verbs[i]}: ${subjects[i]}</content>
+						</mp>
+					</m>
+				</SendInviteReplyRequest>`, invToken
+			);
+			assert.notExists(replyRes.Fault, `SendInviteReplyRequest ${verbs[i]} should not fault`);
+		}
+
+		// GetMiniCalRequest for invitee calendar
+		const miniCalRes = await soap.makeSOAPEnvelopeAccount(
+			`<GetMiniCalRequest xmlns="urn:zimbraMail"
+				s="${baseTime - 86400000}"
+				e="${baseTime + 3 * 86400000}">
+				<folder id="10"/>
+			</GetMiniCalRequest>`, invToken
+		);
+		assert.notExists(miniCalRes.Fault, 'GetMiniCalRequest should not fault');
+		assert.exists(miniCalRes.GetMiniCalResponse, 'GetMiniCalResponse should exist');
+	});
+
+
+	it('Sanity | Verify all status responses are available to the organizer 2', async () => {
+		// Create organizer and invitee
+		const orgEmail = `org${common.getUniqueString()}@${testDomain}`;
+		const orgRes = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${orgEmail}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(orgRes.Fault, 'CreateAccountRequest should not fault');
+		const orgToken = await soap.getAccountAuthToken(orgEmail);
+
+		const invEmail = `inv${common.getUniqueString()}@${testDomain}`;
+		const invRes = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${invEmail}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(invRes.Fault, 'CreateAccountRequest should not fault');
+		const invToken = await soap.getAccountAuthToken(invEmail);
+
+		// Create appointment
+		const subject = `Subj${common.getUniqueString()}`;
 		const t1 = futureTime(3600000);
 		const t2 = futureTime(7200000);
-		const res = await soap.makeSOAPEnvelopeAccount(
+		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
 					<inv>
-						<comp name="${subj}" fb="B" transp="O"
-							status="CONF">
+						<comp status="CONF" fb="B" transp="O"
+							allDay="0" name="${subject}">
+							<or a="${orgEmail}"/>
 							<at a="${invEmail}" role="REQ"
 								ptst="NE" rsvp="1"/>
-							<s d="${t1}"/><e d="${t2}"/>
-							<or a="${orgEmail}"/>
+							<s d="${t1}"/>
+							<e d="${t2}"/>
 						</comp>
 					</inv>
 					<e a="${invEmail}" t="t"/>
-					<su>${subj}</su>
+					<su>${subject}</su>
 					<mp ct="text/plain">
-						<content>C</content>
+						<content>Content</content>
 					</mp>
 				</m>
 			</CreateAppointmentRequest>`, orgToken
 		);
-		return res.CreateAppointmentResponse;
-	}
+		assert.notExists(createRes.Fault, 'CreateAppointmentRequest should not fault');
 
-
-	it('Smoke | MiniCal meeting request', async () => {
-		const org = await makeAcct('org');
-		const inv = await makeAcct('inv');
-		const s = `Subj${common.getUniqueString()}`;
-		await createMeeting(org.token, org.email, inv.email, s);
+		// Invitee searches for the appointment
 		const now = Date.now();
-
-		// Send get mini cal request
-		const res = await soap.makeSOAPEnvelopeAccount(
-			`<GetMiniCalRequest xmlns="urn:zimbraMail"
-				s="${now}" e="${now + 30 * 86400000}">
-				<folder id="10"/>
-			</GetMiniCalRequest>`, inv.token
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail"
+				calExpandInstStart="${now - 86400000}"
+				calExpandInstEnd="${now + 2 * 86400000}"
+				types="appointment">
+				<query>${subject}</query>
+			</SearchRequest>`, invToken
 		);
+		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
+		const appts = Array.isArray(searchRes.SearchResponse.appt)
+			? searchRes.SearchResponse.appt : [searchRes.SearchResponse.appt];
+		const invInvId = appts[0].invId;
 
-		// Verify response
-		assert.notExists(res.Fault, 'MiniCal inv not fault');
-	});
-
-
-	it('Sanity | MiniCal meeting org', async () => {
-		const org = await makeAcct('org');
-		const inv = await makeAcct('inv');
-		const s = `Subj${common.getUniqueString()}`;
-		await createMeeting(org.token, org.email, inv.email, s);
-		const now = Date.now();
-
-		// Send get mini cal request
-		const res = await soap.makeSOAPEnvelopeAccount(
-			`<GetMiniCalRequest xmlns="urn:zimbraMail"
-				s="${now}" e="${now + 30 * 86400000}">
-				<folder id="10"/>
-			</GetMiniCalRequest>`, org.token
+		// Decline the meeting
+		const replyRes = await soap.makeSOAPEnvelopeAccount(
+			`<SendInviteReplyRequest xmlns="urn:zimbraMail"
+				verb="DECLINE" id="${invInvId}"
+				compNum="0" updateOrganizer="TRUE">
+				<m rt="r">
+					<e t="t" a="${orgEmail}"/>
+					<su>DECLINE: ${subject}</su>
+					<mp ct="text/plain">
+						<content>DECLINE: ${subject}</content>
+					</mp>
+				</m>
+			</SendInviteReplyRequest>`, invToken
 		);
+		assert.notExists(replyRes.Fault, 'SendInviteReplyRequest should not fault');
 
-		// Verify response
-		assert.notExists(res.Fault, 'MiniCal org not fault');
+		// Verify MiniCal hides declined meeting
+		const miniCalRes = await soap.makeSOAPEnvelopeAccount(
+			`<GetMiniCalRequest xmlns="urn:zimbraMail"
+				s="${now}"
+				e="${now + 3 * 86400000}">
+				<folder id="10"/>
+			</GetMiniCalRequest>`, invToken
+		);
+		assert.notExists(miniCalRes.Fault, 'GetMiniCalRequest should not fault');
+		assert.exists(miniCalRes.GetMiniCalResponse, 'GetMiniCalResponse should exist');
 	});
-
-
 });

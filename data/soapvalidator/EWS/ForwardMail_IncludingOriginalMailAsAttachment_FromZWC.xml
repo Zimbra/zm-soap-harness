@@ -1,0 +1,419 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+	<t:property name="test_account1.username"
+		value="test1${TIME}.${COUNTER}" />		
+	<t:property name="test_account1.name"
+		value="${test_account1.username}@${defaultdomain.name}" />		
+	<t:property name="test_account1.password" value="test123" />	
+	<t:property name="test_account2.username"
+		value="test2${TIME}.${COUNTER}" />
+	<t:property name="test_account2.name"
+		value="${test_account2.username}@${defaultdomain.name}" />
+	<t:property name="test_account2.password" value="test123" />
+	<t:property name="test_account3.username"
+		value="test3${TIME}.${COUNTER}" />		
+	<t:property name="test_account3.name"
+		value="${test_account3.username}@${defaultdomain.name}" />		
+	<t:property name="test_account3.password" value="test123" />	
+	<t:property name="test_acct.server" value="NOT_DEFINED" />	
+	<t:property name="message.subject" value="Message 1 test subject" />
+	<t:property name="message.forward_subject1" value="Fwd: Message 1 test subject" />	
+	<t:property name="message.content" value="Message 1 test content" />		
+	<t:property name="message.content1" value="Message 1 test content forward original mail as attachment" />	
+	<t:test_case testcaseid="acct_setup" type="always">
+		<t:objective>Create a test account</t:objective>
+		<steps>
+			1. Login to admin account
+			2. Create a test_account1
+		</steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_test_account1" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account1.name}</name>
+					<password>${test_account1.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+		
+		<t:test id="create_test_account2" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account2.name}</name>
+					<password>${test_account2.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account2.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+		
+		<t:test id="create_test_account3" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account3.name}</name>
+					<password>${test_account3.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account3.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="ForwardMail_IncludeOriginalMailAsAttachment_FromZWC" type="sanity">
+			<t:objective>Send mail from user1 To user2 from EWS and sync on ZWC Then forward same mail to user3 from ZWC and include original mail as attachment</t:objective>
+			<t:steps>1. Compose and send mail from user1 from EWS
+					2. Sync on ZWC for received mail.
+					3. Forward same mail to user3 and include original mail as attachment from ZWC
+			</t:steps>
+	
+		<!-- Send mail from user1 to user2 from EWS and sync on Server -->
+			<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages" MessageDisposition="SendAndSaveCopy">
+					      <SavedItemFolderId>
+					        <t:FolderId Id="5"/>
+					      </SavedItemFolderId>
+					      <Items>
+					        <t:Message>
+					          <t:MimeContent CharacterSet="UTF-8">VXNlci1BZ2VudDogTWljcm9zb2Z0LU1hY091dGxvb2svZi4xZi4wLjE3MDIxNgpEYXRlOiBUdWUsIDggQXVnIDIwMTcgMDQ6NDc6MDEgLTA0MDAgKEVEVCkKU3ViamVjdDogTWVzc2FnZSAxIHRlc3Qgc3ViamVjdApNZXNzYWdlLUlEOiA8MTcwNTkzMTIwMy4yNTkuMTUwMjE4MjAyMTQ0OS5KYXZhTWFpbC56aW1icmFAenFhLTI4Mi5lbmcuemltYnJhLmNvbT4KVGhyZWFkLVRvcGljOiBNZXNzYWdlIDEgdGVzdCBzdWJqZWN0Ck1pbWUtdmVyc2lvbjogMS4wCkNvbnRlbnQtdHlwZTogdGV4dC9wbGFpbjsKCWNoYXJzZXQ9IlVURi04IgpDb250ZW50LXRyYW5zZmVyLWVuY29kaW5nOiA3Yml0CgpNZXNzYWdlIDEgdGVzdCBjb250ZW50</t:MimeContent>
+					          <t:Sensitivity>Normal</t:Sensitivity>
+					          <t:Importance>Normal</t:Importance>
+					          <t:ExtendedProperty>
+					            <t:ExtendedFieldURI PropertyTag="0x0E07" PropertyType="Integer"/>
+					            <t:Value>12</t:Value>
+					          </t:ExtendedProperty>
+					          <t:ExtendedProperty>
+					            <t:ExtendedFieldURI PropertyTag="0xE9F" PropertyType="StringArray"/>
+					            <t:Values>
+					              <t:Value>:R:0</t:Value>
+					            </t:Values>
+					          </t:ExtendedProperty>
+					          <t:ToRecipients>
+					            <t:Mailbox>
+					              <t:Name>${test_account2.username}</t:Name>
+					              <t:EmailAddress>${test_account2.name}</t:EmailAddress>
+					            </t:Mailbox>
+					          </t:ToRecipients>					         
+					          <t:From>
+					            <t:Mailbox>
+					              <t:Name>${test_account1.username}</t:Name>
+					              <t:EmailAddress>${test_account1.name}</t:EmailAddress>
+					            </t:Mailbox>
+					          </t:From>
+					          <t:IsRead>false</t:IsRead>
+					        </t:Message>
+					      </Items>
+					    </CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:CreateItemResponseMessage//ewstype:ItemId"
+					attr="Id" set="mail01.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="5" />
+							</SyncFolderId>
+							<SyncState />
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create[1]//ewstype:ItemId"
+					attr="Id" set="mail01_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create[1]//ewstype:ItemId"
+					attr="ChangeKey" set="mail01_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState01" />
+			</t:response>		
+		</t:test>
+		
+		<!-- Receive mail on Server for user2 -->
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:delay msec="5000"/>
+		    
+	    <t:test>
+	        <t:request>
+	            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	                <query>subject:${message.subject}</query>
+	            </SearchRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:SearchResponse//mail:su" match="${message.subject}" />	
+	            <t:select path="//mail:SearchResponse//mail:m" attr="id" set="mail_id_wc1" />	            
+	        </t:response>
+	     </t:test>
+	     
+	      <t:test>
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${mail_id_wc1}" />
+				</GetMsgRequest>
+			</t:request>
+			<t:response>
+			     <t:select path="//mail:GetMsgResponse//mail:su"  contains="${message.subject}"/>
+			     <t:select path="//mail:GetMsgResponse//mail:content"  contains="${message.content}"/>         
+			</t:response>
+		</t:test>
+		
+		<!-- Forward above mail from user2 to user3 including original mail as attachment using ZWC-->	
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m origid="${mail_id_wc1}" rt="w" f="sad">
+						<e t="f" a='${test_account2.name}' />
+						<e t="t" a='${test_account3.name}' />						
+						<su>${message.forward_subject1}</su>
+						<mp ct="text/plain">
+							<content>${message.content1}</content>
+						</mp>
+						<attach>
+      						<m id="${mail_id_wc1}"/>
+						</attach>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="message1.id" />
+			</t:response>
+		</t:test>
+		
+		<!-- Verify on Server that mail is sent including original mail as attachment -->
+		<t:test>
+	        <t:request>
+	            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	                <query>in:sent subject:"${message.forward_subject1}"</query>
+	            </SearchRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:SearchResponse//mail:su" match="${message.forward_subject1}" />	
+	            <t:select path="//mail:SearchResponse//mail:m" attr="id" set="message2.id" />	            
+	        </t:response>
+	     </t:test>
+	     
+	      <t:test>
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${message2.id}" />
+				</GetMsgRequest>
+			</t:request>
+			<t:response>
+				 <t:select path="//mail:GetMsgResponse//mail:e[@t='f'][@a='${test_account2.name}']" /> 		
+				 <t:select path="//mail:GetMsgResponse//mail:e[@t='t'][@a='${test_account3.name}']" />        
+				 <t:select path="//mail:GetMsgResponse//mail:mp" attr="cd" match="attachment" />                
+			</t:response>
+		</t:test>	
+		
+		<!-- Verify on EWS that mail is received including original mail as attachment -->
+		<t:test required="true">
+			<t:request ews="true" username="${test_account3.name}" password="${test_account3.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>AllProperties</t:BaseShape>
+							</FolderShape>
+							<FolderIds>
+								<t:DistinguishedFolderId Id="inbox">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account3.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" match="2" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" set="inbox1.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:DisplayName"
+					match="Inbox" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account3.name}" password="${test_account3.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${inbox1.id}" />
+							</SyncFolderId>
+							<SyncState />
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail02_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail02_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState02" />
+			</t:response>		
+		</t:test>	
+		
+		<t:test>
+			<t:request ews="true" username="${test_account3.name}" password="${test_account3.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Best</t:BodyType>
+								<t:AdditionalProperties>	
+									<t:FieldURI FieldURI="item:Attachments"/>							
+									<t:FieldURI FieldURI="item:HasAttachments"/> 
+									<t:FieldURI FieldURI="item:Body" />
+									<t:FieldURI FieldURI="message:From" />
+									<t:FieldURI FieldURI="message:Sender" />
+									<t:FieldURI FieldURI="item:Subject" />
+									<t:FieldURI FieldURI="message:IsRead" />
+									<t:FieldURI FieldURI="message:ToRecipients" />		
+									<t:FieldURI FieldURI="message:From"/>
+         				
+								</t:AdditionalProperties>
+							</ItemShape>
+							<ItemIds>
+								<t:ItemId Id="${mail02_id}" ChangeKey="${mail02_changeKey}" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${message.forward_subject1}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Attachments//ewstype:ContentType"  contains="message/rfc822" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Attachments//ewstype:AttachmentId" attr="Id" set="attachment_id" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:HasAttachments"  match="true" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:ToRecipients//ewstype:EmailAddress" match="${test_account3.name}" />			
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account3.name}" password="${test_account3.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetAttachment xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+					      <AttachmentShape>
+					        <t:IncludeMimeContent>true</t:IncludeMimeContent>
+					      </AttachmentShape>
+					      <AttachmentIds>
+					        <t:AttachmentId Id="${attachment_id}"/>
+					      </AttachmentIds>
+					    </GetAttachment>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetAttachmentResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetAttachmentResponseMessage//ewstype:Subject" match="${message.subject}" />					
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+</t:tests>

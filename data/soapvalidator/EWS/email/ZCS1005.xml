@@ -1,0 +1,449 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+  <t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+
+  <t:property name="test_account1.name"
+    value="test${TIME}.${COUNTER}@${defaultdomain.name}" />
+  <t:property name="test_account1.password" value="test123" />
+  <t:property name="test_account2.name"
+    value="test${TIME}.${COUNTER}@${defaultdomain.name}" />
+  <t:property name="test_account2.password" value="test123" />
+  <t:property name="sent_id" value="5" />
+  <t:property name="inbox_id" value="2" />
+  <t:property name="message.content" value="Message 1 test content" />
+
+  <t:property name="msg01.subject" value="email04A" />
+  <t:property name="msg01.file" value="${testMailRaw.root}/ews/bug106707.eml" />
+
+
+
+
+  <t:test_case testcaseid="acct_setup" type="sanity" areas="network">
+    <t:objective>Create a test account</t:objective>
+    <steps>
+      1. Login to admin account
+      2. Create a test_account1 and test_account2
+    </steps>
+
+    <t:test id="admin_login" required="true">
+      <t:request>
+        <AuthRequest xmlns="urn:zimbraAdmin">
+          <name>${admin.user}</name>
+          <password>${admin.password}</password>
+        </AuthRequest>
+      </t:request>
+      <t:response>
+        <t:select path="//admin:AuthResponse/admin:authToken"
+          set="authToken" />
+      </t:response>
+    </t:test>
+
+
+    <t:test id="create_test_account1" required="false" depends="admin_login">
+      <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+          <name>${test_account1.name}</name>
+          <password>${test_account1.password}</password>
+          <a n="zimbraFeatureEwsEnabled">TRUE</a>
+        </CreateAccountRequest>
+      </t:request>
+      <t:response>
+        <t:select path="//admin:CreateAccountResponse/admin:account"
+          attr="id" set="test_account1.id" />
+        <t:select
+          path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+          set="test_acct.server" />
+        <t:select
+          path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+          set="test_acct1.server" />
+      </t:response>
+    </t:test>
+
+    <t:test id="create_test_account2" required="false" depends="admin_login">
+      <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+          <name>${test_account2.name}</name>
+          <password>${test_account2.password}</password>
+          <a n="zimbraFeatureEwsEnabled">TRUE</a>
+        </CreateAccountRequest>
+      </t:request>
+      <t:response>
+        <t:select path="//admin:CreateAccountResponse/admin:account"
+          attr="id" set="test_account2.id" />
+        <t:select
+          path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+          set="test_acct.server" />
+        <t:select
+          path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+          set="test_acct2.server" />
+      </t:response>
+    </t:test>
+
+    <t:test>
+      <t:request>
+        <AuthRequest xmlns="urn:zimbraAccount">
+          <account by="name">${test_account1.name}</account>
+          <password>${test_account1.password}</password>
+        </AuthRequest>
+      </t:request>
+      <t:response>
+        <t:select path="//acct:AuthResponse/acct:lifetime"
+          match="^\d+$" />
+        <t:select path="//acct:AuthResponse/acct:authToken"
+          set="authToken" />
+      </t:response>
+    </t:test>
+
+
+  </t:test_case>
+  <t:test_case testcaseid="GetItem" type="sanity"
+    areas="network">
+    <t:objective>Execute GetItemForMsg in sent item folder of sender and inbox of receiver</t:objective>
+    <t:steps>1. Execute Auth request of user1
+      2. Send a message to another user
+      3. Execute GetFolder to get Sent folderId
+      4. Execute SyncFolderItem for Sent folder
+      5. Execute GetItem for new msg. Verify it is read
+      6. Execute GetFolder to get inbox folder of user2
+      7. Execute SyncFolderItem for inbox  folder
+      8. Execute GetItem for new msg in inbox. Verify it is read
+
+    </t:steps>
+    <t:test required="true">
+      <t:request ews="true" username="${test_account1.name}"
+        password="${test_account1.password}">
+        <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+          xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+          xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+          <soap:Body>
+            <CreateItem
+              xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+              MessageDisposition="SendOnly">
+              <Items>
+                <t:Message>
+                  <t:Importance>Normal</t:Importance>
+                  <t:Subject>Sent Test</t:Subject>
+                  <t:Body BodyType="Text">${message.content}</t:Body>
+                  <t:ExtendedProperty>
+                    <t:ExtendedFieldURI PropertyName="MessageNotJunkFlag"
+                      PropertySetId="A7B529B5-4B75-47A7-A24F-20743D6C55CD"
+                      PropertyType="Boolean" />
+                    <t:Value>true</t:Value>
+                  </t:ExtendedProperty>
+                  <t:ExtendedProperty>
+                    <t:ExtendedFieldURI PropertyTag="0xe07"
+                      PropertyType="Integer" />
+                    <t:Value>1</t:Value>
+                  </t:ExtendedProperty>
+                  <t:ExtendedProperty>
+                    <t:ExtendedFieldURI PropertyTag="0x1090"
+                      PropertyType="Integer" />
+                    <t:Value>0</t:Value>
+                  </t:ExtendedProperty>
+                  <t:ToRecipients>
+                    <t:Mailbox>
+                      <t:Name>${test_account2.name}</t:Name>
+                      <t:EmailAddress>${test_account2.name}
+                      </t:EmailAddress>
+                    </t:Mailbox>
+                  </t:ToRecipients>
+                  <t:From>
+                    <t:Mailbox>
+                      <t:Name>${test_account1.name}</t:Name>
+                      <t:EmailAddress>${test_account1.name}
+                      </t:EmailAddress>
+                    </t:Mailbox>
+                  </t:From>
+                </t:Message>
+              </Items>
+            </CreateItem>
+          </soap:Body>
+        </soap:Envelope>
+      </t:request>
+      <t:response>
+        <t:select path="//ewsmsg:CreateItemResponse" />
+        <t:select path="//ewsmsg:CreateItemResponseMessage[1]"
+          attr="ResponseClass" match="Success" />
+      </t:response>
+    </t:test>
+
+    <t:delay sec="60" />
+    
+    
+    <t:test required="true">
+      <t:request ews="true" username="${test_account1.name}"
+        password="${test_account1.password}">
+        <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+          xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+          xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+          <soap:Body>
+            <CreateItem
+              xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+              MessageDisposition="SaveOnly">
+              <SavedItemFolderId>
+                <t:FolderId Id="5" />
+              </SavedItemFolderId>
+              <Items>
+                <t:Message>
+                  <t:Importance>Normal</t:Importance>
+                  <t:Subject>Sent Test</t:Subject>
+                  <t:Body BodyType="Text">Automated event created to
+                    verify your identity</t:Body>
+                  <t:MimeContent CharacterSet=" UTF-8 ">VGhpcyBpcyBhIHRlc3QgbWVzc2FnZQ==</t:MimeContent>
+                  <t:ExtendedProperty>
+                    <t:ExtendedFieldURI PropertyName="MessageNotJunkFlag"
+                      PropertySetId="A7B529B5-4B75-47A7-A24F-20743D6C55CD"
+                      PropertyType="Boolean" />
+                    <t:Value>true</t:Value>
+                  </t:ExtendedProperty>
+                  <t:ExtendedProperty>
+                    <t:ExtendedFieldURI PropertyTag="0xe07"
+                      PropertyType="Integer" />
+                    <t:Value>1</t:Value>
+                  </t:ExtendedProperty>
+                  <t:ExtendedProperty>
+                    <t:ExtendedFieldURI PropertyTag="0x1090"
+                      PropertyType="Integer" />
+                    <t:Value>0</t:Value>
+                  </t:ExtendedProperty>
+                  <t:ToRecipients>
+                    <t:Mailbox>
+                      <t:Name>${test_account2.name}</t:Name>
+                      <t:EmailAddress>${test_account2.name}
+                      </t:EmailAddress>
+                    </t:Mailbox>
+                  </t:ToRecipients>
+                  <t:From>
+                    <t:Mailbox>
+                      <t:Name>${test_account1.name}</t:Name>
+                      <t:EmailAddress>${test_account1.name}
+                      </t:EmailAddress>
+                    </t:Mailbox>
+                  </t:From>
+                </t:Message>
+              </Items>
+            </CreateItem>
+          </soap:Body>
+        </soap:Envelope>
+      </t:request>
+      <t:response>
+        <t:select path="//ewsmsg:CreateItemResponse" />
+        <t:select path="//ewsmsg:CreateItemResponseMessage[1]"
+          attr="ResponseClass" match="Success" />
+        <t:select
+          path="//ewsmsg:CreateItemResponseMessage[1]//ewstype:ItemId"
+          attr="Id" set="account1_sent_id" />
+      </t:response>
+    </t:test>
+
+    <!--Get Folder request for sent item folder. -->
+    <t:test required="true">
+      <t:request ews="true" username="${test_account1.name}"
+        password="${test_account1.password}">
+        <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+          xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+          xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+          <soap:Body>
+            <GetFolder
+              xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+              <FolderShape>
+                <t:BaseShape>IdOnly</t:BaseShape>
+              </FolderShape>
+              <FolderIds>
+                <t:DistinguishedFolderId Id="sentitems">
+                  <t:Mailbox>
+                    <t:EmailAddress>${test_account1.name}
+                    </t:EmailAddress>
+                  </t:Mailbox>
+                </t:DistinguishedFolderId>
+              </FolderIds>
+            </GetFolder>
+          </soap:Body>
+        </soap:Envelope>
+      </t:request>
+      <t:response>
+        <t:select path="//ewsmsg:GetFolderResponse" />
+        <t:select path="//ewsmsg:GetFolderResponseMessage[1]"
+          attr="ResponseClass" match="Success" />
+        <t:select
+          path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+          attr="Id" match="${sent_id}" />
+        <t:select
+          path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+          attr="Id" set="account1_sent_id" />
+
+      </t:response>
+    </t:test>
+
+    <t:test>
+      <t:request ews="true" username="${test_account1.name}"
+        password="${test_account1.password}">
+        <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+          xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+          xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+          <soap:Body>
+            <SyncFolderItems
+              xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+              <ItemShape>
+                <t:BaseShape>IdOnly</t:BaseShape>
+              </ItemShape>
+              <SyncFolderId>
+                <t:FolderId Id="${sent_id}" />
+              </SyncFolderId>
+              <SyncState />
+              <Ignore />
+              <MaxChangesReturned>512</MaxChangesReturned>
+            </SyncFolderItems>
+          </soap:Body>
+        </soap:Envelope>
+      </t:request>
+      <t:response>
+        <t:select
+          path="//ewsmsg:SyncFolderItemsResponseMessage//ewsmsg:SyncState"
+          set="SyncState_Inbox" />
+        <t:select path="//ewstype:Create[1]//ewstype:ItemId"
+          attr="ChangeKey" set="ChangeKey_Msg1" />
+
+        <t:select path="//ewstype:Create[1]//ewstype:ItemId"
+          attr="Id" set="Id_Msg1" />
+
+      </t:response>
+    </t:test>
+
+    <t:test>
+      <t:request ews="true" username="${test_account1.name}"
+        password="${test_account1.password}">
+        <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+          xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+          xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+          <soap:Body>
+            <GetItem
+              xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+              <ItemShape>
+                <t:BaseShape>IdOnly</t:BaseShape>
+                <t:AdditionalProperties>
+                  <t:FieldURI FieldURI="item:Body" />
+                  <t:FieldURI FieldURI="message:IsRead" />
+                </t:AdditionalProperties>
+              </ItemShape>
+              <ItemIds>
+                <t:ItemId Id="${Id_Msg1}" />
+              </ItemIds>
+            </GetItem>
+          </soap:Body>
+        </soap:Envelope>
+      </t:request>
+      <t:response>
+        <t:select path="//ewsmsg:Items//ewstype:Message//ewstype:IsRead"
+          match="true" />
+      </t:response>
+    </t:test>
+
+    <t:delay sec="20" />
+
+    <!-- Now verify that the user has recd. mail and read flag is false -->
+
+    <!--Get Folder request fire for EWS for sent item folders. -->
+    <t:test required="true">
+      <t:request ews="true" username="${test_account2.name}"
+        password="${test_account2.password}">
+        <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+          xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+          xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+          <soap:Body>
+            <GetFolder
+              xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+              <FolderShape>
+                <t:BaseShape>IdOnly</t:BaseShape>
+              </FolderShape>
+              <FolderIds>
+                <t:DistinguishedFolderId Id="inbox">
+                  <t:Mailbox>
+                    <t:EmailAddress>${test_account2.name}
+                    </t:EmailAddress>
+                  </t:Mailbox>
+                </t:DistinguishedFolderId>
+              </FolderIds>
+            </GetFolder>
+          </soap:Body>
+        </soap:Envelope>
+      </t:request>
+      <t:response>
+        <t:select path="//ewsmsg:GetFolderResponse" />
+        <t:select path="//ewsmsg:GetFolderResponseMessage[1]"
+          attr="ResponseClass" match="Success" />
+        <t:select
+          path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+          attr="Id" match="${inbox_id}" />
+        <t:select
+          path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+          attr="Id" set="account2_inbox_id" />
+
+      </t:response>
+    </t:test>
+
+    <t:test>
+      <t:request ews="true" username="${test_account2.name}"
+        password="${test_account2.password}">
+        <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+          xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+          xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+          <soap:Body>
+            <SyncFolderItems
+              xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+              <ItemShape>
+                <t:BaseShape>IdOnly</t:BaseShape>
+              </ItemShape>
+              <SyncFolderId>
+                <t:FolderId Id="${inbox_id}" />
+              </SyncFolderId>
+              <SyncState />
+              <Ignore />
+              <MaxChangesReturned>512</MaxChangesReturned>
+            </SyncFolderItems>
+          </soap:Body>
+        </soap:Envelope>
+      </t:request>
+      <t:response>
+        <t:select
+          path="//ewsmsg:SyncFolderItemsResponseMessage//ewsmsg:SyncState"
+          set="SyncState_Inbox" />
+        <t:select path="//ewstype:Create[1]//ewstype:ItemId"
+          attr="ChangeKey" set="ChangeKey_Msg2" />
+
+        <t:select path="//ewstype:Create[1]//ewstype:ItemId"
+          attr="Id" set="Id_Msg2" />
+
+      </t:response>
+    </t:test>
+
+    <t:test>
+      <t:request ews="true" username="${test_account2.name}"
+        password="${test_account2.password}">
+        <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+          xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+          xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+          <soap:Body>
+            <GetItem
+              xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+              <ItemShape>
+                <t:BaseShape>IdOnly</t:BaseShape>
+                <t:AdditionalProperties>
+                  <t:FieldURI FieldURI="item:Body" />
+                  <t:FieldURI FieldURI="message:IsRead" />
+                </t:AdditionalProperties>
+              </ItemShape>
+              <ItemIds>
+                <t:ItemId Id="${Id_Msg2}" />
+              </ItemIds>
+            </GetItem>
+          </soap:Body>
+        </soap:Envelope>
+      </t:request>
+      <t:response>
+        <t:select path="//ewsmsg:Items//ewstype:Message//ewstype:IsRead"
+          match="false" />
+      </t:response>
+    </t:test>
+  </t:test_case>
+</t:tests>
+

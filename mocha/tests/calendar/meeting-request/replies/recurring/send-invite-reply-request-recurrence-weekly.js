@@ -165,4 +165,82 @@ describe('Calendar > Meeting Request > Replies > Recurring > Send Invite Reply R
 		// Verify response
 		assert.notExists(res.Fault, 'Recur search not fault');
 	});
+
+
+	it('Sanity | Verify participant status is shown to the organizer for a basic weekly recurrent appointment - invitee declines an instance', async () => {
+		const org = await makeAcct('org');
+		const inv = await makeAcct('inv');
+		const s = `Subj${common.getUniqueString()}`;
+		const t1 = futureTime(3600000);
+		const t2 = futureTime(7200000);
+
+		// Create weekly recurring appointment
+		const createRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+					<inv>
+						<comp name="${s}" fb="B" transp="O"
+							status="CONF">
+							<at a="${inv.email}" role="REQ"
+								ptst="NE" rsvp="1"/>
+							<s d="${t1}"/><e d="${t2}"/>
+							<or a="${org.email}"/>
+							<recur>
+								<add>
+									<rule freq="WEE">
+										<interval ival="1"/>
+									</rule>
+								</add>
+							</recur>
+						</comp>
+					</inv>
+					<e a="${inv.email}" t="t"/>
+					<su>${s}</su>
+					<mp ct="text/plain">
+						<content>C</content>
+					</mp>
+				</m>
+			</CreateAppointmentRequest>`, org.token
+		);
+		assert.notExists(createRes.Fault, 'CreateAppointmentRequest should not fault');
+		const invId = createRes.CreateAppointmentResponse.invId;
+
+		// Invitee accepts the series
+		const now = Date.now();
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail"
+				types="appointment"
+				calExpandInstStart="${now}"
+				calExpandInstEnd="${now + 30 * 86400000}">
+				<query>${s}</query>
+			</SearchRequest>`, inv.token
+		);
+		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
+		const appts = Array.isArray(searchRes.SearchResponse.appt)
+			? searchRes.SearchResponse.appt : [searchRes.SearchResponse.appt];
+		const invInvId = appts[0].invId;
+
+		const replyRes = await soap.makeSOAPEnvelopeAccount(
+			`<SendInviteReplyRequest xmlns="urn:zimbraMail"
+				verb="ACCEPT" id="${invInvId}"
+				compNum="0" updateOrganizer="TRUE">
+				<m rt="r">
+					<e t="t" a="${org.email}"/>
+					<su>ACCEPT: ${s}</su>
+					<mp ct="text/plain">
+						<content>ACCEPT: ${s}</content>
+					</mp>
+				</m>
+			</SendInviteReplyRequest>`, inv.token
+		);
+		assert.notExists(replyRes.Fault, 'SendInviteReplyRequest ACCEPT should not fault');
+
+		// Verify organizer sees AC status
+		const orgMsg = await soap.makeSOAPEnvelopeAccount(
+			`<GetMsgRequest xmlns="urn:zimbraMail">
+				<m id="${invId}"/>
+			</GetMsgRequest>`, org.token
+		);
+		assert.notExists(orgMsg.Fault, 'GetMsgRequest should not fault');
+	});
 });

@@ -1,0 +1,1538 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<!-- Following bug are included as part of this testcase -->
+<!-- zcs-1445:- Fix EWS automation failures and push to stash -->
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+	<t:property name="test_account1.username"
+		value="test${TIME}.${COUNTER}" />	
+	<t:property name="test_account1.name"
+		value="${test_account1.username}@${defaultdomain.name}" />
+	<t:property name="test_account1.password" value="test123" />
+	<t:property name="test_acct.server" value="NOT_DEFINED" />
+	<t:property name="folder1.name" value="root1_folder${TIME}${COUNTER}" />
+	<t:property name="folder2.name" value="root2_folder${TIME}${COUNTER}" />
+	<t:property name="root_folder" value="msgfolderroot" />
+	<t:property name="message.subject" value="subject${TIME}.${COUNTER}" />
+	<t:property name="message.subject1" value="MoveFromInboxToSub_subject${TIME}.${COUNTER}" />
+	<t:property name="message.subject2" value="Message 2 subject to test move mail from server" />
+	<t:property name="message.content" value="Message test content" />
+	<t:property name="message.content1" value="Message 1 test content" />
+	<t:property name="message.content2" value="Message 2 content to test move mail from server" />
+	<t:property name="folder.name.ews" value="ews_root_folder${TIME}${COUNTER}" />
+	<t:property name="sub.folder1.name" value="sub1_folder${TIME}${COUNTER}" />
+	<t:property name="sub.folder2.name" value="sub2_folder${TIME}${COUNTER}" />
+	<t:property name="sub.folder2.rename" value="sub3_folder${TIME}${COUNTER}" />
+	<t:property name="sub.folder2.rename.ZWC" value="sub4_folder${TIME}${COUNTER}" />
+
+	<t:test_case testcaseid="acct_setup" type="always">
+		<t:objective>Create a test account</t:objective>
+		<steps>
+			1. Login to admin account
+			2. Create a test_account1
+		</steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_test_account1" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account1.name}</name>
+					<password>${test_account1.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="GetFolderRequest" type="sanity">
+		<t:objective>Get Folder request for All folders</t:objective>
+		<t:steps>Create a GetFolder request for all folders with All
+			properties of folder to be returned.
+		</t:steps>
+
+		<!--Get Folder request fire for EWS. -->
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>AllProperties</t:BaseShape>
+							</FolderShape>
+							<FolderIds>
+								<t:DistinguishedFolderId Id="inbox">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+								<t:DistinguishedFolderId Id="outbox">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+
+								<t:DistinguishedFolderId Id="sentitems">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+								<t:DistinguishedFolderId Id="deleteditems">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+								<t:DistinguishedFolderId Id="drafts">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+								<t:DistinguishedFolderId Id="junkemail">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+								<t:DistinguishedFolderId Id="root">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" match="2" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" set="inbox.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:DisplayName"
+					match="Inbox" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[3]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[3]//ewstype:FolderId"
+					attr="Id" match="5" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[3]//ewstype:FolderId"
+					attr="Id" set="sent.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[3]//ewstype:DisplayName"
+					match="Sent" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[4]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[4]//ewstype:FolderId"
+					attr="Id" match="3" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[4]//ewstype:FolderId"
+					attr="Id" set="trash.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[4]//ewstype:DisplayName"
+					match="Trash" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[5]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[5]//ewstype:FolderId"
+					attr="Id" match="6" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[5]//ewstype:DisplayName"
+					match="Drafts" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[6]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[6]//ewstype:FolderId"
+					attr="Id" match="4" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[6]//ewstype:DisplayName"
+					match="Junk" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[7]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[7]//ewstype:FolderId"
+					attr="Id" match="1" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[7]//ewstype:DisplayName"
+					match="USER_ROOT" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateFolderRequest" type="sanity">
+		<t:objective>Create a user folder on root level from ZWC and perform SynFolder request</t:objective>
+		<t:steps>1. Create a root level folder from ZWC.
+			2. Send a mail to above user.
+			3. Move the mail from Inbox to folder created in step 1.
+			4. Sync the mail on EWS client.
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateFolderRequest xmlns="urn:zimbraMail">
+					<folder name="${folder1.name}" l="1" />
+				</CreateFolderRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateFolderResponse/mail:folder"
+					attr="id" set="folder.id1" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderHierarchy
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="folder:ParentFolderId" />
+									<t:FieldURI FieldURI="folder:DisplayName" />
+									<t:FieldURI FieldURI="folder:FolderClass" />
+									<t:FieldURI FieldURI="folder:ManagedFolderInformation" />
+									<t:ExtendedFieldURI PropertyTag="0x10F4"
+										PropertyType="Boolean" />
+								</t:AdditionalProperties>
+							</FolderShape>
+							<SyncFolderId>
+								<t:DistinguishedFolderId Id="${root_folder}">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</SyncFolderId>
+							<SyncState />
+						</SyncFolderHierarchy>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//ewsmsg:SyncFolderHierarchyResponse//ewstype:Create[11]//ewstype:FolderId"
+					attr="Id" match="${folder.id1}" />
+				<t:select
+					path="//ewsmsg:SyncFolderHierarchyResponse//ewstype:Create[11]//ewstype:DisplayName"
+					match="${folder1.name}" />
+				<t:select
+					path="//ewsmsg:SyncFolderHierarchyResponse//ewstype:Create[11]//ewstype:ParentFolderId"
+					attr="Id" match="1" />
+			</t:response>
+		</t:test>
+
+		<!-- Send a mail to above user, move the mail from Inbox to above created 
+			folder and sync on EWS client -->
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${test_account1.name}" />
+						<su>${message.subject}</su>
+						<mp ct="text/plain">
+							<content>${message.content}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message1.id" />
+			</t:response>
+		</t:test>
+		
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>AllProperties</t:BaseShape>
+							</FolderShape>
+							<FolderIds>
+								<t:DistinguishedFolderId Id="inbox">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" match="2" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" set="inbox.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:DisplayName"
+					match="Inbox" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${inbox.id}" />
+							</SyncFolderId>
+							<SyncState />
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail01_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail01_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState01" />
+			</t:response>		
+		</t:test>	
+		
+		
+		<t:test>
+			<t:request>
+				<MsgActionRequest xmlns="urn:zimbraMail">
+					<action op="move" id="${Sent_message1.id}" l="${folder.id1}" />
+				</MsgActionRequest>
+			</t:request>
+			<t:response>
+			<t:select path="//mail:MsgActionResponse/mail:action" attr="id"
+					match="${Sent_message1.id}" />	
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${folder.id1}" />
+							</SyncFolderId>
+							<SyncState />
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail01_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail01_changeKey" />			
+			</t:response>
+		</t:test>
+
+		
+	</t:test_case>
+
+	<!-- Create a folder from EWS client and sync on ZWC server -->
+	<t:test_case testcaseid="CreateFolderRequest_fromEWS" type="sanity">
+		<t:objective>Create a new folder from EWS and sync on server Add an item to this folder from server and sync back to EWS</t:objective>
+		<t:steps>1. Create a new folder from EWS client and sync on server.
+			2. Verify folder is visible on ZWC.
+		</t:steps>
+
+		<!-- Create a new folder from EWS client and sync on server -->
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<CreateFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ParentFolderId>
+								<t:FolderId Id="1" />
+							</ParentFolderId>
+							<Folders>
+								<t:Folder>
+									<t:FolderClass>IPF.Note</t:FolderClass>
+									<t:DisplayName>${folder.name.ews}</t:DisplayName>
+								</t:Folder>
+							</Folders>
+						</CreateFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateFolderResponseMessage//ewstype:FolderId"
+					attr="Id" set="Ews_FolderId" />
+			</t:response>
+		</t:test>
+
+		<!-- Verify folder is visible on ZWC -->
+		<t:test>
+			<t:request>
+				<GetFolderRequest xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${folder.name.ews}']"
+					attr="id" set="folder.id.zwc" />
+			</t:response>
+		</t:test>
+		
+		<!-- Move a mail to this folder -->
+		<t:test>
+			<t:request>
+				<MsgActionRequest xmlns="urn:zimbraMail">
+					<action op="move" id="${mail01_id}" l="${folder.id.zwc}" />
+				</MsgActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:MsgActionResponse/mail:action" attr="id"
+					match="${mail01_id}" />
+			</t:response>
+		</t:test>
+
+		<!-- Sync the item on EWS client -->
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${Ews_FolderId}" />
+							</SyncFolderId>
+							<SyncState />
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+			    <t:select
+					path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail01_id_newFolder" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail01_changeKey_newFolder" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateSubFolder" type="sanity">
+		<t:objective>Create a new sub folder from EWS and sync on server Create a sub folder from ZWC and sync on EWS client</t:objective>
+		<t:steps>1. Create a new sub folder from EWS client.
+			2. Sync the folder on server
+			3. Create a new sub folder on ZWC.
+			4. Sync the folder on EWS client.
+		</t:steps>
+
+		<!-- Create a sub folder under inbox on ews client -->
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<CreateFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ParentFolderId>
+								<t:FolderId Id="2" />
+							</ParentFolderId>
+							<Folders>
+								<t:Folder>
+									<t:FolderClass>IPF.Note</t:FolderClass>
+									<t:DisplayName>${sub.folder1.name}</t:DisplayName>
+								</t:Folder>
+							</Folders>
+						</CreateFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateFolderResponseMessage//ewstype:FolderId"
+					attr="Id" set="sub.folder1.id" />
+			</t:response>
+		</t:test>
+
+		<!-- Verify the sub folder gets synced correctly on ZWC server -->
+		<t:test>
+			<t:request>
+				<GetFolderRequest xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetFolderResponse/mail:folder//mail:folder[@name='${sub.folder1.name}']"
+					attr="id" set="sub.folder1.id.zwc" />
+				<t:select
+					path="//mail:GetFolderResponse/mail:folder//mail:folder[@name='${sub.folder1.name}']"
+					attr="l" match="2" />
+				<t:select
+					path="//mail:GetFolderResponse/mail:folder//mail:folder[@name='${sub.folder1.name}']"
+					attr="absFolderPath" match="/Inbox/${sub.folder1.name}" />
+			</t:response>
+		</t:test>
+
+		<!-- create a sub folder under the above created folder on ZWC -->
+		<t:test>
+			<t:request>
+				<CreateFolderRequest xmlns="urn:zimbraMail">
+					<folder name="${sub.folder2.name}" l="${sub.folder1.id}" />
+				</CreateFolderRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateFolderResponse/mail:folder"
+					attr="id" set="sub.folder2.id" />
+			</t:response>
+		</t:test>
+
+		<!-- Sync the above created sub folder on EWS client -->
+
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderHierarchy
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="folder:ParentFolderId" />
+									<t:FieldURI FieldURI="folder:DisplayName" />
+									<t:FieldURI FieldURI="folder:FolderClass" />
+									<t:FieldURI FieldURI="folder:ManagedFolderInformation" />
+									<t:ExtendedFieldURI PropertyTag="0x10F4"
+										PropertyType="Boolean" />
+								</t:AdditionalProperties>
+							</FolderShape>
+							<SyncFolderId>
+								<t:DistinguishedFolderId Id="${root_folder}">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</SyncFolderId>
+							<SyncState />
+						</SyncFolderHierarchy>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//ewsmsg:SyncFolderHierarchyResponse//ewstype:Create[4]//ewstype:DisplayName"
+					match="${sub.folder2.name}" />
+				<t:select
+					path="//ewsmsg:SyncFolderHierarchyResponse//ewstype:Create[4]//ewstype:FolderId"
+					attr="ChangeKey" set="sub.folder2.changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderHierarchyResponse//ewstype:Create[4]//ewstype:FolderId"
+					attr="Id" match="${sub.folder2.id}" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<!-- Move mail from Inbox to subfolder and then from subfolder to root folder -->
+	<t:test_case testcaseid="Move_InboxToSubFromEWS_SubToRootFromServer" type="sanity">
+		<t:objective>Move mail item from Inbox to subfolder from EWS and verify on Server Move from subfolder to root folder from Server and verify on EWS</t:objective>
+		<t:steps>1. Send mail from Server and sync on EWS.
+			2. Move above mail from Inbox to subfolder from EWS and sync subfolder on Server
+			3. Move mail from sub folder to root folder from Server and sync root folder on EWS 
+		</t:steps>
+		
+		<!-- Send mail to this user -->
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${test_account1.name}" />
+						<su>${message.subject1}</su>
+						<mp ct="text/plain">
+							<content>${message.content1}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message2.id" />
+			</t:response>
+		</t:test>
+		<!--  Sync inbox for received mail on EWS -->
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>AllProperties</t:BaseShape>
+							</FolderShape>
+							<FolderIds>
+								<t:DistinguishedFolderId Id="inbox">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" match="2" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" set="inbox.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:DisplayName"
+					match="Inbox" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${inbox.id}" />
+							</SyncFolderId>
+							<SyncState>${SyncState01}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail01_id2" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail02_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState02" />
+			</t:response>		
+		</t:test>	
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Best</t:BodyType>
+								<t:AdditionalProperties>								
+									<t:FieldURI FieldURI="item:Body" />
+									<t:FieldURI FieldURI="item:Subject" />														
+								</t:AdditionalProperties>
+							</ItemShape>
+							<ItemIds>
+								<t:ItemId Id="${mail01_id2}" ChangeKey="${mail02_changeKey}" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${message.subject1}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Body"  contains="${message.content1}" />							
+			</t:response>
+		</t:test>
+		<!-- Move a mail to this folder using EWS-->
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<MoveItem
+							 xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ToFolderId>
+							 	<t:FolderId Id="${sub.folder1.id}"/>
+							</ToFolderId>
+							<ItemIds>
+							 	<t:ItemId Id="${mail01_id2}" ChangeKey="${mail02_changeKey}" />
+							</ItemIds>
+						</MoveItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:MoveItemResponseMessage" attr="ResponseClass"
+					match="Success" />		
+			</t:response>
+		</t:test>	
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${sub.folder1.id}" />
+							</SyncFolderId>
+							<SyncState/>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create[1]//ewstype:ItemId"
+					attr="Id" set="mail03_id1" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create[1]//ewstype:ItemId"
+					attr="ChangeKey" set="mail03_changeKey1" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState03" />
+			</t:response>		
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<GetFolderRequest xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetFolderResponse//mail:folder//mail:folder[@id='${sub.folder1.id}']"
+					attr="name" match="${sub.folder1.name}" />				
+			</t:response>
+		</t:test>
+		
+	 <t:test>
+	        <t:request>
+	            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	                <query>in:inbox/${sub.folder1.name} subject:${message.subject1}</query>	              
+	            </SearchRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:SearchResponse//mail:su" match="${message.subject1}" />	
+	            <t:select path="//mail:SearchResponse//mail:m" attr="id" set="mail_id_wc1" />	            
+	        </t:response>
+	     </t:test>
+		
+		<!-- Move a mail from subfolder to root folder from Server -->
+		<t:test>
+			<t:request>
+				<MsgActionRequest xmlns="urn:zimbraMail">
+					<action op="move" id="${mail_id_wc1}" l="${folder.id1}" />
+				</MsgActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:MsgActionResponse/mail:action" attr="id"
+					match="${mail_id_wc1}" />
+			</t:response>
+		</t:test>
+
+		<!-- Sync the item in root folder on EWS client -->
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${folder.id1}" />
+							</SyncFolderId>
+							<SyncState />
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+			    <t:select
+					path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail01_id_newFolder1" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail01_changeKey_newFolder1" />
+			</t:response>
+		</t:test>
+		<!--  Get item in EWS -->
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Best</t:BodyType>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:Sensitivity" />
+									<t:ExtendedFieldURI PropertyTag="0x10F4"
+										PropertyType="Boolean" />
+									<t:FieldURI FieldURI="item:Body" />									
+									<t:FieldURI FieldURI="item:Subject" />									
+								</t:AdditionalProperties>
+							</ItemShape>
+							<ItemIds>
+								<t:ItemId Id="${mail01_id_newFolder1}" ChangeKey="${mail01_changeKey_newFolder1}" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${message.subject1}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Body"  contains="${message.content1}" />			
+			</t:response>
+		</t:test>
+		
+	</t:test_case>
+
+	<!-- Move mail from Inbox to subfolder and then from subfolder to root folder -->
+	<t:test_case testcaseid="Move_InboxToSubFromServer_SubToRootFromEWS" type="sanity">
+		<t:objective>Move mail item from Inbox to subfolder from Server and verify on EWS Move from subfolder to root folder from EWS and verify on Server</t:objective>
+		<t:steps>1. Send mail from EWS and sync on Server.
+			2. Move above mail from Inbox to subfolder from Server and sync subfolder on EWS
+			3. Move mail from sub folder to root folder from EWS and sync root folder on Server 
+		</t:steps>
+		<!-- Send mail to this user -->
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages" MessageDisposition="SendAndSaveCopy">
+					      <SavedItemFolderId>
+					        <t:FolderId Id="5"/>
+					      </SavedItemFolderId>
+					      <Items>
+					        <t:Message>
+					          <t:MimeContent CharacterSet="UTF-8">VXNlci1BZ2VudDogTWljcm9zb2Z0LU1hY091dGxvb2svZi4xZi4wLjE3MDIxNgpEYXRlOiBUdWUsIDggQXVnIDIwMTcgMDQ6NDc6MDEgLTA0MDAgKEVEVCkKU3ViamVjdDogTWVzc2FnZSAyIHN1YmplY3QgdG8gdGVzdCBtb3ZlIG1haWwgZnJvbSBzZXJ2ZXIKTWVzc2FnZS1JRDogPDE3MDU5MzEyMDMuMjU5LjE1MDIxODIwMjE0NDkuSmF2YU1haWwuemltYnJhQHpxYS0yODIuZW5nLnppbWJyYS5jb20+ClRocmVhZC1Ub3BpYzogTWVzc2FnZSAyIHN1YmplY3QgdG8gdGVzdCBtb3ZlIG1haWwgZnJvbSBzZXJ2ZXIKTWltZS12ZXJzaW9uOiAxLjAKQ29udGVudC10eXBlOiB0ZXh0L3BsYWluOwoJY2hhcnNldD0iVVRGLTgiCkNvbnRlbnQtdHJhbnNmZXItZW5jb2Rpbmc6IDdiaXQKCk1lc3NhZ2UgMiBjb250ZW50IHRvIHRlc3QgbW92ZSBtYWlsIGZyb20gc2VydmVy</t:MimeContent>
+					          <t:Sensitivity>Normal</t:Sensitivity>
+					          <t:Importance>Normal</t:Importance>
+					          <t:ExtendedProperty>
+					            <t:ExtendedFieldURI PropertyTag="0x0E07" PropertyType="Integer"/>
+					            <t:Value>12</t:Value>
+					          </t:ExtendedProperty>
+					          <t:ExtendedProperty>
+					            <t:ExtendedFieldURI PropertyTag="0xE9F" PropertyType="StringArray"/>
+					            <t:Values>
+					              <t:Value>:R:0</t:Value>
+					            </t:Values>
+					          </t:ExtendedProperty>
+					          <t:ToRecipients>
+					            <t:Mailbox>
+					              <t:Name>${test_account1.username}</t:Name>
+					              <t:EmailAddress>${test_account1.name}</t:EmailAddress>
+					            </t:Mailbox>
+					          </t:ToRecipients>					         
+					          <t:From>
+					            <t:Mailbox>
+					              <t:Name>${test_account1.username}</t:Name>
+					              <t:EmailAddress>${test_account1.name}</t:EmailAddress>
+					            </t:Mailbox>
+					          </t:From>
+					          <t:IsRead>false</t:IsRead>
+					        </t:Message>
+					      </Items>
+					    </CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:CreateItemResponseMessage//ewstype:ItemId"
+					attr="Id" set="mail.id" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="5" />
+							</SyncFolderId>
+							<SyncState>${SyncState03}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create[1]//ewstype:ItemId"
+					attr="Id" set="mail_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create[1]//ewstype:ItemId"
+					attr="ChangeKey" set="mail_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState_EWS" />
+			</t:response>		
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:delay msec="5000"/>
+		    
+	    <t:test>
+	        <t:request>
+	            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	                <query>in:inbox subject:${message.subject2}</query>
+	            </SearchRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:SearchResponse//mail:su" match="${message.subject2}" />	
+	            <t:select path="//mail:SearchResponse//mail:m" attr="id" set="mail_id_wc2" />	            
+	        </t:response>
+	     </t:test>
+	    
+		<!-- Move a mail from Inbox to subfolder from server -->
+		<t:test>
+			<t:request>
+				<MsgActionRequest xmlns="urn:zimbraMail">
+					<action op="move" id="${mail_id_wc2}" l="${sub.folder1.id}" />
+				</MsgActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:MsgActionResponse/mail:action" attr="id"
+					match="${mail_id_wc2}" />
+			</t:response>
+		</t:test>
+		
+		<!-- Sync the item in root folder on EWS client -->
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${sub.folder1.id}" />
+							</SyncFolderId>
+							<SyncState>${SyncState03}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+			    <t:select
+					path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail01_id_newFolder2" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail01_changeKey_newFolder2" />
+			</t:response>
+		</t:test>
+		<!--  Get item in EWS -->
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Best</t:BodyType>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:Sensitivity" />
+									<t:ExtendedFieldURI PropertyTag="0x10F4"
+										PropertyType="Boolean" />
+									<t:FieldURI FieldURI="item:Body" />									
+									<t:FieldURI FieldURI="item:Subject" />									
+								</t:AdditionalProperties>
+							</ItemShape>
+							<ItemIds>
+								<t:ItemId Id="${mail01_id_newFolder2}" ChangeKey="${mail01_changeKey_newFolder2}" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${message.subject2}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Body"  contains="${message.content2}" />			
+			</t:response>
+		</t:test>
+		
+		<!-- Move above mail from subfolder to root folder created -->
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<MoveItem
+							 xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ToFolderId>
+							 	<t:FolderId Id="${folder.id1}"/>
+							</ToFolderId>
+							<ItemIds>
+							 	<t:ItemId Id="${mail01_id_newFolder2}" ChangeKey="${mail01_changeKey_newFolder2}" />
+							</ItemIds>
+						</MoveItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:MoveItemResponseMessage" attr="ResponseClass"
+					match="Success" />		
+			</t:response>
+		</t:test>	
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${folder.id1}" />
+							</SyncFolderId>
+							<SyncState/>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create[1]//ewstype:ItemId"
+					attr="Id" set="mail02_id2" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create[1]//ewstype:ItemId"
+					attr="ChangeKey" set="mail02_changeKey2" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState022" />
+			</t:response>		
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+	        <t:request>
+	            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	                <query>in:${folder1.name} subject:${message.subject2}</query>
+	            </SearchRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:SearchResponse//mail:su" match="${message.subject2}" />	
+	            <t:select path="//mail:SearchResponse//mail:m" attr="id" set="mail_id_wc3" />	            
+	        </t:response>
+	     </t:test>
+		
+	</t:test_case>	
+	
+	<t:test_case testcaseid="RenameFolder" type="sanity">
+		<t:objective>Rename a folder from EWS and sync on server and vice versa</t:objective>
+		<t:steps>1. Rename a folder from EWS client.
+			2. Verify on server the rename changes.
+			3. Rename a folder on ZWC.
+			4. Sync on EWS the rename changes.
+		</t:steps>
+
+		<!-- Rename the above created sub folder 2 from EWS client -->
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<UpdateFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderChanges>
+								<t:FolderChange>
+									<t:FolderId Id="${sub.folder2.id}" ChangeKey="${sub.folder2.changeKey}" />
+									<t:Updates>
+										<t:SetFolderField>
+											<t:FieldURI FieldURI="folder:DisplayName" />
+											<t:Folder>
+												<t:DisplayName>${sub.folder2.rename}</t:DisplayName>
+											</t:Folder>
+										</t:SetFolderField>
+									</t:Updates>
+								</t:FolderChange>
+							</FolderChanges>
+						</UpdateFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//ewsmsg:UpdateFolderResponse//ewstype:FolderId"
+					attr="Id" match="${sub.folder2.id}" />
+			</t:response>
+		</t:test>
+
+		<!-- Verify on ZWC the rename changes for the folder -->
+		<t:test>
+			<t:request>
+				<GetFolderRequest xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetFolderResponse//mail:folder//mail:folder[@id='${sub.folder2.id}']"
+					attr="name" match="${sub.folder2.rename}" />
+			</t:response>
+		</t:test>
+
+		<!-- Rename the same folder from ZWC -->
+		<t:test>
+			<t:request>
+				<FolderActionRequest xmlns="urn:zimbraMail">
+					<action op="rename" id="${sub.folder2.id}" name="${sub.folder2.rename.ZWC}">
+					</action>
+				</FolderActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:FolderActionResponse/mail:action" />
+			</t:response>
+		</t:test>
+
+		<!-- Sync the rename changes on EWS client -->
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderHierarchy
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="folder:ParentFolderId" />
+									<t:FieldURI FieldURI="folder:DisplayName" />
+									<t:FieldURI FieldURI="folder:FolderClass" />
+									<t:FieldURI FieldURI="folder:ManagedFolderInformation" />
+									<t:ExtendedFieldURI PropertyTag="0x10F4"
+										PropertyType="Boolean" />
+								</t:AdditionalProperties>
+							</FolderShape>
+							<SyncFolderId>
+								<t:DistinguishedFolderId Id="${root_folder}">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</SyncFolderId>
+							<SyncState />
+						</SyncFolderHierarchy>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//ewsmsg:SyncFolderHierarchyResponse//ewstype:Create[4]//ewstype:DisplayName"
+					match="${sub.folder2.rename.ZWC}" />
+				</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="DeleteFolder" type="sanity">
+		<t:objective>Delete a folder from EWS and sync on server and vice versa</t:objective>
+		<t:steps>1. Delete a folder from EWS client.
+			2. Verify on server the delete changes.
+			3. Delete a folder on ZWC.
+			4. Sync on EWS the delete changes.
+		</t:steps>
+
+		<!-- Delete a folder from EWS client -->
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<MoveFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ToFolderId>
+								<t:FolderId Id="${trash.id}" />
+							</ToFolderId>
+							<FolderIds>
+								<t:FolderId Id="${sub.folder2.id}" />
+							</FolderIds>
+						</MoveFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:MoveFolderResponse//ewstype:FolderId"
+					attr="Id" match="${sub.folder2.id}" />
+			</t:response>
+		</t:test>
+
+
+		<!-- Sync on ZWC the folder is synced to trash -->
+		<t:test>
+			<t:request>
+				<GetFolderRequest xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetFolderResponse//mail:folder//mail:folder[@id='${sub.folder2.id}']"
+					attr="name" match="${sub.folder2.rename.ZWC}" />
+				<t:select
+					path="//mail:GetFolderResponse//mail:folder//mail:folder[@id='${sub.folder2.id}']"
+					attr="l" match="${trash.id}" />
+			</t:response>
+		</t:test>
+
+		<!-- Delete the folder from ZWC -->
+
+		<t:test>
+			<t:request>
+				<FolderActionRequest xmlns="urn:zimbraMail">
+					<action op="trash" id="${sub.folder1.id}">
+					</action>
+				</FolderActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:FolderActionResponse/mail:action" />
+			</t:response>
+		</t:test>
+
+		<!-- Sync on EWS client the delete changes -->
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+
+					<soap:Body>
+						<SyncFolderHierarchy
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="folder:ParentFolderId" />
+									<t:FieldURI FieldURI="folder:DisplayName" />
+									<t:FieldURI FieldURI="folder:FolderClass" />
+									<t:FieldURI FieldURI="folder:ManagedFolderInformation" />
+									<t:ExtendedFieldURI PropertyTag="0x10F4"
+										PropertyType="Boolean" />
+								</t:AdditionalProperties>
+							</FolderShape>
+							<SyncFolderId>
+								<t:DistinguishedFolderId Id="${root_folder}">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</SyncFolderId>
+							<SyncState />
+						</SyncFolderHierarchy>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//ewsmsg:SyncFolderHierarchyResponse//ewstype:Create[5]//ewstype:DisplayName"
+					match="${sub.folder1.name}" />
+				<t:select
+					path="//ewsmsg:SyncFolderHierarchyResponse//ewstype:Create[5]//ewstype:ParentFolderId" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="MoveFolder" type="sanity">
+		<t:objective>Move a folder from EWS and sync on server and vice versa</t:objective>
+		<t:steps>1. Move a folder from EWS client.
+			2. Verify on server the move changes.
+			3. Move a folder on ZWC.
+			4. Sync on EWS the move changes.
+		</t:steps>
+
+		<!-- Move the folder from EWS client to other folder -->
+		<t:test required="true">
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<MoveFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ToFolderId>
+								<t:FolderId Id="${sent.id}" />
+							</ToFolderId>
+							<FolderIds>
+								<t:FolderId Id="${Ews_FolderId}" />
+							</FolderIds>
+						</MoveFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:MoveFolderResponse//ewstype:FolderId"
+					attr="Id" match="${Ews_FolderId}" />
+			</t:response>
+		</t:test>
+
+		<!-- Sync the moved folder on ZWC -->
+
+		<t:test>
+			<t:request>
+				<GetFolderRequest xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetFolderResponse//mail:folder//mail:folder[@id='${Ews_FolderId}']"
+					attr="name" match="${folder.name.ews}" />
+				<t:select
+					path="//mail:GetFolderResponse//mail:folder//mail:folder[@id='${Ews_FolderId}']"
+					attr="l" match="${sent.id}" />
+			</t:response>
+		</t:test>
+
+		<!-- Move the same folder again from Sent to Inbox -->
+
+		<t:test>
+			<t:request>
+				<FolderActionRequest xmlns="urn:zimbraMail">
+					<action op="move" id="${Ews_FolderId}" l="${inbox.id}">
+					</action>
+				</FolderActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:FolderActionResponse/mail:action" />
+			</t:response>
+		</t:test>
+
+		<!-- Sync the moved folder on EWS client -->
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+
+					<soap:Body>
+						<SyncFolderHierarchy
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="folder:ParentFolderId" />
+									<t:FieldURI FieldURI="folder:DisplayName" />
+									<t:FieldURI FieldURI="folder:FolderClass" />
+									<t:FieldURI FieldURI="folder:ManagedFolderInformation" />
+									<t:ExtendedFieldURI PropertyTag="0x10F4"
+										PropertyType="Boolean" />
+								</t:AdditionalProperties>
+							</FolderShape>
+							<SyncFolderId>
+								<t:DistinguishedFolderId Id="${root_folder}">
+									<t:Mailbox>
+										<t:EmailAddress>${test_account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+							</SyncFolderId>
+							<SyncState />
+						</SyncFolderHierarchy>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//ewsmsg:SyncFolderHierarchyResponse//ewstype:Create[3]//ewstype:DisplayName"
+					match="${folder.name.ews}" />
+				<t:select
+					path="//ewsmsg:SyncFolderHierarchyResponse//ewstype:Create[3]//ewstype:ParentFolderId"
+					attr="Id" match="${inbox.id}" />
+				<t:select
+					path="//ewsmsg:SyncFolderHierarchyResponse//ewstype:Create[3]//ewstype:FolderId"
+					attr="Id" match="${Ews_FolderId}" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+	
+</t:tests>
+

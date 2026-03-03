@@ -1,0 +1,569 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<!-- Following bug is included as part of this test case -->
+	<!-- zcs-1783:- updating appointment within EWS caused two Cancellation messages to occur -->
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+
+	<t:property name="test_account1.username" value="test1${TIME}.${COUNTER}" />
+	<t:property name="test_account1.name"
+		value="${test_account1.username}@${defaultdomain.name}" />
+	<t:property name="test_account1.password" value="test123" />
+
+	<t:property name="test_account2.username" value="test2${TIME}.${COUNTER}" />
+	<t:property name="test_account2.name"
+		value="${test_account2.username}@${defaultdomain.name}" />
+	<t:property name="test_account2.password" value="test123" />
+
+	<t:property name="message.subject" value="subject${TIME}.${COUNTER}" />
+
+	<t:property name="message.content" value="Message test content" />
+
+	<t:test_case testcaseid="acct_setup" type="always">
+		<t:objective>Create a test account</t:objective>
+		<steps>
+			1. Login to admin account
+			2. Create a test_account1
+			3. Create a test_account2
+		</steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_test_account1" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account1.name}</name>
+					<password>${test_account1.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_test_account2" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account2.name}</name>
+					<password>${test_account2.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account2.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="zcs1783_Testcase" type="sanity">
+		<t:objective>Updating an instance of a meeting request should not send cancellation mail for already deleted instances</t:objective>
+		<t:steps>1.CreateItem request for meeting request daily occurring for
+			3 days only.
+			2. SyncFolderItems for calendar folder and sent items
+			folder to sync
+			the newly created meeting request in both folders.
+			3.
+			GetItem request to get the occurrence id for cancellation of 1st
+			instance.
+			4. CancelCalendarItem request to cancel the first instance
+			and update
+			attendee.
+			5. SyncFolderItems for calendar folder and sent
+			items folder to sync
+			the cancelled meeting instance in both folders.
+			6. UpdateItem request to update the notes of 2nd instance of meeting.
+			7. DeleteItem request to delete the first instance.
+			8. SyncFolderItem
+			for calendar folder to sync the updated meeting
+			request.
+			9.
+			SyncFolderItem for sent folder to check only updated instance mail
+			is
+			sent to the attendee. Cancellation mail for 1st instance
+			should not be
+			present in the response.
+		</t:steps>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<CreateItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+							MessageDisposition="SaveOnly" SendMeetingInvitations="SendToAllAndSaveCopy">
+							<SavedItemFolderId>
+								<t:FolderId Id="10" />
+							</SavedItemFolderId>
+							<Items>
+								<t:CalendarItem>
+									<t:Subject>${message.subject}</t:Subject>
+									<t:Sensitivity>Normal</t:Sensitivity>
+									<t:Body BodyType="HTML">Text for body</t:Body>
+									<t:Importance>Normal</t:Importance>
+									<t:ExtendedProperty>
+										<t:ExtendedFieldURI
+											DistinguishedPropertySetId="Common" PropertyId="34144"
+											PropertyType="SystemTime" />
+										<t:Value>2018-08-22T02:15:00Z</t:Value>
+									</t:ExtendedProperty>
+									<t:ExtendedProperty>
+										<t:ExtendedFieldURI
+											DistinguishedPropertySetId="Common" PropertyId="34050"
+											PropertyType="SystemTime" />
+										<t:Value>2018-08-22T02:30:00Z</t:Value>
+									</t:ExtendedProperty>
+									<t:ExtendedProperty>
+										<t:ExtendedFieldURI
+											DistinguishedPropertySetId="Common" PropertyId="34051"
+											PropertyType="Boolean" />
+										<t:Value>true</t:Value>
+									</t:ExtendedProperty>
+									<t:ExtendedProperty>
+										<t:ExtendedFieldURI
+											DistinguishedPropertySetId="Common" PropertyId="34049"
+											PropertyType="Integer" />
+										<t:Value>15</t:Value>
+									</t:ExtendedProperty>
+									<t:UID>2CD43BA2-56DB-42D8-BCB1-A3F54B2191A0</t:UID>
+									<t:Start>2018-08-22T08:00:00+05:30</t:Start>
+									<t:End>2018-08-22T08:30:00+05:30</t:End>
+									<t:IsAllDayEvent>false</t:IsAllDayEvent>
+									<t:LegacyFreeBusyStatus>Busy</t:LegacyFreeBusyStatus>
+									<t:IsResponseRequested>true</t:IsResponseRequested>
+									<t:RequiredAttendees>
+										<t:Attendee>
+											<t:Mailbox>
+												<t:Name>${test_account2.username}</t:Name>
+												<t:EmailAddress>${test_account2.name}</t:EmailAddress>
+											</t:Mailbox>
+											<t:ResponseType>NoResponseReceived</t:ResponseType>
+										</t:Attendee>
+									</t:RequiredAttendees>
+									<t:Recurrence>
+										<t:DailyRecurrence>
+											<t:Interval>1</t:Interval>
+										</t:DailyRecurrence>
+										<t:NumberedRecurrence>
+											<t:StartDate>2018-08-22</t:StartDate>
+											<t:NumberOfOccurrences>3</t:NumberOfOccurrences>
+										</t:NumberedRecurrence>
+									</t:Recurrence>
+									<t:StartTimeZone Id="Sri Lanka Standard Time" />
+									<t:EndTimeZone Id="Sri Lanka Standard Time" />
+									<t:AllowNewTimeProposal>false</t:AllowNewTimeProposal>
+								</t:CalendarItem>
+							</Items>
+						</CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:CreateItemResponseMessage//ewstype:ItemId"
+					attr="Id" set="cal01.id" />
+				<t:select path="//ewsmsg:CreateItemResponseMessage//ewstype:ItemId"
+					attr="ChangeKey" set="cal01.changeKey" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="10" />
+							</SyncFolderId>
+							<SyncState></SyncState>
+							<Ignore>
+								<t:ItemId Id="${cal01.id}" ChangeKey="${cal01.changeKey}" />
+							</Ignore>
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="SyncFolder10_id1" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="SyncFolder10_ck1" />
+				<t:select path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+					set="SyncState10_1" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:AdditionalProperties>
+								</t:AdditionalProperties>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="5" />
+							</SyncFolderId>
+							<SyncState></SyncState>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+							<SyncScope>NormalAndAssociatedItems</SyncScope>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="SyncFolder5_id1" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="SyncFolder5_ck1" />
+				<t:select path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+					set="SyncState5_1" />
+			</t:response>
+		</t:test>
+
+		<!-- User 1 cancels first meeting request instance -->
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Text</t:BodyType>
+							</ItemShape>
+							<ItemIds>
+								<t:OccurrenceItemId RecurringMasterId="${cal01.id}"
+									InstanceIndex="1" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:ItemId"
+					attr="Id" set="cal02.id" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:ItemId"
+					attr="ChangeKey" set="cal02.changekey" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<CreateItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+							MessageDisposition="SendAndSaveCopy" SendMeetingInvitations="SendToAllAndSaveCopy">
+							<Items>
+								<t:CancelCalendarItem>
+									<t:ReferenceItemId Id="${cal02.id}"
+										ChangeKey="${cal02.changekey}" />
+								</t:CancelCalendarItem>
+							</Items>
+						</CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:CreateItemResponseMessage//ewstype:ItemId"
+					attr="Id" set="cal03.id" />
+				<t:select path="//ewsmsg:CreateItemResponseMessage//ewstype:ItemId"
+					attr="ChangeKey" set="cal03.changeKey" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="10" />
+							</SyncFolderId>
+							<SyncState>${SyncState10_1}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:Changes//ewstype:ItemId"
+					attr="Id" set="SyncFolder10_id2" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:Changes//ewstype:ItemId"
+					attr="ChangeKey" set="SyncFolder10_ck2" />
+				<t:select path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+					set="SyncState10_2" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:AdditionalProperties>
+								</t:AdditionalProperties>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="5" />
+							</SyncFolderId>
+							<SyncState>${SyncState5_1}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+							<SyncScope>NormalAndAssociatedItems</SyncScope>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:Changes//ewstype:Update//ewstype:ItemId"
+					attr="Id" set="SyncFolder5_id2" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:Changes//ewstype:Update//ewstype:ItemId"
+					attr="ChangeKey" set="SyncFolder5_ck2" />
+				<t:select path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+					set="SyncState5_2" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:Changes//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="SyncFolder5_id3" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:Changes//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="SyncFolder5_ck3" />
+			</t:response>
+		</t:test>
+
+		<!-- User 1 updates the 2nd instance notes and send to attendee -->
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<UpdateItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+							ConflictResolution="AutoResolve"
+							SendMeetingInvitationsOrCancellations="SendToAllAndSaveCopy">
+							<ItemChanges>
+								<t:ItemChange>
+									<t:OccurrenceItemId RecurringMasterId="${cal01.id}"
+										ChangeKey="${SyncFolder10_ck2}" InstanceIndex="2" />
+									<t:Updates>
+										<t:SetItemField>
+											<t:FieldURI FieldURI="item:Subject" />
+											<t:CalendarItem>
+												<t:Subject>${message.subject}</t:Subject>
+											</t:CalendarItem>
+										</t:SetItemField>
+										<t:SetItemField>
+											<t:FieldURI FieldURI="item:Body" />
+											<t:CalendarItem>
+												<t:Body BodyType="HTML">Text for body updated
+												</t:Body>
+											</t:CalendarItem>
+										</t:SetItemField>
+									</t:Updates>
+								</t:ItemChange>
+							</ItemChanges>
+						</UpdateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:UpdateItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:UpdateItemResponseMessage//ewstype:ItemId"
+					attr="Id" set="cal04.id" />
+				<t:select path="//ewsmsg:UpdateItemResponseMessage//ewstype:ItemId"
+					attr="ChangeKey" set="cal04.changekey" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<DeleteItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"
+							DeleteType="SoftDelete" SendMeetingCancellations="SendToAllAndSaveCopy">
+							<ItemIds>
+								<t:OccurrenceItemId RecurringMasterId="${cal01.id}"
+									InstanceIndex="1" />
+							</ItemIds>
+						</DeleteItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//ewsmsg:DeleteItemResponse//ewsmsg:GetItemResponseMessage"
+					attr="ResponseClass" match="Success" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="10" />
+							</SyncFolderId>
+							<SyncState>${SyncState10_2}</SyncState>
+							<Ignore>
+								<t:ItemId Id="${cal01.id}" ChangeKey="${cal04.changekey}" />
+							</Ignore>
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:Changes//ewstype:ItemId"
+					attr="Id" set="SyncState10_id3" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:Changes//ewstype:ItemId"
+					attr="ChangeKey" set="SyncState10_ck3" />
+				<t:select path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+					set="SyncState10_3" />
+			</t:response>
+		</t:test>
+
+		<!-- Verify in the organiser's sent folder cancellation mail is not sent 
+			for already deleted instance -->
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:Subject" />
+									<t:FieldURI FieldURI="item:DisplayTo" />
+								</t:AdditionalProperties>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="5" />
+							</SyncFolderId>
+							<SyncState>${SyncState5_2}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+							<SyncScope>NormalAndAssociatedItems</SyncScope>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:Changes//ewstype:Create[1]//ewstype:Subject"
+					match="${message.subject}" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:Changes//ewstype:Create[2]//ewstype:Subject"
+					match="Cancelled: ${message.subject}" emptyset="1" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+</t:tests>

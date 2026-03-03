@@ -1,0 +1,357 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+	<t:property name="test_account1.username"
+		value="test1${TIME}.${COUNTER}" />		
+	<t:property name="test_account1.name"
+		value="${test_account1.username}@${defaultdomain.name}" />		
+	<t:property name="test_account1.password" value="test123" />	
+	<t:property name="test_account2.username"
+		value="test2${TIME}.${COUNTER}" />
+	<t:property name="test_account2.name"
+		value="${test_account2.username}@${defaultdomain.name}" />
+	<t:property name="test_account2.password" value="test123" />	
+	<t:property name="test_account3.username"
+		value="test1${TIME}.${COUNTER}" />		
+	<t:property name="test_account3.name"
+		value="${test_account3.username}@${defaultdomain.name}" />	
+	<t:property name="test_account3.password" value="test123" />		
+	<t:property name="test_account4.username"
+		value="test2${TIME}.${COUNTER}" />
+	<t:property name="test_account4.name"
+		value="${test_account4.username}@${defaultdomain.name}" />	
+	<t:property name="test_account4.password" value="test123" />	
+	<t:property name="test_acct.server" value="NOT_DEFINED" />	
+	<t:property name="message.subject" value="Test mail for CC,BCC test" />	
+	<t:property name="message.content" value="Message test content" />	
+	<t:test_case testcaseid="acct_setup" type="always">
+		<t:objective>Create a test account</t:objective>
+		<steps>
+			1. Login to admin account
+			2. Create a test_account1
+		</steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_test_account1" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account1.name}</name>
+					<password>${test_account1.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+		
+		<t:test id="create_test_account2" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account2.name}</name>
+					<password>${test_account2.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account2.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+		<t:test id="create_test_account3" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account3.name}</name>
+					<password>${test_account3.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account3.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+		
+		<t:test id="create_test_account4" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account4.name}</name>
+					<password>${test_account4.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account4.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>	
+	</t:test_case>
+		
+	<t:test_case testcaseid="SendMail_CCBCC_From_EWS" type="sanity">
+			<t:objective>Send an html mail from user1 To user2 with CC user3 and BCC use4 from EWS to ZWC client</t:objective>
+			<t:steps>1. Compose and send a html mail from user1 to user2, CC user3 and BCC user3 from EWS to ZWC client.
+			2. Sync on ZWC client for received mail.
+			</t:steps>
+			
+			<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>	
+			</t:test>
+		
+			<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages" MessageDisposition="SendAndSaveCopy">
+					      <SavedItemFolderId>
+					        <t:FolderId Id="5"/>
+					      </SavedItemFolderId>
+					      <Items>
+					        <t:Message>
+					          <t:MimeContent CharacterSet="UTF-8">VXNlci1BZ2VudDogTWljcm9zb2Z0LU1hY091dGxvb2svZi4xZi4wLjE3MDIxNgpEYXRlOiBUdWUsIDggQXVnIDIwMTcgMDQ6NDc6MDEgLTA0MDAgKEVEVCkKU3ViamVjdDogVGVzdCBtYWlsIGZvciBDQyxCQ0MgdGVzdApNZXNzYWdlLUlEOiA8MTcwNTkzMTIwMy4yNTkuMTUwMjE4MjAyMTQ0OS5KYXZhTWFpbC56aW1icmFAenFhLTI4Mi5lbmcuemltYnJhLmNvbT4KVGhyZWFkLVRvcGljOiBUZXN0IG1haWwgZm9yIENDLEJDQyB0ZXN0Ck1pbWUtdmVyc2lvbjogMS4wCkNvbnRlbnQtdHlwZTogdGV4dC9wbGFpbjsKCWNoYXJzZXQ9IlVURi04IgpDb250ZW50LXRyYW5zZmVyLWVuY29kaW5nOiA3Yml0CgpNZXNzYWdlIHRlc3QgY29udGVudA==</t:MimeContent>
+					          <t:Sensitivity>Normal</t:Sensitivity>
+					          <t:Importance>Normal</t:Importance>
+					          <t:ExtendedProperty>
+					            <t:ExtendedFieldURI PropertyTag="0x0E07" PropertyType="Integer"/>
+					            <t:Value>12</t:Value>
+					          </t:ExtendedProperty>
+					          <t:ExtendedProperty>
+					            <t:ExtendedFieldURI PropertyTag="0xE9F" PropertyType="StringArray"/>
+					            <t:Values>
+					              <t:Value>:R:0</t:Value>
+					            </t:Values>
+					          </t:ExtendedProperty>
+					          <t:ToRecipients>
+					            <t:Mailbox>
+					              <t:Name>${test_account2.username}</t:Name>
+					              <t:EmailAddress>${test_account2.name}</t:EmailAddress>
+					            </t:Mailbox>
+					          </t:ToRecipients>
+					          <t:CcRecipients>
+					            <t:Mailbox>
+					              <t:Name>${test_account3.username}</t:Name>
+					              <t:EmailAddress>${test_account3.name}</t:EmailAddress>
+					            </t:Mailbox>
+					          </t:CcRecipients>
+					          <t:BccRecipients>
+					            <t:Mailbox>
+					              <t:Name>${test_account4.username}</t:Name>
+					              <t:EmailAddress>${test_account4.name}</t:EmailAddress>
+					            </t:Mailbox>
+					          </t:BccRecipients>
+					          <t:From>
+					            <t:Mailbox>
+					              <t:Name>${test_account1.username}</t:Name>
+					              <t:EmailAddress>${test_account1.name}</t:EmailAddress>
+					            </t:Mailbox>
+					          </t:From>
+					          <t:IsRead>false</t:IsRead>
+					        </t:Message>
+					      </Items>
+					    </CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:CreateItemResponseMessage//ewstype:ItemId"
+					attr="Id" set="mail.id" />
+			</t:response>
+		</t:test>
+	
+			<t:test>
+			<t:request ews="true" username="${test_account1.name}" password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="5" />
+							</SyncFolderId>
+							<SyncState/>
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create[1]//ewstype:ItemId"
+					attr="Id" set="mail_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create[1]//ewstype:ItemId"
+					attr="ChangeKey" set="mail_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState"
+				    set="SyncState_EWS" />
+			</t:response>		
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:delay msec="5000"/>
+		    
+	    <t:test>
+	        <t:request>
+	            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	                <query>subject:${message.subject}</query>
+	            </SearchRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:SearchResponse//mail:su" match="${message.subject}" />	
+	            <t:select path="//mail:SearchResponse//mail:m" attr="id" set="mail_id_wc" />	            
+	        </t:response>
+	     </t:test>
+	     
+	      <t:test>
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${mail_id_wc}" />
+				</GetMsgRequest>
+			</t:request>
+			<t:response>
+			 	 <t:select path="//mail:GetMsgResponse//mail:e[@t='f'][@a='${test_account1.name}']" /> 
+				 <t:select path="//mail:GetMsgResponse//mail:e[@t='c'][@a='${test_account3.name}']" />
+				 <t:select path="//mail:GetMsgResponse//mail:e[@t='t'][@a='${test_account2.name}']" /> 
+				 <t:select path="//mail:GetMsgResponse//mail:e[@t='t'][@a='${test_account4.name}']" emptyset="1" />     
+				 <t:select path="//mail:GetMsgResponse//mail:e[@t='c'][@a='${test_account4.name}']" emptyset="1" />                
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account3.name}</account>
+					<password>${test_account3.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:delay msec="5000"/>
+		    
+	    <t:test>
+	        <t:request>
+	            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	                <query>subject:${message.subject}</query>
+	            </SearchRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:SearchResponse//mail:su" match="${message.subject}" />	
+	            <t:select path="//mail:SearchResponse//mail:m" attr="id" set="mail_id_wc" />	            
+	        </t:response>
+	     </t:test>
+	     
+	      <t:test>
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${mail_id_wc}" />
+				</GetMsgRequest>
+			</t:request>
+			<t:response>
+				 <t:select path="//mail:GetMsgResponse//mail:e[@t='f'][@a='${test_account1.name}']" /> 
+				 <t:select path="//mail:GetMsgResponse//mail:e[@t='c'][@a='${test_account3.name}']" />
+				 <t:select path="//mail:GetMsgResponse//mail:e[@t='t'][@a='${test_account2.name}']" /> 
+				 <t:select path="//mail:GetMsgResponse//mail:e[@t='t'][@a='${test_account4.name}']" emptyset="1" />     
+				 <t:select path="//mail:GetMsgResponse//mail:e[@t='c'][@a='${test_account4.name}']" emptyset="1" />                      
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account4.name}</account>
+					<password>${test_account4.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		    
+	    <t:test>
+	        <t:request>
+	            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	                <query>subject:${message.subject}</query>
+	            </SearchRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:SearchResponse//mail:su" match="${message.subject}" />	
+	            <t:select path="//mail:SearchResponse//mail:m" attr="id" set="mail_id_wc" />	            
+	        </t:response>
+	     </t:test>
+	     
+	      <t:test>
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${mail_id_wc}" />
+				</GetMsgRequest>
+			</t:request>
+			<t:response>
+				 <t:select path="//mail:GetMsgResponse//mail:e[@t='f'][@a='${test_account1.name}']" /> 
+				 <t:select path="//mail:GetMsgResponse//mail:e[@t='c'][@a='${test_account3.name}']" /> 
+				 <t:select path="//mail:GetMsgResponse//mail:e[@t='t'][@a='${test_account2.name}']" />     
+				 <t:select path="//mail:GetMsgResponse//mail:e[@t='t'][@a='${test_account4.name}']" emptyset="1" />     
+				 <t:select path="//mail:GetMsgResponse//mail:e[@t='c'][@a='${test_account4.name}']" emptyset="1" />                  
+			</t:response>
+		</t:test>
+		
+	</t:test_case>
+</t:tests>

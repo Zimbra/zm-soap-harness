@@ -1,0 +1,295 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+    <!-- Following bug is included as part of this test case -->
+    <!--ZCS-18150:- EWS Outlook : Mac Outlook will not show free/busy for Synacor user-->
+
+    <t:property name="test_account1.username" value="testAccount1${TIME}.${COUNTER}"/>
+    <t:property name="test_account1.name" value="${test_account1.username}@${defaultdomain.name}"/>
+    <t:property name="test_account1.password" value="test123"/>
+
+    <t:property name="test_account2.username" value="testAccount2${TIME}.${COUNTER}"/>
+    <t:property name="test_account2.name" value="${test_account2.username}@${defaultdomain.name}"/>
+    <t:property name="test_account2.password" value="test123"/>
+
+    <t:property name="test_account3.username" value="testAccount3${TIME}.${COUNTER}"/>
+    <t:property name="test_account3.name" value="${test_account3.username}@${defaultdomain.name}"/>
+    <t:property name="test_account3.password" value="test123"/>
+
+    <t:property name="message.subject1" value="BusySlot${TIME}.${COUNTER}"/>
+    <t:property name="message.updated_subject2" value="updated_subject2${TIME}.${COUNTER}"/>
+
+    <t:test_case testcaseid="Ping" type="always">
+        <t:objective>basic system check</t:objective>
+        <t:test required="true">
+            <t:request>
+                <PingRequest xmlns="urn:zimbraAdmin"/>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:PingResponse"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="acct_setup" type="always">
+        <t:objective>Create test accounts</t:objective>
+        <steps>
+            1. Login to admin account
+            2. Create test accounts
+        </steps>
+
+        <t:test id="admin_login" required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+            </t:response>
+        </t:test>
+
+        <!--Creating account 1-->
+        <t:test id="create_test_account1" depends="admin_login" required="false">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account1.name}</name>
+                    <password>${test_account1.password}</password>
+                    <a n="zimbraFeatureEwsEnabled">TRUE</a>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id"/>
+            </t:response>
+        </t:test>
+
+        <!--Creating account 2-->
+        <t:test id="create_test_account2" depends="admin_login" required="false">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account2.name}</name>
+                    <password>${test_account2.password}</password>
+                    <a n="zimbraFeatureEwsEnabled">TRUE</a>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account2.id"/>
+            </t:response>
+        </t:test>
+
+        <!--Creating account 3-->
+        <t:test id="create_test_account3" required="false" depends="admin_login">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account3.name}</name>
+                    <password>${test_account3.password}</password>
+                    <a n="zimbraFeatureEwsEnabled">TRUE</a>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account"
+                          attr="id" set="test_account3.id"/>
+                <t:select
+                        path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+                        set="test_acct.server"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="GetUserAvailability_Status" type="sanity"
+                 bugids="ZCS-18150">
+        <t:objective>Validate User Availability (Free, Busy) using EWS GetUserAvailabilityRequest</t:objective>
+        <t:steps>
+            1. User2 creates meeting (16:00–16:30) with User3.
+            2. User1 checks User2 free/busy via EWS GetUserAvailability.
+        </t:steps>
+
+        <t:test id="user2_create_meeting">
+            <t:request ews="true" username="${test_account2.name}"
+                       password="${test_account2.password}">
+                <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+                               xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
+                               xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
+                    <soap:Body>
+                        <m:CreateItem
+                                MessageDisposition="SaveOnly"
+                                SendMeetingInvitations="SendToAllAndSaveCopy">
+                            <m:SavedItemFolderId>
+                                <t:FolderId Id="10"/>
+                            </m:SavedItemFolderId>
+                            <m:Items>
+                                <t:CalendarItem>
+                                    <t:Subject>${message.subject1}</t:Subject>
+                                    <t:ReminderIsSet>false</t:ReminderIsSet>
+
+                                    <t:ExtendedProperty>
+                                        <t:ExtendedFieldURI PropertyName="CalendarTimeZone"
+                                                            PropertySetId="A7B529B5-4B75-47A7-A24F-20743D6C55CD"
+                                                            PropertyType="String"/>
+                                        <t:Value>Asia/Kolkata</t:Value>
+                                    </t:ExtendedProperty>
+
+                                    <t:Start>2025-12-12T16:00:00+05:30</t:Start>
+                                    <t:End>2025-12-12T16:30:00+05:30</t:End>
+
+                                    <t:LegacyFreeBusyStatus>Busy</t:LegacyFreeBusyStatus>
+
+                                    <t:RequiredAttendees>
+                                        <t:Attendee>
+                                            <t:Mailbox>
+                                                <t:Name>${test_account3.username}</t:Name>
+                                                <t:EmailAddress>${test_account3.name}</t:EmailAddress>
+                                            </t:Mailbox>
+                                        </t:Attendee>
+                                    </t:RequiredAttendees>
+                                </t:CalendarItem>
+                            </m:Items>
+                        </m:CreateItem>
+                    </soap:Body>
+                </soap:Envelope>
+            </t:request>
+
+            <t:response>
+                <t:select path="//ewsmsg:CreateItemResponseMessage"
+                          attr="ResponseClass" match="Success"/>
+                <t:select path="//ewstype:ItemId" attr="Id" set="meeting.id"/>
+                <t:select path="//ewstype:ItemId" attr="ChangeKey" set="meeting.ck"/>
+            </t:response>
+        </t:test>
+
+        <!-- USER2 SYNC TO CONFIRM ITEM EXISTS -->
+        <t:test id="user2_sync" depends="user2_create_meeting">
+            <t:request ews="true" username="${test_account2.name}"
+                       password="${test_account2.password}">
+                <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+                               xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
+                               xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
+                    <soap:Body>
+                        <SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+                            <ItemShape>
+                                <t:BaseShape>IdOnly</t:BaseShape>
+                                <t:IncludeMimeContent>false</t:IncludeMimeContent>
+                            </ItemShape>
+                            <SyncFolderId>
+                                <t:FolderId Id="10"/>
+                            </SyncFolderId>
+                            <SyncState/>
+                            <Ignore/>
+                            <MaxChangesReturned>100</MaxChangesReturned>
+                        </SyncFolderItems>
+                    </soap:Body>
+                </soap:Envelope>
+            </t:request>
+
+            <t:response>
+                <t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+                          attr="ResponseClass" match="Success"/>
+                <t:select path="//ewstype:Create//ewstype:ItemId" attr="Id"
+                          set="cal_item.id"/>
+                <t:select path="//ewstype:Create//ewstype:ItemId" attr="ChangeKey"
+                          set="cal_item.ck"/>
+                <t:select path="//ewsmsg:SyncState" set="sync.state"/>
+            </t:response>
+        </t:test>
+
+        <!-- USER1 CHECK FREE/BUSY FOR USER2 -->
+        <t:test id="user1_get_freebusy">
+            <t:request ews="true" username="${test_account1.name}"
+                       password="${test_account1.password}">
+                <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+                               xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
+                               xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
+                    <soap:Body>
+                        <m:GetUserAvailabilityRequest>
+
+                            <!-- TimeZone MUST BE types namespace -->
+                            <t:TimeZone>
+                                <t:Bias>-330</t:Bias>
+                                <t:StandardTime>
+                                    <t:Bias>0</t:Bias>
+                                    <t:Time>15:30:00</t:Time>
+                                    <t:DayOrder>2</t:DayOrder>
+                                    <t:Month>3</t:Month>
+                                    <t:DayOfWeek>Sunday</t:DayOfWeek>
+                                </t:StandardTime>
+                                <t:DaylightTime>
+                                    <t:Bias>0</t:Bias>
+                                    <t:Time>14:30:00</t:Time>
+                                    <t:DayOrder>1</t:DayOrder>
+                                    <t:Month>11</t:Month>
+                                    <t:DayOfWeek>Sunday</t:DayOfWeek>
+                                </t:DaylightTime>
+                            </t:TimeZone>
+
+                            <!-- MailboxDataArray in messages, MailboxData in types -->
+                            <m:MailboxDataArray>
+                                <t:MailboxData>
+                                    <t:Email>
+                                        <t:Address>${test_account2.name}</t:Address>
+                                    </t:Email>
+                                    <t:AttendeeType>Required</t:AttendeeType>
+                                    <t:ExcludeConflicts>false</t:ExcludeConflicts>
+                                </t:MailboxData>
+                            </m:MailboxDataArray>
+
+                            <!-- FreeBusyViewOptions MUST BE types namespace -->
+                            <t:FreeBusyViewOptions>
+                                <t:TimeWindow>
+                                    <t:StartTime>2025-12-12T16:00:00+05:30</t:StartTime>
+                                    <t:EndTime>2025-12-12T17:00:00+05:30</t:EndTime>
+                                </t:TimeWindow>
+                                <t:MergedFreeBusyIntervalInMinutes>30</t:MergedFreeBusyIntervalInMinutes>
+                                <t:RequestedView>Detailed</t:RequestedView>
+                            </t:FreeBusyViewOptions>
+
+                        </m:GetUserAvailabilityRequest>
+                    </soap:Body>
+                </soap:Envelope>
+            </t:request>
+
+            <t:response
+                    xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
+                    xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
+
+                <!-- Validate Success -->
+                <t:select
+                        path="//m:GetUserAvailabilityResponse/m:FreeBusyResponseArray/m:FreeBusyResponse/m:ResponseMessage/@ResponseClass">
+                    <t:match>Success</t:match>
+                </t:select>
+
+                <t:select
+                        path="//m:GetUserAvailabilityResponse/m:FreeBusyResponseArray/m:FreeBusyResponse/m:ResponseMessage/m:ResponseCode">
+                    <t:match>NoError</t:match>
+                </t:select>
+
+                <!-- Validate CalendarEvent -->
+                <t:select path="//t:CalendarEvent/t:StartTime">
+                    <t:match>2025-12-12T16:00:00</t:match>
+                </t:select>
+
+                <t:select path="//t:CalendarEvent/t:EndTime">
+                    <t:match>2025-12-12T16:30:00</t:match>
+                </t:select>
+
+                <t:select path="//t:CalendarEvent/t:BusyType">
+                    <t:match>Busy</t:match>
+                </t:select>
+
+                <!-- Event details -->
+                <t:select path="//t:CalendarEventDetails/t:ID">
+                    <t:match>258</t:match>
+                </t:select>
+
+                <t:select path="//t:CalendarEventDetails/t:IsMeeting">
+                    <t:match>true</t:match>
+                </t:select>
+
+                <t:select path="//t:CalendarEventDetails/t:IsRecurring">
+                    <t:match>false</t:match>
+                </t:select>
+
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+</t:tests>

@@ -1,0 +1,778 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="user${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="user${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="user${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="user${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account5.name" value="user${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account6.name" value="user${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="op.grant"			value="grant"/>
+<t:property name="op.read"			value="read"/>
+<t:property name="op.unread"		value="!read"/>
+<t:property name="op.flag"			value="flag"/>
+<t:property name="op.unflag"		value="!flag"/>
+<t:property name="op.tag"			value="tag"/>
+<t:property name="op.untag"			value="!tag"/>
+<t:property name="op.move"			value="move"/>
+<t:property name="op.delete"		value="delete"/>
+
+<t:property name="grant.usr"			value="usr"/>
+<t:property name="grant.grp"			value="grp"/>
+<t:property name="grant.dom"			value="dom"/>
+<t:property name="grant.cos"			value="cos"/>
+<t:property name="grant.all"			value="all"/>
+<t:property name="grant.pub"			value="pub"/>
+<t:property name="grant.guest"			value="guest"/>
+
+<t:property name="rights.none"			value=""/>
+<t:property name="rights.read"			value="r"/>
+<t:property name="rights.write"			value="w"/>
+<t:property name="rights.insert"		value="i"/>
+<t:property name="rights.delete"		value="d"/>
+<t:property name="rights.administer"	value="a"/>
+<t:property name="rights.workflow"		value="x"/>
+<t:property name="rights.manager"		value="${rights.read}${rights.write}${rights.insert}${rights.delete}${rights.workflow}"/>
+<t:property name="view.conversation"	value="conversation"/>
+<t:property name="view.message"			value="message"/>
+<t:property name="view.contact"			value="contact"/>
+<t:property name="view.appointment"		value="appointment"/>
+<t:property name="view.note"			value="note"/>
+
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+    
+<t:test_case testcaseid="CalendarSharing_CreateMountpointRequest_Basic_AccountSetup" type="always">
+    <t:objective>Create test account</t:objective>
+    <t:steps>
+        1. Login to admin.
+        2. Create accounts
+        3. Account1 shares calendar with account2 (manager rights)
+    </t:steps>
+
+    <t:test  id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account5.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account5.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account6.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account6.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account6.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="CalDav_Mountpoints_DeleteAppointment_01" type="sanity">
+    <t:objective>Verify an appointment in a mountpoint can be deleted from CalDav</t:objective>
+    <t:steps>
+        1. Login as account2.
+        2. Create an appointment
+        3. Share calendar with account1.
+        4. Login as account1.
+        5. Accept and mount the shared calendar
+        6. Use CalDav to view the mounted appointment
+        7. Use CalDav to delete the mounted appointment
+        8. Login to account2
+        9. Search for the appointment,  verify it is deleted.
+    </t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="appointment.subject" value="Subject${TIME}${COUNTER}"/>
+	<t:property name="appointment.content" value="Content${TIME}${COUNTER}"/>
+	<t:property name="time.20101201120000.gmt" value="1291204800000"/>
+   
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv > 
+                    	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
+	                        <s d="${ICALTIME[${time.20101201120000.gmt}]}"/>  
+	                        <e d="${ICALTIME(+1h)[${time.20101201120000.gmt}]}"/>  
+	                        <or a="${account1.name}"/>
+                        </comp>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>MessageSubject${TIME}${COUNTER}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="invId" set="appointment.invId"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${appointment.invId}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse">
+            	<t:select path="//mail:comp" attr="uid" set="appointment.uid"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="account2.folder.calendar"/>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account2.folder.root"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${account2.folder.calendar}" op="${op.grant}">
+                    <grant d="${account1.name}" gt="${grant.usr}" perm="${rights.manager}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="zid" set="folder.zid"/>
+        </t:response>
+    </t:test>
+
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account1.folder.root"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="mountpoint.name" value="Calendar${TIME}${COUNTER}"/>
+
+    <t:test required="true">
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account1.folder.root}" name="${mountpoint.name}" view="appointment" rid="${account2.folder.calendar}" zid="${account2.id}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="caldav.user" value="${account1.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account1.server}"/>
+
+	<t:caldav >
+		<t:request method="REPORT" uri="/dav/${account1.name}/${mountpoint.name}/" depth="1">
+			<calendar-query xmlns:D="DAV:" xmlns="urn:ietf:params:xml:ns:caldav">
+			  	<D:prop>
+			    	<D:getetag/>
+		  		</D:prop>
+			  	<filter>
+			    	<comp-filter name="VCALENDAR">
+			      		<comp-filter name="VTODO"/>
+			    	</comp-filter>
+			  	</filter>
+			</calendar-query>
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response">
+				<t:select path="//D:href" match=".*${appointment.uid}.*" set="appointment.href"/>
+			</t:select>
+	 	</t:response>
+	</t:caldav>
+
+	<t:caldav >
+		<t:request method="DELETE" uri="${appointment.href}">
+	 	</t:request>
+	 	<t:response>
+	 		<t:status code="204"/>
+	 	</t:response>
+	</t:caldav>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${time.20101201120000.gmt}]}" calExpandInstEnd="${TIME(+1d)[${time.20101201120000.gmt}]}" types="appointment">
+				<query>${appointment.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:SearchResponse">
+            	<t:select path="//mail:appt" emptyset="1"/>
+           	</t:select>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="CalDav_Mountpoints_DeleteAppointment_02" type="sanity">
+    <t:objective>Verify an appointment in a mountpoint (with s in the name) can be deleted from CalDav</t:objective>
+    <t:steps>
+        1. Login as account4.
+        2. Create an appointment
+        3. Share calendar with account3.
+        4. Login as account3.
+        5. Accept and mount the shared calendar
+        6. Use CalDav to view the mounted appointment
+        7. Use CalDav to delete the mounted appointment
+        8. Login to account4
+        9. Search for the appointment,  verify it is deleted.
+    </t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="appointment.subject" value="Subject${TIME}${COUNTER}"/>
+	<t:property name="appointment.content" value="Content${TIME}${COUNTER}"/>
+	<t:property name="time.20101201120000.gmt" value="1291204800000"/>
+   
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv > 
+                    	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
+	                        <s d="${ICALTIME[${time.20101201120000.gmt}]}"/>  
+	                        <e d="${ICALTIME(+1h)[${time.20101201120000.gmt}]}"/>  
+	                        <or a="${account3.name}"/>
+                        </comp>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>MessageSubject${TIME}${COUNTER}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="invId" set="appointment.invId"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${appointment.invId}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse">
+            	<t:select path="//mail:comp" attr="uid" set="appointment.uid"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="account4.folder.calendar"/>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account4.folder.root"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${account4.folder.calendar}" op="${op.grant}">
+                    <grant d="${account3.name}" gt="${grant.usr}" perm="${rights.manager}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="zid" set="folder.zid"/>
+        </t:response>
+    </t:test>
+
+    
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account3.folder.root"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="mountpoint.name" value="Matt's Calendar${TIME}${COUNTER}"/>
+	<t:property name="mountpoint.name.encoded" value="${mountpoint.name}" urlencode="true"/>
+
+    <t:test required="true">
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account3.folder.root}" name="${mountpoint.name}" view="appointment" rid="${account4.folder.calendar}" zid="${account4.id}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="caldav.user" value="${account3.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account3.server}"/>
+
+	<t:caldav >
+		<t:request method="PROPFIND" uri="/dav/${account3.name}/" depth="1">
+			<x0:propfind xmlns:x1="http://calendarserver.org/ns/" xmlns:x0="DAV:" xmlns:x3="http://apple.com/ns/ical/" xmlns:x2="urn:ietf:params:xml:ns:caldav">
+ 				<x0:prop>
+  					<x1:getctag/>
+  					<x0:displayname/>
+					<x2:calendar-description/>
+					<x3:calendar-color/>
+					<x0:resourcetype/>
+				</x0:prop>
+			</x0:propfind>
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response"/>
+	 	</t:response>
+	</t:caldav>
+
+	<t:caldav required="true">
+		<t:request method="REPORT" uri="/dav/${account3.name}/${mountpoint.name.encoded}/" depth="1">
+			<calendar-query xmlns:D="DAV:" xmlns="urn:ietf:params:xml:ns:caldav">
+			  	<D:prop>
+			    	<D:getetag/>
+		  		</D:prop>
+			  	<filter>
+			    	<comp-filter name="VCALENDAR">
+			      		<comp-filter name="VTODO"/>
+			    	</comp-filter>
+			  	</filter>
+			</calendar-query>
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response">
+				<t:select path="//D:href" match=".*${appointment.uid}.*" set="appointment.href"/>
+			</t:select>
+	 	</t:response>
+	</t:caldav>
+
+	<t:caldav required="true">
+		<t:request method="DELETE" uri="${appointment.href}">
+	 	</t:request>
+	 	<t:response>
+	 		<t:status code="204"/>
+	 	</t:response>
+	</t:caldav>
+
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${time.20101201120000.gmt}]}" calExpandInstEnd="${TIME(+1d)[${time.20101201120000.gmt}]}" types="appointment">
+				<query>${appointment.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:SearchResponse">
+            	<t:select path="//mail:appt" emptyset="1"/>
+           	</t:select>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CalDav_Mountpoints_DeleteAppointment_03" type="sanity">
+    <t:objective>Verify an appointment in a mountpoint (with at-sign in the name) can be deleted from CalDav</t:objective>
+    <t:steps>
+        1. Login as account6.
+        2. Create an appointment
+        3. Share calendar with account5.
+        4. Login as account5.
+        5. Accept and mount the shared calendar
+        6. Use CalDav to view the mounted appointment
+        7. Use CalDav to delete the mounted appointment
+        8. Login to account6
+        9. Search for the appointment,  verify it is deleted.
+    </t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account6.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account6.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="appointment.subject" value="Subject${TIME}${COUNTER}"/>
+	<t:property name="appointment.content" value="Content${TIME}${COUNTER}"/>
+	<t:property name="time.20101201120000.gmt" value="1291204800000"/>
+   
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv > 
+                    	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
+	                        <s d="${ICALTIME[${time.20101201120000.gmt}]}"/>  
+	                        <e d="${ICALTIME(+1h)[${time.20101201120000.gmt}]}"/>  
+	                        <or a="${account5.name}"/>
+                        </comp>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>MessageSubject${TIME}${COUNTER}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="invId" set="appointment.invId"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${appointment.invId}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse">
+            	<t:select path="//mail:comp" attr="uid" set="appointment.uid"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="account6.folder.calendar"/>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account6.folder.root"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${account6.folder.calendar}" op="${op.grant}">
+                    <grant d="${account5.name}" gt="${grant.usr}" perm="${rights.manager}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="zid" set="folder.zid"/>
+        </t:response>
+    </t:test>
+
+    
+	<t:property name="server.zimbraAccount" value="${account5.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account5.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account5.folder.root"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="mountpoint.name" value="foo@bar.com Calendar${TIME}${COUNTER}"/>
+	<t:property name="mountpoint.name.encoded" value="${mountpoint.name}" urlencode="true"/>
+
+    <t:test required="true">
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account5.folder.root}" name="${mountpoint.name}" view="appointment" rid="${account6.folder.calendar}" zid="${account6.id}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="caldav.user" value="${account5.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account5.server}"/>
+
+	<t:caldav >
+		<t:request method="PROPFIND" uri="/dav/${account5.name}/" depth="1">
+			<x0:propfind xmlns:x1="http://calendarserver.org/ns/" xmlns:x0="DAV:" xmlns:x3="http://apple.com/ns/ical/" xmlns:x2="urn:ietf:params:xml:ns:caldav">
+ 				<x0:prop>
+  					<x1:getctag/>
+  					<x0:displayname/>
+					<x2:calendar-description/>
+					<x3:calendar-color/>
+					<x0:resourcetype/>
+				</x0:prop>
+			</x0:propfind>
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response"/>
+	 	</t:response>
+	</t:caldav>
+
+	<t:caldav required="true">
+		<t:request method="REPORT" uri="/dav/${account5.name}/${mountpoint.name.encoded}/" depth="1">
+			<calendar-query xmlns:D="DAV:" xmlns="urn:ietf:params:xml:ns:caldav">
+			  	<D:prop>
+			    	<D:getetag/>
+		  		</D:prop>
+			  	<filter>
+			    	<comp-filter name="VCALENDAR">
+			      		<comp-filter name="VTODO"/>
+			    	</comp-filter>
+			  	</filter>
+			</calendar-query>
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response">
+				<t:select path="//D:href" match=".*${appointment.uid}.*" set="appointment.href"/>
+			</t:select>
+	 	</t:response>
+	</t:caldav>
+
+	<t:caldav required="true">
+		<t:request method="DELETE" uri="${appointment.href}">
+	 	</t:request>
+	 	<t:response>
+	 		<t:status code="204"/>
+	 	</t:response>
+	</t:caldav>
+
+	<t:property name="server.zimbraAccount" value="${account6.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account6.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${time.20101201120000.gmt}]}" calExpandInstEnd="${TIME(+1d)[${time.20101201120000.gmt}]}" types="appointment">
+				<query>${appointment.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:SearchResponse">
+            	<t:select path="//mail:appt" emptyset="1"/>
+           	</t:select>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+</t:tests>

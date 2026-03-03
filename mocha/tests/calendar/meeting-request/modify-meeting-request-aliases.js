@@ -10,8 +10,8 @@ describe('Calendar > Meeting Request > Modify Meeting Request Aliases', function
     const testDomain = config.testDomain;
     const pad = (n) => String(n).padStart(2, '0');
 
-    function icalTimeFromEpoch(epochMs) {
-        const d = new Date(epochMs);
+    function futureTime(offsetMs) {
+        const d = new Date(Date.now() + offsetMs);
         return `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
     }
 
@@ -34,205 +34,316 @@ describe('Calendar > Meeting Request > Modify Meeting Request Aliases', function
     }
 
     // Tests
-
     it('Smoke | Update a singleton event - add an alias', async () => {
         // Create accounts
-        const account1Email = `account1${common.getUniqueString()}@${testDomain}`;
-        const account2Email = `account2${common.getUniqueString()}@${testDomain}`;
-        const account2Alias = `account2alias${common.getUniqueString()}@${testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
+        const acct1Email = `acct1${common.getUniqueString()}@${testDomain}`;
+        const acct1Res = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
-				<name>${account1Email}</name>
+				<name>${acct1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
         );
+        assert.notExists(acct1Res.Fault, 'CreateAccountRequest should not fault');
+        const acct1Token = await soap.getAccountAuthToken(acct1Email);
+
+        const acct2Email = `acct2${common.getUniqueString()}@${testDomain}`;
         const acct2Res = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
-				<name>${account2Email}</name>
+				<name>${acct2Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
         );
-        const account2Id = acct2Res.CreateAccountResponse.account[0].id;
+        assert.notExists(acct2Res.Fault, 'CreateAccountRequest should not fault');
+        const acct2Id = acct2Res.CreateAccountResponse.account[0].id;
+        const acct2Token = await soap.getAccountAuthToken(acct2Email);
 
         // Add alias to account2
-        await soap.makeSOAPEnvelopeAdmin(
+        const aliasEmail = `alias${common.getUniqueString()}@${testDomain}`;
+        const aliasRes = await soap.makeSOAPEnvelopeAdmin(
             `<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
-				<id>${account2Id}</id>
-				<alias>${account2Alias}</alias>
+				<id>${acct2Id}</id>
+				<alias>${aliasEmail}</alias>
 			</AddAccountAliasRequest>`, adminAuthToken
         );
+        assert.notExists(aliasRes.Fault, 'AddAccountAliasRequest should not fault');
 
-        // Get auth tokens
-        const account1Token = await soap.getAccountAuthToken(account1Email);
-
-        // Create appointment
-        const subject = `Subject${common.getUniqueString()}`;
-        const content = `Content${common.getUniqueString()}`;
-        const epoch = 1546344000000;
-        const pstEpoch = epoch - 8 * 3600000;
-        const tz = '(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana';
+        // Create a simple appointment (no invitees)
+        const subject = `Subj${common.getUniqueString()}`;
+        const t1 = futureTime(3600000);
+        const t2 = futureTime(7200000);
         const createRes = await soap.makeSOAPEnvelopeAccount(
             `<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
 					<inv>
 						<comp status="CONF" fb="B" transp="O"
 							allDay="0" name="${subject}">
-							<or a="${account1Email}"/>
-							<s d="${icalTimeFromEpoch(pstEpoch)}" tz="${tz}"/>
-							<e d="${icalTimeFromEpoch(pstEpoch + 3600000)}" tz="${tz}"/>
+							<or a="${acct1Email}"/>
+							<s d="${t1}"/>
+							<e d="${t2}"/>
 						</comp>
 					</inv>
 					<su>${subject}</su>
 					<mp ct="text/plain">
-						<content>${content}</content>
+						<content>Content</content>
 					</mp>
 				</m>
-			</CreateAppointmentRequest>`, account1Token
+			</CreateAppointmentRequest>`, acct1Token
         );
         assert.notExists(createRes.Fault, 'CreateAppointmentRequest should not fault');
         const invId = createRes.CreateAppointmentResponse.invId;
+        assert.exists(invId, 'Appointment invId should exist');
 
         // Get compNum
         const getMsgRes = await soap.makeSOAPEnvelopeAccount(
             `<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${invId}"/>
-			</GetMsgRequest>`, account1Token
+			</GetMsgRequest>`, acct1Token
         );
         assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
         const msg = Array.isArray(getMsgRes.GetMsgResponse.m)
             ? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
         const compNum = msg.inv[0].comp[0].compNum || 0;
 
-        // Modify appointment - add alias as attendee
-        const modifyRes = await soap.makeSOAPEnvelopeAccount(
+        // Modify appointment to add alias as attendee
+        const modRes = await soap.makeSOAPEnvelopeAccount(
             `<ModifyAppointmentRequest xmlns="urn:zimbraMail"
 				id="${invId}" comp="${compNum}">
 				<m>
-					<inv method="REQUEST" type="event" fb="B" transp="O"
-						status="CONF" allDay="0" name="${subject}">
-						<or a="${account1Email}"/>
-						<at a="${account2Alias}" role="REQ" ptst="NE" rsvp="1"/>
-						<s d="${icalTimeFromEpoch(pstEpoch)}" tz="${tz}"/>
-						<e d="${icalTimeFromEpoch(pstEpoch + 3600000)}" tz="${tz}"/>
+					<inv method="REQUEST" type="event" fb="B"
+						transp="O" status="CONF" allDay="0"
+						name="${subject}">
+						<or a="${acct1Email}"/>
+						<at a="${aliasEmail}" role="REQ"
+							ptst="NE" rsvp="1"/>
+						<s d="${t1}"/>
+						<e d="${t2}"/>
 					</inv>
 					<mp content-type="text/plain">
-						<content>${content}</content>
+						<content>Content</content>
 					</mp>
-					<e a="${account2Alias}" t="t"/>
+					<e a="${aliasEmail}" t="t"/>
 					<su>${subject}</su>
 				</m>
-			</ModifyAppointmentRequest>`, account1Token
+			</ModifyAppointmentRequest>`, acct1Token
         );
-        assert.notExists(modifyRes.Fault, 'ModifyAppointmentRequest should not fault');
+        assert.notExists(modRes.Fault, 'ModifyAppointmentRequest should not fault');
+        assert.exists(modRes.ModifyAppointmentResponse.invId, 'ModifyAppointmentResponse invId should exist');
 
-        // Verify modified appointment
-        const verifyRes = await soap.makeSOAPEnvelopeAccount(
+        // Verify noBlob on organizer after modify
+        const getMsg2Res = await soap.makeSOAPEnvelopeAccount(
             `<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${invId}"/>
-			</GetMsgRequest>`, account1Token
+			</GetMsgRequest>`, acct1Token
         );
-        assert.notExists(verifyRes.Fault, 'GetMsgRequest should not fault');
+        assert.notExists(getMsg2Res.Fault, 'GetMsgRequest should not fault');
+        const msg2 = Array.isArray(getMsg2Res.GetMsgResponse.m)
+            ? getMsg2Res.GetMsgResponse.m[0] : getMsg2Res.GetMsgResponse.m;
+        assert.equal(String(msg2.inv[0].comp[0].noBlob), '1', 'noBlob should be 1');
+
+        // Verify account2 sees the appointment
+        const now = Date.now();
+        const searchRes = await soap.makeSOAPEnvelopeAccount(
+            `<SearchRequest xmlns="urn:zimbraMail"
+				calExpandInstStart="${now - 86400000}"
+				calExpandInstEnd="${now + 2 * 86400000}"
+				types="appointment">
+				<query>subject:(${subject}) is:anywhere</query>
+			</SearchRequest>`, acct2Token
+        );
+        assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
+        const appts = Array.isArray(searchRes.SearchResponse.appt)
+            ? searchRes.SearchResponse.appt : [searchRes.SearchResponse.appt];
+        assert.isAtLeast(appts.length, 1, 'Account 2 should see the appointment');
+
+        // Verify noBlob on invitee
+        const acct2InvId = appts[0].invId;
+        const getMsg3Res = await soap.makeSOAPEnvelopeAccount(
+            `<GetMsgRequest xmlns="urn:zimbraMail">
+				<m id="${acct2InvId}"/>
+			</GetMsgRequest>`, acct2Token
+        );
+        assert.notExists(getMsg3Res.Fault, 'GetMsgRequest should not fault');
+        const msg3 = Array.isArray(getMsg3Res.GetMsgResponse.m)
+            ? getMsg3Res.GetMsgResponse.m[0] : getMsg3Res.GetMsgResponse.m;
+        assert.equal(String(msg3.inv[0].comp[0].noBlob), '1', 'noBlob should be 1 on invitee');
     });
 
 
     it('Sanity | Update a singleton event - add an alias and remove email address', async () => {
         // Create accounts
-        const account1Email = `account1${common.getUniqueString()}@${testDomain}`;
-        const account2Email = `account2${common.getUniqueString()}@${testDomain}`;
-        const account2Alias = `account2alias${common.getUniqueString()}@${testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
+        const acct1Email = `acct1${common.getUniqueString()}@${testDomain}`;
+        const acct1Res = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
-				<name>${account1Email}</name>
+				<name>${acct1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
         );
+        assert.notExists(acct1Res.Fault, 'CreateAccountRequest should not fault');
+        const acct1Token = await soap.getAccountAuthToken(acct1Email);
+
+        const acct2Email = `acct2${common.getUniqueString()}@${testDomain}`;
         const acct2Res = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
-				<name>${account2Email}</name>
+				<name>${acct2Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
         );
-        const account2Id = acct2Res.CreateAccountResponse.account[0].id;
+        assert.notExists(acct2Res.Fault, 'CreateAccountRequest should not fault');
+        const acct2Id = acct2Res.CreateAccountResponse.account[0].id;
+        const acct2Token = await soap.getAccountAuthToken(acct2Email);
 
         // Add alias to account2
-        await soap.makeSOAPEnvelopeAdmin(
+        const aliasEmail = `alias${common.getUniqueString()}@${testDomain}`;
+        const aliasRes = await soap.makeSOAPEnvelopeAdmin(
             `<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
-				<id>${account2Id}</id>
-				<alias>${account2Alias}</alias>
+				<id>${acct2Id}</id>
+				<alias>${aliasEmail}</alias>
 			</AddAccountAliasRequest>`, adminAuthToken
         );
+        assert.notExists(aliasRes.Fault, 'AddAccountAliasRequest should not fault');
 
-        // Get auth tokens
-        const account1Token = await soap.getAccountAuthToken(account1Email);
-
-        // Create appointment with account2 email as attendee
-        const subject = `Subject${common.getUniqueString()}`;
-        const content = `Content${common.getUniqueString()}`;
-        const epoch = 1514808000000;
-        const pstEpoch = epoch - 8 * 3600000;
-        const tz = '(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana';
+        // Create appointment with account2 as attendee (using primary email)
+        const subject = `Subj${common.getUniqueString()}`;
+        const t1 = futureTime(3600000);
+        const t2 = futureTime(7200000);
         const createRes = await soap.makeSOAPEnvelopeAccount(
             `<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
 					<inv>
 						<comp status="CONF" fb="B" transp="O"
 							allDay="0" name="${subject}">
-							<or a="${account1Email}"/>
-							<at a="${account2Email}" role="REQ" ptst="NE" rsvp="1"/>
-							<s d="${icalTimeFromEpoch(pstEpoch)}" tz="${tz}"/>
-							<e d="${icalTimeFromEpoch(pstEpoch + 3600000)}" tz="${tz}"/>
+							<or a="${acct1Email}"/>
+							<at a="${acct2Email}" role="REQ"
+								ptst="NE" rsvp="1"/>
+							<s d="${t1}"/>
+							<e d="${t2}"/>
 						</comp>
 					</inv>
-					<e a="${account2Email}" t="t"/>
+					<e a="${acct2Email}" t="t"/>
 					<su>${subject}</su>
 					<mp ct="text/plain">
-						<content>${content}</content>
+						<content>Content</content>
 					</mp>
 				</m>
-			</CreateAppointmentRequest>`, account1Token
+			</CreateAppointmentRequest>`, acct1Token
         );
         assert.notExists(createRes.Fault, 'CreateAppointmentRequest should not fault');
         const invId = createRes.CreateAppointmentResponse.invId;
+        assert.exists(invId, 'Appointment invId should exist');
 
         // Get compNum
         const getMsgRes = await soap.makeSOAPEnvelopeAccount(
             `<GetMsgRequest xmlns="urn:zimbraMail">
 				<m id="${invId}"/>
-			</GetMsgRequest>`, account1Token
+			</GetMsgRequest>`, acct1Token
         );
         assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
         const msg = Array.isArray(getMsgRes.GetMsgResponse.m)
             ? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
         const compNum = msg.inv[0].comp[0].compNum || 0;
 
-        // Modify appointment - replace account2 email with alias
-        const modifyRes = await soap.makeSOAPEnvelopeAccount(
+        // Account2 accepts
+        const now = Date.now();
+        const searchRes = await soap.makeSOAPEnvelopeAccount(
+            `<SearchRequest xmlns="urn:zimbraMail"
+				calExpandInstStart="${now - 86400000}"
+				calExpandInstEnd="${now + 2 * 86400000}"
+				types="appointment">
+				<query>${subject}</query>
+			</SearchRequest>`, acct2Token
+        );
+        assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
+        const acct2Appts = Array.isArray(searchRes.SearchResponse.appt)
+            ? searchRes.SearchResponse.appt : [searchRes.SearchResponse.appt];
+        const acct2InvId = acct2Appts[0].invId;
+
+        const getAcct2Msg = await soap.makeSOAPEnvelopeAccount(
+            `<GetMsgRequest xmlns="urn:zimbraMail">
+				<m id="${acct2InvId}"/>
+			</GetMsgRequest>`, acct2Token
+        );
+        assert.notExists(getAcct2Msg.Fault, 'GetMsgRequest should not fault');
+        const acct2Msg = Array.isArray(getAcct2Msg.GetMsgResponse.m)
+            ? getAcct2Msg.GetMsgResponse.m[0] : getAcct2Msg.GetMsgResponse.m;
+        const acct2CompNum = acct2Msg.inv[0].comp[0].compNum || 0;
+
+        const replyRes = await soap.makeSOAPEnvelopeAccount(
+            `<SendInviteReplyRequest xmlns="urn:zimbraMail"
+				verb="ACCEPT" id="${acct2InvId}"
+				compNum="${acct2CompNum}" updateOrganizer="TRUE">
+				<m rt="r">
+					<e t="t" a="${acct1Email}"/>
+					<su>ACCEPT: ${subject}</su>
+					<mp ct="text/plain">
+						<content>ACCEPT: ${subject}</content>
+					</mp>
+				</m>
+			</SendInviteReplyRequest>`, acct2Token
+        );
+        assert.notExists(replyRes.Fault, 'SendInviteReplyRequest should not fault');
+
+        // Re-search to get updated invId
+        const searchRes2 = await soap.makeSOAPEnvelopeAccount(
+            `<SearchRequest xmlns="urn:zimbraMail"
+				calExpandInstStart="${now - 86400000}"
+				calExpandInstEnd="${now + 2 * 86400000}"
+				types="appointment">
+				<query>subject:(${subject}) is:anywhere</query>
+			</SearchRequest>`, acct1Token
+        );
+        assert.notExists(searchRes2.Fault, 'SearchRequest should not fault');
+        const acct1Appts = Array.isArray(searchRes2.SearchResponse.appt)
+            ? searchRes2.SearchResponse.appt : [searchRes2.SearchResponse.appt];
+        const updatedInvId = acct1Appts[0].invId;
+
+        // Get updated compNum
+        const getMsg2Res = await soap.makeSOAPEnvelopeAccount(
+            `<GetMsgRequest xmlns="urn:zimbraMail">
+				<m id="${updatedInvId}"/>
+			</GetMsgRequest>`, acct1Token
+        );
+        assert.notExists(getMsg2Res.Fault, 'GetMsgRequest should not fault');
+        const msg2 = Array.isArray(getMsg2Res.GetMsgResponse.m)
+            ? getMsg2Res.GetMsgResponse.m[0] : getMsg2Res.GetMsgResponse.m;
+        const compNum2 = msg2.inv[0].comp[0].compNum || 0;
+
+        // Modify appointment - replace primary email with alias
+        const modRes = await soap.makeSOAPEnvelopeAccount(
             `<ModifyAppointmentRequest xmlns="urn:zimbraMail"
-				id="${invId}" comp="${compNum}">
+				id="${updatedInvId}" comp="${compNum2}">
 				<m>
-					<inv method="REQUEST" type="event" fb="B" transp="O"
-						status="CONF" allDay="0" name="${subject}">
-						<or a="${account1Email}"/>
-						<at a="${account2Alias}" role="REQ" ptst="NE" rsvp="1"/>
-						<s d="${icalTimeFromEpoch(pstEpoch)}" tz="${tz}"/>
-						<e d="${icalTimeFromEpoch(pstEpoch + 3600000)}" tz="${tz}"/>
+					<inv method="REQUEST" type="event" fb="B"
+						transp="O" status="CONF" allDay="0"
+						name="${subject}">
+						<or a="${acct1Email}"/>
+						<at a="${aliasEmail}" role="REQ"
+							ptst="NE" rsvp="1"/>
+						<s d="${t1}"/>
+						<e d="${t2}"/>
 					</inv>
 					<mp content-type="text/plain">
-						<content>${content}</content>
+						<content>Content</content>
 					</mp>
-					<e a="${account2Alias}" t="t"/>
+					<e a="${aliasEmail}" t="t"/>
 					<su>${subject}</su>
 				</m>
-			</ModifyAppointmentRequest>`, account1Token
+			</ModifyAppointmentRequest>`, acct1Token
         );
-        assert.notExists(modifyRes.Fault, 'ModifyAppointmentRequest should not fault');
+        assert.notExists(modRes.Fault, 'ModifyAppointmentRequest should not fault');
+        assert.exists(modRes.ModifyAppointmentResponse.invId, 'ModifyAppointmentResponse invId should exist');
 
-        // Verify modified appointment on account1
-        const verifyRes = await soap.makeSOAPEnvelopeAccount(
-            `<GetMsgRequest xmlns="urn:zimbraMail">
-				<m id="${invId}"/>
-			</GetMsgRequest>`, account1Token
+        // Verify account2 still sees the appointment via alias
+        const searchRes3 = await soap.makeSOAPEnvelopeAccount(
+            `<SearchRequest xmlns="urn:zimbraMail"
+				calExpandInstStart="${now - 86400000}"
+				calExpandInstEnd="${now + 2 * 86400000}"
+				types="appointment">
+				<query>${subject}</query>
+			</SearchRequest>`, acct2Token
         );
-        assert.notExists(verifyRes.Fault, 'GetMsgRequest should not fault');
+        assert.notExists(searchRes3.Fault, 'SearchRequest should not fault');
+        const finalAppts = Array.isArray(searchRes3.SearchResponse.appt)
+            ? searchRes3.SearchResponse.appt : [searchRes3.SearchResponse.appt];
+        assert.isAtLeast(finalAppts.length, 1, 'Account 2 should still see appointment via alias');
     });
 });

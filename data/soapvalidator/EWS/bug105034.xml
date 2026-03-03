@@ -1,0 +1,309 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+	<t:property name="account1.name"
+		value="test1${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="account2.name"
+		value="test2${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="account3.name"
+		value="test3${TIME}.${COUNTER}@${defaultdomain.name}" />
+
+	<t:property name="subject" value="sub.${TIME}.${COUNTER}" />
+	<t:property name="content" value="content.${TIME}.${COUNTER}" />
+
+
+	<t:property name="list1.name"
+		value="list1${TIME}.${COUNTER}@${defaultdomain.name}" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+		<t:test required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+
+	<t:test_case testcaseid="CreateAccountRequest" type="always"
+		bugids="105034">
+		<t:objective>Create accounts using admin</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account1.name}</name>
+					<password>${defaultpassword.value}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account1.server" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account2.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account2.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account2.server" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account3.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account3.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account3.server" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateDlAndAddMembers" type="sanity"
+		bugids="105034">
+		<t:objective>Create DL and add members to it Then send a sync gal to have the DL created in Gal</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+					<name>${list1.name}</name>
+					<a n="description">A test distribution list</a>
+					<a n="zimbraMailStatus">enabled</a>
+				</CreateDistributionListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateDistributionListResponse/admin:dl"
+					attr="id" set="list1.id" />
+			</t:response>
+		</t:test>
+
+		<t:test id="addDistributionListMemberRequest1">
+			<t:request>
+				<AddDistributionListMemberRequest
+					xmlns="urn:zimbraAdmin">
+					<id>${list1.id}</id>
+					<dlm>${account1.name}</dlm>
+				</AddDistributionListMemberRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AddDistributionListMemberResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id="addDistributionListMemberRequest2">
+			<t:request>
+				<AddDistributionListMemberRequest
+					xmlns="urn:zimbraAdmin">
+					<id>${list1.id}</id>
+					<dlm>${account2.name}</dlm>
+				</AddDistributionListMemberRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AddDistributionListMemberResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GrantRightRequest xmlns="urn:zimbraAdmin">
+					<target type="dl" by="name">${list1.name}</target>
+					<grantee type="usr" by="name">${account3.name}</grantee>
+					<right>sendToDistList</right>
+				</GrantRightRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GrantRightResponse" />
+			</t:response>
+		</t:test>
+		
+	</t:test_case>
+
+	<t:test_case testcaseid="SendMsgAndVerifyEWS" type="sanity"
+		bugids="105034">
+		<t:objective>Send a message to DL Login DL user on EWS client and verify expanding DL returns Name and Email address</t:objective>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a='${list1.name}' />
+						<e t="t" a='${account3.name}' />
+						<su> sub1</su>
+						<mp ct="text/plain">
+							<content> cont 1 </content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="message1.id" />
+			</t:response>
+		</t:test>
+
+
+		<t:test required="true">
+			<t:request ews="true" username="${account1.name}" password="${defaultpassword.value}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetFolder
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<FolderShape>
+								<t:BaseShape>AllProperties</t:BaseShape>
+							</FolderShape>
+							<FolderIds>
+								<t:DistinguishedFolderId Id="inbox">
+									<t:Mailbox>
+										<t:EmailAddress>${account1.name}</t:EmailAddress>
+									</t:Mailbox>
+								</t:DistinguishedFolderId>
+
+							</FolderIds>
+						</GetFolder>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" match="2" />
+				<t:select path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:FolderId"
+					attr="Id" set="inbox.id" />
+				<t:select
+					path="//ewsmsg:GetFolderResponseMessage[1]//ewstype:DisplayName"
+					match="Inbox" />
+			</t:response>
+		</t:test>
+
+
+		<t:test>
+			<t:request ews="true" username="${account1.name}" password="${defaultpassword.value}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="${inbox.id}" />
+							</SyncFolderId>
+							<SyncState />
+							<Ignore />
+							<MaxChangesReturned>512</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="mail01_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="mail01_changeKey" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${account1.name}" password="${defaultpassword.value}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<GetItem
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:BodyType>Best</t:BodyType>
+								<t:AdditionalProperties />
+							</ItemShape>
+							<ItemIds>
+								<t:ItemId Id="${mail01_id}" ChangeKey="${mail01_changeKey}" />
+							</ItemIds>
+						</GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+			</t:response>
+		</t:test>
+
+
+		<t:test>
+			<t:request ews="true" username="${account1.name}" password="${defaultpassword.value}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<ExpandDL
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<Mailbox>
+								<t:EmailAddress>${list1.name}</t:EmailAddress>
+							</Mailbox>
+						</ExpandDL>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//ewsmsg:ExpandDLResponseMessage//ewstype:Mailbox//ewstype:EmailAddress[contains(text(),'${account1.name}')]"
+					match="${account1.name}" />
+				<t:select
+					path="//ewsmsg:ExpandDLResponseMessage//ewstype:Mailbox//ewstype:EmailAddress[contains(text(),'${account2.name}')]"
+					match="${account2.name}" />
+				<t:select
+					path="//ewsmsg:ExpandDLResponseMessage//ewstype:Mailbox//ewstype:Name[contains(text(),'${account1.name}')]"
+					match="${account1.name}" />
+				<t:select
+					path="//ewsmsg:ExpandDLResponseMessage//ewstype:Mailbox//ewstype:Name[contains(text(),'${account2.name}')]"
+					match="${account2.name}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+</t:tests>

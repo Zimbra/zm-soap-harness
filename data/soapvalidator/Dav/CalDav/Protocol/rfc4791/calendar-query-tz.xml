@@ -1,0 +1,171 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.user" value="user${TIME}${COUNTER}"/>
+<t:property name="account1.name" value="${account1.user}@${defaultdomain.name}"/>
+<t:property name="account1.name.encoded" value="${account1.user}%40${defaultdomain.name}"/>
+
+<t:property name="account2.user" value="user${TIME}${COUNTER}"/>
+<t:property name="account2.name" value="${account2.user}@${defaultdomain.name}"/>
+<t:property name="account2.name.encoded" value="${account2.user}%40${defaultdomain.name}"/>
+
+<t:property name="account.tz" value="Asia/Kolkata"/>
+<t:property name="folder.color.2" value="#008284FF"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+	<t:objective>create test account</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+	  		<AuthRequest xmlns="urn:zimbraAdmin">
+	    		<name>${admin.user}</name>
+	    		<password>${admin.password}</password>
+			</AuthRequest>
+	 	</t:request>
+	 	<t:response>
+	    	<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+	 	</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+		<a n="zimbraPrefTimeZoneId">${account.tz}</a>
+		<a n="zimbraPrefUseTimeZoneListInCalendar">TRUE</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+		<a n="zimbraPrefTimeZoneId">${account.tz}</a>
+		<a n="zimbraPrefUseTimeZoneListInCalendar">TRUE</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CalDav_Protocol_Calendar_TimeZone_01" type="sanity" bugids="43692">
+	<t:objective>Verify timezone if set is returned by CalDav 1</t:objective>
+	
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:property name="caldav.user" value="${account1.name}"/>
+    <t:property name="caldav.password" value="${defaultpassword.value}"/>
+    <t:property name="caldav.server" value="${account1.server}"/>
+		
+	
+	<t:caldav >
+		<t:request method="PROPFIND" uri="/dav/${account1.name}/${globals.calendar}/" depth="0">
+			<x0:propfind xmlns:x1="http://calendarserver.org/ns/" xmlns:x0="DAV:" xmlns:x3="http://apple.com/ns/ical/" xmlns:x2="urn:ietf:params:xml:ns:caldav">
+ 				<x0:prop>
+  					<x1:getctag/>
+  					<x0:displayname/>
+					<x2:calendar-timezone/>
+				</x0:prop>
+			</x0:propfind>
+
+		</t:request>
+	 	<t:response>
+			<t:select path="//D:response[D:href='/dav/${account1.name.encoded}/${globals.calendar}/']">
+            	<t:select path="//C:calendar-timezone" match="(?s).*TZID:${account.tz}.*"/>
+			</t:select>
+	 	</t:response>
+	</t:caldav>	
+</t:test_case>
+
+<t:test_case testcaseid="CalDav_Protocol_Calendar_TimeZone_02" type="sanity" bugids="43692">
+	<t:objective>Verify timezone if set is returned by CalDav 2</t:objective>
+	
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.tasks}']" attr="id" set="account2.folder.tasks"/>
+        </t:response>
+    </t:test>
+	
+	<t:property name="caldav.user" value="${account2.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account2.server}"/>
+		
+	
+	<t:caldav >
+		<t:request method="PROPFIND" uri="/dav/${account2.name}/${globals.tasks}/" depth="0">
+			<x0:propfind xmlns:x1="http://calendarserver.org/ns/" xmlns:x0="DAV:" xmlns:x3="http://apple.com/ns/ical/" xmlns:x2="urn:ietf:params:xml:ns:caldav">
+ 				<x0:prop>
+  					<x1:getctag/>
+  					<x0:displayname/>
+					<x2:calendar-timezone/>
+				</x0:prop>
+			</x0:propfind>
+	 	</t:request>
+	 	<t:response>
+			<t:select path="//D:response[D:href='/dav/${account2.name.encoded}/${globals.tasks}/']">
+            	<t:select path="//C:calendar-timezone" match="(?s).*TZID:${account.tz}.*"/>
+			</t:select>
+	 	</t:response>
+	</t:caldav>	
+	
+</t:test_case>
+
+
+</t:tests>

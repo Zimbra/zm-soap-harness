@@ -1,0 +1,282 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.user" value="user${TIME}${COUNTER}"/>
+<t:property name="account1.name" value="${account1.user}@${defaultdomain.name}"/>
+<t:property name="account1.name.encoded" value="${account1.name}" urlencode="true"/>
+
+<t:property name="timezone.pst" value="America/Los_Angeles"/>
+<t:property name="timezone.pst.regex" value="America\\/Los_Angeles"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+	<t:objective>create test account</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+	  		<AuthRequest xmlns="urn:zimbraAdmin">
+	    		<name>${admin.user}</name>
+	    		<password>${admin.password}</password>
+	  		</AuthRequest>
+	 	</t:request>
+	 	<t:response>
+	    	<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+	 	</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+<t:test_case testcaseid="CalDav_Protocol_Calendar_TimeRangeQuery_Partial_01" type="functional" bugids="43906">
+	<t:objective>Verify basic rfc4791 compliance - calendar-timerange-Partial-query</t:objective>
+	<t:steps>
+        1. Login as account1.  
+	2. Create a event
+	3. In caldav account do a partial query i.e. return specific components and properties of the VEVENT components that overlap the time range
+    	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
+	<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
+
+	<t:property name="time.20180101120000.gmt" value="1514808000000"/>
+	<t:property name="time.20180101120000.pst" value="${TIME(-8h)[${time.20180101120000.gmt}]}"/>
+
+    <t:test>
+        <t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv>
+						<comp status="CONF" fb="B" transp="O" allDay="0" name="${appointment.subject}">
+							<s d="${ICALTIME[${time.20180101120000.pst}]}" tz="${timezone.pst}" />
+							<e  d="${ICALTIME(+3h)[${time.20180101120000.pst}]}" tz="${timezone.pst}" />
+							<or a="${account1.name}"/>
+							<uid>plain</uid>
+							<recur>
+								<add>
+									<rule freq="DAI">
+										<interval ival="1"/>
+										<count num="5"/>
+									</rule>
+								</add>
+							</recur>
+						</comp>
+					</inv>
+					<su>${appointment.subject}</su>
+					<mp ct="text/plain">
+						<content>${appointment.content}</content>
+					</mp>
+				</m>
+			</CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse">
+            	<t:select attr="calItemId" set="appt1.calItemId"/>
+            	<t:select attr="invId" set="appt1.invId"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:property name="caldav.user" value="${account1.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account1.server}"/>
+  
+   <t:caldav >
+		<t:request method="REPORT" uri="/dav/${account1.name}/Calendar/" depth="1">
+			<C:calendar-query xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:caldav">
+				
+				<D:prop >
+				    <D:getetag/>
+				    <C:calendar-data>
+				      <C:comp name="VCALENDAR">
+					<C:prop name="VERSION"/>
+					<C:comp name="VEVENT">
+					  <C:prop name="SUMMARY"/>
+					  <C:prop name="UID"/>
+					  <C:prop name="DTSTART"/>
+					  <C:prop name="DTEND"/>
+					  <C:prop name="DURATION"/>
+					</C:comp>
+					<C:comp name="VTIMEZONE"/>
+				      </C:comp>
+				    </C:calendar-data>
+
+  				</D:prop>
+				
+			        <C:filter>
+			                <C:comp-filter name="VCALENDAR">
+			                        <C:comp-filter name="VEVENT">
+			                                <C:time-range start="20171230T000000Z"
+								      end="20180125T000000Z"/>
+			                        </C:comp-filter>
+			                </C:comp-filter>
+			        </C:filter>
+			</C:calendar-query>
+	 	</t:request>
+			
+	 	<t:response>
+			<t:select path="//D:response">
+                <t:select path="//D:href"/>  
+                <t:select path="//D:propstat">
+                    <t:select path="//D:status" match="HTTP/1.1 200 OK"/>
+                    <t:select path="//D:prop">
+                        <t:select path="//C:calendar-data" match="(?s).*SUMMARY:${appointment.subject}.*"/>
+			<t:select path="//C:calendar-data" match="(?s).*RRULE:.*" emptyset="1"/>
+                    </t:select>
+                </t:select>
+            </t:select>
+	 	</t:response>
+	</t:caldav>
+
+</t:test_case>
+
+<t:test_case testcaseid="CalDav_Protocol_Calendar_TimeRangeQuery_Partial_02" type="functional" bugids="43906">
+	<t:objective>Verify basic rfc4791 compliance - calendar-timerange-query</t:objective>
+	<t:steps>
+        1. Login as account1.  
+	2. Create a todo
+	3. In caldav account do a partial query i.e. return specific components and properties of the VTODO components that overlap the time range
+    	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
+	<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
+
+	<t:property name="time.20180101120000.gmt" value="1514808000000"/>
+	<t:property name="time.20180101120000.pst" value="${TIME(-8h)[${time.20180101120000.gmt}]}"/>
+
+    <t:test>
+        <t:request>
+			<CreateTaskRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv>
+						<comp status="CONF" fb="B" transp="O" allDay="1" name="${appointment.subject}">
+							<s d="${CURRDATE[${time.20180101120000.pst}]}" tz="${timezone.pst}" />
+							<e  d="${CURRDATE(+3h)[${time.20180101120000.pst}]}" tz="${timezone.pst}" />
+							<or a="${account1.name}"/>
+						</comp>
+					</inv>
+					<su>${appointment.subject}</su>
+					<mp ct="text/plain">
+						<content>${appointment.content}</content>
+					</mp>
+				</m>
+			</CreateTaskRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTaskResponse">
+            	<t:select attr="calItemId" set="appt1.calItemId"/>
+            	<t:select attr="invId" set="appt1.invId"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:property name="caldav.user" value="${account1.name}"/>
+	<t:property name="caldav.password" value="${defaultpassword.value}"/>
+	<t:property name="caldav.server" value="${account1.server}"/>
+  
+   <t:caldav >
+		<t:request method="REPORT" uri="/dav/${account1.name}/Tasks/" depth="1">
+			<C:calendar-query xmlns:C="urn:ietf:params:xml:ns:caldav">
+				
+				<D:prop xmlns:D="DAV:">
+				    <D:getetag/>
+				    <C:calendar-data>
+				      <C:comp name="VCALENDAR">
+					<C:prop name="VERSION"/>
+					<C:comp name="VTODO">
+					  <C:prop name="SUMMARY"/>
+					  <C:prop name="UID"/>
+					  <C:prop name="STATUS"/>
+					</C:comp>
+					<C:comp name="VTIMEZONE"/>
+				      </C:comp>
+				    </C:calendar-data>
+  				</D:prop>
+				
+			        <C:filter>
+			                <C:comp-filter name="VCALENDAR">
+			                        <C:comp-filter name="VTODO">
+			                                <C:time-range start="20171231T000000Z"
+								      end="20180103T000000Z"/>
+			                        </C:comp-filter>
+			                </C:comp-filter>
+			        </C:filter>
+			</C:calendar-query>
+	 	</t:request>
+			
+	 	<t:response>
+			<t:select path="//D:response">
+                <t:select path="//D:href"/>  
+                <t:select path="//D:propstat">
+                    <t:select path="//D:status" match="HTTP/1.1 200 OK"/>
+                    <t:select path="//D:prop">
+                        <t:select path="//C:calendar-data" match="(?s).*SUMMARY:${appointment.subject}.*"/>
+			<t:select path="//C:calendar-data" match="(?s).*DESCRIPTION:.*" emptyset="1"/>
+                    </t:select>
+                </t:select>
+            </t:select>
+	 	</t:response>
+	</t:caldav>
+
+</t:test_case>
+</t:tests>
+
+

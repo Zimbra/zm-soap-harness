@@ -1,0 +1,1952 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<t:property name="test_account1.username" value="test1${TIME}.${COUNTER}" />
+	<t:property name="test_account1.name"
+		value="${test_account1.username}@${defaultdomain.name}" />
+	<t:property name="test_account1.password" value="test123" />
+
+	<t:property name="test_account2.username" value="test2${TIME}.${COUNTER}" />
+	<t:property name="test_account2.name"
+		value="${test_account2.username}@${defaultdomain.name}" />
+	<t:property name="test_account2.password" value="test123" />
+	
+	<t:property name="test_account3.username" value="test3${TIME}.${COUNTER}" />
+	<t:property name="test_account3.name"
+		value="${test_account3.username}@${defaultdomain.name}" />
+	<t:property name="test_account3.password" value="test123" />
+
+	<t:property name="appt.subject1" value="subject1${TIME}.${COUNTER}" />
+	<t:property name="appt.subject2" value="subject2${TIME}.${COUNTER}" />
+	<t:property name="appt.content1" value="content1${TIME}.${COUNTER}" />
+	<t:property name="appt.content2" value="content2${TIME}.${COUNTER}" />
+	<t:property name="appt.subject3" value="subject3${TIME}.${COUNTER}" />
+	<t:property name="appt.content3" value="content3${TIME}.${COUNTER}" />
+	<t:property name="appt.subject4" value="subject4${TIME}.${COUNTER}" />
+	<t:property name="appt.content4" value="content4${TIME}.${COUNTER}" />
+	<t:property name="appt.subject5" value="subject5${TIME}.${COUNTER}" />
+	<t:property name="appt.content5" value="content5${TIME}.${COUNTER}" />
+	<t:property name="appt.subject6" value="subject6${TIME}.${COUNTER}" />
+	<t:property name="appt.content6" value="content6${TIME}.${COUNTER}" />
+	<t:property name="appt.subject7" value="subject7${TIME}.${COUNTER}" />
+	<t:property name="appt.content7" value="content7${TIME}.${COUNTER}" />
+	<t:property name="appt.subject8" value="subject8${TIME}.${COUNTER}" />
+	<t:property name="appt.content8" value="content8${TIME}.${COUNTER}" />
+	<t:property name="appt.subject9" value="subject9${TIME}.${COUNTER}" />
+	<t:property name="appt.content9" value="content9${TIME}.${COUNTER}" />
+	
+	<t:property name="appt.subject10" value="subject10${TIME}.${COUNTER}" />
+	<t:property name="appt.content10" value="content10${TIME}.${COUNTER}" />
+	<t:property name="appt.subject11" value="subject11${TIME}.${COUNTER}" />
+	<t:property name="appt.content11" value="content11${TIME}.${COUNTER}" />
+	<t:property name="appt.subject12" value="subject12${TIME}.${COUNTER}" />
+	<t:property name="appt.content12" value="content12${TIME}.${COUNTER}" />
+	
+	<t:property name="appt.subject13" value="subject13${TIME}.${COUNTER}" />
+	<t:property name="appt.content13" value="content13${TIME}.${COUNTER}" />
+	<t:property name="appt.subject14" value="subject14${TIME}.${COUNTER}" />
+	<t:property name="appt.content14" value="content14${TIME}.${COUNTER}" />
+	
+	
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="acct_setup" type="always">
+		<t:objective>Create a test account</t:objective>
+		<steps>
+			1. Login to admin account
+			2. Create a test_account1
+			3. Create a
+			test_account2
+		</steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_test_account1" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account1.name}</name>
+					<password>${test_account1.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_test_account2" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account2.name}</name>
+					<password>${test_account2.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account2.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+		
+		<t:test id="create_test_account3" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account3.name}</name>
+					<password>${test_account3.password}</password>
+					<a n="zimbraFeatureEwsEnabled">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account3.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="CalendarBasic_01" type="sanity">
+		<t:objective>Create a simple calendar appointment from ZWC and sync on EWS client</t:objective>
+		<t:steps>1. Create a basic cal appt from ZWC.
+		2. Sync on EWS client in calendar folder appointment is synced
+		</t:steps>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:property name="Time1" value="${ICALTIME(+30m)}"/>
+		<t:property name="Time2" value="${ICALTIME(+1h)}"/>
+		<t:property name="Time3" value="${ICALTIME(-1h)}"/>
+		<t:property name="Time4" value="${ICALTIME(-30m)}"/>
+		<t:property name="Time5" value="${ICALTIME(+2d)}"/>
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+					<inv method="REQUEST" type="event" fb="B" transp="O" allDay="0"
+						name="${appt.subject1}">
+						<s d="${Time3}" />
+						<e d="${Time4}" />
+						<or a="${test_account1.name}" />
+					</inv>
+					<e a="${test_account2.name}" t="t" />
+					<su>${appt.subject1}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateAppointmentResponse" />
+		</t:response>
+	</t:test>
+    
+    
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:IncludeMimeContent>false</t:IncludeMimeContent>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="10" />
+							</SyncFolderId>
+							<SyncState />
+							<Ignore />
+							<MaxChangesReturned>100</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="cal01_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="cal01_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState" set="SyncState01" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<m:GetItem
+							xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
+							xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
+							<m:ItemShape>
+								<t:BaseShape>Default</t:BaseShape>
+								<t:IncludeMimeContent>false</t:IncludeMimeContent>
+								<t:BodyType>Text</t:BodyType>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:ReminderIsSet" />
+									<t:FieldURI FieldURI="item:ReminderMinutesBeforeStart" />
+									<t:FieldURI FieldURI="item:ReminderDueBy" />
+								</t:AdditionalProperties>
+							</m:ItemShape>
+							<m:ItemIds>
+								<t:ItemId Id="${cal01_id}" ChangeKey="${cal01_changeKey}" />
+							</m:ItemIds>
+						</m:GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${appt.subject1}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:RequiredAttendees"
+					match="" />
+			</t:response>
+		</t:test>
+   
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CalendarBasic_02" type="sanity">
+		<t:objective>Create a simple all day appointment from ZWC and sync on EWS client</t:objective>
+		<t:steps>1. Create a basic all day cal appt from ZWC.
+		2. Sync on EWS client in calendar folder appointment is synced
+		</t:steps>
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+					<inv method="REQUEST" type="event" fb="B" transp="O" allDay="1"
+						name="${appt.subject2}">
+						
+						<s d="${Time3}" />
+						<e d="${Time4}" />
+						<or a="${test_account1.name}" />
+					</inv>
+					<e a="${test_account2.name}" t="t" />
+					<su>${appt.subject2}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateAppointmentResponse" />
+		</t:response>
+	</t:test>
+    
+    
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:IncludeMimeContent>false</t:IncludeMimeContent>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="10" />
+							</SyncFolderId>
+							<SyncState>${SyncState01}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>100</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="cal02_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="cal02_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState" set="SyncState02" />	
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<m:GetItem
+							xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
+							xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
+							<m:ItemShape>
+								<t:BaseShape>Default</t:BaseShape>
+								<t:IncludeMimeContent>false</t:IncludeMimeContent>
+								<t:BodyType>Text</t:BodyType>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:ReminderIsSet" />
+									<t:FieldURI FieldURI="item:ReminderMinutesBeforeStart" />
+									<t:FieldURI FieldURI="item:ReminderDueBy" />
+									 <t:FieldURI FieldURI="calendar:IsAllDayEvent"/>
+								</t:AdditionalProperties>
+							</m:ItemShape>
+							<m:ItemIds>
+								<t:ItemId Id="${cal02_id}" ChangeKey="${cal02_changeKey}" />
+							</m:ItemIds>
+						</m:GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${appt.subject2}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:IsAllDayEvent"
+					match="true" />
+			</t:response>
+		</t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CalendarBasic_03" type="sanity">
+		<t:objective>Create a simple appointment from ZWC spanning across multiple days and sync on EWS client 1</t:objective>
+		<t:steps>1. Create a basic cal appt spanning across multiple days from ZWC.
+		2. Sync on EWS client in calendar folder appointment is synced
+		</t:steps>
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+					<inv method="REQUEST" type="event" fb="B" transp="O" allDay="0"
+						name="${appt.subject3}">
+						<s d="20181204T123006" />
+						<e d="20181206T113006" />
+						<or a="${test_account1.name}" />
+					</inv>
+					<e a="${test_account2.name}" t="t" />
+					<su>${appt.subject3}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateAppointmentResponse" />
+		</t:response>
+	</t:test>
+    
+    
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:IncludeMimeContent>false</t:IncludeMimeContent>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="10" />
+							</SyncFolderId>
+							<SyncState>${SyncState02}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>100</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="cal02_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="cal02_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState" set="SyncState03" />	
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<m:GetItem
+							xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
+							xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
+							<m:ItemShape>
+								<t:BaseShape>Default</t:BaseShape>
+								<t:IncludeMimeContent>false</t:IncludeMimeContent>
+								<t:BodyType>Text</t:BodyType>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:ReminderIsSet" />
+									<t:FieldURI FieldURI="item:ReminderMinutesBeforeStart" />
+									<t:FieldURI FieldURI="item:ReminderDueBy" />
+									 <t:FieldURI FieldURI="calendar:IsAllDayEvent"/>
+								</t:AdditionalProperties>
+							</m:ItemShape>
+							<m:ItemIds>
+								<t:ItemId Id="${cal02_id}" ChangeKey="${cal02_changeKey}" />
+							</m:ItemIds>
+						</m:GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${appt.subject3}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:IsAllDayEvent"
+					match="false" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Start"
+					contains="2018-12-04" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:End"
+					contains="2018-12-06" />
+			</t:response>
+		</t:test>
+
+
+</t:test_case>
+	
+	
+<t:test_case testcaseid="CalendarBasic_04" type="sanity">
+		<t:objective>Create a simple appointment from ZWC spanning across multiple days and sync on EWS client 2</t:objective>
+		<t:steps>1. Create a basic cal appt spanning across multiple days from ZWC.
+		2. Sync on EWS client in calendar folder appointment is synced
+		</t:steps>
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+					<inv method="REQUEST" type="event" fb="B" transp="O" allDay="0"
+						name="${appt.subject4}">
+						<s d="20181204T123006" />
+						<e d="20181206T113006" />
+						<or a="${test_account1.name}" />
+					</inv>
+					<e a="${test_account2.name}" t="t" />
+					<mp content-type="text/plain">
+						<content>${appt.content4}</content>
+					</mp>
+					<su>${appt.subject4}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateAppointmentResponse" />
+		</t:response>
+	</t:test>
+    
+    
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:IncludeMimeContent>false</t:IncludeMimeContent>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="10" />
+							</SyncFolderId>
+							<SyncState>${SyncState03}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>100</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="cal02_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="cal02_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState" set="SyncState04" />	
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<m:GetItem
+							xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
+							xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
+							<m:ItemShape>
+								<t:BaseShape>Default</t:BaseShape>
+								<t:IncludeMimeContent>false</t:IncludeMimeContent>
+								<t:BodyType>Text</t:BodyType>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:ReminderIsSet" />
+									<t:FieldURI FieldURI="item:ReminderMinutesBeforeStart" />
+									<t:FieldURI FieldURI="item:ReminderDueBy" />
+									 <t:FieldURI FieldURI="calendar:IsAllDayEvent"/>
+									 <t:FieldURI FieldURI="item:Body"/>
+								</t:AdditionalProperties>
+							</m:ItemShape>
+							<m:ItemIds>
+								<t:ItemId Id="${cal02_id}" ChangeKey="${cal02_changeKey}" />
+							</m:ItemIds>
+						</m:GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${appt.subject4}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:IsAllDayEvent"
+					match="false" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Body"
+					match="${appt.content4}" />
+			</t:response>
+		</t:test>
+
+</t:test_case>   
+	
+<t:test_case testcaseid="CalendarBasic_05" type="sanity">
+		<t:objective>Create a simple appointment from EWS and sync on ZWC client</t:objective>
+		<t:steps>1. Send a meeting request from EWS to ZWC client.
+		2. Sync on zwc client meeting request received
+		</t:steps>
+		
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						 <CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages" MessageDisposition="SaveOnly" SendMeetingInvitations="SendToAllAndSaveCopy">
+						      <SavedItemFolderId>
+						        <t:FolderId Id="10"/>
+						      </SavedItemFolderId>
+						      <Items>
+						        <t:CalendarItem>
+						          <t:Subject>${appt.subject5}</t:Subject>
+						          <t:Sensitivity>Normal</t:Sensitivity>
+						          <t:Body BodyType="HTML">${appt.content5}</t:Body>
+						          <t:Importance>Normal</t:Importance>
+						          <t:Start>2019-01-04T08:00:00+05:30</t:Start>
+						          <t:End>2019-01-04T08:30:00+05:30</t:End>
+						          <t:IsAllDayEvent>false</t:IsAllDayEvent>
+						          <t:LegacyFreeBusyStatus>Busy</t:LegacyFreeBusyStatus>
+						          <t:IsResponseRequested>true</t:IsResponseRequested>
+						          <t:RequiredAttendees>
+						            <t:Attendee>
+						              <t:Mailbox>
+						                <t:Name>${test_account2.username}</t:Name>
+						                <t:EmailAddress>${test_account2.name}</t:EmailAddress>
+						              </t:Mailbox>
+						              <t:ResponseType>NoResponseReceived</t:ResponseType>
+						            </t:Attendee>
+						          </t:RequiredAttendees>
+						          <t:StartTimeZone Id="Sri Lanka Standard Time"/>
+						          <t:EndTimeZone Id="Sri Lanka Standard Time"/>
+						          <t:AllowNewTimeProposal>false</t:AllowNewTimeProposal>
+						        </t:CalendarItem>
+						      </Items>
+					    </CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponse//ewstype:ItemId" attr="Id" set="ewsCal1_Id" />
+				<t:select path="//ewsmsg:CreateItemResponse//ewstype:ItemId" attr="ChangeKey" set="ewsCal1_Ck" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:IncludeMimeContent>false</t:IncludeMimeContent>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="10" />
+							</SyncFolderId>
+							<SyncState>${SyncState04}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>100</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="cal03ews_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="cal03ews_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState" set="SyncState05" />	
+			</t:response>
+		</t:test>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:delay msec="3000"/>
+		
+		<t:test>
+		    <t:request>
+			    <SearchRequest xmlns="urn:zimbraMail" types="appointment">
+				    <query>subject:${appt.subject5}</query>
+			    </SearchRequest>
+		    </t:request>
+		    <t:response>
+			    <t:select path="//mail:SearchResponse/mail:appt" attr="invId" set="inv.id1"/>
+			    <t:select path="//mail:SearchResponse/mail:appt" attr="name" match="${appt.subject5}"/>
+		    </t:response>
+	    </t:test>	
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CalendarBasic_06" type="sanity">
+		<t:objective>Create a simple appointment from EWS and sync on ZWC client spanning across multiple days</t:objective>
+		<t:steps>1. Send a meeting request from EWS to ZWC client spanning across two days..
+		2. Sync on zwc client meeting request received with correct details.
+		</t:steps>
+		
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						 <CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages" MessageDisposition="SaveOnly" SendMeetingInvitations="SendToAllAndSaveCopy">
+						      <SavedItemFolderId>
+						        <t:FolderId Id="10"/>
+						      </SavedItemFolderId>
+						      <Items>
+						        <t:CalendarItem>
+						          <t:Subject>${appt.subject6}</t:Subject>
+						          <t:Sensitivity>Normal</t:Sensitivity>
+						          <t:Body BodyType="HTML">${appt.content6}</t:Body>
+						          <t:Importance>Normal</t:Importance>						          
+						          <t:Start>2019-01-04T08:00:00+05:30</t:Start>
+						          <t:End>2019-01-05T08:30:00+05:30</t:End>
+						          <t:IsAllDayEvent>false</t:IsAllDayEvent>
+						          <t:LegacyFreeBusyStatus>Busy</t:LegacyFreeBusyStatus>
+						          <t:IsResponseRequested>true</t:IsResponseRequested>
+						          <t:RequiredAttendees>
+						            <t:Attendee>
+						              <t:Mailbox>
+						                <t:Name>${test_account2.username}</t:Name>
+						                <t:EmailAddress>${test_account2.name}</t:EmailAddress>
+						              </t:Mailbox>
+						              <t:ResponseType>NoResponseReceived</t:ResponseType>
+						            </t:Attendee>
+						          </t:RequiredAttendees>
+						          <t:StartTimeZone Id="Sri Lanka Standard Time"/>
+						          <t:EndTimeZone Id="Sri Lanka Standard Time"/>
+						          <t:AllowNewTimeProposal>false</t:AllowNewTimeProposal>
+						        </t:CalendarItem>
+						      </Items>
+					    </CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponse//ewstype:ItemId" attr="Id" set="ewsCal1_Id" />
+				<t:select path="//ewsmsg:CreateItemResponse//ewstype:ItemId" attr="ChangeKey" set="ewsCal1_Ck" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:IncludeMimeContent>false</t:IncludeMimeContent>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="10" />
+							</SyncFolderId>
+							<SyncState>${SyncState05}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>100</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="cal03ews_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="cal03ews_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState" set="SyncState06" />	
+			</t:response>
+		</t:test>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:delay msec="3000"/>
+		
+		<t:test>
+		    <t:request>
+			    <SearchRequest xmlns="urn:zimbraMail" types="appointment">
+				    <query>subject:${appt.subject6}</query>
+			    </SearchRequest>
+		    </t:request>
+		    <t:response>
+			    <t:select path="//mail:SearchResponse/mail:appt" attr="invId" set="inv.id2"/>
+			    <t:select path="//mail:SearchResponse/mail:appt" attr="name" match="${appt.subject6}"/>
+			    <t:select path="//mail:SearchResponse//mail:inst" attr="ridZ" match="20190104T023000Z"/>
+		    </t:response>
+	    </t:test>	
+
+		<t:test>
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${inv.id2}" />
+				</GetMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetMsgResponse//mail:s"
+					attr="d" match="20190104T023000Z" />
+				<t:select
+					path="//mail:GetMsgResponse/mail:m/mail:inv/mail:comp//mail:e"
+					attr="d" match="20190105T030000Z" />
+			</t:response>
+		</t:test>
+		
+</t:test_case>
+
+
+<t:test_case testcaseid="CalendarBasic_07" type="sanity">
+		<t:objective>Create a simple All day appointment from EWS and sync on ZWC client</t:objective>
+		<t:steps>1. Create an All day appointment from EWS client.
+		2. Sync on zwc client meeting request received with correct details.
+		</t:steps>
+		
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						 <CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages" MessageDisposition="SaveOnly" SendMeetingInvitations="SendToAllAndSaveCopy">
+						      <SavedItemFolderId>
+						        <t:FolderId Id="10"/>
+						      </SavedItemFolderId>
+						      <Items>
+						        <t:CalendarItem>
+						          <t:Subject>${appt.subject7}</t:Subject>
+						          <t:Sensitivity>Normal</t:Sensitivity>
+						          <t:Body BodyType="HTML">${appt.content7}</t:Body>
+						          <t:Importance>Normal</t:Importance>						        
+						          <t:Start>2019-01-06T00:00:00+05:30</t:Start>
+						          <t:End>2019-01-07T00:00:00+05:30</t:End>
+						          <t:IsAllDayEvent>true</t:IsAllDayEvent>
+						          <t:LegacyFreeBusyStatus>Free</t:LegacyFreeBusyStatus>
+						          <t:IsResponseRequested>true</t:IsResponseRequested>
+						          <t:StartTimeZone Id="Sri Lanka Standard Time"/>
+						          <t:EndTimeZone Id="Sri Lanka Standard Time"/>
+						          <t:AllowNewTimeProposal>false</t:AllowNewTimeProposal>
+						        </t:CalendarItem>
+						      </Items>
+					    </CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponse//ewstype:ItemId" attr="Id" set="ewsCal1_Id" />
+				<t:select path="//ewsmsg:CreateItemResponse//ewstype:ItemId" attr="ChangeKey" set="ewsCal1_Ck" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:IncludeMimeContent>false</t:IncludeMimeContent>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="10" />
+							</SyncFolderId>
+							<SyncState>${SyncState06}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>100</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="cal03ews_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="cal03ews_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState" set="SyncState07" />	
+			</t:response>
+		</t:test>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:delay msec="3000"/>
+		
+		<t:test>
+		    <t:request>
+			    <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="1546732800000" calExpandInstEnd="1546819200000">
+				    <query>${appt.subject7}(inid:10)</query>
+			    </SearchRequest>
+		    </t:request>
+		    <t:response>
+			    <t:select path="//mail:SearchResponse//mail:appt" attr="invId" set="inv.id3"/>
+			    <t:select path="//mail:SearchResponse//mail:appt" attr="name" match="${appt.subject7}"/>
+			    <t:select path="//mail:SearchResponse//mail:inst" attr="ridZ" match="20190106"/>
+		    </t:response>
+	    </t:test>	
+
+		<t:test>
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${inv.id3}" />
+				</GetMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetMsgResponse//mail:s"
+					attr="d" match="20190106" />
+				<t:select
+					path="//mail:GetMsgResponse//mail:e"
+					attr="d" match="20190106" />
+				<t:select
+					path="//mail:GetMsgResponse//mail:comp"
+					attr="allDay" match="1" />
+			</t:response>
+		</t:test>
+		
+</t:test_case>
+
+
+<t:test_case testcaseid="CalendarBasic_08" type="sanity">
+		<t:objective>Create a simple All day meeting from EWS and sync on ZWC client</t:objective>
+		<t:steps>1. Create an All day meeting from EWS client.
+		2. Sync on zwc client meeting request received by user 2 with correct details.
+		</t:steps>
+		
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						 <CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages" MessageDisposition="SaveOnly" SendMeetingInvitations="SendToAllAndSaveCopy">
+						      <SavedItemFolderId>
+						        <t:FolderId Id="10"/>
+						      </SavedItemFolderId>
+						      <Items>
+						        <t:CalendarItem>
+						          <t:Subject>${appt.subject8}</t:Subject>
+						          <t:Sensitivity>Normal</t:Sensitivity>
+						          <t:Body BodyType="HTML">${appt.content8}</t:Body>
+						          <t:Importance>Normal</t:Importance>						        
+						          <t:Start>2019-01-07T00:00:00+05:30</t:Start>
+						          <t:End>2019-01-08T00:00:00+05:30</t:End>
+						          <t:IsAllDayEvent>true</t:IsAllDayEvent>
+						          <t:LegacyFreeBusyStatus>Free</t:LegacyFreeBusyStatus>
+						          <t:IsResponseRequested>true</t:IsResponseRequested>
+						          <t:RequiredAttendees>
+						            <t:Attendee>
+						              <t:Mailbox>
+						                <t:Name>${test_account2.username}</t:Name>
+						                <t:EmailAddress>${test_account2.name}</t:EmailAddress>
+						              </t:Mailbox>
+						              <t:ResponseType>NoResponseReceived</t:ResponseType>
+						            </t:Attendee>
+						          </t:RequiredAttendees>
+						          <t:StartTimeZone Id="Sri Lanka Standard Time"/>
+						          <t:EndTimeZone Id="Sri Lanka Standard Time"/>
+						          <t:AllowNewTimeProposal>false</t:AllowNewTimeProposal>
+						        </t:CalendarItem>
+						      </Items>
+					    </CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponse//ewstype:ItemId" attr="Id" set="ewsCal1_Id" />
+				<t:select path="//ewsmsg:CreateItemResponse//ewstype:ItemId" attr="ChangeKey" set="ewsCal1_Ck" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:IncludeMimeContent>false</t:IncludeMimeContent>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="10" />
+							</SyncFolderId>
+							<SyncState>${SyncState07}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>100</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="cal03ews_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="cal03ews_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState" set="SyncState08" />	
+			</t:response>
+		</t:test>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:delay msec="3000"/>
+		
+		<t:test>
+		    <t:request>
+			    <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="1546819200000" calExpandInstEnd="1546905600000">
+				    <query>${appt.subject8}(inid:10)</query>
+			    </SearchRequest>
+		    </t:request>
+		    <t:response>
+			    <t:select path="//mail:SearchResponse//mail:appt" attr="invId" set="inv.id4"/>
+			    <t:select path="//mail:SearchResponse//mail:appt" attr="name" match="${appt.subject8}"/>
+			    <t:select path="//mail:SearchResponse//mail:inst" attr="ridZ" match="20190107"/>
+		    </t:response>
+	    </t:test>	
+
+		<t:test>
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${inv.id4}" />
+				</GetMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetMsgResponse//mail:s"
+					attr="d" match="20190107" />
+				<t:select
+					path="//mail:GetMsgResponse//mail:e"
+					attr="d" match="20190107" />
+				<t:select
+					path="//mail:GetMsgResponse//mail:comp"
+					attr="allDay" match="1" />
+			</t:response>
+		</t:test>
+		
+</t:test_case>
+
+
+<t:test_case testcaseid="CalendarBasic_09" type="sanity">
+		<t:objective>Create a simple meeting inviting multiple users from EWS and sync on ZWC client</t:objective>
+		<t:steps>1. Create a meeting request inviting multiple users from EWS client.
+		2. Sync on zwc client meeting request received by both users with correct details.
+		</t:steps>
+		
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						 <CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages" MessageDisposition="SaveOnly" SendMeetingInvitations="SendToAllAndSaveCopy">
+						      <SavedItemFolderId>
+						        <t:FolderId Id="10"/>
+						      </SavedItemFolderId>
+						      <Items>
+						        <t:CalendarItem>
+						          <t:Subject>${appt.subject9}</t:Subject>
+						          <t:Sensitivity>Normal</t:Sensitivity>
+						          <t:Body BodyType="HTML">${appt.content9}</t:Body>
+						          <t:Importance>Normal</t:Importance>					         
+						          <t:Start>2019-01-07T09:00:00+05:30</t:Start>
+						          <t:End>2019-01-08T09:15:00+05:30</t:End>
+						          <t:IsAllDayEvent>false</t:IsAllDayEvent>
+						          <t:LegacyFreeBusyStatus>busy</t:LegacyFreeBusyStatus>
+						          <t:IsResponseRequested>true</t:IsResponseRequested>
+						          <t:RequiredAttendees>
+						            <t:Attendee>
+						              <t:Mailbox>
+						                <t:Name>${test_account2.username}</t:Name>
+						                <t:EmailAddress>${test_account2.name}</t:EmailAddress>
+						              </t:Mailbox>
+						              <t:ResponseType>NoResponseReceived</t:ResponseType>
+						            </t:Attendee>
+						            <t:Attendee>
+						              <t:Mailbox>
+						                <t:Name>${test_account3.username}</t:Name>
+						                <t:EmailAddress>${test_account3.name}</t:EmailAddress>
+						              </t:Mailbox>
+						              <t:ResponseType>NoResponseReceived</t:ResponseType>
+						            </t:Attendee>
+						          </t:RequiredAttendees>
+						          <t:StartTimeZone Id="Sri Lanka Standard Time"/>
+						          <t:EndTimeZone Id="Sri Lanka Standard Time"/>
+						          <t:AllowNewTimeProposal>false</t:AllowNewTimeProposal>
+						        </t:CalendarItem>
+						      </Items>
+					    </CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponse//ewstype:ItemId" attr="Id" set="ewsCal1_Id" />
+				<t:select path="//ewsmsg:CreateItemResponse//ewstype:ItemId" attr="ChangeKey" set="ewsCal1_Ck" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:IncludeMimeContent>false</t:IncludeMimeContent>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="10" />
+							</SyncFolderId>
+							<SyncState>${SyncState08}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>100</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="cal03ews_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="cal03ews_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState" set="SyncState09" />	
+			</t:response>
+		</t:test>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:delay msec="3000"/>
+		
+		<t:test>
+		    <t:request>
+			    <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="1546819200000" calExpandInstEnd="1546905600000">
+				    <query>${appt.subject9}(inid:10)</query>
+			    </SearchRequest>
+		    </t:request>
+		    <t:response>
+			    <t:select path="//mail:SearchResponse//mail:appt" attr="invId" set="inv.id4"/>
+			    <t:select path="//mail:SearchResponse//mail:appt" attr="name" match="${appt.subject9}"/>
+			    <t:select path="//mail:SearchResponse//mail:inst" attr="ridZ" match="20190107T033000Z"/>
+		    </t:response>
+	    </t:test>	
+
+		<t:test>
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${inv.id4}" />
+				</GetMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetMsgResponse//mail:s"
+					attr="d" match="20190107T033000Z" />
+				<t:select
+					path="//mail:GetMsgResponse//mail:e"
+					attr="d" match="20190108T034500Z" />
+			</t:response>
+		</t:test>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account3.name}</account>
+					<password>${test_account3.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:delay msec="3000"/>
+		
+		<t:test>
+		    <t:request>
+			    <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="1546819200000" calExpandInstEnd="1546905600000">
+				    <query>${appt.subject9}(inid:10)</query>
+			    </SearchRequest>
+		    </t:request>
+		    <t:response>
+			    <t:select path="//mail:SearchResponse//mail:appt" attr="invId" set="inv.id4"/>
+			    <t:select path="//mail:SearchResponse//mail:appt" attr="name" match="${appt.subject9}"/>
+			    <t:select path="//mail:SearchResponse//mail:inst" attr="ridZ" match="20190107T033000Z"/>
+		    </t:response>
+	    </t:test>	
+		
+</t:test_case>
+
+<t:test_case testcaseid="CalendarBasic_10" type="sanity">
+		<t:objective>Create a simple All day appointment from ZWC and sync on EWS client</t:objective>
+		<t:steps>1. Create a simple All Day appointment from ZWC client.
+		2. Sync on EWS client all day appointment is received.
+		</t:steps>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>	
+		
+		<t:test>
+			<t:request>
+				<CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+					<inv>
+						<comp status="CONF" fb="B" transp="O" allDay="1" name="${appt.subject10}" >
+							<s d="20191204" />
+							<e d="20191204" />
+							<or a="${test_account1.name}"/>
+						</comp>
+					</inv>
+					<su>${appt.subject10}</su>
+                    <mp content-type="text/plain">
+                        <content>${appt.content10}</content>
+                    </mp>
+                </m>
+            </CreateAppointmentRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateAppointmentResponse" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:IncludeMimeContent>false</t:IncludeMimeContent>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="10" />
+							</SyncFolderId>
+							<SyncState>${SyncState09}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>100</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="cal03ews_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="cal03ews_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState" set="SyncState10" />	
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<m:GetItem
+							xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
+							xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
+							<m:ItemShape>
+								<t:BaseShape>Default</t:BaseShape>
+								<t:IncludeMimeContent>false</t:IncludeMimeContent>
+								<t:BodyType>Text</t:BodyType>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:ReminderIsSet" />
+									<t:FieldURI FieldURI="item:ReminderMinutesBeforeStart" />
+									<t:FieldURI FieldURI="item:ReminderDueBy" />
+									 <t:FieldURI FieldURI="calendar:IsAllDayEvent"/>
+									 <t:FieldURI FieldURI="item:Body"/>
+								</t:AdditionalProperties>
+							</m:ItemShape>
+							<m:ItemIds>
+								<t:ItemId Id="${cal03ews_id}" ChangeKey="${cal03ews_changeKey}" />
+							</m:ItemIds>
+						</m:GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${appt.subject10}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:IsAllDayEvent"
+					match="true" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Body"
+					match="${appt.content10}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Start"
+					contains="2019-12-04T00:00:00" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:End"
+					contains="2019-12-05T00:00:00" />
+			</t:response>
+		</t:test>
+		
+</t:test_case>
+	
+
+
+<t:test_case testcaseid="CalendarBasic_11" type="sanity">
+		<t:objective>Create a private calendar appointment from ZWC and sync on EWS client</t:objective>
+		<t:steps>1. Create a basic private cal appt from ZWC.
+		2. Sync on EWS client in calendar folder private appointment is synced
+		</t:steps>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+					<inv class="PRI" method="REQUEST" type="event" fb="B" transp="O" allDay="0"
+						name="${appt.subject11}">
+						<s d="${Time3}" />
+						<e d="${Time4}" />
+						<or a="${test_account1.name}" />
+					</inv>
+					<e a="${test_account2.name}" t="t" />
+					<su>${appt.subject11}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateAppointmentResponse" />
+		</t:response>
+	</t:test>
+    
+    
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:IncludeMimeContent>false</t:IncludeMimeContent>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="10" />
+							</SyncFolderId>
+							<SyncState>${SyncState10}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>100</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="cal011_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="cal011_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState" set="SyncState11" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<m:GetItem
+							xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
+							xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
+							<m:ItemShape>
+								<t:BaseShape>Default</t:BaseShape>
+								<t:IncludeMimeContent>false</t:IncludeMimeContent>
+								<t:BodyType>Text</t:BodyType>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:ReminderIsSet" />
+									<t:FieldURI FieldURI="item:ReminderMinutesBeforeStart" />
+									<t:FieldURI FieldURI="item:ReminderDueBy" />
+									<t:FieldURI FieldURI="item:Sensitivity"/>
+								</t:AdditionalProperties>
+							</m:ItemShape>
+							<m:ItemIds>
+								<t:ItemId Id="${cal011_id}" ChangeKey="${cal011_changeKey}" />
+							</m:ItemIds>
+						</m:GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${appt.subject11}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Sensitivity"
+					match="Private" />
+			</t:response>
+		</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CalendarBasic_12" type="sanity">
+		<t:objective>Create a private calendar appointment from EWS and sync on ZWC client</t:objective>
+		<t:steps>1. Create a basic private cal appt from EWS client.
+		2. Sync on ZWC client in calendar folder private appointment is synced.
+		</t:steps>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						 <CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages" MessageDisposition="SaveOnly" SendMeetingInvitations="SendToAllAndSaveCopy">
+						      <SavedItemFolderId>
+						        <t:FolderId Id="10"/>
+						      </SavedItemFolderId>
+						      <Items>
+						        <t:CalendarItem>
+						          <t:Subject>${appt.subject12}</t:Subject>
+						          <t:Sensitivity>Private</t:Sensitivity>
+						          <t:Body BodyType="HTML">${appt.content12}</t:Body>
+						          <t:Importance>Normal</t:Importance>						        
+						          <t:Start>2019-01-07T00:00:00+05:30</t:Start>
+						          <t:End>2019-01-08T00:00:00+05:30</t:End>
+						          <t:IsAllDayEvent>true</t:IsAllDayEvent>
+						          <t:LegacyFreeBusyStatus>Free</t:LegacyFreeBusyStatus>
+						          <t:IsResponseRequested>true</t:IsResponseRequested>
+						          <t:StartTimeZone Id="Sri Lanka Standard Time"/>
+						          <t:EndTimeZone Id="Sri Lanka Standard Time"/>
+						          <t:AllowNewTimeProposal>false</t:AllowNewTimeProposal>
+						        </t:CalendarItem>
+						      </Items>
+					    </CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponse//ewstype:ItemId" attr="Id" set="ewsCal12_Id" />
+				<t:select path="//ewsmsg:CreateItemResponse//ewstype:ItemId" attr="ChangeKey" set="ewsCal12_Ck" />
+			</t:response>
+		</t:test>
+    
+    
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:IncludeMimeContent>false</t:IncludeMimeContent>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="10" />
+							</SyncFolderId>
+							<SyncState>${SyncState11}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>100</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="cal12_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="cal12_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState" set="SyncState12" />
+			</t:response>
+		</t:test>
+
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:delay msec="3000"/>
+		
+		<t:test>
+		    <t:request>
+			    <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="1546819200000" calExpandInstEnd="1546905600000">
+				    <query>${appt.subject12}(inid:10)</query>
+			    </SearchRequest>
+		    </t:request>
+		    <t:response>
+			    <t:select path="//mail:SearchResponse//mail:appt" attr="invId" set="inv.id12"/>
+			    <t:select path="//mail:SearchResponse//mail:appt" attr="name" match="${appt.subject12}"/>
+		    </t:response>
+	    </t:test>	
+
+		<t:test>
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${inv.id12}" />
+				</GetMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetMsgResponse//mail:comp"
+					attr="class" match="PRI" />
+				<t:select
+					path="//mail:GetMsgResponse//mail:comp"
+					attr="name" match="${appt.subject12}" />
+			</t:response>
+		</t:test>		
+
+</t:test_case>
+	
+	
+	<t:test_case testcaseid="CalendarBasic_13" type="sanity">
+		<t:objective>Create a calendar appointment with attachment from ZWC and sync on EWS client</t:objective>
+		<t:steps>1. Create a basic cal appt with attachment from ZWC.
+		2. Sync on EWS client in calendar folder appointment with attachment is synced
+		</t:steps>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:property name="Time1" value="${ICALTIME(+30m)}"/>
+		<t:property name="Time2" value="${ICALTIME(+1h)}"/>
+		<t:property name="Time3" value="${ICALTIME(-1h)}"/>
+		<t:property name="Time4" value="${ICALTIME(-30m)}"/>
+		<t:property name="Time5" value="${ICALTIME(+2d)}"/>
+		
+		<t:property name="uploadFile.basic" value="${testMailRaw.root}/attachments1/image1.jpg"/>
+	
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${uploadFile.basic}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="attach.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+					<inv class="PRI" method="REQUEST" type="event" fb="B" transp="O" allDay="0"
+						name="${appt.subject13}">
+						<s d="${Time3}" />
+						<e d="${Time4}" />
+						<or a="${test_account1.name}" />
+					</inv>
+					<su>${appt.subject13}</su>
+					<attach aid="${attach.aid}"/>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateAppointmentResponse" />
+		</t:response>
+	</t:test>
+    
+    
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:IncludeMimeContent>false</t:IncludeMimeContent>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="10" />
+							</SyncFolderId>
+							<SyncState>${SyncState12}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>100</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="cal013_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="cal013_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState" set="SyncState13" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<m:GetItem
+							xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
+							xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
+							<m:ItemShape>
+								<t:BaseShape>Default</t:BaseShape>
+								<t:IncludeMimeContent>false</t:IncludeMimeContent>
+								<t:BodyType>Text</t:BodyType>
+								<t:AdditionalProperties>
+									<t:FieldURI FieldURI="item:ReminderIsSet" />
+									<t:FieldURI FieldURI="item:ReminderMinutesBeforeStart" />
+									<t:FieldURI FieldURI="item:ReminderDueBy" />
+									<t:FieldURI FieldURI="item:Sensitivity"/>
+									<t:FieldURI FieldURI="item:Attachments"/>
+								</t:AdditionalProperties>
+							</m:ItemShape>
+							<m:ItemIds>
+								<t:ItemId Id="${cal013_id}" ChangeKey="${cal013_changeKey}" />
+							</m:ItemIds>
+						</m:GetItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:GetItemResponseMessage" attr="ResponseClass"
+					match="Success" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Subject"
+					match="${appt.subject13}" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:HasAttachments"
+					match="true" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Attachments//ewstype:Name"
+					match="image1.jpg" />
+				<t:select path="//ewsmsg:GetItemResponseMessage//ewstype:Attachments//ewstype:ContentType"
+					match="image/jpeg" />
+			</t:response>
+		</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CalendarBasic_14" type="sanity">
+		<t:objective>Create a calendar appointment with attachment from EWS and sync on ZWC client</t:objective>
+		<t:steps>1. Create a basic cal appt with attachment from EWS client.
+		2. Sync on ZWC client in calendar folder appointment with attachment is synced
+		</t:steps>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						 <CreateItem xmlns="http://schemas.microsoft.com/exchange/services/2006/messages" MessageDisposition="SaveOnly" SendMeetingInvitations="SendToAllAndSaveCopy">
+						      <SavedItemFolderId>
+						        <t:FolderId Id="10"/>
+						      </SavedItemFolderId>
+						      <Items>
+						        <t:CalendarItem>
+						          <t:Subject>${appt.subject14}</t:Subject>
+						          <t:Sensitivity>Private</t:Sensitivity>
+						          <t:Body BodyType="HTML">${appt.content14}</t:Body>
+						          <t:Importance>Normal</t:Importance>						        
+						          <t:Start>2019-01-07T10:00:00+05:30</t:Start>
+						          <t:End>2019-01-08T10:30:00+05:30</t:End>
+						          <t:IsAllDayEvent>false</t:IsAllDayEvent>
+						          <t:LegacyFreeBusyStatus>Busy</t:LegacyFreeBusyStatus>
+						          <t:IsResponseRequested>true</t:IsResponseRequested>
+						          <t:StartTimeZone Id="Sri Lanka Standard Time"/>
+						          <t:EndTimeZone Id="Sri Lanka Standard Time"/>
+						          <t:AllowNewTimeProposal>false</t:AllowNewTimeProposal>
+						        </t:CalendarItem>
+						      </Items>
+					    </CreateItem>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateItemResponse//ewstype:ItemId" attr="Id" set="ewsCal14_Id" />
+				<t:select path="//ewsmsg:CreateItemResponse//ewstype:ItemId" attr="ChangeKey" set="ewsCal14_Ck" />
+			</t:response>
+		</t:test>
+	
+	
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						 <CreateAttachment xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+					      <ParentItemId Id="${ewsCal14_Id}"/>
+					      <Attachments>
+					        <t:FileAttachment>
+					          <t:Name>Contacts.ldif</t:Name>
+					          <t:ContentType>application/octet-stream</t:ContentType>
+					          <t:IsContactPhoto>false</t:IsContactPhoto>
+					          <t:Content>
+					dmVyc2lvbjogMQ0KDQpkbjogdWlkPWFzZGFzLG91PXBlb3BsZSxkYz1zYWRhc2RfZGV0YWls
+					cyxkYz1jb20NCm9iamVjdENsYXNzOiBpbmV0T3JnUGVyc29uDQpjbzogaW5kaWENCmNvbXBh
+					bnk6IHppbWJyYQ0KZGVzY3JpcHRpb246OiBkR2hwY3lBakpDVkFJeVF2WGlZS2FYTWdJQ0Fn
+					SUNBZ1lTQUtaM0psSUNBZ0lDQWdZWFFnQ205d2NHOXlkSFVnSUNBZ0lDOTBJRzVwZEdsNQ0K
+					Y246IG9uMiwgZGF5DQpnaXZlbk5hbWU6IGRheQ0KbDogc2FkDQptb2JpbGU6IDg0ODM4NDg0
+					NTQ4DQpwb3N0YWxDb2RlOiAyMTMNCnNuOiBvbjINCnN0OiBtaGFyYXN0cmENCnN0cmVldEFk
+					ZHJlc3M6IHNhZA0KdGl0bGU6IHFhDQptYWlsOiBhc2Rhc0BzYWRhc2RfZGV0YWlscy5jb20N
+					Cg0K</t:Content>
+					        </t:FileAttachment>
+					      </Attachments>
+					    </CreateAttachment>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:CreateAttachmentResponse//ewstype:AttachmentId" attr="RootItemId" set="attach_id" />
+			</t:response>
+		</t:test>	
+    
+		<t:test>
+			<t:request ews="true" username="${test_account1.name}"
+				password="${test_account1.password}">
+				<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+					xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
+					xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
+					<soap:Body>
+						<SyncFolderItems
+							xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+							<ItemShape>
+								<t:BaseShape>IdOnly</t:BaseShape>
+								<t:IncludeMimeContent>false</t:IncludeMimeContent>
+							</ItemShape>
+							<SyncFolderId>
+								<t:FolderId Id="10" />
+							</SyncFolderId>
+							<SyncState>${SyncState13}</SyncState>
+							<Ignore />
+							<MaxChangesReturned>100</MaxChangesReturned>
+						</SyncFolderItems>
+					</soap:Body>
+				</soap:Envelope>
+			</t:request>
+			<t:response>
+				<t:select path="//ewsmsg:SyncFolderItemsResponseMessage"
+					attr="ResponseClass" match="Success" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="Id" set="cal014_id" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewstype:Create//ewstype:ItemId"
+					attr="ChangeKey" set="cal014_changeKey" />
+				<t:select
+					path="//ewsmsg:SyncFolderItemsResponse//ewsmsg:SyncState" set="SyncState14" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+		    <t:request>
+			    <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="1546819200000" calExpandInstEnd="1546905600000">
+				    <query>${appt.subject14}(inid:10)</query>
+			    </SearchRequest>
+		    </t:request>
+		    <t:response>
+			    <t:select path="//mail:SearchResponse//mail:appt" attr="invId" set="inv.id14"/>
+			    <t:select path="//mail:SearchResponse//mail:appt" attr="name" match="${appt.subject14}"/>
+		    </t:response>
+	    </t:test>	
+
+		<t:test>
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${inv.id14}" />
+				</GetMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetMsgResponse//mail:mp"
+					attr="cd" match="attachment" />
+				<t:select
+					path="//mail:GetMsgResponse//mail:mp"
+					attr="filename" match="Contacts.ldif" />
+			</t:response>
+		</t:test>		
+		
+</t:test_case>
+	
+	
+</t:tests>
+

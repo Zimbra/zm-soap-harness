@@ -34,102 +34,186 @@ describe('Calendar > Meeting Request > Reminders > Get Msg Request Basic', funct
 	}
 
 	// Tests
-
-	async function makeAcct(prefix) {
-		const email = `${prefix}${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+	it('Smoke | Verify a reminder is set by default on incoming meeting requests 1', async () => {
+		// Create organizer and invitee
+		const orgEmail = `org${common.getUniqueString()}@${testDomain}`;
+		const orgRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-				<name>${email}</name>
+				<name>${orgEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
-		const token = await soap.getAccountAuthToken(email);
-		return { email, token };
-	}
+		assert.notExists(orgRes.Fault, 'CreateAccountRequest should not fault');
+		const orgToken = await soap.getAccountAuthToken(orgEmail);
 
-	async function createMeeting(orgToken, orgEmail, invEmail, subj) {
+		const invEmail = `inv${common.getUniqueString()}@${testDomain}`;
+		const invRes = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${invEmail}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(invRes.Fault, 'CreateAccountRequest should not fault');
+		const invToken = await soap.getAccountAuthToken(invEmail);
+
+		// Create appointment
+		const subject = `Subj${common.getUniqueString()}`;
 		const t1 = futureTime(3600000);
 		const t2 = futureTime(7200000);
-		const res = await soap.makeSOAPEnvelopeAccount(
+		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
 					<inv>
-						<comp name="${subj}" fb="B" transp="O"
-							status="CONF">
+						<comp status="CONF" fb="B" transp="O"
+							allDay="0" name="${subject}">
+							<or a="${orgEmail}"/>
 							<at a="${invEmail}" role="REQ"
 								ptst="NE" rsvp="1"/>
-							<s d="${t1}"/><e d="${t2}"/>
-							<or a="${orgEmail}"/>
+							<s d="${t1}"/>
+							<e d="${t2}"/>
 						</comp>
 					</inv>
 					<e a="${invEmail}" t="t"/>
-					<su>${subj}</su>
+					<su>${subject}</su>
 					<mp ct="text/plain">
-						<content>C</content>
+						<content>Content</content>
 					</mp>
 				</m>
 			</CreateAppointmentRequest>`, orgToken
 		);
-		return res.CreateAppointmentResponse;
-	}
+		assert.notExists(createRes.Fault, 'CreateAppointmentRequest should not fault');
+
+		// Invitee searches for appointment
+		const now = Date.now();
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail"
+				calExpandInstStart="${now - 86400000}"
+				calExpandInstEnd="${now + 2 * 86400000}"
+				types="appointment">
+				<query>${subject}</query>
+			</SearchRequest>`, invToken
+		);
+		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
+		const appts = Array.isArray(searchRes.SearchResponse.appt)
+			? searchRes.SearchResponse.appt : [searchRes.SearchResponse.appt];
+		const invInvId = appts[0].invId;
+
+		// Verify alarm is set
+		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
+			`<GetMsgRequest xmlns="urn:zimbraMail">
+				<m id="${invInvId}"/>
+			</GetMsgRequest>`, invToken
+		);
+		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
+		const msg = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		assert.exists(msg.inv[0].comp[0].alarm, 'Alarm should be set on incoming meeting request');
+	});
 
 
-	it('Smoke | Meeting reminder', async () => {
-		const org = await makeAcct('org');
-		const inv = await makeAcct('inv');
-		const s = `Subj${common.getUniqueString()}`;
+	it('Sanity | Verify a reminder is set by default on incoming meeting requests 2', async () => {
+		// Create organizer
+		const orgEmail = `org${common.getUniqueString()}@${testDomain}`;
+		const orgRes = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${orgEmail}</name>
+				<password>${config.accountPassword}</password>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(orgRes.Fault, 'CreateAccountRequest should not fault');
+		const orgToken = await soap.getAccountAuthToken(orgEmail);
+
+		// Create invitee with zimbraPrefCalendarAutoAddInvites=FALSE and reminder=15
+		const invEmail = `inv${common.getUniqueString()}@${testDomain}`;
+		const invRes = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${invEmail}</name>
+				<password>${config.accountPassword}</password>
+				<a n="zimbraPrefCalendarAutoAddInvites">FALSE</a>
+				<a n="zimbraPrefCalendarApptReminderWarningTime">15</a>
+			</CreateAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(invRes.Fault, 'CreateAccountRequest should not fault');
+		const invToken = await soap.getAccountAuthToken(invEmail);
+
+		// Create appointment
+		const subject = `Subj${common.getUniqueString()}`;
 		const t1 = futureTime(3600000);
 		const t2 = futureTime(7200000);
-
-		// Create an appointment
-		const res = await soap.makeSOAPEnvelopeAccount(
+		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
 					<inv>
-						<comp name="${s}" fb="B" transp="O">
-							<at a="${inv.email}" role="REQ"
+						<comp status="CONF" fb="B" transp="O"
+							allDay="0" name="${subject}">
+							<or a="${orgEmail}"/>
+							<at a="${invEmail}" role="REQ"
 								ptst="NE" rsvp="1"/>
-							<s d="${t1}"/><e d="${t2}"/>
-							<or a="${org.email}"/>
-							<alarm action="DISPLAY">
-								<trigger>
-									<rel neg="1" m="15"
-										related="START"/>
-								</trigger>
-							</alarm>
+							<s d="${t1}"/>
+							<e d="${t2}"/>
 						</comp>
 					</inv>
-					<e a="${inv.email}" t="t"/>
-					<su>${s}</su>
+					<e a="${invEmail}" t="t"/>
+					<su>${subject}</su>
 					<mp ct="text/plain">
-						<content>C</content>
+						<content>Content</content>
 					</mp>
 				</m>
-			</CreateAppointmentRequest>`, org.token
+			</CreateAppointmentRequest>`, orgToken
 		);
+		assert.notExists(createRes.Fault, 'CreateAppointmentRequest should not fault');
 
-		// Verify response
-		assert.notExists(res.Fault, 'Reminder not fault');
+		// Invitee searches for message and accepts
+		const searchMsgRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${subject})</query>
+			</SearchRequest>`, invToken
+		);
+		assert.notExists(searchMsgRes.Fault, 'SearchRequest should not fault');
+		const msgs = Array.isArray(searchMsgRes.SearchResponse.m)
+			? searchMsgRes.SearchResponse.m : [searchMsgRes.SearchResponse.m];
+		const msgId = msgs[0].id;
+
+		// Accept the invitation
+		const replyRes = await soap.makeSOAPEnvelopeAccount(
+			`<SendInviteReplyRequest xmlns="urn:zimbraMail"
+				id="${msgId}" compNum="0"
+				updateOrganizer="TRUE" verb="ACCEPT">
+				<m rt="r">
+					<e t="t" a="${orgEmail}"/>
+					<su>Accept: ${subject}</su>
+					<mp ct="text/plain">
+						<content>Accept: ${subject}</content>
+					</mp>
+				</m>
+			</SendInviteReplyRequest>`, invToken
+		);
+		assert.notExists(replyRes.Fault, 'SendInviteReplyRequest should not fault');
+
+		// Search for appointment
+		const now = Date.now();
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail"
+				calExpandInstStart="${now - 86400000}"
+				calExpandInstEnd="${now + 2 * 86400000}"
+				types="appointment">
+				<query>${subject}</query>
+			</SearchRequest>`, invToken
+		);
+		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
+		const appts = Array.isArray(searchRes.SearchResponse.appt)
+			? searchRes.SearchResponse.appt : [searchRes.SearchResponse.appt];
+		const invInvId = appts[0].invId;
+
+		// Verify alarm is set even with autoAdd=false
+		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
+			`<GetMsgRequest xmlns="urn:zimbraMail">
+				<m id="${invInvId}"/>
+			</GetMsgRequest>`, invToken
+		);
+		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
+		const msg = Array.isArray(getMsgRes.GetMsgResponse.m)
+			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
+		assert.exists(msg.inv[0].comp[0].alarm, 'Alarm should be set on accepted meeting request');
 	});
-
-
-	it('Sanity | Meeting reminder verify', async () => {
-		const org = await makeAcct('org');
-		const inv = await makeAcct('inv');
-		const s = `Subj${common.getUniqueString()}`;
-		const appt = await createMeeting(
-			org.token, org.email, inv.email, s
-		);
-
-		// Send get appointment request
-		const res = await soap.makeSOAPEnvelopeAccount(
-			`<GetAppointmentRequest xmlns="urn:zimbraMail"
-				id="${appt.calItemId}"/>`, org.token
-		);
-
-		// Verify response
-		assert.notExists(res.Fault, 'Reminder verify not fault');
-	});
-
-
 });
