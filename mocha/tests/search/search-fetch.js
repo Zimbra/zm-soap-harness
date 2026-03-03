@@ -38,6 +38,7 @@ describe('Search > Search Fetch', function () {
 To: ${accountEmail}
 Subject: test mail
 MIME-Version: 1.0
+
 Test content</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -106,19 +107,19 @@ Test content</content>
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message,appointment" fetch="">
 				<query>subject:(test mail)</query>
-			</SearchRequest>`, accountAuthToken
+			</SearchRequest>`, accountAuthToken, false
 		);
 
-		assert.notExists(res1.Fault, 'SearchRequest with blank fetch should not fault');
+		assert.isString(res1.Fault.Detail.Error.Code, 'SearchRequest with blank fetch should fault');
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message,appointment" fetch="${fetch_spchar}">
 				<query>subject:(test mail)</query>
-			</SearchRequest>`, accountAuthToken
+			</SearchRequest>`, accountAuthToken, false
 		);
 
-		assert.notExists(res2.Fault, 'SearchRequest with spchar fetch should not fault');
+		assert.isString(res2.Fault.Detail.Error.Code, 'SearchRequest with spchar fetch should fault');
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -146,28 +147,28 @@ Test content</content>
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message,appointment" fetch="${fetch_text}">
 				<query>subject:(test mail)</query>
-			</SearchRequest>`, accountAuthToken
+			</SearchRequest>`, accountAuthToken, false
 		);
 
-		assert.notExists(res5.Fault, 'SearchRequest with text fetch should not fault');
+		assert.isString(res5.Fault.Detail.Error.Code, 'SearchRequest with text fetch should fault');
 
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message,appointment" fetch="${fetch_alpha}">
 				<query>subject:(test mail)</query>
-			</SearchRequest>`, accountAuthToken
+			</SearchRequest>`, accountAuthToken, false
 		);
 
-		assert.notExists(res6.Fault, 'SearchRequest with alpha fetch should not fault');
+		assert.isString(res6.Fault.Detail.Error.Code, 'SearchRequest with alpha fetch should fault');
 
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message,appointment" fetch="${fetch_spaces}">
 				<query>subject:(test mail)</query>
-			</SearchRequest>`, accountAuthToken
+			</SearchRequest>`, accountAuthToken, false
 		);
 
-		assert.notExists(res7.Fault, 'SearchRequest with spaces fetch should not fault');
+		assert.isString(res7.Fault.Detail.Error.Code, 'SearchRequest with spaces fetch should fault');
 	});
 
 

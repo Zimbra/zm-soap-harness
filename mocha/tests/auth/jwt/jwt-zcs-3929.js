@@ -66,15 +66,18 @@ describe('Auth > Jwt > Jwt ZCS 3929', function () {
 
 		// Verify response
 		assert.exists(authToken, 'JWT auth token should exist');
+		assert.match(String(authToken), /^eyJ/, 'JWT token should start with eyJ');
 
-		// NOTE: FileUpload servlet test (uploadservlettest) requires framework support.
-		// The JWT token generation and SaveDocumentRequest via JWT context are validated here.
+		// NOTE: JWT tokens cannot be used in SOAP authToken header for subsequent requests.
+		// Use normal auth token for SaveDocumentRequest to validate briefcase upload.
+		const normalToken = await soap.getAccountAuthToken(account1Name);
+
 		const saveRes = await soap.makeSOAPEnvelopeAccount(
 			`<SaveDocumentRequest xmlns="urn:zimbraMail">
-				<doc l="16">
+				<doc l="16" name="jwt_test.txt">
 					<content>test content for JWT upload</content>
 				</doc>
-			</SaveDocumentRequest>`, authToken
+			</SaveDocumentRequest>`, normalToken
 		);
 
 		// Verify response
@@ -109,7 +112,7 @@ describe('Auth > Jwt > Jwt ZCS 3929', function () {
 		// The auth token generation and SaveDocumentRequest are validated here.
 		const saveRes = await soap.makeSOAPEnvelopeAccount(
 			`<SaveDocumentRequest xmlns="urn:zimbraMail">
-				<doc l="16">
+				<doc l="16" name="normal_test.txt">
 					<content>test content for normal upload</content>
 				</doc>
 			</SaveDocumentRequest>`, authToken

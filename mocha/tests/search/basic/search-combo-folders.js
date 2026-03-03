@@ -9,7 +9,7 @@ describe('Search > Basic > Search Combo Folders', function () {
 	let adminAuthToken, accountEmail, accountAuthToken;
 
 	// Test data variables (from XML properties)
-	const content = {};
+	const content = { text: 'Content' };
 	const folder = { inbox: '2', sent: '5', trash: '3', spam: '4', drafts: '6' };
 	const folder1 = { name: `folder1_${common.getUniqueString()}`, id: `folder1_id` };
 	const folder2 = { name: `folder2_${common.getUniqueString()}`, id: `folder2_id` };
@@ -648,7 +648,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> from:(foo) in:"foldertext13.01" </query>
+				<query> from:(foo) in:"${folder1.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -658,7 +658,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> from:(foo) in:"Inbox/foldertext13.02" </query>
+				<query> from:(foo) in:"Inbox/${folder2.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -668,7 +668,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> from:(foo) in:"Trash/foldertext13.03"</query>
+				<query> from:(foo) in:"Trash/${folder3.name}"</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -678,7 +678,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> from:(foo) in:"Sent/foldertext13.04" </query>
+				<query> from:(foo) in:"Sent/${folder4.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -688,7 +688,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> from:(foo) in:"foldertext13.01/foldertext13.05" </query>
+				<query> from:(foo) in:"${folder1.name}/${folder5.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -698,7 +698,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> from:(foo) in:"foldertext13.06" </query>
+				<query> from:(foo) in:"${folder6.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -774,7 +774,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> to:(foo) in:"foldertext13.01" </query>
+				<query> to:(foo) in:"${folder1.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -784,7 +784,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> to:(foo) in:"Inbox/foldertext13.02" </query>
+				<query> to:(foo) in:"Inbox/${folder2.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -794,7 +794,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> to:(foo) in:"Trash/foldertext13.03"</query>
+				<query> to:(foo) in:"Trash/${folder3.name}"</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -805,7 +805,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> to:(foo) in:"Sent/foldertext13.04" </query>
+				<query> to:(foo) in:"Sent/${folder4.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -816,7 +816,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> to:(foo) in:"foldertext13.01/foldertext13.05" </query>
+				<query> to:(foo) in:"${folder1.name}/${folder5.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -826,7 +826,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> to:(foo) in:"foldertext13.06" </query>
+				<query> to:(foo) in:"${folder6.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -904,7 +904,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> cc:(foo) in:"foldertext13.01" </query>
+				<query> cc:(foo) in:"${folder1.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -915,7 +915,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> cc:(foo) in:"Inbox/foldertext13.02" </query>
+				<query> cc:(foo) in:"Inbox/${folder2.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -926,7 +926,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> cc:(foo) in:"Trash/foldertext13.03"</query>
+				<query> cc:(foo) in:"Trash/${folder3.name}"</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -937,7 +937,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> cc:(foo) in:"Sent/foldertext13.04" </query>
+				<query> cc:(foo) in:"Sent/${folder4.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -948,7 +948,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> cc:(foo) in:"foldertext13.01/foldertext13.05" </query>
+				<query> cc:(foo) in:"${folder1.name}/${folder5.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -959,7 +959,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> cc:(foo) in:"foldertext13.06" </query>
+				<query> cc:(foo) in:"${folder6.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -972,7 +972,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> subject:(email13A) in:inbox </query>
+				<query> subject:(${mail1.subject}) in:inbox </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -982,7 +982,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> subject:(email13A) in:drafts </query>
+				<query> subject:(${mail1.subject}) in:drafts </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -993,7 +993,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> subject:(email13I) in:sent </query>
+				<query> subject:(${mail9.subject}) in:sent </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1003,7 +1003,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> subject:(email13L) in:trash </query>
+				<query> subject:(${mail12.subject}) in:trash </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1013,7 +1013,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> subject:(email13A) in:calendar </query>
+				<query> subject:(${mail1.subject}) in:calendar </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1024,7 +1024,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> subject:(email13A) in:contacts </query>
+				<query> subject:(${mail1.subject}) in:contacts </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1035,7 +1035,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> subject:(email13J) in:"foldertext13.01" </query>
+				<query> subject:(${mail10.subject}) in:"${folder1.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1045,7 +1045,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> subject:(email13B) in:"Inbox/foldertext13.02" </query>
+				<query> subject:(${mail2.subject}) in:"Inbox/${folder2.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1055,7 +1055,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> subject:(email13C) in:"Trash/foldertext13.03"</query>
+				<query> subject:(${mail3.subject}) in:"Trash/${folder3.name}"</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1065,7 +1065,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> subject:(email13D) in:"Sent/foldertext13.04" </query>
+				<query> subject:(${mail4.subject}) in:"Sent/${folder4.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1075,7 +1075,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> subject:(email13E) in:"foldertext13.01/foldertext13.05" </query>
+				<query> subject:(${mail5.subject}) in:"${folder1.name}/${folder5.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1085,7 +1085,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> subject:(email13H) in:"foldertext13.06" </query>
+				<query> subject:(${mail8.subject}) in:"${folder6.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1163,7 +1163,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> content:(${content.text}) in:"foldertext13.01" </query>
+				<query> content:(${content.text}) in:"${folder1.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1174,7 +1174,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> content:(${content.text}) in:"Inbox/foldertext13.02" </query>
+				<query> content:(${content.text}) in:"Inbox/${folder2.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1185,7 +1185,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> content:(${content.text}) in:"Trash/foldertext13.03"</query>
+				<query> content:(${content.text}) in:"Trash/${folder3.name}"</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1196,7 +1196,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> content:(${content.text}) in:"Sent/foldertext13.04" </query>
+				<query> content:(${content.text}) in:"Sent/${folder4.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1207,7 +1207,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> content:(${content.text}) in:"foldertext13.01/foldertext13.05" </query>
+				<query> content:(${content.text}) in:"${folder1.name}/${folder5.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1218,7 +1218,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> content:(${content.text}) in:"foldertext13.06" </query>
+				<query> content:(${content.text}) in:"${folder6.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1292,7 +1292,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> from:(foo) OR in:"foldertext13.01" </query>
+				<query> from:(foo) OR in:"${folder1.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1302,7 +1302,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> from:(foo) OR in:"Inbox/foldertext13.02" </query>
+				<query> from:(foo) OR in:"Inbox/${folder2.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1312,7 +1312,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> from:(foo) OR in:"Trash/foldertext13.03"</query>
+				<query> from:(foo) OR in:"Trash/${folder3.name}"</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1322,7 +1322,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> from:(foo) OR in:"Sent/foldertext13.04" </query>
+				<query> from:(foo) OR in:"Sent/${folder4.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1332,7 +1332,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> from:(foo) OR in:"foldertext13.01/foldertext13.05" </query>
+				<query> from:(foo) OR in:"${folder1.name}/${folder5.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1342,7 +1342,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> from:(foo) OR in:"foldertext13.06" </query>
+				<query> from:(foo) OR in:"${folder6.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1415,7 +1415,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> to:(foo) OR in:"foldertext13.01" </query>
+				<query> to:(foo) OR in:"${folder1.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1425,7 +1425,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> to:(foo) OR in:"Inbox/foldertext13.02" </query>
+				<query> to:(foo) OR in:"Inbox/${folder2.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1435,7 +1435,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> to:(foo) OR in:"Trash/foldertext13.03"</query>
+				<query> to:(foo) OR in:"Trash/${folder3.name}"</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1445,7 +1445,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> to:(foo) OR in:"Sent/foldertext13.04" </query>
+				<query> to:(foo) OR in:"Sent/${folder4.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1455,7 +1455,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> to:(foo) OR in:"foldertext13.01/foldertext13.05" </query>
+				<query> to:(foo) OR in:"${folder1.name}/${folder5.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1465,7 +1465,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> to:(foo) OR in:"foldertext13.06" </query>
+				<query> to:(foo) OR in:"${folder6.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1538,7 +1538,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> cc:(foo) OR in:"foldertext13.01" </query>
+				<query> cc:(foo) OR in:"${folder1.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1548,7 +1548,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> cc:(foo) OR in:"Inbox/foldertext13.02" </query>
+				<query> cc:(foo) OR in:"Inbox/${folder2.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1558,7 +1558,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> cc:(foo) OR in:"Trash/foldertext13.03"</query>
+				<query> cc:(foo) OR in:"Trash/${folder3.name}"</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1568,7 +1568,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> cc:(foo) OR in:"Sent/foldertext13.04" </query>
+				<query> cc:(foo) OR in:"Sent/${folder4.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1578,7 +1578,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> cc:(foo) OR in:"foldertext13.01/foldertext13.05" </query>
+				<query> cc:(foo) OR in:"${folder1.name}/${folder5.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1588,7 +1588,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> cc:(foo) OR in:"foldertext13.06" </query>
+				<query> cc:(foo) OR in:"${folder6.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1601,7 +1601,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> subject:(email13A) OR in:inbox </query>
+				<query> subject:(${mail1.subject}) OR in:inbox </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1611,7 +1611,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> subject:(email13A) OR in:drafts </query>
+				<query> subject:(${mail1.subject}) OR in:drafts </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1621,7 +1621,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> subject:(email13I) OR in:sent </query>
+				<query> subject:(${mail9.subject}) OR in:sent </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1631,7 +1631,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> subject:(email13L) OR in:trash </query>
+				<query> subject:(${mail12.subject}) OR in:trash </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1641,7 +1641,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> subject:(email13A) OR in:calendar </query>
+				<query> subject:(${mail1.subject}) OR in:calendar </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1651,7 +1651,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> subject:(email13A) OR in:contacts </query>
+				<query> subject:(${mail1.subject}) OR in:contacts </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1661,7 +1661,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> subject:(email13J) OR in:"foldertext13.01" </query>
+				<query> subject:(${mail10.subject}) OR in:"${folder1.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1671,7 +1671,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> subject:(email13B) OR in:"Inbox/foldertext13.02" </query>
+				<query> subject:(${mail2.subject}) OR in:"Inbox/${folder2.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1681,7 +1681,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> subject:(email13C) OR in:"Trash/foldertext13.03"</query>
+				<query> subject:(${mail3.subject}) OR in:"Trash/${folder3.name}"</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1691,7 +1691,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> subject:(email13D) OR in:"Sent/foldertext13.04" </query>
+				<query> subject:(${mail4.subject}) OR in:"Sent/${folder4.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1701,7 +1701,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> subject:(email13E) OR in:"foldertext13.01/foldertext13.05" </query>
+				<query> subject:(${mail5.subject}) OR in:"${folder1.name}/${folder5.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1711,7 +1711,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> subject:(email13H) OR in:"foldertext13.06" </query>
+				<query> subject:(${mail8.subject}) OR in:"${folder6.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1784,7 +1784,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> content:(${content.text}) OR in:"foldertext13.01" </query>
+				<query> content:(${content.text}) OR in:"${folder1.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1794,7 +1794,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> content:(${content.text}) OR in:"Inbox/foldertext13.02" </query>
+				<query> content:(${content.text}) OR in:"Inbox/${folder2.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1804,7 +1804,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> content:(${content.text}) OR in:"Trash/foldertext13.03"</query>
+				<query> content:(${content.text}) OR in:"Trash/${folder3.name}"</query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1814,7 +1814,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> content:(${content.text})  OR in:"Sent/foldertext13.04" </query>
+				<query> content:(${content.text})  OR in:"Sent/${folder4.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1824,7 +1824,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> content:(${content.text}) OR in:"foldertext13.01/foldertext13.05" </query>
+				<query> content:(${content.text}) OR in:"${folder1.name}/${folder5.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 
@@ -1834,7 +1834,7 @@ Content for ${mail9.name}</content>
 		// SearchRequest
 		const res12 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query> content:(${content.text}) OR in:"foldertext13.06" </query>
+				<query> content:(${content.text}) OR in:"${folder6.name}" </query>
 			</SearchRequest>`, accountAuthToken
 		);
 

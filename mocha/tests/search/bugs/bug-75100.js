@@ -84,6 +84,7 @@ Subject: ${subject1}
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+
 hi This is message1</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -101,6 +102,7 @@ Subject: ${subject2}
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+
 hi This is message2</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken

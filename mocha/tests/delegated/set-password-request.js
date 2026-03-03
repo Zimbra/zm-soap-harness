@@ -85,7 +85,9 @@ describe('Delegated > Set Password Request', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AuthRequest as admin1 should not fault');
-		const admin1AuthToken = res.AuthResponse.authToken;
+		const admin1AuthToken = Array.isArray(res.AuthResponse.authToken)
+			? res.AuthResponse.authToken[0]._content || res.AuthResponse.authToken[0]
+			: res.AuthResponse.authToken._content || res.AuthResponse.authToken;
 
 		// SetPasswordRequest as admin1 for target account
 		res = await soap.makeSOAPEnvelopeAdmin(

@@ -93,7 +93,7 @@ describe('Mail > Spam > Dspam Basic', function () {
         // Search for the message in any folder
         const searchRes = await soap.makeSOAPEnvelopeAccount(
             `<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query>subject:("For engineering: Everything at")</query>
+				<query>subject:("DE ACERCAMIENTO DE PERSONAL PARA EMPRESA")</query>
 			</SearchRequest>`, account2Token
         );
         assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
@@ -116,7 +116,7 @@ describe('Mail > Spam > Dspam Basic', function () {
         // Verify message is now in junk
         const junkRes = await soap.makeSOAPEnvelopeAccount(
             `<SearchRequest xmlns="urn:zimbraMail" types="message">
-					<query>in:junk subject:("For engineering: Everything at")</query>
+					<query>in:junk subject:("DE ACERCAMIENTO DE PERSONAL PARA EMPRESA")</query>
 				</SearchRequest>`, account2Token
         );
         assert.notExists(junkRes.Fault, 'SearchRequest junk should not fault');

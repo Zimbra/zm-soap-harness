@@ -180,12 +180,12 @@ describe('Admin > Accounts > Account Migration', function () {
 				<account by="name">${accountName}</account>
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`);
-		const userAuth = authRes.AuthResponse.authToken;
+		const userAuth = await soap.getAccountAuthToken(accountName);
 
 		// SearchRequest
 		const response = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query>is:anywhere subject: (${subject})</query>
+				<query>is:anywhere subject:(${subject})</query>
 			</SearchRequest>`, userAuth);
 		// Migration mail may or may not exist depending on setup
 		// Verify response

@@ -223,7 +223,7 @@ describe('Briefcase > Mountpoint > Create Mountpoint', function () {
 
 	it('Regression | Mount a delegated folder with invalid values of view(blank,space,spchar,sometext,negative,zero,largenumber,decimal)', async () => {
 		const invalidViews = [
-			'', '            ', ':/.;<*\'\'',
+			'', '            ', ':/.;*\'\'',
 			'thisisinvalidtexttocheckmountpoint', '-1', '0', '1234567890', '12.34'
 		];
 

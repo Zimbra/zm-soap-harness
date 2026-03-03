@@ -330,12 +330,19 @@ describe('Calendar > Multi Node Cal Get Freebusy', function () {
         const now = Date.now();
         const start = now - 2 * 86400000;
         const end = now + 2 * 86400000;
-        const searchRes = await soap.makeSOAPEnvelopeAccount(
-            `<SearchRequest xmlns="urn:zimbraMail" types="appointment"
+
+        // Retry search for appointment (may take time for invite to arrive)
+        let searchRes;
+        for (let i = 0; i < 5; i++) {
+            searchRes = await soap.makeSOAPEnvelopeAccount(
+                `<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${start}" calExpandInstEnd="${end}">
 				<query>${subject}</query>
 			</SearchRequest>`, accountA2Token
-        );
+            );
+            if (searchRes.SearchResponse?.appt) break;
+            await new Promise(resolve => setTimeout(resolve, 2000));
+        }
         assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
         assert.exists(searchRes.SearchResponse.appt, 'Appointment should be found in search results');
         const appts = Array.isArray(searchRes.SearchResponse.appt)

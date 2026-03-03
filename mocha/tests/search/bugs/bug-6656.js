@@ -29,6 +29,7 @@ describe('Search > Bugs > Bug 6656', function () {
 To: ${accountEmail}
 Subject: bug6656 test email
 MIME-Version: 1.0
+
 This is a simple text string in the body.
 CST 2063530-50 is a reference number.
 The price is $325 for the item.

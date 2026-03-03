@@ -30,6 +30,7 @@ describe('Search > Basic > Search Content', function () {
 To: ${accountEmail}
 Subject: email01A
 MIME-Version: 1.0
+
 This is a simple text string in the body of the message</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
@@ -64,6 +65,7 @@ This is a simple text string in the attachment
 To: ${accountEmail}
 Subject: email01H
 MIME-Version: 1.0
+
 Thank you for contributing to xmlbeans project</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken

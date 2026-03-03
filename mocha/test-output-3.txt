@@ -1,0 +1,103 @@
+--------------------------------------------------------------------------------------------
+[32m[2026-03-03T16:43:00.948] [INFO] info - [39mServer Type: CLASSIC
+[32m[2026-03-03T16:43:00.953] [INFO] info - [39mServer Environment: ZIMBRA101_AUTOMATION
+[32m[2026-03-03T16:43:00.954] [INFO] info - [39mServer Node: SINGLENODE
+[32m[2026-03-03T16:43:00.954] [INFO] info - [39mServer Host: automation.zimbradev.com
+[32m[2026-03-03T16:43:00.954] [INFO] info - [39mZimbra Version: 10.1.16_GA_4850.NETWORK
+[32m[2026-03-03T16:43:00.955] [INFO] info - [39mJobs: 20
+[32m[2026-03-03T16:43:00.955] [INFO] info - [39mZimlet: false
+[32m[2026-03-03T16:43:00.966] [INFO] info - [39mChat: false
+[32m[2026-03-03T16:43:00.966] [INFO] info - [39mSerial: false
+[32m[2026-03-03T16:43:00.966] [INFO] info - [39mConfigure Server: false
+[32m[2026-03-03T16:43:00.966] [INFO] info - [39mFresh Setup: false
+[32m[2026-03-03T16:43:00.967] [INFO] info - [39mServer Admin Auth: 0_857b9ed58deeadee3ecd447adc17...
+[32m[2026-03-03T16:43:00.967] [INFO] info - [39mCreate SOAP Domain, COS: SKIPPED
+--------------------------------------------------------------------------------------------
+
+
+  Search > Bugs > Bug 74328
+    ✔ Sanity | Search in folder with query - under - bugzilla Dave Comfort (Bug: 74328)
+
+
+  Search > Search Fetch
+    ✔ Sanity | Verify fetch attribute of search for fetch 1 along with type message,appointment
+    ✔ Sanity | Verify fetch attribute of search for fetch 0
+    ✔ Sanity | Verify fetch attribute of search for fetch all
+    1) Regression | Verify fetch attribute of search by putting invalid values of fetch (blank,spchar,integers,negative,sometext,alpha,space) (Bug: 27139)
+    ✔ Regression | Verify fetch attributes of search by putting leading space with its value 1 (Bug: 27139)
+    ✔ Regression | Verify fetch attributes of search by putting trailing space with its value 1 (Bug: 27139)
+    ✔ Regression | Verify fetch attributes of search by putting decimal value
+
+
+  Search > Bugs > Bug 75100
+    ✔ Sanity | Search query
+
+
+  Search > Bugs > Bug 49531
+    ✔ Sanity | The Japanese contents of the attached file in text, plain format is never searched (Bug: 49531)
+
+
+  Search > Bugs > Bug 6656
+    ✔ Functional | Login as the appropriate test account
+    ✔ Functional | Verify that a search for simple text returns the correct email meessage
+
+
+  Search > Bugs > Search Action Request ZCS 3441
+    2) Sanity | Verify SearchAction Request with move action for new folder for multiple mails
+    3) Sanity | Verify SearchAction Request with move action for inbox folder with subject as query
+    4) Sanity | Verify SearchAction Request with move action for new folder with query having multiple params
+    ✔ Sanity | Verify SearchActionRequest for move to invalid folder
+    5) Sanity | Verify SearchActionRequest for move to subfolders
+
+
+  Search > Basic > Search Combo Date
+    ✔ Functional | Login as the appropriate test account
+    ✔ Functional | Verify the results are correct for query using to - and date - , before - , after - (Bug: 2344)
+    ✔ Functional | Verify the results are correct for query using from - and date - , before - , after - 1 (Bug: 2344)
+    ✔ Functional | Verify the results are correct for query using from - and date - , before - , after - 2 (Bug: 2344)
+    ✔ Functional | Verify the results are correct for query using subject - and date - , before - , after - (Bug: 2344)
+    ✔ Functional | Verify the results are correct for query using content - and date - , before - , after - (Bug: 2344)
+    6) Functional | Verify the results are correct for query using content - , in the attachment, and date - , before - , after - (Bug: 2344)
+
+
+  18 passing (7s)
+  6 failing
+
+  1) Search > Search Fetch
+       Regression | Verify fetch attribute of search by putting invalid values of fetch (blank,spchar,integers,negative,sometext,alpha,space) (Bug: 27139):
+     AssertionError: SearchRequest with blank fetch should not fault: expected { Object (Code, Reason, ...) } to not exist
+      at Context.<anonymous> (file:///C:/git/zm-soap-harness/mocha/tests/search/search-fetch.js:113:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+
+  2) Search > Bugs > Search Action Request ZCS 3441
+       Sanity | Verify SearchAction Request with move action for new folder for multiple mails:
+     AssertionError: SearchActionRequest should not fault: expected { Object (Code, Reason, ...) } to not exist
+      at Context.<anonymous> (file:///C:/git/zm-soap-harness/mocha/tests/search/bugs/search-action-request-zcs-3441.js:78:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+
+  3) Search > Bugs > Search Action Request ZCS 3441
+       Sanity | Verify SearchAction Request with move action for inbox folder with subject as query:
+     AssertionError: SearchActionRequest should not fault: expected { Object (Code, Reason, ...) } to not exist
+      at Context.<anonymous> (file:///C:/git/zm-soap-harness/mocha/tests/search/bugs/search-action-request-zcs-3441.js:93:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+
+  4) Search > Bugs > Search Action Request ZCS 3441
+       Sanity | Verify SearchAction Request with move action for new folder with query having multiple params:
+     AssertionError: SearchActionRequest should not fault: expected { Object (Code, Reason, ...) } to not exist
+      at Context.<anonymous> (file:///C:/git/zm-soap-harness/mocha/tests/search/bugs/search-action-request-zcs-3441.js:117:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+
+  5) Search > Bugs > Search Action Request ZCS 3441
+       Sanity | Verify SearchActionRequest for move to subfolders:
+     AssertionError: SearchActionRequest should not fault: expected { Object (Code, Reason, ...) } to not exist
+      at Context.<anonymous> (file:///C:/git/zm-soap-harness/mocha/tests/search/bugs/search-action-request-zcs-3441.js:157:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+
+  6) Search > Basic > Search Combo Date
+       Functional | Verify the results are correct for query using content - , in the attachment, and date - , before - , after - (Bug: 2344):
+     AssertionError: Response element should exist: expected undefined to exist
+      at Context.<anonymous> (file:///C:/git/zm-soap-harness/mocha/tests/search/basic/search-combo-date.js:876:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+
+
+
