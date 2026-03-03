@@ -31,6 +31,8 @@ describe('Auth > Auth Refer', function () {
 			: createRes.CreateAccountResponse.account;
 		assert.exists(acct.id, 'Account ID should exist');
 		assert.isString(acct.id, 'Account ID should be a string');
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 	});
 
 	beforeEach(async function () {

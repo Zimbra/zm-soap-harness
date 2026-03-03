@@ -1,7 +1,13 @@
-# XML-to-JS Assertions — Phase 2 Log
 # This file tracks mismatches, skipped items, and TODOs found during assertion verification.
 # Format: [DATE] FOLDER: <folder>
 #   MISMATCH: XML file with no JS counterpart
 #   SKIPPED:  JS file with no XML source
 #   TODO:     Items needing manual review or decision
+
+[2026-03-03] FOLDER: auth
+  MISMATCH: data/soapvalidator/Auth/CustomAuth/CustomAuth.xml has no JS counterpart
+  TODO: set-recovery-email.js — XML has MAX_ATTEMPTS_REACHED test case (resend 3+ times) not present in JS
+  TODO: auth-request-sphchar.js — XML has ACCOUNT_EXISTS test cases (duplicate account creation) not present in JS
+  TODO: auth-refer.js — XML test 2 (refer match multihostB.FQDN) is multihost-only, not present in JS (single test only)
+  TODO: zcs-4904-end-all-session.js — test 1 "End specific session" has no EndSession call in JS (XML does EndSession + verifies specific session expired)
 

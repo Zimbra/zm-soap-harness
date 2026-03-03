@@ -44,12 +44,14 @@ describe('Auth > Auth Alias', function () {
 		account1Server = host1 ? host1._content : config.server;
 
 		// Add alias for account1
-		await soap.makeSOAPEnvelopeAdmin(
+		const aliasRes1 = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${acct1Id}</id>
 				<alias>${account1Alias}</alias>
 			</AddAccountAliasRequest>`, adminAuthToken
 		);
+		assert.notExists(aliasRes1.Fault, 'AddAccountAlias1 should not be a Fault');
+		assert.exists(aliasRes1.AddAccountAliasResponse, 'AddAccountAliasResponse should exist');
 
 		// Create account2
 		account2NameUser = 'account2.' + common.getUniqueString();
@@ -75,12 +77,14 @@ describe('Auth > Auth Alias', function () {
 		const acct2Id = acct2.id;
 
 		// Add alias for account2
-		await soap.makeSOAPEnvelopeAdmin(
+		const aliasRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
 				<id>${acct2Id}</id>
 				<alias>${account2Alias}</alias>
 			</AddAccountAliasRequest>`, adminAuthToken
 		);
+		assert.notExists(aliasRes2.Fault, 'AddAccountAlias2 should not be a Fault');
+		assert.exists(aliasRes2.AddAccountAliasResponse, 'AddAccountAliasResponse should exist');
 	});
 
 	beforeEach(async function () {
@@ -94,7 +98,6 @@ describe('Auth > Auth Alias', function () {
 	// Tests
 	if (config.serial !== true && String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		it('Smoke | AuthRequest - log in with alias', async () => {
-
 			// Send the message
 			const response = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
@@ -109,12 +112,9 @@ describe('Auth > Auth Alias', function () {
 			assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
 				'lifetime should be numeric');
 		});
-	}
+	
 
-
-	if (config.serial !== true && String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		it('Sanity | AuthRequest - verify failed login with alias name does not show real account name', async () => {
-
 			// Send the message
 			const response = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
@@ -136,9 +136,7 @@ describe('Auth > Auth Alias', function () {
 		});
 	}
 
-
 	// Serial tests
-	// Applicable zimbra versions
 	if (config.serial === true && String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		it('Verify below points when "alias_login_enabled" local config value is set to false - 1. Alias login will blocked 2. Login with email address would work.', async () => {
 			this.timeout(120 * 1000);

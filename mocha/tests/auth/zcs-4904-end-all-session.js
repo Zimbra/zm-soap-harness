@@ -63,6 +63,7 @@ describe('Auth > ZCS 4904 End All Session', function () {
 			'lifetime should be numeric');
 		assert.exists(authRes1.AuthResponse.authToken, 'authToken should exist');
 
+
 		// Auth request 2 - get second session
 		// Send the message
 		const authRes2 = await soap.makeSOAPEnvelopeAccount(
@@ -77,6 +78,7 @@ describe('Auth > ZCS 4904 End All Session', function () {
 		assert.match(String(authRes2.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authRes2.AuthResponse.authToken, 'authToken should exist');
+
 
 		// Auth request 3 - active session for EndSessionRequest
 		// Send the message
@@ -162,6 +164,7 @@ describe('Auth > ZCS 4904 End All Session', function () {
 
 		// Verify response
 		assert.notExists(endRes.Fault, 'Response should not be a Fault');
+		assert.exists(endRes.EndSessionResponse, 'EndSessionResponse should exist');
 		await common.sleep(2000);
 
 		// Verify token2 (the calling token) is invalidated after EndSession
@@ -170,5 +173,7 @@ describe('Auth > ZCS 4904 End All Session', function () {
 		);
 		assert.exists(verifyRes2.Fault, 'Token2 should produce a Fault after EndSession');
 		assert.isString(verifyRes2.Fault?.Detail?.Error?.Code, 'Fault error Code should be a string');
+		assert.match(verifyRes2.Fault.Detail.Error.Code, /service\.AUTH_EXPIRED/,
+			'Should return AUTH_EXPIRED for token2');
 	});
 });

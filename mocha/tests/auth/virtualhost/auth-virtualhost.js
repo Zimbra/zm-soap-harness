@@ -111,7 +111,6 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 
 		it('Sanity | Virtual Host Test - AuthRequest - login with full account name', async () => {
-
 			// Send the message
 			const response = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
@@ -317,9 +316,8 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 
 	// Serial tests
-	// Applicable zimbra versions
 	if (config.serial === true && String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-		it('Basic Test - AuthRequest - login using default, good password - Adding and removing virtual host', async () => {
+		it('Serial | Basic Test - AuthRequest - login using default, good password - Adding and removing virtual host', async () => {
 			this.timeout(600 * 1000);
 
 			const virtualHost02 = 'v' + common.getUniqueString() + '.virtual.com';
@@ -531,7 +529,6 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 				'Should return AUTH_FAILED');
 
 			// Auth with virtualHost03 - should FAIL
-			// Send the message
 			const authRes7 = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${testAccountUser}</account>
@@ -546,7 +543,6 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 				'Should return AUTH_FAILED');
 
 			// Auth with full domain name - should SUCCEED
-			// Send the message
 			const authRes8 = await soap.makeSOAPEnvelopeAccount(
 				`<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${testAccountUser}@${domain2Name}</account>

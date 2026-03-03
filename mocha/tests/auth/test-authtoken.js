@@ -36,6 +36,8 @@ describe('Auth > Test Authtoken', function () {
 		assert.exists(acct1.id, 'Account1 ID should exist');
 		assert.isString(acct1.id, 'Account1 ID should be a string');
 		testAccount1Id = acct1.id;
+		const host1 = acct1.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host1, 'Account1 zimbraMailHost should exist');
 
 		// Create test account 2
 		testAccount2Name = 'test.' + common.getUniqueString() + '@' + config.testDomain;
@@ -56,6 +58,8 @@ describe('Auth > Test Authtoken', function () {
 		assert.exists(acct2.id, 'Account2 ID should exist');
 		assert.isString(acct2.id, 'Account2 ID should be a string');
 		testAccount2Id = acct2.id;
+		const host2 = acct2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'Account2 zimbraMailHost should exist');
 
 		// Get auth token for account1
 		authToken1 = await soap.getAccountAuthToken(testAccount1Name);
@@ -135,6 +139,7 @@ describe('Auth > Test Authtoken', function () {
 			? folderRes.GetFolderResponse.folder[0]
 			: folderRes.GetFolderResponse.folder;
 		assert.exists(folder.id, 'folder id should exist');
+		assert.equal(folder.id, '1', 'folder id should match delegated account root folder');
 	});
 
 
@@ -167,7 +172,8 @@ describe('Auth > Test Authtoken', function () {
 			: folderRes.GetFolderResponse.folder;
 
 		// Verify response
-		assert.exists(folder, 'folder should exist');
+		assert.exists(folder.id, 'folder id should exist');
+		assert.equal(folder.id, '1', 'folder id should match delegated account root folder');
 	});
 
 

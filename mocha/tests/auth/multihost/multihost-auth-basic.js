@@ -26,6 +26,11 @@ describe('Auth > Multihost > Multihost Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
+		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
+			? createRes1.CreateAccountResponse.account[0]
+			: createRes1.CreateAccountResponse.account;
+		assert.exists(acct1.id, 'Account1 ID should exist');
+		assert.isString(acct1.id, 'Account1 ID should be a string');
 
 		account2Name = 'mh2.' + common.getUniqueString() + '@' + config.testDomain;
 
@@ -39,6 +44,11 @@ describe('Auth > Multihost > Multihost Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
+		const acct2 = Array.isArray(createRes2.CreateAccountResponse.account)
+			? createRes2.CreateAccountResponse.account[0]
+			: createRes2.CreateAccountResponse.account;
+		assert.exists(acct2.id, 'Account2 ID should exist');
+		assert.isString(acct2.id, 'Account2 ID should be a string');
 	});
 
 	beforeEach(async function () {
@@ -66,6 +76,8 @@ describe('Auth > Multihost > Multihost Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
+		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 	});
 
@@ -81,6 +93,8 @@ describe('Auth > Multihost > Multihost Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
+		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
 		const authToken = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
 			: authRes.AuthResponse.authToken._content || authRes.AuthResponse.authToken;
@@ -106,6 +120,8 @@ describe('Auth > Multihost > Multihost Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
+		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 	});
 
@@ -121,6 +137,8 @@ describe('Auth > Multihost > Multihost Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
+		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
 		const authToken = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
 			: authRes.AuthResponse.authToken._content || authRes.AuthResponse.authToken;
@@ -146,6 +164,8 @@ describe('Auth > Multihost > Multihost Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
+		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
 		const authToken = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
 			: authRes.AuthResponse.authToken._content || authRes.AuthResponse.authToken;

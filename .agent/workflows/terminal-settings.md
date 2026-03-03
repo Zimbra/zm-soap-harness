@@ -5,8 +5,7 @@ description: Terminal settings - always use Git Bash, never PowerShell
 # Terminal Settings
 
 ## Shell
-- Always use Git Bash
-- Never use PowerShell
+- Always use PowerShell
 
 ## Paths
 - **ALWAYS use full absolute paths** in all terminal commands (e.g., `c:/git/zm-soap-harness/mocha/tests/...`)

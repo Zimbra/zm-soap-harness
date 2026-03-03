@@ -36,6 +36,8 @@ describe('Auth > Auth Passwd', function () {
 			: createRes1.CreateAccountResponse.account;
 		assert.exists(acct1.id, 'Account1 ID should exist');
 		assert.isString(acct1.id, 'Account1 ID should be a string');
+		const host1 = acct1.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host1, 'Account1 zimbraMailHost should exist');
 
 		// Create account with space in password
 		validUser2 = 'Test' + common.getUniqueString() + '@' + config.testDomain;
@@ -55,6 +57,8 @@ describe('Auth > Auth Passwd', function () {
 			: createRes2.CreateAccountResponse.account;
 		assert.exists(acct2.id, 'Account2 ID should exist');
 		assert.isString(acct2.id, 'Account2 ID should be a string');
+		const host2 = acct2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'Account2 zimbraMailHost should exist');
 
 		// Create account with accented password
 		validUser3 = 'Test' + common.getUniqueString() + '@' + config.testDomain;
@@ -74,6 +78,8 @@ describe('Auth > Auth Passwd', function () {
 			: createRes3.CreateAccountResponse.account;
 		assert.exists(acct3.id, 'Account3 ID should exist');
 		assert.isString(acct3.id, 'Account3 ID should be a string');
+		const host3 = acct3.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host3, 'Account3 zimbraMailHost should exist');
 	});
 
 	beforeEach(async function () {

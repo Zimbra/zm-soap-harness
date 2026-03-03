@@ -139,6 +139,7 @@ describe('Auth > Forget Password > Reset Account Password', function () {
 
 		// Verify response
 		assert.exists(msg.id, 'Message should have an id');
+		assert.match(msg.su, /Reset your.*password/i, 'Subject should contain reset password');
 
 		// Get message and validate it has content
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
@@ -159,5 +160,12 @@ describe('Auth > Forget Password > Reset Account Password', function () {
 		// Verify response
 		assert.equal(fullMsg.id, msg.id, 'Message id should match');
 		assert.exists(fullMsg.mp, 'Message part should exist');
+		const topMp = Array.isArray(fullMsg.mp) ? fullMsg.mp[0] : fullMsg.mp;
+		assert.equal(topMp.ct, 'multipart/alternative', 'Content-type should be multipart/alternative');
+		// Verify email content exists
+		const subParts = Array.isArray(topMp.mp) ? topMp.mp : (topMp.mp ? [topMp.mp] : []);
+		const contentPart = subParts.find(p => p.content && typeof p.content === 'string');
+		assert.exists(contentPart, 'Email should contain text content');
+		assert.isString(contentPart.content, 'Email content should be a string');
 	});
 });

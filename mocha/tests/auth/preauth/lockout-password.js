@@ -27,6 +27,16 @@ describe('Auth > Preauth > Lockout Password', function () {
 
 		// Verify response
 		assert.notExists(domRes.Fault, 'Response should not be a Fault');
+		const domain = Array.isArray(domRes.CreateDomainResponse.domain)
+			? domRes.CreateDomainResponse.domain[0]
+			: domRes.CreateDomainResponse.domain;
+		assert.exists(domain.id, 'Domain ID should exist');
+		assert.isString(domain.id, 'Domain ID should be a string');
+		const domainPreauthAttr = Array.isArray(domain.a)
+			? domain.a.find(a => a.n === 'zimbraPreAuthKey')
+			: domain.a;
+		assert.exists(domainPreauthAttr, 'zimbraPreAuthKey attribute should exist');
+		assert.equal(domainPreauthAttr._content, preauthKey, 'zimbraPreAuthKey should match');
 
 		// Create account with lockout settings
 		account1Name = 'preauth' + common.getUniqueString() + '@' + domainName;
@@ -44,6 +54,13 @@ describe('Auth > Preauth > Lockout Password', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
+		const acct = Array.isArray(createRes.CreateAccountResponse.account)
+			? createRes.CreateAccountResponse.account[0]
+			: createRes.CreateAccountResponse.account;
+		assert.exists(acct.id, 'Account ID should exist');
+		assert.isString(acct.id, 'Account ID should be a string');
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 	});
 
 	beforeEach(async function () {

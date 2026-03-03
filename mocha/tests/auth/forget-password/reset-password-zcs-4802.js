@@ -178,5 +178,7 @@ describe('Auth > Forget Password > Reset Password ZCS 4802', function () {
 
 		// Verify response
 		assert.isString(resetRes.Fault.Detail.Error.Code, 'Fault error Code should be a string');
+		assert.match(resetRes.Fault.Detail.Error.Code, /service\.INVALID_REQUEST|account\.INVALID_PASSWORD/,
+			'Should return INVALID_REQUEST or INVALID_PASSWORD for empty password');
 	});
 });

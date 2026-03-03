@@ -55,6 +55,8 @@ describe('Auth > Auth Request Sphchar', function () {
 				: createRes.CreateAccountResponse.account;
 			assert.exists(acct.id, 'Account ID should exist for: ' + acctName);
 			assert.isString(acct.id, 'Account ID should be a string for: ' + acctName);
+			const host = acct.a.find(a => a.n === 'zimbraMailHost');
+			assert.exists(host, 'zimbraMailHost should exist for: ' + acctName);
 		}
 
 		// Auth each account

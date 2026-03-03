@@ -30,6 +30,16 @@ describe('Auth > Preauth > Preauth', function () {
 
 		// Verify response
 		assert.notExists(domRes.Fault, 'Response should not be a Fault');
+		const domain = Array.isArray(domRes.CreateDomainResponse.domain)
+			? domRes.CreateDomainResponse.domain[0]
+			: domRes.CreateDomainResponse.domain;
+		assert.exists(domain.id, 'Domain ID should exist');
+		assert.isString(domain.id, 'Domain ID should be a string');
+		const preauthAttr = Array.isArray(domain.a)
+			? domain.a.find(a => a.n === 'zimbraPreAuthKey')
+			: domain.a;
+		assert.exists(preauthAttr, 'zimbraPreAuthKey attribute should exist');
+		assert.equal(preauthAttr._content, preauthKey, 'zimbraPreAuthKey should match');
 
 		account1Name = 'user' + common.getUniqueString() + '@' + domain1Name;
 
@@ -43,6 +53,12 @@ describe('Auth > Preauth > Preauth', function () {
 
 		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
+		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
+			? createRes1.CreateAccountResponse.account[0]
+			: createRes1.CreateAccountResponse.account;
+		assert.exists(acct1.id, 'Account1 ID should exist');
+		const host1 = acct1.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host1, 'Account1 zimbraMailHost should exist');
 
 		account2Name = 'user2' + common.getUniqueString() + '@' + domain1Name;
 
@@ -56,6 +72,12 @@ describe('Auth > Preauth > Preauth', function () {
 
 		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
+		const acct2 = Array.isArray(createRes2.CreateAccountResponse.account)
+			? createRes2.CreateAccountResponse.account[0]
+			: createRes2.CreateAccountResponse.account;
+		assert.exists(acct2.id, 'Account2 ID should exist');
+		const host2 = acct2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'Account2 zimbraMailHost should exist');
 
 		account3Name = 'user3' + common.getUniqueString() + '@' + domain1Name;
 
@@ -69,6 +91,12 @@ describe('Auth > Preauth > Preauth', function () {
 
 		// Verify response
 		assert.notExists(createRes3.Fault, 'Response should not be a Fault');
+		const acct3 = Array.isArray(createRes3.CreateAccountResponse.account)
+			? createRes3.CreateAccountResponse.account[0]
+			: createRes3.CreateAccountResponse.account;
+		assert.exists(acct3.id, 'Account3 ID should exist');
+		const host3 = acct3.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host3, 'Account3 zimbraMailHost should exist');
 	});
 
 	beforeEach(async function () {

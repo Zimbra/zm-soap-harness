@@ -11,6 +11,30 @@ description: Verify and fix JS test assertions by cross-referencing original XML
 > **THUMBRULE: NO NEW FOLDERS. NO NEW FILES.**
 > The entire XML-to-JS migration is **already complete** — every folder and every file already exists with 1:1 structural parity (1 XML folder = 1 JS folder, 1 XML file = 1 JS file). The **ONLY** work in this exercise is to add missing `<t:select>` assertions into the **existing** JS files. Do NOT create any new folder. Do NOT create any new file. Zero exceptions.
 
+> [!CAUTION]
+> **THUMBRULE: EVERY JS FILE HAS AN XML COUNTERPART. FIND IT.**
+> The entire project is fully migrated — every JS file in `mocha/tests/` was created from an XML file in `data/soapvalidator/`. There are **ZERO** exceptions. Before starting any assertion work on a folder, you MUST build an **explicit 1:1 mapping table** pairing every JS file to its exact XML file path. If the name doesn't match exactly (e.g., `multihost/multihost-auth-basic.js` ↔ `Multihost/Multihost-Auth-Basic.xml`), search the XML folder tree until you find it. Never assume a file is "clean" or "no unique selects" without reading the **correct** XML file. If after exhaustive search no XML file can be found, ONLY THEN log as MISMATCH.
+
+> [!CAUTION]
+> **THUMBRULE: BUILD THE MAPPING TABLE FIRST — BEFORE ANY ASSERTION WORK.**
+> For each folder the user gives you:
+> 1. List ALL JS files in `mocha/tests/<module>/<subfolder>/`
+> 2. List ALL XML files in `data/soapvalidator/<Module>/<Subfolder>/`
+> 3. Build an explicit table: `JS file → XML file (full path)`
+> 4. Names may differ in casing, hyphens vs dots, or abbreviations — match by content/subject if name matching fails
+> 5. Flag any unpaired items immediately — do NOT start checking assertions until the map is 100% complete
+> 6. Only after the mapping is confirmed, proceed to Step 2 (read XML `<t:select>` nodes)
+
+> [!CAUTION]
+> **THUMBRULE: CHECK ALL `<t:select>` NODES — NEVER FILTER ANY OUT.**
+> Every single `<t:select>` node in the XML MUST be verified against the JS, including those in setup/before blocks (`test_case type="always"`, `Ping`, `account_setup`). **Do NOT use `grep -v` to exclude patterns like `CreateAccountResponse`, `zimbraMailHost`, `authToken`, `lifetime`, or `PingResponse`** — these patterns with `set=` or `match=` require explicit assertions in JS. Specifically:
+> - `CreateAccountResponse/account attr="id" set=` → JS must extract `account.id` and assert it
+> - `CreateAccountResponse/account/a[@n="zimbraMailHost"] set=` → JS must extract and assert `zimbraMailHost` exists
+> - `AuthResponse/lifetime match="^\d+$"` → JS must assert `lifetime` is numeric
+> - `AuthResponse/authToken set=` → JS must assert authToken exists
+> - `AuthResponse/session set=` → JS must assert session exists
+> **The only patterns that can be skipped are `PingResponse` (always assumed working) and XML comments (`<!-- -->`).**
+
 ## When to Use
 - When the user says "strengthen assertions" or "verify assertions" for a folder/module
 - When the user provides a folder path for assertion work
@@ -18,11 +42,13 @@ description: Verify and fix JS test assertions by cross-referencing original XML
 
 ## Process (Per JS File)
 
-### Step 1: Locate the Corresponding XML File
-- JS files live in `mocha/tests/<module>/...`
-- XML files live in `data/soapvalidator/<module>/...`
-- Match by test name/subject (e.g., `cancel-meeting-request-basic.js` ↔ `cancel-meeting-request-basic.xml`)
-- If the XML file cannot be found, search with `find` or `grep` using the test subject or filename
+### Step 1: Build Explicit JS↔XML Mapping Table
+- List all JS files in the target folder under `mocha/tests/<module>/`
+- List all XML files in the corresponding folder under `data/soapvalidator/<Module>/`
+- Create a 1:1 mapping table pairing each JS file to its XML counterpart
+- **Names may differ** — match by subject/content if filenames don't align exactly
+- If a JS subfolder exists (e.g., `multihost/`), find the matching XML subfolder (e.g., `Multihost/`)
+- **Every JS file MUST have an XML match** — if not found after exhaustive search, log as MISMATCH
 
 ### Step 2: Read Every `<t:select>` Node in the XML
 - Each `<t:select>` node represents a validation the original test performed

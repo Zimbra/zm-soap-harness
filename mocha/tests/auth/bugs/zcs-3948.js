@@ -97,6 +97,11 @@ describe('Auth > Bugs > ZCS 3948', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
+		const messages = Array.isArray(searchRes.SearchResponse.m)
+			? searchRes.SearchResponse.m
+			: searchRes.SearchResponse.m ? [searchRes.SearchResponse.m] : [];
+		assert.isAbove(messages.length, 0, 'SearchResponse should return at least one message');
+		assert.exists(messages[0].id, 'Message id should exist');
 
 		// Verify auth with correct credentials works
 		// Auth request

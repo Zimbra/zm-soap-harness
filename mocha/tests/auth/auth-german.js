@@ -17,11 +17,17 @@ describe('Auth > Auth German', function () {
 		const domainName = common.getUniqueString() + 'patrick-sch\u00e4fer.de';
 
 		// CreateDomainRequest
-		await soap.makeSOAPEnvelopeAdmin(
+		const domainRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateDomainRequest xmlns="urn:zimbraAdmin">
 				<name>${domainName}</name>
 			</CreateDomainRequest>`, adminAuthToken
 		);
+		assert.notExists(domainRes.Fault, 'CreateDomainRequest should not fault');
+		const domain = Array.isArray(domainRes.CreateDomainResponse.domain)
+			? domainRes.CreateDomainResponse.domain[0]
+			: domainRes.CreateDomainResponse.domain;
+		assert.exists(domain.id, 'Domain ID should exist');
+		assert.isString(domain.id, 'Domain ID should be a string');
 
 		// Create account in German domain
 		account1Name = 'german1' + common.getUniqueString() + '@' + domainName;
@@ -41,6 +47,8 @@ describe('Auth > Auth German', function () {
 			: createRes.CreateAccountResponse.account;
 		assert.exists(acct.id, 'Account ID should exist');
 		assert.isString(acct.id, 'Account ID should be a string');
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 	});
 
 	beforeEach(async function () {

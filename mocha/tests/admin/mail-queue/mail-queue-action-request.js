@@ -72,9 +72,7 @@ describe('Admin > Mail Queue > Mail Queue Action Request', function () {
 
 	// Serial tests
 	if (config.serial === true && String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-
-		// Tests
-		it('Sanity | Sanity check of MailQueueActionRequest — stop amavis, send message, scan queue, and delete', async () => {
+		it('Serial | Sanity check of MailQueueActionRequest — stop amavis, send message, scan queue, and delete', async () => {
 			// Step 1: Stop amavis so messages will be queued
 			await server.runCommand('sudo su - zimbra -c \'source /opt/zimbra/.bashrc;/opt/zimbra/bin/zmamavisdctl stop\'');
 

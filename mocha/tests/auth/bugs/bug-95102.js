@@ -29,6 +29,16 @@ describe('Auth > Bugs > Bug 95102', function () {
 
 		// Verify response
 		assert.notExists(domainRes.Fault, 'Response should not be a Fault');
+		const domain = Array.isArray(domainRes.CreateDomainResponse.domain)
+			? domainRes.CreateDomainResponse.domain[0]
+			: domainRes.CreateDomainResponse.domain;
+		assert.exists(domain.id, 'Domain ID should exist');
+		assert.isString(domain.id, 'Domain ID should be a string');
+		const preauthAttr = Array.isArray(domain.a)
+			? domain.a.find(a => a.n === 'zimbraPreAuthKey')
+			: domain.a;
+		assert.exists(preauthAttr, 'zimbraPreAuthKey attribute should exist');
+		assert.equal(preauthAttr._content, domainPreauthKey, 'zimbraPreAuthKey should match');
 
 		// Create account with maintenance status
 		accountName = 'preauth' + common.getUniqueString() + '@' + domainName;
