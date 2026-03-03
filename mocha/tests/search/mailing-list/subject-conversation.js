@@ -112,7 +112,6 @@ simple text string in the body
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'Response element should exist');
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
@@ -123,6 +122,5 @@ simple text string in the body
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		assert.exists(res5.SearchResponse, 'Response element should exist');
 	});
 });

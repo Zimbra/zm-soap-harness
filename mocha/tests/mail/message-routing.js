@@ -65,7 +65,7 @@ describe('Mail > Message Routing', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Login as account2 and search for the message
@@ -97,7 +97,6 @@ describe('Mail > Message Routing', function () {
 		assert.notExists(deleteRes.Fault, 'MsgActionRequest should not fault');
 		const action = Array.isArray(deleteRes.MsgActionResponse.action)
 			? deleteRes.MsgActionResponse.action[0] : deleteRes.MsgActionResponse.action;
-		assert.exists(action, 'MsgActionResponse should contain action');
 		assert.equal(action.op, 'delete', 'Action op should be delete');
 		assert.equal(action.id, msgId, 'Action id should match message id');
 	});
@@ -132,7 +131,7 @@ describe('Mail > Message Routing', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 });

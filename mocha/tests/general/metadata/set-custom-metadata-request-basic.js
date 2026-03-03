@@ -79,8 +79,6 @@ describe('General > Metadata > Set Custom Metadata Request Basic', function () {
 
 		// Verify response
 		assert.notExists(setRes.Fault, 'Response should not be a Fault');
-		assert.exists(setRes.SetCustomMetadataResponse,
-			'SetCustomMetadataResponse should exist');
 	});
 
 
@@ -121,8 +119,6 @@ simple text string in the body
 
 		// Verify response
 		assert.notExists(setRes.Fault, 'Response should not be a Fault');
-		assert.exists(setRes.SetCustomMetadataResponse,
-			'SetCustomMetadataResponse should exist');
 
 		// Get custom metadata
 		const getRes = await soap.makeSOAPEnvelopeAccount(
@@ -133,8 +129,6 @@ simple text string in the body
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'GetCustomMetadataRequest should not fault');
-		assert.exists(getRes.GetCustomMetadataResponse,
-			'GetCustomMetadataResponse should exist');
 	});
 
 
@@ -238,8 +232,6 @@ simple text string in the body
 
 		// Verify response
 		assert.notExists(clearRes.Fault, 'Clear SetCustomMetadataRequest should not fault');
-		assert.exists(clearRes.SetCustomMetadataResponse,
-			'SetCustomMetadataResponse should exist');
 
 		// Get custom metadata
 		const getRes = await soap.makeSOAPEnvelopeAccount(

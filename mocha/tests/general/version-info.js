@@ -55,7 +55,7 @@ describe('General > Version Info', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Should return Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.PERM_DENIED',
 			'Error code should be service.PERM_DENIED');
 	});

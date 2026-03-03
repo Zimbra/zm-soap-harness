@@ -66,7 +66,6 @@ Content for paging test ${subj}</content>
 			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 		const allConvs = res2.SearchResponse?.c;
 		assert.exists(allConvs, 'Conversations should exist');
 		const totalConvs = Array.isArray(allConvs) ? allConvs.length : 1;
@@ -79,7 +78,6 @@ Content for paging test ${subj}</content>
 			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 		const page1 = res3.SearchResponse?.c;
 		assert.exists(page1, 'Page 1 conversations should exist');
 
@@ -90,7 +88,6 @@ Content for paging test ${subj}</content>
 			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
 		const page2 = res4.SearchResponse?.c;
 		assert.exists(page2, 'Page 2 conversations should exist');
 
@@ -101,7 +98,6 @@ Content for paging test ${subj}</content>
 			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
 		const page3 = res5.SearchResponse?.c;
 		assert.exists(page3, 'Page 3 conversations should exist');
 	});

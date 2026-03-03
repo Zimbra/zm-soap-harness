@@ -150,7 +150,7 @@ describe('Mail > Bugs > Bug 49454', function () {
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
 		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
-		assert.exists(getMsg, 'GetMsgResponse should contain m');
+		assert.exists(getMsg.id, 'message id should exist');
 
 		// Verify account1 does NOT receive read receipt (no notification for shared access)
 		const searchReceipt = await soap.makeSOAPEnvelopeAccount(

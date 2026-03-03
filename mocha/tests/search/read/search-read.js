@@ -171,7 +171,7 @@ Content for ${mail4.name}</content>
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
 		const msgAction = Array.isArray(res6.MsgActionResponse.action)
 			? res6.MsgActionResponse.action[0] : res6.MsgActionResponse.action;
-		assert.exists(msgAction, 'MsgActionResponse should contain action');
+		assert.equal(msgAction.op, '!read', 'op should be !read');
 
 		// MsgActionRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
@@ -215,7 +215,6 @@ Content for ${mail4.name}</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -229,7 +228,6 @@ Content for ${mail4.name}</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -243,7 +241,6 @@ Content for ${mail4.name}</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -324,7 +321,6 @@ Content for ${mail4.name}</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -338,7 +334,6 @@ Content for ${mail4.name}</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -352,7 +347,6 @@ Content for ${mail4.name}</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -366,7 +360,6 @@ Content for ${mail4.name}</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
 
 

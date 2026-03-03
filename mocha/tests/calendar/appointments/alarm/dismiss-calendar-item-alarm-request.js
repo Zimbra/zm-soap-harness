@@ -200,7 +200,7 @@ describe('Calendar > Appointments > Alarm > Dismiss Calendar Item Alarm Request'
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Blank id should fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Blank id should fault');
 	});
 
 
@@ -216,7 +216,7 @@ describe('Calendar > Appointments > Alarm > Dismiss Calendar Item Alarm Request'
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Text id should fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Text id should fault');
 	});
 
 

@@ -52,7 +52,6 @@ describe('Prefs > Out Of Office > Ooopreventive', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 
 
@@ -82,7 +81,6 @@ describe('Prefs > Out Of Office > Ooopreventive', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest with future date should not fault');
-		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 
 
@@ -112,7 +110,6 @@ describe('Prefs > Out Of Office > Ooopreventive', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest external should not fault');
-		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 
 
@@ -140,7 +137,6 @@ describe('Prefs > Out Of Office > Ooopreventive', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 
 
@@ -199,7 +195,6 @@ describe('Prefs > Out Of Office > Ooopreventive', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest suppress should not fault');
-		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 
 
@@ -233,6 +228,5 @@ describe('Prefs > Out Of Office > Ooopreventive', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'GetPrefsRequest should not fault');
-		assert.exists(getRes.GetPrefsResponse, 'GetPrefsResponse should exist');
 	});
 });

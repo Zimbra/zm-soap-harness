@@ -90,7 +90,7 @@ describe('EWS > Send Mail Cc Bcc From Zwc', function () {
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		await soap.waitFor(5000);

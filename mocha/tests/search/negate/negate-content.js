@@ -60,9 +60,7 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 		// Verify empty result set
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -76,9 +74,7 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 		// Verify empty result set
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -92,9 +88,7 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 		// Verify empty result set
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -108,8 +102,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 		// Verify empty result set
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 });

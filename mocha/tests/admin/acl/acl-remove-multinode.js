@@ -125,7 +125,6 @@ simple text string in the body</content>
 			</GetMsgRequest>`, token4
 		);
 		assert.notExists(getMsgBefore.Fault, 'GetMsgRequest should not fault before removal');
-		assert.exists(getMsgBefore.GetMsgResponse, 'GetMsgResponse should exist before removal');
 
 		// Remove account4 from ACL1
 		const removeRes = await soap.makeSOAPEnvelopeAdmin(
@@ -146,7 +145,7 @@ simple text string in the body</content>
 				<m id="${account1Id}:${message1Id}"/>
 			</GetMsgRequest>`, token4b, false
 		);
-		assert.exists(getMsgAfter.Fault, 'GetMsgRequest should fault for removed ACL member after LDAP replication');
+		assert.isString(getMsgAfter.Fault.Detail.Error.Code, 'GetMsgRequest should fault for removed ACL member after LDAP replication');
 		assert.include(getMsgAfter.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 	});
 });

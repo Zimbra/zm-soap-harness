@@ -80,7 +80,7 @@ describe('Admin > Accounts > Foreign Principal > Resource Modify', function () {
 		);
 
 		// Verify response
-		assert.exists(getOld.Fault, 'Old FP should no longer work');
+		assert.isString(getOld.Fault.Detail.Error.Code, 'Old FP should no longer work');
 
 		// New FP should succeed
 		await common.sleep(2000);

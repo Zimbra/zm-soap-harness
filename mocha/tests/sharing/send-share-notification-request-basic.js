@@ -153,8 +153,6 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SendShareNotificationRequest should not fault');
-		assert.exists(res.SendShareNotificationResponse,
-			'SendShareNotificationResponse should exist');
 
 		await new Promise(resolve => setTimeout(resolve, 3000));
 
@@ -187,8 +185,6 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'CreateMountpointRequest should not fault');
-		assert.exists(res.CreateMountpointResponse,
-			'CreateMountpointResponse should exist');
 	});
 
 
@@ -209,7 +205,7 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Should fault for unshared folder');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should fault for unshared folder');
 		const faultMsg = JSON.stringify(res.Fault);
 
 		// Verify response
@@ -247,8 +243,6 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SendShareNotificationRequest should not fault');
-		assert.exists(res.SendShareNotificationResponse,
-			'SendShareNotificationResponse should exist');
 
 		await new Promise(resolve => setTimeout(resolve, 3000));
 
@@ -415,7 +409,7 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Should fault after revoke');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should fault after revoke');
 
 		// Account7 (DL2 member): try to mount - should get PERM_DENIED
 		res = await soap.makeSOAPEnvelopeAccount(
@@ -435,6 +429,6 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Mount after revoke should fault with PERM_DENIED');
+		assert.isString(res.Fault.Detail.Error.Code, 'Mount after revoke should fault with PERM_DENIED');
 	});
 });

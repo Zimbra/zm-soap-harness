@@ -435,16 +435,9 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 
 		// Verify response
 		assert.exists(link, 'Mountpoint should exist');
-		// After account deletion, mountpoint should be marked as broken
-		// Some server versions may not immediately mark as broken
-		if (link.broken) {
-			assert.equal(link.broken, '1',
-				'Mountpoint should be broken after account deletion');
-		} else {
-			// Verify the mountpoint owner (zid) no longer resolves
-			assert.exists(link.zid,
-				'Mountpoint should still reference the deleted account zid');
-		}
+		// Verify response - after account deletion, mountpoint should be broken
+		assert.equal(link.broken, '1',
+			'Mountpoint should be broken after account deletion');
 	});
 
 });

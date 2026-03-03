@@ -209,7 +209,6 @@ describe('EWS > Remove Attachment From Mail From Zwc', function () {
 			</SearchRequest>`, account2AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const hit = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m[0] : searchRes.SearchResponse.m;
 		assert.exists(hit, 'Should find message in search results');

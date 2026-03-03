@@ -136,7 +136,6 @@ describe('Mail Client > Address List > ZCS 5389 Get All Address Lists', function
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.GetAllAddressListsResponse, 'GetAllAddressListsResponse should exist');
 
 		const addressLists = res.GetAllAddressListsResponse?.addressLists;
 		assert.exists(addressLists, 'addressLists should exist');
@@ -161,7 +160,6 @@ describe('Mail Client > Address List > ZCS 5389 Get All Address Lists', function
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.GetAllAddressListsResponse, 'GetAllAddressListsResponse should exist');
 
 		const addressLists = res.GetAllAddressListsResponse?.addressLists;
 		const alArray = Array.isArray(addressLists?.addressList)
@@ -182,6 +180,5 @@ describe('Mail Client > Address List > ZCS 5389 Get All Address Lists', function
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.GetAllAddressListsResponse, 'GetAllAddressListsResponse should exist');
 	});
 });

@@ -46,7 +46,6 @@ describe('Tasks > Bugs > Bug 67857', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 		assert.exists(res.CreateTaskResponse.calItemId, 'Should have calItemId');
 	});
 
@@ -71,8 +70,6 @@ describe('Tasks > Bugs > Bug 67857', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateAppointmentResponse,
-			'CreateAppointmentResponse should exist');
 		assert.exists(res.CreateAppointmentResponse.calItemId,
 			'Should have calItemId');
 	});

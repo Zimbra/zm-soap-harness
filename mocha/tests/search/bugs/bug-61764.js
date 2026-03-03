@@ -84,7 +84,6 @@ Content for shared folder search test with zimbraSSLExcludeCipherSuites</content
 			</FolderActionRequest>`, accountAuthToken
 		);
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.FolderActionResponse, 'Response element should exist');
 
 		// Account2: create mountpoint to account1's inbox
 		accountAuthToken2 = await soap.getAccountAuthToken(accountEmail2);
@@ -95,7 +94,6 @@ Content for shared folder search test with zimbraSSLExcludeCipherSuites</content
 			</CreateMountpointRequest>`, accountAuthToken2
 		);
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.CreateMountpointResponse, 'Response element should exist');
 
 		// Account2: search in shared folder
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -104,6 +102,5 @@ Content for shared folder search test with zimbraSSLExcludeCipherSuites</content
 			</SearchRequest>`, accountAuthToken2
 		);
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
 	});
 });

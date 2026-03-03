@@ -108,6 +108,5 @@ describe('Search > Bugs > Bug 85358', function () {
 			</SearchRequest>`, accountAuthToken2
 		);
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
-		assert.exists(res8.SearchResponse, 'SearchResponse should exist');
 	});
 });

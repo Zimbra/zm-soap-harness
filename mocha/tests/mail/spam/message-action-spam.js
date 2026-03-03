@@ -81,7 +81,7 @@ describe('Mail > Spam > Message Action Spam', function () {
 		assert.notExists(notSpamRes.Fault, 'MsgActionRequest should not fault');
 		const msgAction = Array.isArray(notSpamRes.MsgActionResponse.action)
 			? notSpamRes.MsgActionResponse.action[0] : notSpamRes.MsgActionResponse.action;
-		assert.exists(msgAction, 'MsgActionResponse should contain action');
+		assert.equal(msgAction.op, '!spam', 'op should be !spam');
 
 		// Verify message moved to inbox
 		const getMsgRes2 = await soap.makeSOAPEnvelopeAccount(

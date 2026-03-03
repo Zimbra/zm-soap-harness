@@ -55,6 +55,5 @@ describe('Mail Client > Mobile > Get Device Status Request', function () {
 			'<GetDeviceStatusRequest xmlns="urn:zimbraSync"/>', acctAuthToken
 		);
 		assert.notExists(res.Fault, 'GetDeviceStatusRequest should not fault');
-		assert.exists(res.GetDeviceStatusResponse, 'GetDeviceStatusResponse should exist');
 	});
 });

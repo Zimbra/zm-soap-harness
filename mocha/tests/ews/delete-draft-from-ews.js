@@ -195,7 +195,6 @@ describe('EWS > Delete Draft From EWS', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const messages = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : searchRes.SearchResponse.m ? [searchRes.SearchResponse.m] : [];
 		assert.isAbove(messages.length, 0, 'Should find message');

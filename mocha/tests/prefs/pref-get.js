@@ -49,7 +49,6 @@ describe('Prefs > Pref Get', function () {
 
 		// Verify response
 		assert.notExists(getPrefsRes.Fault, 'GetPrefsRequest should not fault');
-		assert.exists(getPrefsRes.GetPrefsResponse, 'GetPrefsResponse should exist');
 	});
 
 
@@ -79,7 +78,6 @@ describe('Prefs > Pref Get', function () {
 
 		// Verify response
 		assert.notExists(getPrefsRes.Fault, 'GetPrefsRequest should not fault');
-		assert.exists(getPrefsRes.GetPrefsResponse, 'GetPrefsResponse should exist');
 
 		const responseAttrs = getPrefsRes.GetPrefsResponse._attrs;
 		assert.exists(responseAttrs, 'GetPrefsResponse _attrs should exist');

@@ -62,7 +62,7 @@ describe('Mail > Bugs > Bug 99811', function () {
 		);
 
 		// Verify the error response
-		assert.exists(res.Fault, 'ModifyPropertiesRequest should fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPropertiesRequest should fault');
 		assert.include(res.Fault.Detail.Error.Code,
 			'account.TOO_MANY_ZIMLETUSERPROPERTIES',
 			'Error code should be TOO_MANY_ZIMLETUSERPROPERTIES');

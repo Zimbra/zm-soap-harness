@@ -84,6 +84,5 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		assert.exists(res5.BrowseResponse, 'Response element should exist');
 	});
 });

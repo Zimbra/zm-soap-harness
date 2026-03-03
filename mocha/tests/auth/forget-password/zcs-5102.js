@@ -35,7 +35,6 @@ describe('Auth > Forget Password > ZCS 5102', function () {
 
 		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
-		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
 			? createRes1.CreateAccountResponse.account[0]
@@ -293,7 +292,7 @@ describe('Auth > Forget Password > ZCS 5102', function () {
 		);
 
 		// Verify response
-		assert.exists(attempt1.Fault, 'Attempt 1 should fail');
+		assert.isString(attempt1.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(attempt1.Fault.Reason.Text, 'authentication failed',
 			'Should indicate auth failed');
 
@@ -307,8 +306,7 @@ describe('Auth > Forget Password > ZCS 5102', function () {
 		);
 
 		// Verify response
-		assert.exists(attempt2.Fault, 'Attempt 2 should fail');
-		assert.exists(attempt2.Fault.Detail.Error.Code, 'Error code should exist');
+		assert.isString(attempt2.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 
 		// Attempt 3 - should trigger lockout
 		// Send the message
@@ -320,8 +318,7 @@ describe('Auth > Forget Password > ZCS 5102', function () {
 		);
 
 		// Verify response
-		assert.exists(attempt3.Fault, 'Attempt 3 should fail');
-		assert.exists(attempt3.Fault.Detail.Error.Code, 'Error code should exist');
+		assert.isString(attempt3.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 
 		// Verify account is locked out
 		adminAuthToken = await soap.getAdminAuthToken();
@@ -375,8 +372,7 @@ describe('Auth > Forget Password > ZCS 5102', function () {
 		);
 
 		// Verify response
-		assert.exists(attempt1.Fault, 'Attempt 1 should fail');
-		assert.exists(attempt1.Fault.Detail.Error.Code, 'Error code should exist');
+		assert.isString(attempt1.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 
 		// Wait for lockout failure lifetime to expire
 		await new Promise(resolve => setTimeout(resolve, 35000));
@@ -391,8 +387,7 @@ describe('Auth > Forget Password > ZCS 5102', function () {
 		);
 
 		// Verify response
-		assert.exists(attempt2.Fault, 'Attempt 2 should fail');
-		assert.exists(attempt2.Fault.Detail.Error.Code, 'Error code should exist');
+		assert.isString(attempt2.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 
 		// Verify account is NOT locked out
 		adminAuthToken = await soap.getAdminAuthToken();

@@ -72,8 +72,6 @@ describe('Admin > Accounts > Foreign Principal > Search Directory Request', func
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.SearchDirectoryResponse,
-			'SearchDirectoryResponse should exist');
 
 		const accounts = response.SearchDirectoryResponse.account || [];
 		const found = accounts.find(a => a.id === account1Id);
@@ -99,8 +97,6 @@ describe('Admin > Accounts > Foreign Principal > Search Directory Request', func
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.SearchDirectoryResponse,
-			'SearchDirectoryResponse should exist');
 
 		const accounts = response.SearchDirectoryResponse.account || [];
 		const found = accounts.find(a => a.id === account2Id);

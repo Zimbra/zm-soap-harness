@@ -81,7 +81,6 @@ simple text string in the body
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const msgs = searchRes.SearchResponse.m;
 
 		// Verify response
@@ -125,7 +124,6 @@ simple text string in the body
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const msgs = searchRes.SearchResponse.m;
 
 		// Verify response

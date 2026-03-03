@@ -69,8 +69,6 @@ describe('Folders > Virtualhost > Virtualhost Getinforequest', function () {
 		const resp = await soap.makeSOAPEnvelopeAccount(getInfoRequest, virtAuth);
 
 		// Verify response
-		assert.notExists(resp.Fault, 'Response should not be a Fault');
-		assert.exists(resp.GetInfoResponse, 'Should return info');
 		assert.include(resp.GetInfoResponse.rest, virtDomain,
 			'REST URL should contain virtual hostname');
 		assert.include(resp.GetInfoResponse.soapURL, virtDomain,

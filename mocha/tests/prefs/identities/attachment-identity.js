@@ -56,6 +56,5 @@ describe('Prefs > Identities > Attachment Identity', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
-		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
 });

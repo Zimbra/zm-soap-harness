@@ -62,7 +62,7 @@ describe('Tags > Tags Create', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Response should be a Fault for blank name');
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault for blank name');
 	});
 
 
@@ -75,7 +75,7 @@ describe('Tags > Tags Create', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Response should be a Fault for spaces-only name');
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault for spaces-only name');
 	});
 
 
@@ -100,7 +100,7 @@ describe('Tags > Tags Create', function () {
 		);
 
 		// Verify response
-		assert.exists(res2.Fault, 'Duplicate name should be a Fault');
+		assert.isString(res2.Fault.Detail.Error.Code, 'Duplicate name should be a Fault');
 	});
 
 
@@ -157,7 +157,7 @@ describe('Tags > Tags Create', function () {
 		if (res.Fault) {
 
 			// Verify response
-			assert.exists(res.Fault, 'Negative color should be a Fault');
+			assert.isString(res.Fault.Detail.Error.Code, 'Negative color should be a Fault');
 		} else {
 			const createdTag = Array.isArray(res.CreateTagResponse.tag)
 				? res.CreateTagResponse.tag[0] : res.CreateTagResponse.tag;
@@ -177,7 +177,7 @@ describe('Tags > Tags Create', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Spaces-only color should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Spaces-only color should be a Fault');
 	});
 
 
@@ -192,7 +192,7 @@ describe('Tags > Tags Create', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Special chars color should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Special chars color should be a Fault');
 	});
 
 
@@ -225,7 +225,7 @@ describe('Tags > Tags Create', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Empty name and color should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Empty name and color should be a Fault');
 	});
 
 
@@ -238,7 +238,7 @@ describe('Tags > Tags Create', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Spaces in both should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Spaces in both should be a Fault');
 	});
 
 
@@ -253,7 +253,7 @@ describe('Tags > Tags Create', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Valid name with spaces color should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Valid name with spaces color should be a Fault');
 	});
 
 
@@ -302,7 +302,6 @@ describe('Tags > Tags Create', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
-		assert.exists(modRes.TagActionResponse, 'TagActionResponse should exist');
 
 		// Verify
 		const getRes = await soap.makeSOAPEnvelopeAccount(

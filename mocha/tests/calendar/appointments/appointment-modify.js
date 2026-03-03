@@ -284,7 +284,7 @@ describe('Calendar > Appointments > Appointment Modify', function () {
 				</m>
 			</ModifyAppointmentRequest>`, acct1.token
         );
-        assert.exists(modRes.Fault, 'Should fault with invalid time');
+        assert.isString(modRes.Fault.Detail.Error.Code, 'Should fault with invalid time');
     });
 
 
@@ -573,6 +573,6 @@ describe('Calendar > Appointments > Appointment Modify', function () {
 				</m>
 			</ModifyAppointmentRequest>`, acct2.token
         );
-        assert.exists(modRes.Fault, 'Should fault - PERM_DENIED');
+        assert.isString(modRes.Fault.Detail.Error.Code, 'Should fault - PERM_DENIED');
     });
 });

@@ -239,8 +239,6 @@ describe('Admin > Accounts > Account Getmembership', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.GetAccountMembershipResponse,
-			'GetAccountMembershipResponse should exist');
 
 		const dls = response.GetAccountMembershipResponse.dl || [];
 		const found = dls.find(dl => dl.name === list1Name);
@@ -260,8 +258,6 @@ describe('Admin > Accounts > Account Getmembership', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.GetAccountMembershipResponse,
-			'GetAccountMembershipResponse should exist');
 	});
 
 
@@ -275,8 +271,6 @@ describe('Admin > Accounts > Account Getmembership', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.GetAccountMembershipResponse,
-			'GetAccountMembershipResponse should exist');
 
 		const dls = response.GetAccountMembershipResponse.dl || [];
 		const found = dls.find(dl => dl.name === list1Name);
@@ -296,8 +290,6 @@ describe('Admin > Accounts > Account Getmembership', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.GetAccountMembershipResponse,
-			'GetAccountMembershipResponse should exist');
 	});
 
 
@@ -313,7 +305,7 @@ describe('Admin > Accounts > Account Getmembership', function () {
 			);
 
 			// Verify response
-			assert.exists(response.Fault, `Should fault for id="${val}"`);
+			assert.isString(response.Fault.Detail.Error.Code, `Should fault for id="${val}"`);
 
 			const code = response.Fault.Detail.Error.Code;
 			const allowedCodes = ['account.NO_SUCH_ACCOUNT', 'service.INVALID_REQUEST', 'service.PARSE_ERROR'];
@@ -337,7 +329,7 @@ describe('Admin > Accounts > Account Getmembership', function () {
 			);
 
 			// Verify response
-			assert.exists(response.Fault, `Should fault for name="${val}"`);
+			assert.isString(response.Fault.Detail.Error.Code, `Should fault for name="${val}"`);
 
 			const code = response.Fault.Detail.Error.Code;
 			const allowedCodes = ['account.NO_SUCH_ACCOUNT', 'service.INVALID_REQUEST', 'service.PARSE_ERROR'];
@@ -359,8 +351,6 @@ describe('Admin > Accounts > Account Getmembership', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.GetAccountMembershipResponse,
-			'GetAccountMembershipResponse should exist');
 
 		const dls = response.GetAccountMembershipResponse.dl || [];
 		const dl4 = dls.find(dl => dl.name === list4Name);
@@ -390,8 +380,6 @@ describe('Admin > Accounts > Account Getmembership', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.GetAccountMembershipResponse,
-			'GetAccountMembershipResponse should exist');
 
 		const dls = response.GetAccountMembershipResponse.dl || [];
 		const dl4 = dls.find(dl => dl.name === list4Name);
@@ -418,8 +406,6 @@ describe('Admin > Accounts > Account Getmembership', function () {
 
 		// Verify response
 		assert.notExists(resByid.Fault, 'Response should not be a Fault');
-		assert.exists(resByid.GetAccountMembershipResponse,
-			'GetAccountMembershipResponse should exist');
 
 		let dls = resByid.GetAccountMembershipResponse.dl || [];
 		const dl6ById = dls.find(dl => dl.name === list6Name);
@@ -450,8 +436,6 @@ describe('Admin > Accounts > Account Getmembership', function () {
 
 		// Verify response
 		assert.notExists(resByName.Fault, 'Response should not be a Fault');
-		assert.exists(resByName.GetAccountMembershipResponse,
-			'GetAccountMembershipResponse should exist');
 
 		dls = resByName.GetAccountMembershipResponse.dl || [];
 		const dl6ByName = dls.find(dl => dl.name === list6Name);

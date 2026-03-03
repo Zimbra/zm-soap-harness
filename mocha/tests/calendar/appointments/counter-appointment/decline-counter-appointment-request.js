@@ -225,6 +225,6 @@ describe('Calendar > Appointments > Counter Appointment > Decline Counter Appoin
 		);
 
 		// Verify response
-		assert.exists(getRes.Fault, 'Deleted appt should fault');
+		assert.isString(getRes.Fault.Detail.Error.Code, 'Deleted appt should fault');
 	});
 });

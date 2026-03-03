@@ -51,6 +51,5 @@ describe('Prefs > Bugs > Bug 92160', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 });

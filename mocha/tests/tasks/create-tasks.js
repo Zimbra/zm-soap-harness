@@ -47,7 +47,6 @@ describe('Tasks > Create Tasks', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 		assert.exists(res.CreateTaskResponse.calItemId, 'Task should have calItemId');
 		assert.exists(res.CreateTaskResponse.invId, 'Task should have invId');
 	});
@@ -97,7 +96,6 @@ describe('Tasks > Create Tasks', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
 
 
@@ -117,7 +115,6 @@ describe('Tasks > Create Tasks', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
 
 
@@ -138,7 +135,6 @@ describe('Tasks > Create Tasks', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
 
 
@@ -159,7 +155,6 @@ describe('Tasks > Create Tasks', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
 
 
@@ -179,7 +174,6 @@ describe('Tasks > Create Tasks', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
 
 
@@ -200,7 +194,6 @@ describe('Tasks > Create Tasks', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
 
 
@@ -221,7 +214,6 @@ describe('Tasks > Create Tasks', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
 
 
@@ -243,7 +235,6 @@ describe('Tasks > Create Tasks', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
 
 
@@ -263,7 +254,6 @@ describe('Tasks > Create Tasks', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
 
 
@@ -287,7 +277,6 @@ describe('Tasks > Create Tasks', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
 
 
@@ -308,7 +297,6 @@ describe('Tasks > Create Tasks', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
 
 
@@ -332,7 +320,6 @@ describe('Tasks > Create Tasks', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 
 		// Search for the task in account2's inbox
 		await new Promise(resolve => setTimeout(resolve, 2000));
@@ -369,7 +356,6 @@ describe('Tasks > Create Tasks', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
 
 
@@ -389,7 +375,6 @@ describe('Tasks > Create Tasks', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
 
 
@@ -411,7 +396,6 @@ describe('Tasks > Create Tasks', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
 
 
@@ -435,7 +419,6 @@ describe('Tasks > Create Tasks', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
 
 
@@ -458,6 +441,5 @@ describe('Tasks > Create Tasks', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
 });

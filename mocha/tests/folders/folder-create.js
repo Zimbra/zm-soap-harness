@@ -40,13 +40,13 @@ describe('Folders > Folder Create', function () {
 		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 
-		// Verify folder is created
-		const folderId = createResponse.CreateFolderResponse.folder[0].id;
-
 		// Verify response
-		assert.isNotNull(folderId, 'Verify folder id is returned');
-		assert.exists(createResponse.CreateFolderResponse.folder[0].name,
-			'Verify folder name is returned');
+		assert.notExists(createResponse.Fault, 'Response should not be a Fault');
+		const folder = createResponse.CreateFolderResponse.folder[0];
+		assert.exists(folder.id, 'Folder ID should exist');
+		assert.isString(folder.id, 'Folder ID should be a string');
+		assert.equal(folder.name, folderName, 'Verify folder name matches');
+		assert.exists(folder.l, 'Folder parent ID should exist');
 	});
 
 
@@ -59,9 +59,9 @@ describe('Folders > Folder Create', function () {
 		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken, false);
 
-		// Verify error
 		// Verify response
-		assert.exists(createResponse.Fault, 'Verify Fault exists');
+		assert.exists(createResponse.Fault.Detail.Error, 'Fault Error should exist');
+		assert.isString(createResponse.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(createResponse.Fault.Reason.Text, 'invalid name',
 			'Verify INVALID_NAME error');
 	});
@@ -76,9 +76,9 @@ describe('Folders > Folder Create', function () {
 		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken, false);
 
-		// Verify error
 		// Verify response
-		assert.exists(createResponse.Fault, 'Verify Fault exists');
+		assert.exists(createResponse.Fault.Detail.Error, 'Fault Error should exist');
+		assert.isString(createResponse.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(createResponse.Fault.Reason.Text, 'invalid name',
 			'Verify INVALID_NAME error');
 	});
@@ -93,9 +93,9 @@ describe('Folders > Folder Create', function () {
 		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken, false);
 
-		// Verify error
 		// Verify response
-		assert.exists(createResponse.Fault, 'Verify Fault exists');
+		assert.exists(createResponse.Fault.Detail.Error, 'Fault Error should exist');
+		assert.isString(createResponse.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(createResponse.Fault.Reason.Text, 'invalid name',
 			'Verify INVALID_NAME error');
 	});
@@ -114,8 +114,11 @@ describe('Folders > Folder Create', function () {
 		const createResponse1 = await soap.makeSOAPEnvelopeAccount(createRequest1, accountAuthToken);
 
 		// Verify response
+		assert.notExists(createResponse1.Fault, 'First create should not be a Fault');
 		assert.exists(createResponse1.CreateFolderResponse.folder[0].id,
 			'Verify first folder is created');
+		assert.isString(createResponse1.CreateFolderResponse.folder[0].id,
+			'Verify first folder id is a string');
 
 		// Create duplicate folder
 		const createRequest2 =
@@ -126,9 +129,8 @@ describe('Folders > Folder Create', function () {
 		// CreateFolderRequest
 		const createResponse2 = await soap.makeSOAPEnvelopeAccount(createRequest2, accountAuthToken, false);
 
-		// Verify error
 		// Verify response
-		assert.exists(createResponse2.Fault, 'Verify Fault exists');
+		assert.exists(createResponse2.Fault.Detail.Error, 'Fault Error should exist');
 		assert.include(createResponse2.Fault.Reason.Text, 'already exists',
 			'Verify ALREADY_EXISTS error');
 	});
@@ -145,9 +147,8 @@ describe('Folders > Folder Create', function () {
 		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken, false);
 
-		// Verify error
 		// Verify response
-		assert.exists(createResponse.Fault, 'Verify Fault exists');
+		assert.exists(createResponse.Fault.Detail.Error, 'Fault Error should exist');
 		assert.include(createResponse.Fault.Reason.Text, 'no such',
 			'Verify NO_SUCH_FOLDER error');
 	});
@@ -164,9 +165,8 @@ describe('Folders > Folder Create', function () {
 		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken, false);
 
-		// Verify error
 		// Verify response
-		assert.exists(createResponse.Fault, 'Verify Fault exists');
+		assert.exists(createResponse.Fault.Detail.Error, 'Fault Error should exist');
 	});
 
 
@@ -181,10 +181,12 @@ describe('Folders > Folder Create', function () {
 		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 
-		// Verify folder is created (defaults to root)
 		// Verify response
-		assert.exists(createResponse.CreateFolderResponse.folder[0],
-			'Verify folder is created without parent');
+		assert.notExists(createResponse.Fault, 'Response should not be a Fault');
+		const folder = createResponse.CreateFolderResponse.folder[0];
+		assert.exists(folder.id, 'Folder ID should exist');
+		assert.isString(folder.id, 'Folder ID should be a string');
+		assert.equal(folder.name, folderName, 'Verify folder name matches');
 	});
 
 
@@ -198,7 +200,9 @@ describe('Folders > Folder Create', function () {
 			</CreateFolderRequest>`;
 
 		// CreateFolderRequest
-		await soap.makeSOAPEnvelopeAccount(createRequest1, accountAuthToken);
+		const createResponse1 = await soap.makeSOAPEnvelopeAccount(createRequest1, accountAuthToken);
+		assert.notExists(createResponse1.Fault, 'First create should not be a Fault');
+		assert.exists(createResponse1.CreateFolderResponse.folder[0].id, 'First folder ID should exist');
 
 		// Create folder with leading spaces (different name)
 		const createRequest2 =
@@ -209,10 +213,11 @@ describe('Folders > Folder Create', function () {
 		// CreateFolderRequest
 		const createResponse2 = await soap.makeSOAPEnvelopeAccount(createRequest2, accountAuthToken);
 
-		// Verify folder is created (leading spaces make it a different name)
 		// Verify response
-		assert.exists(createResponse2.CreateFolderResponse.folder[0],
-			'Verify folder with leading spaces is created');
+		assert.notExists(createResponse2.Fault, 'Response should not be a Fault');
+		const folder = createResponse2.CreateFolderResponse.folder[0];
+		assert.exists(folder.id, 'Folder ID should exist');
+		assert.isString(folder.id, 'Folder ID should be a string');
 	});
 
 
@@ -226,7 +231,9 @@ describe('Folders > Folder Create', function () {
 			</CreateFolderRequest>`;
 
 		// CreateFolderRequest
-		await soap.makeSOAPEnvelopeAccount(createRequest1, accountAuthToken);
+		const createResponse1 = await soap.makeSOAPEnvelopeAccount(createRequest1, accountAuthToken);
+		assert.notExists(createResponse1.Fault, 'First create should not be a Fault');
+		assert.exists(createResponse1.CreateFolderResponse.folder[0].id, 'First folder ID should exist');
 
 		// Create folder with trailing spaces (trailing spaces are trimmed, so becomes duplicate)
 		const createRequest2 =
@@ -237,9 +244,8 @@ describe('Folders > Folder Create', function () {
 		// CreateFolderRequest
 		const createResponse2 = await soap.makeSOAPEnvelopeAccount(createRequest2, accountAuthToken, false);
 
-		// Verify error
 		// Verify response
-		assert.exists(createResponse2.Fault, 'Verify Fault exists');
+		assert.exists(createResponse2.Fault.Detail.Error, 'Fault Error should exist');
 		assert.include(createResponse2.Fault.Reason.Text, 'already exists',
 			'Verify ALREADY_EXISTS error');
 	});
@@ -256,10 +262,12 @@ describe('Folders > Folder Create', function () {
 		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 
-		// Verify folder is created
 		// Verify response
-		assert.exists(createResponse.CreateFolderResponse.folder[0],
-			'Verify folder with spaces in name is created');
+		assert.notExists(createResponse.Fault, 'Response should not be a Fault');
+		const folder = createResponse.CreateFolderResponse.folder[0];
+		assert.exists(folder.id, 'Folder ID should exist');
+		assert.isString(folder.id, 'Folder ID should be a string');
+		assert.equal(folder.name, folderName, 'Verify folder name matches');
 	});
 
 
@@ -271,13 +279,15 @@ describe('Folders > Folder Create', function () {
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
 
-		// GetFolderRequest
+		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 
-		// Verify folder is created
 		// Verify response
-		assert.exists(createResponse.CreateFolderResponse.folder[0].id,
-			'Verify folder with non-latin name is created');
+		assert.notExists(createResponse.Fault, 'Response should not be a Fault');
+		const folder = createResponse.CreateFolderResponse.folder[0];
+		assert.exists(folder.id, 'Folder ID should exist');
+		assert.isString(folder.id, 'Folder ID should be a string');
+		assert.equal(folder.name, folderName, 'Verify folder name matches');
 	});
 
 
@@ -287,12 +297,11 @@ describe('Folders > Folder Create', function () {
 		// Get inbox folder id
 		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 
-		// CreateFolderRequest
+		// GetFolderRequest
 		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken);
+		assert.notExists(getFolderResponse.Fault, 'GetFolder should not be a Fault');
 		const folders = getFolderResponse.GetFolderResponse.folder[0].folder;
 		const inboxFolder = folders.find(f => f.name === 'Inbox');
-
-		// Verify response
 		assert.exists(inboxFolder, 'Verify Inbox folder found');
 
 		// Create folder with color and checked flag
@@ -301,15 +310,17 @@ describe('Folders > Folder Create', function () {
 				<folder name='${folderName}' l='${inboxFolder.id}' color='3' f='checked'/>
 			</CreateFolderRequest>`;
 
-		// GetFolderRequest
+		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 
-		// Verify folder is created with correct color
 		// Verify response
-		assert.exists(createResponse.CreateFolderResponse.folder[0].id,
-			'Verify folder is created');
-		assert.equal(createResponse.CreateFolderResponse.folder[0].color, 3,
-			'Verify color is set to 3');
+		assert.notExists(createResponse.Fault, 'Response should not be a Fault');
+		const folder = createResponse.CreateFolderResponse.folder[0];
+		assert.exists(folder.id, 'Folder ID should exist');
+		assert.isString(folder.id, 'Folder ID should be a string');
+		assert.equal(folder.name, folderName, 'Verify folder name matches');
+		assert.equal(folder.color, 3, 'Verify color is set to 3');
+		assert.equal(folder.l, inboxFolder.id, 'Verify parent folder matches Inbox');
 	});
 
 
@@ -319,24 +330,28 @@ describe('Folders > Folder Create', function () {
 		// Get inbox folder id
 		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 
-		// CreateFolderRequest
+		// GetFolderRequest
 		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken);
+		assert.notExists(getFolderResponse.Fault, 'GetFolder should not be a Fault');
 		const folders = getFolderResponse.GetFolderResponse.folder[0].folder;
 		const inboxFolder = folders.find(f => f.name === 'Inbox');
+		assert.exists(inboxFolder, 'Verify Inbox folder found');
 
 		const createRequest =
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folderName}' l='${inboxFolder.id}' color='3' f='#' view='appointment'/>
 			</CreateFolderRequest>`;
 
-		// GetFolderRequest
+		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 
-		const folder = createResponse.CreateFolderResponse.folder[0];
-
 		// Verify response
+		assert.notExists(createResponse.Fault, 'Response should not be a Fault');
+		const folder = createResponse.CreateFolderResponse.folder[0];
+		assert.exists(folder.id, 'Folder ID should exist');
 		assert.equal(folder.color, 3, 'Verify color is 3');
 		assert.equal(folder.f, '#', 'Verify flag is #');
+		assert.equal(folder.view, 'appointment', 'Verify view is appointment');
 	});
 
 
@@ -346,10 +361,12 @@ describe('Folders > Folder Create', function () {
 		// Get inbox folder id
 		const getFolderRequest = '<GetFolderRequest xmlns="urn:zimbraMail"/>';
 
-		// CreateFolderRequest
+		// GetFolderRequest
 		const getFolderResponse = await soap.makeSOAPEnvelopeAccount(getFolderRequest, accountAuthToken);
+		assert.notExists(getFolderResponse.Fault, 'GetFolder should not be a Fault');
 		const folders = getFolderResponse.GetFolderResponse.folder[0].folder;
 		const inboxFolder = folders.find(f => f.name === 'Inbox');
+		assert.exists(inboxFolder, 'Verify Inbox folder found');
 
 		const createRequest =
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
@@ -359,11 +376,13 @@ describe('Folders > Folder Create', function () {
 		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 
-		const folder = createResponse.CreateFolderResponse.folder[0];
-
 		// Verify response
+		assert.notExists(createResponse.Fault, 'Response should not be a Fault');
+		const folder = createResponse.CreateFolderResponse.folder[0];
+		assert.exists(folder.id, 'Folder ID should exist');
 		assert.equal(folder.color, 3, 'Verify color is 3');
 		assert.include(folder.f, '*', 'Verify flag contains *');
+		assert.equal(folder.view, 'appointment', 'Verify view is appointment');
 	});
 
 
@@ -379,8 +398,10 @@ describe('Folders > Folder Create', function () {
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 
 		// Verify response
-		assert.equal(createResponse.CreateFolderResponse.folder[0].color, 3,
-			'Verify color is set to 3');
+		assert.notExists(createResponse.Fault, 'Response should not be a Fault');
+		const folder = createResponse.CreateFolderResponse.folder[0];
+		assert.exists(folder.id, 'Folder ID should exist');
+		assert.equal(folder.color, 3, 'Verify color is set to 3');
 	});
 
 
@@ -397,7 +418,9 @@ describe('Folders > Folder Create', function () {
 
 		// CreateFolderRequest
 		const notebookResponse = await soap.makeSOAPEnvelopeAccount(createNotebookRequest, accountAuthToken);
+		assert.notExists(notebookResponse.Fault, 'Notebook create should not be a Fault');
 		const notebookId = notebookResponse.CreateFolderResponse.folder[0].id;
+		assert.exists(notebookId, 'Notebook folder ID should exist');
 
 		// Create nested folder 1 under notebook
 		const createFolder1Request =
@@ -407,7 +430,9 @@ describe('Folders > Folder Create', function () {
 
 		// CreateFolderRequest
 		const folder1Response = await soap.makeSOAPEnvelopeAccount(createFolder1Request, accountAuthToken);
+		assert.notExists(folder1Response.Fault, 'Folder 1 create should not be a Fault');
 		const folder1Id = folder1Response.CreateFolderResponse.folder[0].id;
+		assert.exists(folder1Id, 'Folder 1 ID should exist');
 
 		// Create nested folder 2 under folder 1
 		const createFolder2Request =
@@ -417,7 +442,9 @@ describe('Folders > Folder Create', function () {
 
 		// CreateFolderRequest
 		const folder2Response = await soap.makeSOAPEnvelopeAccount(createFolder2Request, accountAuthToken);
+		assert.notExists(folder2Response.Fault, 'Folder 2 create should not be a Fault');
 		const folder2Id = folder2Response.CreateFolderResponse.folder[0].id;
+		assert.exists(folder2Id, 'Folder 2 ID should exist');
 
 		// Create nested folder 3 under folder 2
 		const createFolder3Request =
@@ -425,9 +452,11 @@ describe('Folders > Folder Create', function () {
 				<folder l='${folder2Id}' name='${folder3Name}' view='document'/>
 			</CreateFolderRequest>`;
 
-		// GetItemRequest
+		// CreateFolderRequest
 		const folder3Response = await soap.makeSOAPEnvelopeAccount(createFolder3Request, accountAuthToken);
+		assert.notExists(folder3Response.Fault, 'Folder 3 create should not be a Fault');
 		const folder3Id = folder3Response.CreateFolderResponse.folder[0].id;
+		assert.exists(folder3Id, 'Folder 3 ID should exist');
 
 		// Verify view is set correctly via GetItemRequest
 		const getItemRequest =
@@ -435,10 +464,13 @@ describe('Folders > Folder Create', function () {
 				<item id='${folder3Id}'/>
 			</GetItemRequest>`;
 
-		// CreateFolderRequest
+		// GetItemRequest
 		const getItemResponse = await soap.makeSOAPEnvelopeAccount(getItemRequest, accountAuthToken);
 
 		// Verify response
+		assert.notExists(getItemResponse.Fault, 'GetItem should not be a Fault');
+		assert.exists(getItemResponse.GetItemResponse.folder[0].id,
+			'Verify folder id exists in GetItem response');
 		assert.equal(getItemResponse.GetItemResponse.folder[0].view, 'document',
 			'Verify deepest nested folder has document view');
 	});
@@ -453,10 +485,12 @@ describe('Folders > Folder Create', function () {
 				<folder name='${folderName}' l='1' view='appointment' f='b'/>
 			</CreateFolderRequest>`;
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
-		const folderId = createResponse.CreateFolderResponse.folder[0].id;
-		const folder = createResponse.CreateFolderResponse.folder[0];
 
 		// Verify response
+		assert.notExists(createResponse.Fault, 'Response should not be a Fault');
+		const folderId = createResponse.CreateFolderResponse.folder[0].id;
+		const folder = createResponse.CreateFolderResponse.folder[0];
+		assert.exists(folderId, 'Folder ID should exist');
 		assert.equal(folder.view, 'appointment', 'Verify view is appointment');
 		assert.include(folder.f, 'b', 'Verify flag b (excludeFreeBusy) is set');
 
@@ -484,17 +518,11 @@ describe('Folders > Folder Create', function () {
 				</m>
 			</CreateAppointmentRequest>`;
 
-		// GetFreeBusyRequest
+		// CreateAppointmentRequest
 		const apptResponse = await soap.makeSOAPEnvelopeAccount(createApptRequest, accountAuthToken);
 
-		// Appointment should be created successfully
-		if (apptResponse.CreateAppointmentResponse) {
-
-			// Verify response
-			assert.notExists(apptResponse.Fault, 'Response should not be a Fault');
-			assert.exists(apptResponse.CreateAppointmentResponse,
-				'Appointment should be created in f=b folder');
-		}
+		// Verify appointment created
+		assert.notExists(apptResponse.Fault, 'Appointment create should not be a Fault');
 
 		// Verify via GetFreeBusyRequest - appointment should NOT appear
 		const s = start;
@@ -507,7 +535,7 @@ describe('Folders > Folder Create', function () {
 
 		// Verify response
 		assert.notExists(fbResponse.Fault, 'Response should not be a Fault');
-		assert.exists(fbResponse.GetFreeBusyResponse,
-			'GetFreeBusyResponse should exist');
+		assert.exists(fbResponse.GetFreeBusyResponse.usr,
+			'Verify usr element exists in GetFreeBusyResponse');
 	});
 });

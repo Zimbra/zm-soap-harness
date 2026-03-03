@@ -356,7 +356,7 @@ describe('Mail > Tags > Tag Mail', function () {
 			`<MsgActionRequest xmlns="urn:zimbraMail">
 			</MsgActionRequest>`, authToken, false
 		);
-		assert.exists(res1.Fault, 'Should fault for missing action');
+		assert.isString(res1.Fault.Detail.Error.Code, 'Should fault for missing action');
 		assert.include(res1.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 
 		// Missing op and tag attributes
@@ -365,7 +365,7 @@ describe('Mail > Tags > Tag Mail', function () {
 				<action id="${messageId}"/>
 			</MsgActionRequest>`, authToken, false
 		);
-		assert.exists(res2.Fault, 'Should fault for missing op');
+		assert.isString(res2.Fault.Detail.Error.Code, 'Should fault for missing op');
 		assert.include(res2.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 
 		// Missing tag attribute
@@ -374,7 +374,7 @@ describe('Mail > Tags > Tag Mail', function () {
 				<action id="${messageId}" op="tag"/>
 			</MsgActionRequest>`, authToken, false
 		);
-		assert.exists(res3.Fault, 'Should fault for missing tag');
+		assert.isString(res3.Fault.Detail.Error.Code, 'Should fault for missing tag');
 		assert.include(res3.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 
 		// Missing id attribute
@@ -383,7 +383,7 @@ describe('Mail > Tags > Tag Mail', function () {
 				<action op="tag" tag="${tagId}"/>
 			</MsgActionRequest>`, authToken, false
 		);
-		assert.exists(res4.Fault, 'Should fault for missing id');
+		assert.isString(res4.Fault.Detail.Error.Code, 'Should fault for missing id');
 		assert.include(res4.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 	});
 
@@ -416,7 +416,7 @@ describe('Mail > Tags > Tag Mail', function () {
 				<action id="5" op="tag" tag="${tagId}"/>
 			</MsgActionRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should fault for non-existing message');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should fault for non-existing message');
 		assert.include(res.Fault.Detail.Error.Code, 'mail.NO_SUCH_MSG', 'Should be NO_SUCH_MSG');
 	});
 
@@ -457,7 +457,7 @@ describe('Mail > Tags > Tag Mail', function () {
 				<action id="${messageId}" op="tag" tag="5"/>
 			</MsgActionRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should fault for non-existing tag');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should fault for non-existing tag');
 		assert.include(res.Fault.Detail.Error.Code, 'mail.NO_SUCH_TAG', 'Should be NO_SUCH_TAG');
 	});
 });

@@ -63,14 +63,10 @@ describe('Folders > Folders Immutable', function () {
 			const response = await soap.makeSOAPEnvelopeAccount(deleteRequest, accountAuthToken, false);
 
 			// Verify response
-			assert.exists(response.Fault,
-				`Verify Fault exists when deleting ${folderKey} folder`);
-			const faultText = response.Fault.Reason ? response.Fault.Reason.Text : JSON.stringify(response.Fault);
-
-			// Verify response
-			assert.isTrue(faultText.includes('immutable') || faultText.includes('IMMUTABLE'),
-				`Verify immutable error when deleting ${folderKey} folder, got: ${faultText}`
-			);
+			assert.exists(response.Fault.Detail.Error,
+				`Fault Error should exist when deleting ${folderKey} folder`);
+			assert.match(response.Fault.Reason.Text, /immutable/i,
+				`Verify immutable error when deleting ${folderKey} folder`);
 		}
 	});
 
@@ -89,14 +85,10 @@ describe('Folders > Folders Immutable', function () {
 			const response = await soap.makeSOAPEnvelopeAccount(renameRequest, accountAuthToken, false);
 
 			// Verify response
-			assert.exists(response.Fault,
-				`Verify Fault exists when renaming ${folderKey} folder`);
-			const faultText = response.Fault.Reason ? response.Fault.Reason.Text : JSON.stringify(response.Fault);
-
-			// Verify response
-			assert.isTrue(faultText.includes('immutable') || faultText.includes('IMMUTABLE'),
-				`Verify immutable error when renaming ${folderKey} folder, got: ${faultText}`
-			);
+			assert.exists(response.Fault.Detail.Error,
+				`Fault Error should exist when renaming ${folderKey} folder`);
+			assert.match(response.Fault.Reason.Text, /immutable/i,
+				`Verify immutable error when renaming ${folderKey} folder`);
 		}
 	});
 
@@ -109,9 +101,11 @@ describe('Folders > Folders Immutable', function () {
 				<folder name='${targetFolderName}' l='${folderIds.inbox}'/>
 			</CreateFolderRequest>`;
 
-		// FolderActionRequest
+		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
+		assert.notExists(createResponse.Fault, 'Target folder create should not be a Fault');
 		const targetId = createResponse.CreateFolderResponse.folder[0].id;
+		assert.exists(targetId, 'Target folder ID should exist');
 		const systemFolders = ['inbox', 'drafts', 'junk', 'trash', 'sent', 'contacts', 'calendar'];
 
 		for (const folderKey of systemFolders) {
@@ -125,14 +119,10 @@ describe('Folders > Folders Immutable', function () {
 			const response = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken, false);
 
 			// Verify response
-			assert.exists(response.Fault,
-				`Verify Fault exists when moving ${folderKey} folder`);
-			const faultText = response.Fault.Reason ? response.Fault.Reason.Text : JSON.stringify(response.Fault);
-
-			// Verify response
-			assert.isTrue(faultText.includes('immutable') || faultText.includes('IMMUTABLE'),
-				`Verify immutable error when moving ${folderKey} folder, got: ${faultText}`
-			);
+			assert.exists(response.Fault.Detail.Error,
+				`Fault Error should exist when moving ${folderKey} folder`);
+			assert.match(response.Fault.Reason.Text, /immutable/i,
+				`Verify immutable error when moving ${folderKey} folder`);
 		}
 	});
 

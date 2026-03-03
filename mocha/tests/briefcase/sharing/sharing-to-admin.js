@@ -62,7 +62,7 @@ describe('Briefcase > Sharing > Sharing To Admin', function () {
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const createdFolder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
-		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
+		assert.exists(createdFolder.id, 'folder id should exist');
 		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0]
 			: createRes.CreateFolderResponse.folder;
@@ -80,7 +80,7 @@ describe('Briefcase > Sharing > Sharing To Admin', function () {
 		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
 		const folderAction = Array.isArray(shareRes.FolderActionResponse.action)
 			? shareRes.FolderActionResponse.action[0] : shareRes.FolderActionResponse.action;
-		assert.exists(folderAction, 'FolderActionResponse should contain action');
+		assert.equal(folderAction.op, 'grant', 'op should be grant');
 	});
 
 
@@ -115,12 +115,11 @@ describe('Briefcase > Sharing > Sharing To Admin', function () {
 
 		// Verify response
 		assert.notExists(getFolderRes.Fault, 'Response should not be a Fault');
-		assert.exists(getFolderRes.GetFolderResponse, 'GetFolderResponse should exist');
 		const verifiedFolder = Array.isArray(getFolderRes.GetFolderResponse.folder)
 			? getFolderRes.GetFolderResponse.folder[0]
 			: getFolderRes.GetFolderResponse.folder;
 
 		// Verify response
-		assert.exists(verifiedFolder, 'folder should exist');
+		assert.exists(verifiedFolder.id, 'folder id should exist');
 	});
 });

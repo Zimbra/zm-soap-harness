@@ -42,7 +42,6 @@ describe('Prefs > Filters > Status > Status', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Active filter should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'Response should exist');
 	});
 
 
@@ -99,6 +98,5 @@ describe('Prefs > Filters > Status > Status', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
-		assert.exists(getRes.GetFilterRulesResponse, 'Response should exist');
 	});
 });

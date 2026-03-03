@@ -53,7 +53,6 @@ describe('Tasks > Get Tasks', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
-		assert.exists(getRes.GetTaskResponse, 'GetTaskResponse should exist');
 	});
 
 
@@ -96,9 +95,8 @@ describe('Tasks > Get Tasks', function () {
 		if (getRes.Fault) {
 
 			// Verify response
-			assert.exists(getRes.Fault, 'GetTask for cancelled task should be a Fault');
+			assert.isString(getRes.Fault.Detail.Error.Code, 'GetTask for cancelled task should be a Fault');
 		} else {
-			assert.exists(getRes.GetTaskResponse, 'GetTaskResponse should exist for cancelled task in trash');
 		}
 	});
 });

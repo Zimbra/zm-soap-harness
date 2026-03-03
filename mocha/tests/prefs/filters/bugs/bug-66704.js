@@ -60,7 +60,7 @@ describe('Prefs > Filters > Bugs > Bug 66704', function () {
 		);
 
 		// Verify response
-		assert.exists(modRes.Fault, 'Request should fault with INVALID_REQUEST');
+		assert.isString(modRes.Fault.Detail.Error.Code, 'Request should fault with INVALID_REQUEST');
 		const code = modRes.Fault.Detail.Error.Code;
 		assert.include(code, 'service.INVALID_REQUEST', 'Error code should be INVALID_REQUEST');
 	});
@@ -98,7 +98,7 @@ describe('Prefs > Filters > Bugs > Bug 66704', function () {
 		);
 
 		// Verify response
-		assert.exists(modRes.Fault, 'Request should fault with INVALID_REQUEST');
+		assert.isString(modRes.Fault.Detail.Error.Code, 'Request should fault with INVALID_REQUEST');
 		const code = modRes.Fault.Detail.Error.Code;
 		assert.include(code, 'service.INVALID_REQUEST', 'Error code should be INVALID_REQUEST');
 	});
@@ -136,7 +136,7 @@ describe('Prefs > Filters > Bugs > Bug 66704', function () {
 		);
 
 		// Verify response
-		assert.exists(modRes.Fault, 'Request should fault with INVALID_REQUEST');
+		assert.isString(modRes.Fault.Detail.Error.Code, 'Request should fault with INVALID_REQUEST');
 		const code = modRes.Fault.Detail.Error.Code;
 		assert.include(code, 'service.INVALID_REQUEST', 'Error code should be INVALID_REQUEST');
 	});

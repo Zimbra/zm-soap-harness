@@ -63,7 +63,6 @@ describe('Mail > Bugs > Bug 97339', function () {
 		);
 
 		assert.notExists(search1Res.Fault, 'SearchRequest should not fault');
-		assert.exists(search1Res.SearchResponse, 'SearchResponse should exist');
 		const msgs1 = Array.isArray(search1Res.SearchResponse.m)
 			? search1Res.SearchResponse.m : [search1Res.SearchResponse.m];
 		assert.exists(msgs1[0], 'First message should be found');
@@ -79,7 +78,7 @@ describe('Mail > Bugs > Bug 97339', function () {
 		assert.notExists(getMsg1Res.Fault, 'GetMsgRequest should not fault');
 		const getMsg = Array.isArray(getMsg1Res.GetMsgResponse.m)
 			? getMsg1Res.GetMsgResponse.m[0] : getMsg1Res.GetMsgResponse.m;
-		assert.exists(getMsg, 'GetMsgResponse should contain m');
+		assert.exists(getMsg.id, 'message id should exist');
 
 		// Inject second MIME message
 		const filePath2 = path.join(
@@ -95,7 +94,6 @@ describe('Mail > Bugs > Bug 97339', function () {
 		);
 
 		assert.notExists(search2Res.Fault, 'SearchRequest should not fault');
-		assert.exists(search2Res.SearchResponse, 'SearchResponse should exist');
 		const msgs2 = Array.isArray(search2Res.SearchResponse.m)
 			? search2Res.SearchResponse.m : [search2Res.SearchResponse.m];
 		assert.exists(msgs2[0], 'Second message should be found');

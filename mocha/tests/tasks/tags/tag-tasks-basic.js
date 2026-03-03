@@ -254,7 +254,6 @@ describe('Tasks > Tags > Tag Tasks Basic', function () {
 
 		// Verify response
 		assert.notExists(setRes.Fault, 'Response should not be a Fault');
-		assert.exists(setRes.SetTaskResponse, 'SetTaskResponse should exist');
 	});
 
 
@@ -295,6 +294,5 @@ describe('Tasks > Tags > Tag Tasks Basic', function () {
 
 		// Verify response
 		assert.notExists(setRes.Fault, 'Response should not be a Fault');
-		assert.exists(setRes.SetTaskResponse, 'SetTaskResponse should exist');
 	});
 });

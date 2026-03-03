@@ -81,8 +81,6 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest, auth2);
 
 		// Verify response
-		assert.notExists(mountResp.Fault, 'Response should not be a Fault');
-		assert.exists(mountResp.CreateMountpointResponse, 'Response should exist');
 		assert.exists(mountResp.CreateMountpointResponse.link,
 			'Mountpoint should be created');
 		const link = mountResp.CreateMountpointResponse.link[0];
@@ -106,8 +104,7 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 			const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest2, auth2);
 
 			// Verify response
-			assert.notExists(mountResp.Fault, 'Response should not be a Fault');
-			assert.exists(mountResp.CreateMountpointResponse,
+			assert.exists(mountResp.CreateMountpointResponse.link,
 				`Mount with view="${view}" should succeed`);
 		}
 	});
@@ -124,11 +121,9 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 
 			// CreateMountpointRequest
 			const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest3, auth2);
-			// Invalid views may still create mountpoint or return fault
-			// XML checks for either success or fault
-			// Verify response
-			assert.exists(mountResp.CreateMountpointResponse || mountResp.Fault,
-				`Mount with invalid view="${view}" should return response or fault`);
+			// Verify response - server accepts any view string
+			assert.exists(mountResp.CreateMountpointResponse.link,
+				`Mount with view="${view}" should succeed`);
 		}
 	});
 
@@ -145,9 +140,9 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 			// CreateMountpointRequest
 			const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest4, auth2);
 
-			// Verify response
-			assert.exists(mountResp.Fault || mountResp.CreateMountpointResponse,
-				`Mount with invalid rid="${rid}" should return fault or response`);
+			// Verify response - invalid rid causes server Fault
+			assert.exists(mountResp.Fault.Detail.Error,
+				`Fault Error should exist for mount with invalid rid="${rid}"`);
 		}
 	});
 
@@ -165,8 +160,8 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 			const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest5, auth2);
 
 			// Verify response
-			assert.exists(mountResp.Fault,
-				`Mount with invalid zid="${zid}" should return fault`);
+			assert.exists(mountResp.Fault.Detail.Error,
+				`Fault Error should exist for mount with invalid zid="${zid}"`);
 		}
 	});
 
@@ -183,9 +178,9 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 			// CreateMountpointRequest
 			const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest6, auth2);
 
-			// Verify response
-			assert.exists(mountResp.Fault || mountResp.CreateMountpointResponse,
-				`Mount with invalid l="${l}" should return fault or response`);
+			// Verify response - invalid l values should fail
+			assert.exists(mountResp.Fault.Detail.Error,
+				`Fault Error should exist for mount with invalid l="${l}"`);
 		}
 	});
 
@@ -203,8 +198,7 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 		const resp1 = await soap.makeSOAPEnvelopeAccount(createMountpointRequest7, auth2);
 
 		// Verify response
-		assert.notExists(resp1.Fault, 'Response should not be a Fault');
-		assert.exists(resp1.CreateMountpointResponse,
+		assert.exists(resp1.CreateMountpointResponse.link,
 			'First mountpoint should be created');
 
 		const createMountpointRequest8 =
@@ -216,8 +210,7 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 		const resp2 = await soap.makeSOAPEnvelopeAccount(createMountpointRequest8, auth2);
 
 		// Verify response
-		assert.notExists(resp2.Fault, 'Response should not be a Fault');
-		assert.exists(resp2.CreateMountpointResponse,
+		assert.exists(resp2.CreateMountpointResponse.link,
 			'Second mountpoint to same folder should succeed');
 	});
 
@@ -255,9 +248,10 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 		// CreateMountpointRequest
 		const resp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest9, auth2);
 		// Second link tag should be ignored per XML test
-		// Verify response
-		assert.exists(resp.CreateMountpointResponse || resp.Fault,
-			'Should handle multiple link tags');
+		// Verify response - server may reject or process first link
+		assert.notExists(resp.Fault, 'Response should not be a Fault');
+		assert.exists(resp.CreateMountpointResponse.link,
+			'Link should exist in response');
 	});
 
 
@@ -270,7 +264,7 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 		const resp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest10, auth2);
 
 		// Verify response
-		assert.exists(resp.Fault, 'Should fail without link tag');
+		assert.exists(resp.Fault.Detail.Error, 'Fault Error should exist without link tag');
 	});
 
 
@@ -285,15 +279,13 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 
 		// CreateMountpointRequest
 		const resp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest11, auth2);
-		// Second link should be ignored
-		if (resp.CreateMountpointResponse) {
-			const links = resp.CreateMountpointResponse.link;
-			const linkArr = Array.isArray(links) ? links : [links];
-
-			// Verify response
-			assert.isAtMost(linkArr.length, 2,
-				'Should create at most the first mountpoint');
-		}
+		// Second link should be ignored - only first mountpoint created
+		assert.exists(resp.CreateMountpointResponse.link,
+			'Should create mountpoint from first link tag');
+		const links = resp.CreateMountpointResponse.link;
+		const linkArr = Array.isArray(links) ? links : [links];
+		assert.isAtMost(linkArr.length, 2,
+			'Should create at most the first mountpoint');
 	});
 
 
@@ -307,7 +299,7 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 		const resp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest12, auth2);
 
 		// Verify response
-		assert.exists(resp.Fault, 'Should fail without any attributes on link tag');
+		assert.exists(resp.Fault.Detail.Error, 'Fault Error should exist without any attributes on link tag');
 	});
 
 
@@ -329,8 +321,7 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest13, auth2);
 
 		// Verify response
-		assert.notExists(mountResp.Fault, 'Response should not be a Fault');
-		assert.exists(mountResp.CreateMountpointResponse,
+		assert.exists(mountResp.CreateMountpointResponse.link,
 			'Mount under default folder should succeed');
 		assert.equal(mountResp.CreateMountpointResponse.link[0].l, acc2InboxId,
 			'Parent should be Inbox');
@@ -359,8 +350,7 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest14, auth2);
 
 		// Verify response
-		assert.notExists(mountResp.Fault, 'Response should not be a Fault');
-		assert.exists(mountResp.CreateMountpointResponse,
+		assert.exists(mountResp.CreateMountpointResponse.link,
 			'Mount under custom folder should succeed');
 		assert.equal(mountResp.CreateMountpointResponse.link[0].l, parentId,
 			'Parent should be custom folder');
@@ -388,7 +378,6 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest15, auth2);
 
 		// Verify response
-		assert.exists(mountResp.Fault, 'Mount with existing folder name should fail');
 		assert.include(mountResp.Fault.Reason.Text, 'already exists',
 			'Should get ALREADY_EXISTS error');
 	});
@@ -415,10 +404,10 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 
 		// CreateMountpointRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest16, auth2);
-		// Mounting unshared folder might succeed but access will be denied
+		// Mounting unshared folder - server denies mounting unshared folder
 		// Verify response
-		assert.exists(mountResp.CreateMountpointResponse || mountResp.Fault,
-			'Should either create mountpoint or return fault');
+		assert.exists(mountResp.Fault.Detail.Error,
+			'Fault Error should exist - mounting unshared folder should be denied');
 	});
 
 
@@ -433,7 +422,6 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 		const resp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest17, auth2);
 
 		// Verify response
-		assert.exists(resp.Fault, 'Should fail with missing name attribute');
 		assert.include(resp.Fault.Reason.Text, 'invalid request',
 			'Should get INVALID_REQUEST error');
 	});
@@ -448,8 +436,7 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest18, auth2);
 
 		// Verify response
-		assert.notExists(mountResp.Fault, 'Response should not be a Fault');
-		assert.exists(mountResp.CreateMountpointResponse,
+		assert.exists(mountResp.CreateMountpointResponse.link,
 			'Mount with color and flag should succeed');
 		const link = mountResp.CreateMountpointResponse.link[0];
 
@@ -489,8 +476,7 @@ describe('Folders > Mountpoint > Create Mountpoint', function () {
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest19, auth2);
 
 		// Verify response
-		assert.notExists(mountResp.Fault, 'Response should not be a Fault');
-		assert.exists(mountResp.CreateMountpointResponse,
+		assert.exists(mountResp.CreateMountpointResponse.link,
 			'Mount without view should succeed');
 	});
 });

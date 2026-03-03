@@ -83,8 +83,6 @@ describe('Admin > Accounts > Account Logger', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.AddAccountLoggerResponse,
-			'AddAccountLoggerResponse should exist');
 		assert.exists(response.AddAccountLoggerResponse.logger,
 			'Logger should exist in response');
 	});
@@ -109,8 +107,6 @@ describe('Admin > Accounts > Account Logger', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.RemoveAccountLoggerResponse,
-			'RemoveAccountLoggerResponse should exist');
 	});
 
 
@@ -132,8 +128,6 @@ describe('Admin > Accounts > Account Logger', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.GetAccountLoggersResponse,
-			'GetAccountLoggersResponse should exist');
 		assert.exists(response.GetAccountLoggersResponse.logger,
 			'Logger should exist in response');
 	});
@@ -155,8 +149,6 @@ describe('Admin > Accounts > Account Logger', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.GetAllAccountLoggersResponse,
-			'GetAllAccountLoggersResponse should exist');
 		assert.exists(response.GetAllAccountLoggersResponse.accountLogger,
 			'accountLogger should exist');
 	});

@@ -31,7 +31,11 @@ describe('Auth > Auth Passwd', function () {
 
 		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
-		assert.exists(createRes1.CreateAccountResponse, 'Should create user1');
+		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
+			? createRes1.CreateAccountResponse.account[0]
+			: createRes1.CreateAccountResponse.account;
+		assert.exists(acct1.id, 'Account1 ID should exist');
+		assert.isString(acct1.id, 'Account1 ID should be a string');
 
 		// Create account with space in password
 		validUser2 = 'Test' + common.getUniqueString() + '@' + config.testDomain;
@@ -46,7 +50,11 @@ describe('Auth > Auth Passwd', function () {
 
 		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
-		assert.exists(createRes2.CreateAccountResponse, 'Should create user2');
+		const acct2 = Array.isArray(createRes2.CreateAccountResponse.account)
+			? createRes2.CreateAccountResponse.account[0]
+			: createRes2.CreateAccountResponse.account;
+		assert.exists(acct2.id, 'Account2 ID should exist');
+		assert.isString(acct2.id, 'Account2 ID should be a string');
 
 		// Create account with accented password
 		validUser3 = 'Test' + common.getUniqueString() + '@' + config.testDomain;
@@ -61,7 +69,11 @@ describe('Auth > Auth Passwd', function () {
 
 		// Verify response
 		assert.notExists(createRes3.Fault, 'Response should not be a Fault');
-		assert.exists(createRes3.CreateAccountResponse, 'Should create user3');
+		const acct3 = Array.isArray(createRes3.CreateAccountResponse.account)
+			? createRes3.CreateAccountResponse.account[0]
+			: createRes3.CreateAccountResponse.account;
+		assert.exists(acct3.id, 'Account3 ID should exist');
+		assert.isString(acct3.id, 'Account3 ID should be a string');
 	});
 
 	beforeEach(async function () {
@@ -89,11 +101,7 @@ describe('Auth > Auth Passwd', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.AuthResponse, 'AuthResponse should exist');
-
 		const lifetime = response.AuthResponse.lifetime;
-
-		// Verify response
 		assert.exists(lifetime, 'lifetime should exist');
 		assert.match(String(lifetime._content || lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -112,8 +120,6 @@ describe('Auth > Auth Passwd', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.AuthResponse, 'AuthResponse should exist');
-
 		const lifetime = response.AuthResponse.lifetime;
 
 		// Verify response
@@ -135,8 +141,6 @@ describe('Auth > Auth Passwd', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.AuthResponse, 'AuthResponse should exist');
-
 		const lifetime = response.AuthResponse.lifetime;
 
 		// Verify response

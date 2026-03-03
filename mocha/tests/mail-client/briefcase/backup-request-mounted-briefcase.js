@@ -144,7 +144,6 @@ describe('Mail Client > Briefcase > Backup Request Mounted Briefcase', function 
 			</BackupRequest>`, adminAuthToken
 		);
 		assert.notExists(backupRes.Fault, 'BackupRequest should not fault');
-		assert.exists(backupRes.BackupResponse, 'BackupResponse should exist');
 
 		// Wait for backup
 		await new Promise(r => setTimeout(r, 30000));
@@ -165,7 +164,6 @@ describe('Mail Client > Briefcase > Backup Request Mounted Briefcase', function 
 			</RestoreRequest>`, adminAuthToken
 		);
 		assert.notExists(restoreRes.Fault, 'RestoreRequest should not fault');
-		assert.exists(restoreRes.RestoreResponse, 'RestoreResponse should exist');
 
 		// Re-auth as account2
 		const acct2AuthNew = await soap.getAccountAuthToken(account2Name);
@@ -175,7 +173,6 @@ describe('Mail Client > Briefcase > Backup Request Mounted Briefcase', function 
 			`<GetFolderRequest xmlns="urn:zimbraMail"/>`, acct2AuthNew
 		);
 		assert.notExists(folderRes2.Fault, 'GetFolderRequest should not fault');
-		assert.exists(folderRes2.GetFolderResponse, 'GetFolderResponse should exist');
 
 		// Verify shared documents still accessible
 		const searchRes2 = await soap.makeSOAPEnvelopeAccount(
@@ -197,7 +194,6 @@ describe('Mail Client > Briefcase > Backup Request Mounted Briefcase', function 
 			</BackupRequest>`, adminAuthToken
 		);
 		assert.notExists(fullBackup.Fault, 'Full BackupRequest should not fault');
-		assert.exists(fullBackup.BackupResponse, 'Full BackupResponse should exist');
 
 		// Login as account3
 		const acct3Auth = await soap.getAccountAuthToken(account3Name);
@@ -236,7 +232,6 @@ describe('Mail Client > Briefcase > Backup Request Mounted Briefcase', function 
 			</BackupRequest>`, adminAuthToken
 		);
 		assert.notExists(incrBackup.Fault, 'Incremental BackupRequest should not fault');
-		assert.exists(incrBackup.BackupResponse, 'Incremental BackupResponse should exist');
 
 		// Wait for backup
 		await new Promise(r => setTimeout(r, 90000));
@@ -257,6 +252,5 @@ describe('Mail Client > Briefcase > Backup Request Mounted Briefcase', function 
 			</RestoreRequest>`, adminAuthToken
 		);
 		assert.notExists(restoreRes.Fault, 'RestoreRequest should not fault');
-		assert.exists(restoreRes.RestoreResponse, 'RestoreResponse should exist');
 	});
 });

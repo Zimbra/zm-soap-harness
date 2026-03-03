@@ -96,7 +96,7 @@ describe('Mail > Conversation > Conversation Search', function () {
 				<query>in:sent</query>
 			</SearchConvRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -108,7 +108,7 @@ describe('Mail > Conversation > Conversation Search', function () {
 				<query>in:sent</query>
 			</SearchConvRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -120,7 +120,7 @@ describe('Mail > Conversation > Conversation Search', function () {
 				<query>in:sent</query>
 			</SearchConvRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -132,7 +132,7 @@ describe('Mail > Conversation > Conversation Search', function () {
 				<query>in:sent</query>
 			</SearchConvRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -144,7 +144,7 @@ describe('Mail > Conversation > Conversation Search', function () {
 				<query>in:sent</query>
 			</SearchConvRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -156,7 +156,7 @@ describe('Mail > Conversation > Conversation Search', function () {
 				<query></query>
 			</SearchConvRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'mail.QUERY_PARSE_ERROR',
 			'Should be mail.QUERY_PARSE_ERROR');
 	});
@@ -168,7 +168,7 @@ describe('Mail > Conversation > Conversation Search', function () {
 				<query>           </query>
 			</SearchConvRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'mail.QUERY_PARSE_ERROR',
 			'Should be mail.QUERY_PARSE_ERROR');
 	});
@@ -226,7 +226,7 @@ describe('Mail > Conversation > Conversation Search', function () {
 				<query>in:sent</query>
 			</SearchConvRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.match(res.Fault.Detail.Error.Code, /mail\.NO_SUCH_(CONV|MSG)/,
 			'Should be mail.NO_SUCH_CONV or mail.NO_SUCH_MSG');
 	});
@@ -520,6 +520,5 @@ Header test content
 			</SearchConvRequest>`, acct6AuthToken
 		);
 		assert.notExists(res.Fault, 'SearchConvRequest should not fault');
-		assert.exists(res.SearchConvResponse, 'SearchConvResponse should exist');
 	});
 });

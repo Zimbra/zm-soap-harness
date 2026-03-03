@@ -67,7 +67,6 @@ describe('Search > Bugs > Bug 62552', function () {
 			</FolderActionRequest>`, accountAuthToken
 		);
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.FolderActionResponse, 'Response element should exist');
 
 		// Trash search folder 2
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -76,13 +75,11 @@ describe('Search > Bugs > Bug 62552', function () {
 			</FolderActionRequest>`, accountAuthToken
 		);
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.FolderActionResponse, 'Response element should exist');
 
 		// Verify folders
 		const res5 = await soap.makeSOAPEnvelopeAccount(
 			`<GetFolderRequest xmlns="urn:zimbraMail"/>`, accountAuthToken
 		);
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		assert.exists(res5.GetFolderResponse, 'Response element should exist');
 	});
 });

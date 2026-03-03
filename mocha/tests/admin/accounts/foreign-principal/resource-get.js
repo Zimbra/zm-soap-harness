@@ -68,8 +68,6 @@ describe('Admin > Accounts > Foreign Principal > Resource Get', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
-		assert.exists(getRes.GetCalendarResourceResponse,
-			'GetCalendarResourceResponse should exist');
 		assert.equal(getRes.GetCalendarResourceResponse.calresource[0].id, res.id);
 	});
 
@@ -143,8 +141,6 @@ describe('Admin > Accounts > Foreign Principal > Resource Get', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
-		assert.exists(getRes.GetCalendarResourceResponse,
-			'GetCalendarResourceResponse should exist');
 	});
 
 

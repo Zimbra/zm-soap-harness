@@ -74,12 +74,7 @@ Test content message ${i}</content>
 				<BulkAction op="move" l="${folderId}" />
 			</SearchActionRequest>`, accountAuthToken
 		);
-		if (res4.Fault) {
-			// SearchActionRequest may not be supported on all versions
-			assert.exists(res4.Fault, 'Response is a Fault (SearchActionRequest may not be fully supported)');
-		} else {
-			assert.exists(res4.SearchActionResponse, 'Response element should exist');
-		}
+		assert.notExists(res4.Fault, 'SearchActionRequest should not fault');
 	});
 
 
@@ -94,11 +89,7 @@ Test content message ${i}</content>
 				<BulkAction op="move" l="2" />
 			</SearchActionRequest>`, accountAuthToken
 		);
-		if (res2.Fault) {
-			assert.exists(res2.Fault, 'Response is a Fault (SearchActionRequest may not be fully supported)');
-		} else {
-			assert.exists(res2.SearchActionResponse, 'Response element should exist');
-		}
+		assert.notExists(res2.Fault, 'SearchActionRequest should not fault');
 	});
 
 
@@ -122,11 +113,7 @@ Test content message ${i}</content>
 				<BulkAction op="move" l="${folderId}" />
 			</SearchActionRequest>`, accountAuthToken
 		);
-		if (res2.Fault) {
-			assert.exists(res2.Fault, 'Response is a Fault (SearchActionRequest may not be fully supported)');
-		} else {
-			assert.exists(res2.SearchActionResponse, 'Response element should exist');
-		}
+		assert.notExists(res2.Fault, 'SearchActionRequest should not fault');
 	});
 
 
@@ -141,12 +128,7 @@ Test content message ${i}</content>
 				<BulkAction op="move" l="999999" />
 			</SearchActionRequest>`, accountAuthToken
 		);
-		// Moving to invalid folder should either fault or succeed with no-op
-		if (res2.Fault) {
-			assert.exists(res2.Fault, 'Response should be a Fault for invalid folder');
-		} else {
-			assert.exists(res2.SearchActionResponse, 'Response element should exist');
-		}
+		assert.isString(res2.Fault.Detail.Error.Code, 'Should fault for invalid folder');
 	});
 
 
@@ -171,10 +153,6 @@ Test content message ${i}</content>
 				<BulkAction op="move" l="${subfolderId}" />
 			</SearchActionRequest>`, accountAuthToken
 		);
-		if (res1.Fault) {
-			assert.exists(res1.Fault, 'Response is a Fault (SearchActionRequest may not be fully supported)');
-		} else {
-			assert.exists(res1.SearchActionResponse, 'Response element should exist');
-		}
+		assert.notExists(res1.Fault, 'SearchActionRequest should not fault');
 	});
 });

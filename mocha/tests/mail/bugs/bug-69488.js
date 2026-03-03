@@ -63,7 +63,6 @@ describe('Mail > Bugs > Bug 69488', function () {
 		);
 
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const msgs = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
 		assert.exists(msgs[0], 'Message should be found');
@@ -79,7 +78,7 @@ describe('Mail > Bugs > Bug 69488', function () {
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
 		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
-		assert.exists(getMsg, 'GetMsgResponse should contain m');
+		assert.exists(getMsg.id, 'message id should exist');
 
 		// Forward the message to account2
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
@@ -97,7 +96,7 @@ describe('Mail > Bugs > Bug 69488', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 
@@ -181,7 +180,6 @@ describe('Mail > Bugs > Bug 69488', function () {
 			</SearchRequest>`, account2AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const msgs = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
 		assert.exists(msgs[0], 'Message should be found in shared folder');
@@ -202,7 +200,7 @@ describe('Mail > Bugs > Bug 69488', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 
@@ -299,7 +297,6 @@ describe('Mail > Bugs > Bug 69488', function () {
 		);
 
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const msgs = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
 		assert.exists(msgs[0], 'Share notification message should exist');
@@ -318,7 +315,7 @@ describe('Mail > Bugs > Bug 69488', function () {
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
 		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
-		assert.exists(getMsg, 'GetMsgResponse should contain m');
+		assert.exists(getMsg.id, 'message id should exist');
 		const msg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
 		assert.include(msg.su,

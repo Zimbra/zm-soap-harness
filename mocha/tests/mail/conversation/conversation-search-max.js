@@ -76,7 +76,6 @@ But even against the No. 4 team in the BCS, the Bears' goals have not changed on
 			</SearchConvRequest>`, authToken
 		);
 		assert.notExists(res.Fault, 'SearchConvRequest should not fault');
-		assert.exists(res.SearchConvResponse, 'SearchConvResponse should exist');
 	});
 
 
@@ -118,6 +117,5 @@ Content-Transfer-Encoding: 7bit
 			</SearchConvRequest>`, authToken
 		);
 		assert.notExists(res.Fault, 'SearchConvRequest should not fault');
-		assert.exists(res.SearchConvResponse, 'SearchConvResponse should exist');
 	});
 });

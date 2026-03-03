@@ -89,7 +89,7 @@ describe('Admin > Delegated > Bug 38452', function () {
 				<a n="zimbraLmtpBindPort"/>
 			</GetConfigRequest>`, delegateToken, false
 		);
-		assert.exists(configRes.Fault, 'GetConfigRequest should fault for delegated admin');
+		assert.isString(configRes.Fault.Detail.Error.Code, 'GetConfigRequest should fault for delegated admin');
 
 		// GetCosRequest — delegated admin can access COS
 		const cosRes = await soap.makeSOAPEnvelopeAdmin(
@@ -104,7 +104,7 @@ describe('Admin > Delegated > Bug 38452', function () {
 				<domain by="name">${config.testDomain}</domain>
 			</GetDomainRequest>`, delegateToken, false
 		);
-		assert.exists(domainRes.Fault, 'GetDomainRequest should fault for delegated admin');
+		assert.isString(domainRes.Fault.Detail.Error.Code, 'GetDomainRequest should fault for delegated admin');
 
 		// GetServerRequest — delegated admin gets fault
 		const serverRes = await soap.makeSOAPEnvelopeAdmin(

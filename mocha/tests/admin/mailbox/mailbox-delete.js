@@ -58,7 +58,6 @@ describe('Admin > Mailbox > Mailbox Delete', function () {
 			</DeleteMailboxRequest>`, adminAuthToken
 		);
 		assert.notExists(deleteRes.Fault, 'DeleteMailboxRequest should not fault');
-		assert.exists(deleteRes.DeleteMailboxResponse, 'DeleteMailboxResponse should exist');
 		assert.exists(deleteRes.DeleteMailboxResponse.mbox, 'Mbox should exist in response');
 	});
 
@@ -167,7 +166,7 @@ describe('Admin > Mailbox > Mailbox Delete', function () {
 				<m id="${msgId}" read="1" html="1"/>
 			</GetMsgRequest>`, accountToken2, false
 		);
-		assert.exists(getMsg2.Fault, 'GetMsgRequest after mailbox delete should fault');
+		assert.isString(getMsg2.Fault.Detail.Error.Code, 'GetMsgRequest after mailbox delete should fault');
 		assert.include(getMsg2.Fault.Detail.Error.Code, 'mail.NO_SUCH_MSG');
 	});
 
@@ -194,7 +193,7 @@ describe('Admin > Mailbox > Mailbox Delete', function () {
 				<mbox id="${accountId}"/>
 			</DeleteMailboxRequest>`, accountToken, false
 		);
-		assert.exists(deleteRes.Fault, 'DeleteMailboxRequest with user token should fault');
+		assert.isString(deleteRes.Fault.Detail.Error.Code, 'DeleteMailboxRequest with user token should fault');
 		assert.include(deleteRes.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 	});
 
@@ -219,7 +218,6 @@ describe('Admin > Mailbox > Mailbox Delete', function () {
 			</DeleteMailboxRequest>`, adminAuthToken
 		);
 		assert.notExists(delete1.Fault, 'First DeleteMailboxRequest should not fault');
-		assert.exists(delete1.DeleteMailboxResponse, 'DeleteMailboxResponse should exist');
 
 		// Delete mailbox second time — should handle gracefully (emptyset)
 		const delete2 = await soap.makeSOAPEnvelopeAdmin(

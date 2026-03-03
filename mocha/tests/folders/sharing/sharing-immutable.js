@@ -94,16 +94,10 @@ describe('Folders > Sharing > Sharing Immutable', function () {
 		const response = await soap.makeSOAPEnvelopeAccount(request, auth2, false);
 
 		// Verify response
-		assert.exists(response.Fault,
-			`Should have failed to ${op} immutable folder ${folderName}`);
-		if (response.Fault && response.Fault.Reason) {
-			const faultText = response.Fault.Reason.Text;
-
-			// Verify response
-			assert.isTrue(faultText.includes('IMMUTABLE_OBJECT') || faultText.includes('immutable'),
-				`Should fail with mail.IMMUTABLE_OBJECT for ${op} ${folderName}, got: ${faultText}`
-			);
-		}
+		assert.exists(response.Fault.Detail.Error,
+			`Fault Error should exist when ${op} immutable folder ${folderName}`);
+		assert.match(response.Fault.Reason.Text, /immutable/i,
+			`Should fail with mail.IMMUTABLE_OBJECT for ${op} ${folderName}`);
 	};
 
 	// Applicable zimbra versions

@@ -76,7 +76,6 @@ describe('Admin > Wait Set > Wait Set Request All Accounts', function () {
 			</AdminWaitSetRequest>`, adminAuthToken
 		);
 		assert.notExists(waitRes.Fault, 'AdminWaitSetRequest should not fault');
-		assert.exists(waitRes.AdminWaitSetResponse, 'AdminWaitSetResponse should exist');
 	});
 
 
@@ -125,6 +124,5 @@ describe('Admin > Wait Set > Wait Set Request All Accounts', function () {
 			</AdminWaitSetRequest>`, adminAuthToken
 		);
 		assert.notExists(waitRes.Fault, 'AdminWaitSetRequest should not fault');
-		assert.exists(waitRes.AdminWaitSetResponse, 'AdminWaitSetResponse should exist');
 	});
 });

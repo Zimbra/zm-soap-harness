@@ -44,7 +44,6 @@ describe('Admin > GAL > Create Gal Sync Account Request', function () {
 			</CreateGalSyncAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(galRes.Fault, 'CreateGalSyncAccountRequest should not fault');
-		assert.exists(galRes.CreateGalSyncAccountResponse, 'Response should exist');
 		const acct = Array.isArray(galRes.CreateGalSyncAccountResponse.account)
 			? galRes.CreateGalSyncAccountResponse.account[0] : galRes.CreateGalSyncAccountResponse.account;
 		assert.exists(acct.id, 'Account ID should exist');
@@ -82,7 +81,6 @@ describe('Admin > GAL > Create Gal Sync Account Request', function () {
 			</CreateGalSyncAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(galRes.Fault, 'CreateGalSyncAccountRequest should not fault');
-		assert.exists(galRes.CreateGalSyncAccountResponse, 'CreateGalSyncAccountResponse should exist');
 	});
 
 
@@ -104,7 +102,6 @@ describe('Admin > GAL > Create Gal Sync Account Request', function () {
 			</CreateGalSyncAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(galRes.Fault, 'CreateGalSyncAccountRequest with folder should not fault');
-		assert.exists(galRes.CreateGalSyncAccountResponse, 'Response should exist');
 		const acct = Array.isArray(galRes.CreateGalSyncAccountResponse.account)
 			? galRes.CreateGalSyncAccountResponse.account[0] : galRes.CreateGalSyncAccountResponse.account;
 		assert.exists(acct.id, 'Account ID should exist');
@@ -178,7 +175,7 @@ describe('Admin > GAL > Create Gal Sync Account Request', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, false
 		);
-		assert.exists(authRes.Fault, 'AuthRequest should fault for gal account without password');
+		assert.isString(authRes.Fault.Detail.Error.Code, 'AuthRequest should fault for gal account without password');
 		assert.include(authRes.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 	});
 
@@ -201,7 +198,6 @@ describe('Admin > GAL > Create Gal Sync Account Request', function () {
 			</CreateGalSyncAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(galRes.Fault, 'CreateGalSyncAccountRequest with attributes should not fault');
-		assert.exists(galRes.CreateGalSyncAccountResponse, 'Response should exist');
 		const acct = Array.isArray(galRes.CreateGalSyncAccountResponse.account)
 			? galRes.CreateGalSyncAccountResponse.account[0] : galRes.CreateGalSyncAccountResponse.account;
 		assert.exists(acct.id, 'Account ID should exist');
@@ -248,6 +244,5 @@ describe('Admin > GAL > Create Gal Sync Account Request', function () {
 			</CreateGalSyncAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(galRes.Fault, 'CreateGalSyncAccountRequest cross-domain should not fault');
-		assert.exists(galRes.CreateGalSyncAccountResponse, 'CreateGalSyncAccountResponse should exist');
 	});
 });

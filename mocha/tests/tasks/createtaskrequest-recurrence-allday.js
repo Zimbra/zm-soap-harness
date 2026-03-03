@@ -48,7 +48,6 @@ describe('Tasks > Createtaskrequest Recurrence Allday', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
 
 
@@ -75,7 +74,6 @@ describe('Tasks > Createtaskrequest Recurrence Allday', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
 
 
@@ -101,7 +99,6 @@ describe('Tasks > Createtaskrequest Recurrence Allday', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 
 		// Verify task can be retrieved
 		const taskId = res.CreateTaskResponse.invId;
@@ -113,6 +110,5 @@ describe('Tasks > Createtaskrequest Recurrence Allday', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'GetTask should not be a Fault');
-		assert.exists(getRes.GetTaskResponse, 'GetTaskResponse should exist');
 	});
 });

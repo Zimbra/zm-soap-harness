@@ -84,7 +84,7 @@ describe('Briefcase > Sharing > Sharing Combine', function () {
 		assert.notExists(grantRes.Fault, 'Response should not be a Fault');
 		const folderAction = Array.isArray(grantRes.FolderActionResponse.action)
 			? grantRes.FolderActionResponse.action[0] : grantRes.FolderActionResponse.action;
-		assert.exists(folderAction, 'FolderActionResponse should contain action');
+		assert.equal(folderAction.op, 'grant', 'op should be grant');
 	});
 
 
@@ -123,7 +123,7 @@ describe('Briefcase > Sharing > Sharing Combine', function () {
 		assert.notExists(pubRes.Fault, 'Response should not be a Fault');
 		const folderAction = Array.isArray(pubRes.FolderActionResponse.action)
 			? pubRes.FolderActionResponse.action[0] : pubRes.FolderActionResponse.action;
-		assert.exists(folderAction, 'FolderActionResponse should contain action');
+		assert.equal(folderAction.op, 'grant', 'op should be grant');
 	});
 
 
@@ -162,7 +162,7 @@ describe('Briefcase > Sharing > Sharing Combine', function () {
 		assert.notExists(pubRes.Fault, 'Response should not be a Fault');
 		const folderAction = Array.isArray(pubRes.FolderActionResponse.action)
 			? pubRes.FolderActionResponse.action[0] : pubRes.FolderActionResponse.action;
-		assert.exists(folderAction, 'FolderActionResponse should contain action');
+		assert.equal(folderAction.op, 'grant', 'op should be grant');
 	});
 
 
@@ -201,7 +201,7 @@ describe('Briefcase > Sharing > Sharing Combine', function () {
 		assert.notExists(domRes.Fault, 'Response should not be a Fault');
 		const folderAction = Array.isArray(domRes.FolderActionResponse.action)
 			? domRes.FolderActionResponse.action[0] : domRes.FolderActionResponse.action;
-		assert.exists(folderAction, 'FolderActionResponse should contain action');
+		assert.equal(folderAction.op, 'grant', 'op should be grant');
 	});
 
 
@@ -240,7 +240,7 @@ describe('Briefcase > Sharing > Sharing Combine', function () {
 		assert.notExists(allRes.Fault, 'Response should not be a Fault');
 		const folderAction = Array.isArray(allRes.FolderActionResponse.action)
 			? allRes.FolderActionResponse.action[0] : allRes.FolderActionResponse.action;
-		assert.exists(folderAction, 'FolderActionResponse should contain action');
+		assert.equal(folderAction.op, 'grant', 'op should be grant');
 	});
 
 
@@ -279,7 +279,7 @@ describe('Briefcase > Sharing > Sharing Combine', function () {
 		assert.notExists(allRes.Fault, 'Response should not be a Fault');
 		const folderAction = Array.isArray(allRes.FolderActionResponse.action)
 			? allRes.FolderActionResponse.action[0] : allRes.FolderActionResponse.action;
-		assert.exists(folderAction, 'FolderActionResponse should contain action');
+		assert.equal(folderAction.op, 'grant', 'op should be grant');
 	});
 
 
@@ -318,7 +318,7 @@ describe('Briefcase > Sharing > Sharing Combine', function () {
 		assert.notExists(guestRes.Fault, 'Response should not be a Fault');
 		const folderAction = Array.isArray(guestRes.FolderActionResponse.action)
 			? guestRes.FolderActionResponse.action[0] : guestRes.FolderActionResponse.action;
-		assert.exists(folderAction, 'FolderActionResponse should contain action');
+		assert.equal(folderAction.op, 'grant', 'op should be grant');
 	});
 
 
@@ -357,6 +357,6 @@ describe('Briefcase > Sharing > Sharing Combine', function () {
 		assert.notExists(noneRes.Fault, 'Response should not be a Fault');
 		const folderAction = Array.isArray(noneRes.FolderActionResponse.action)
 			? noneRes.FolderActionResponse.action[0] : noneRes.FolderActionResponse.action;
-		assert.exists(folderAction, 'FolderActionResponse should contain action');
+		assert.equal(folderAction.op, 'grant', 'op should be grant');
 	});
 });

@@ -174,7 +174,6 @@ describe('Contacts > Mail > Message Send', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
 

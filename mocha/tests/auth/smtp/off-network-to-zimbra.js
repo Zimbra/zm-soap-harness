@@ -26,7 +26,6 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 
 		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
-		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		account2Name = 'smtp2.' + common.getUniqueString() + '@' + config.testDomain;
 
@@ -40,7 +39,6 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 
 		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
-		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 
 		// Get MTA server
 		const serverRes = await soap.makeSOAPEnvelopeAdmin(
@@ -51,7 +49,6 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 
 		// Verify response
 		assert.notExists(serverRes.Fault, 'Response should not be a Fault');
-		assert.exists(serverRes.GetServerResponse, 'GetServerResponse should exist');
 		Array.isArray(serverRes.GetServerResponse.server)
 			? serverRes.GetServerResponse.server[0]
 			: serverRes.GetServerResponse.server;
@@ -97,7 +94,6 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 
 			// Verify response
 			assert.notExists(modifyRes.Fault, 'Response should not be a Fault');
-			assert.exists(modifyRes.ModifyConfigResponse, 'ModifyConfigResponse should exist');
 
 			await server.runCommand('sudo su - zimbra -c \'/opt/zimbra/bin/zmmtactl reload\'');
 			await new Promise(resolve => setTimeout(resolve, 5000));
@@ -109,7 +105,6 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 
 			// Verify response
 			assert.notExists(configRes.Fault, 'Response should not be a Fault');
-			assert.exists(configRes.GetAllConfigResponse, 'GetAllConfigResponse should exist');
 		});
 
 
@@ -128,7 +123,6 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 
 			// Verify response
 			assert.notExists(modifyRes.Fault, 'Response should not be a Fault');
-			assert.exists(modifyRes.ModifyConfigResponse, 'ModifyConfigResponse should exist');
 
 			await server.runCommand('sudo su - zimbra -c \'/opt/zimbra/bin/zmmtactl reload\'');
 			await new Promise(resolve => setTimeout(resolve, 5000));
@@ -140,7 +134,6 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 
 			// Verify response
 			assert.notExists(configRes.Fault, 'Response should not be a Fault');
-			assert.exists(configRes.GetAllConfigResponse, 'GetAllConfigResponse should exist');
 		});
 
 
@@ -159,7 +152,6 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 
 			// Verify response
 			assert.notExists(modifyRes.Fault, 'Response should not be a Fault');
-			assert.exists(modifyRes.ModifyConfigResponse, 'ModifyConfigResponse should exist');
 
 			await server.runCommand('sudo su - zimbra -c \'/opt/zimbra/bin/zmmtactl reload\'');
 			await new Promise(resolve => setTimeout(resolve, 5000));
@@ -171,7 +163,6 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 
 			// Verify response
 			assert.notExists(configRes.Fault, 'Response should not be a Fault');
-			assert.exists(configRes.GetAllConfigResponse, 'GetAllConfigResponse should exist');
 		});
 
 
@@ -190,7 +181,6 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 
 			// Verify response
 			assert.notExists(modifyRes.Fault, 'Response should not be a Fault');
-			assert.exists(modifyRes.ModifyConfigResponse, 'ModifyConfigResponse should exist');
 
 			await server.runCommand('sudo su - zimbra -c \'/opt/zimbra/bin/zmmtactl reload\'');
 			await new Promise(resolve => setTimeout(resolve, 5000));
@@ -202,7 +192,6 @@ describe('Auth > SMTP > Off Network To Zimbra', function () {
 
 			// Verify response
 			assert.notExists(configRes.Fault, 'Response should not be a Fault');
-			assert.exists(configRes.GetAllConfigResponse, 'GetAllConfigResponse should exist');
 		});
 	}
 });

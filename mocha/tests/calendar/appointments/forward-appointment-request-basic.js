@@ -212,7 +212,7 @@ describe('Calendar > Appointments > Forward Appointment Request Basic', function
 				</m>
 			</ForwardAppointmentRequest>`, accountToken
         );
-        assert.exists(fwdRes.Fault, 'Should fault with invalid id');
+        assert.isString(fwdRes.Fault.Detail.Error.Code, 'Should fault with invalid id');
     });
 
 

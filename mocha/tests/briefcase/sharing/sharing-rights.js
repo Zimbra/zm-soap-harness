@@ -89,10 +89,8 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const createdFolder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
-		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
-		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
-			? createRes.CreateFolderResponse.folder[0]
-			: createRes.CreateFolderResponse.folder;
+		assert.exists(createdFolder.id, 'folder id should exist');
+		const folder = createdFolder;
 
 		// SaveDocumentRequest
 		await soap.makeSOAPEnvelopeAccount(
@@ -116,7 +114,7 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
 		const folderAction = Array.isArray(shareRes.FolderActionResponse.action)
 			? shareRes.FolderActionResponse.action[0] : shareRes.FolderActionResponse.action;
-		assert.exists(folderAction, 'FolderActionResponse should contain action');
+		assert.equal(folderAction.op, 'grant', 'op should be grant');
 	});
 
 
@@ -134,10 +132,8 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const createdFolder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
-		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
-		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
-			? createRes.CreateFolderResponse.folder[0]
-			: createRes.CreateFolderResponse.folder;
+		assert.exists(createdFolder.id, 'folder id should exist');
+		const folder = createdFolder;
 
 		// FolderActionRequest
 		const shareRes = await soap.makeSOAPEnvelopeAccount(
@@ -152,7 +148,7 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
 		const folderAction = Array.isArray(shareRes.FolderActionResponse.action)
 			? shareRes.FolderActionResponse.action[0] : shareRes.FolderActionResponse.action;
-		assert.exists(folderAction, 'FolderActionResponse should contain action');
+		assert.equal(folderAction.op, 'grant', 'op should be grant');
 	});
 
 
@@ -189,7 +185,7 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 		assert.notExists(revokeRes.Fault, 'Response should not be a Fault');
 		const folderAction = Array.isArray(revokeRes.FolderActionResponse.action)
 			? revokeRes.FolderActionResponse.action[0] : revokeRes.FolderActionResponse.action;
-		assert.exists(folderAction, 'FolderActionResponse should contain action');
+		assert.equal(folderAction.op, '!grant', 'op should be !grant');
 	});
 
 
@@ -234,11 +230,11 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 			</CreateMountpointRequest>`, account2Token
 		);
 
-		// Verify response
-		assert.exists(
-			mountRes.CreateMountpointResponse || mountRes.Fault,
-			'Should return CreateMountpointResponse or Fault'
-		);
+		assert.notExists(mountRes.Fault, 'Response should not be a Fault');
+		const link = Array.isArray(mountRes.CreateMountpointResponse.link)
+			? mountRes.CreateMountpointResponse.link[0]
+			: mountRes.CreateMountpointResponse.link;
+		assert.exists(link.id, 'link id should exist');
 	});
 
 
@@ -267,7 +263,6 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 
 		// Verify response
 		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
-		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
 			? saveRes.SaveDocumentResponse.doc[0]
 			: saveRes.SaveDocumentResponse.doc;
@@ -288,11 +283,11 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 			</CreateMountpointRequest>`, account2Token
 		);
 
-		// Verify response
-		assert.exists(
-			mountRes.CreateMountpointResponse || mountRes.Fault,
-			'Should return CreateMountpointResponse or Fault'
-		);
+		assert.notExists(mountRes.Fault, 'Response should not be a Fault');
+		const link = Array.isArray(mountRes.CreateMountpointResponse.link)
+			? mountRes.CreateMountpointResponse.link[0]
+			: mountRes.CreateMountpointResponse.link;
+		assert.exists(link.id, 'link id should exist');
 
 		// Account2 tries to tag — should fail or not apply
 		const tagRes = await soap.makeSOAPEnvelopeAccount(
@@ -301,10 +296,6 @@ describe('Briefcase > Sharing > Sharing Rights', function () {
 			</ItemActionRequest>`, account2Token
 		);
 
-		// Verify response
-		assert.exists(
-			tagRes.Fault || tagRes.ItemActionResponse,
-			'Should return Fault or ItemActionResponse'
-		);
+		assert.isString(tagRes.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 	});
 });

@@ -26,7 +26,11 @@ describe('Auth > Jwt > Jwt ZCS 3929', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse, 'Should create account1');
+		const acct = Array.isArray(createRes.CreateAccountResponse.account)
+			? createRes.CreateAccountResponse.account[0]
+			: createRes.CreateAccountResponse.account;
+		assert.exists(acct.id, 'Account ID should exist');
+		assert.isString(acct.id, 'Account ID should be a string');
 	});
 
 	beforeEach(async function () {
@@ -54,7 +58,7 @@ describe('Auth > Jwt > Jwt ZCS 3929', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 
 		const authToken = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
@@ -74,10 +78,10 @@ describe('Auth > Jwt > Jwt ZCS 3929', function () {
 		);
 
 		// Verify response
-		assert.exists(
-			saveRes.SaveDocumentResponse || saveRes.Fault,
-			'Should return SaveDocumentResponse or Fault'
-		);
+		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
+		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
+			? saveRes.SaveDocumentResponse.doc[0] : saveRes.SaveDocumentResponse.doc;
+		assert.exists(doc.id, 'Document ID should exist');
 	});
 
 
@@ -92,7 +96,7 @@ describe('Auth > Jwt > Jwt ZCS 3929', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 
 		const authToken = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
@@ -112,9 +116,9 @@ describe('Auth > Jwt > Jwt ZCS 3929', function () {
 		);
 
 		// Verify response
-		assert.exists(
-			saveRes.SaveDocumentResponse || saveRes.Fault,
-			'Should return SaveDocumentResponse or Fault'
-		);
+		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
+		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
+			? saveRes.SaveDocumentResponse.doc[0] : saveRes.SaveDocumentResponse.doc;
+		assert.exists(doc.id, 'Document ID should exist');
 	});
 });

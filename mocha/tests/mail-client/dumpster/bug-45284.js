@@ -786,7 +786,7 @@ describe('Mail Client > Dumpster > Bug 45284', function () {
 				<action id="${msgId}" op="recover" l="${inboxFolderId}"/>
 			</ItemActionRequest>`, acct3Auth, false
 		);
-		assert.exists(recoverRes.Fault, 'Recover should fault - item deleted from dumpster');
+		assert.isString(recoverRes.Fault.Detail.Error.Code, 'Recover should fault - item deleted from dumpster');
 		assert.include(recoverRes.Fault.Detail.Error.Code, 'mail.NO_SUCH_ITEM',
 			'Fault code should be mail.NO_SUCH_ITEM');
 

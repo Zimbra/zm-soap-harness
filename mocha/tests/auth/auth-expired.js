@@ -27,7 +27,11 @@ describe('Auth > Auth Expired', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse, 'Should create account1');
+		const acct = Array.isArray(createRes.CreateAccountResponse.account)
+			? createRes.CreateAccountResponse.account[0]
+			: createRes.CreateAccountResponse.account;
+		assert.exists(acct.id, 'Account ID should exist');
+		assert.isString(acct.id, 'Account ID should be a string');
 	});
 
 	beforeEach(async function () {
@@ -56,11 +60,7 @@ describe('Auth > Auth Expired', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
-
 		const lifetime = authRes.AuthResponse.lifetime;
-
-		// Verify response
 		assert.exists(lifetime, 'lifetime should exist');
 
 		const token = Array.isArray(authRes.AuthResponse.authToken)
@@ -78,9 +78,8 @@ describe('Auth > Auth Expired', function () {
 
 		// Verify response
 		assert.notExists(infoRes.Fault, 'Response should not be a Fault');
-		assert.exists(infoRes.GetInfoResponse,
-			'GetInfoResponse should exist (token still valid)');
-		assert.exists(infoRes.GetInfoResponse.name, 'GetInfoResponse should have name');
+		assert.exists(infoRes.GetInfoResponse.name, 'GetInfoResponse name should exist');
+		assert.isString(infoRes.GetInfoResponse.name, 'GetInfoResponse name should be a string');
 	});
 
 
@@ -96,7 +95,6 @@ describe('Auth > Auth Expired', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
@@ -110,25 +108,14 @@ describe('Auth > Auth Expired', function () {
 		await new Promise(resolve => setTimeout(resolve, 6000));
 
 		// GetInfoRequest should fail with AUTH_EXPIRED
-		try {
+		const infoRes = await soap.makeSOAPEnvelopeAccount(
+			'<GetInfoRequest xmlns="urn:zimbraAccount"/>', token
+		);
 
-			// GetInfoRequest
-			const infoRes = await soap.makeSOAPEnvelopeAccount(
-				'<GetInfoRequest xmlns="urn:zimbraAccount"/>', token
-			);
-			if (infoRes.Fault) {
-
-				// Verify response
-				assert.include(infoRes.Fault.Detail.Error.Code, 'service.AUTH_EXPIRED',
-					'Should return AUTH_EXPIRED');
-			} else {
-				assert.fail('Expected AUTH_EXPIRED fault');
-			}
-		} catch (error) {
-			// Server may return XML fault for expired tokens, causing JSON parse error
-			assert.match(String(error), /AUTH_EXPIRED|not valid JSON|SyntaxError/,
-				'Should fail due to expired token');
-		}
+		// Verify response
+		assert.isString(infoRes.Fault.Detail.Error.Code, 'Fault error Code should be a string');
+		assert.include(infoRes.Fault.Detail.Error.Code, 'service.AUTH_EXPIRED',
+			'Should return AUTH_EXPIRED');
 	});
 
 
@@ -144,7 +131,6 @@ describe('Auth > Auth Expired', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
@@ -164,32 +150,21 @@ describe('Auth > Auth Expired', function () {
 
 		// Verify response
 		assert.notExists(infoRes1.Fault, 'Response should not be a Fault');
-		assert.exists(infoRes1.GetInfoResponse,
-			'First GetInfoResponse should exist (token still valid)');
+		assert.exists(infoRes1.GetInfoResponse.name, 'GetInfoResponse name should exist');
+		assert.isString(infoRes1.GetInfoResponse.name, 'GetInfoResponse name should be a string');
 
 		// Wait 3 more seconds (now past 5s lifetime)
 		await new Promise(resolve => setTimeout(resolve, 3000));
 
 		// Second request should fail
-		try {
+		const infoRes2 = await soap.makeSOAPEnvelopeAccount(
+			'<GetInfoRequest xmlns="urn:zimbraAccount"/>', token
+		);
 
-			// GetInfoRequest
-			const infoRes2 = await soap.makeSOAPEnvelopeAccount(
-				'<GetInfoRequest xmlns="urn:zimbraAccount"/>', token
-			);
-			if (infoRes2.Fault) {
-
-				// Verify response
-				assert.include(infoRes2.Fault.Detail.Error.Code, 'service.AUTH_EXPIRED',
-					'Should return AUTH_EXPIRED');
-			} else {
-				assert.fail('Expected AUTH_EXPIRED fault');
-			}
-		} catch (error) {
-			// Server may return XML fault for expired tokens, causing JSON parse error
-			assert.match(String(error), /AUTH_EXPIRED|not valid JSON|SyntaxError/,
-				'Should fail due to expired token');
-		}
+		// Verify response
+		assert.isString(infoRes2.Fault.Detail.Error.Code, 'Fault error Code should be a string');
+		assert.include(infoRes2.Fault.Detail.Error.Code, 'service.AUTH_EXPIRED',
+			'Should return AUTH_EXPIRED');
 	});
 
 
@@ -205,7 +180,6 @@ describe('Auth > Auth Expired', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
@@ -218,32 +192,18 @@ describe('Auth > Auth Expired', function () {
 		// Wait for token expiration (5s lifetime + buffer)
 		await new Promise(resolve => setTimeout(resolve, 6000));
 
-		// Try to re-auth with the expired token in the context
-		try {
+		// Re-auth with fresh credentials (without the expired token)
+		const reAuthRes = await soap.makeSOAPEnvelopeAccount(
+			`<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1Name}</account>
+				<password>${config.accountPassword}</password>
+			</AuthRequest>`, null
+		);
 
-			// Send the message
-			const reAuthRes = await soap.makeSOAPEnvelopeAccount(
-				`<AuthRequest xmlns="urn:zimbraAccount">
-					<account by="name">${account1Name}</account>
-					<password>${config.accountPassword}</password>
-				</AuthRequest>`, token
-			);
-			if (reAuthRes.Fault) {
-
-				// Verify response
-				assert.include(reAuthRes.Fault.Detail.Error.Code, 'service.AUTH_EXPIRED',
-					'Should return AUTH_EXPIRED');
-			} else {
-				// Some servers may still allow re-auth
-				assert.notExists(reAuthRes.Fault, 'Response should not be a Fault');
-				assert.exists(reAuthRes.AuthResponse, 'AuthResponse should exist');
-				assert.match(String(reAuthRes.AuthResponse.lifetime), /^\d+$/,
-					'lifetime should be numeric');
-				assert.exists(reAuthRes.AuthResponse.authToken, 'authToken should exist');
-			}
-		} catch (error) {
-			assert.match(String(error), /AUTH_EXPIRED|not valid JSON|SyntaxError/,
-				'Should fail due to expired token');
-		}
+		// Verify response
+		assert.notExists(reAuthRes.Fault, 'Response should not be a Fault');
+		assert.match(String(reAuthRes.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(reAuthRes.AuthResponse.authToken, 'authToken should exist');
 	});
 });

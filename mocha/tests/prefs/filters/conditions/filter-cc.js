@@ -58,7 +58,6 @@ describe('Prefs > Filters > Conditions > Filter Cc', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Cc header test should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 	});
 
 

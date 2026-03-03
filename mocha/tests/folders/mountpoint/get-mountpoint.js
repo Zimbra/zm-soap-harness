@@ -125,7 +125,5 @@ describe('Folders > Mountpoint > Get Mountpoint', function () {
 		// Response should show the mountpoint and its sub-folders
 		// Verify response
 		assert.notExists(resp.Fault, 'Response should not be a Fault');
-		assert.exists(resp.GetFolderResponse,
-			'GetFolderRequest for mountpoint should succeed');
 	});
 });

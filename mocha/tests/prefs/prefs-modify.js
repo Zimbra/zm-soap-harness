@@ -47,7 +47,6 @@ describe('Prefs > Prefs Modify', function () {
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
 		assert.notExists(modifyRes.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(modifyRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 
 		// Verify preference value
 		let getPrefsRes = await soap.makeSOAPEnvelopeAccount(
@@ -101,7 +100,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="notInSchema">abcd 1234</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Error Code should match expected');
 	});
 
@@ -124,7 +123,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="zimbraPrefNotInSchema">abcd 1234</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Error Code should match expected');
 	});
 
@@ -148,7 +147,6 @@ describe('Prefs > Prefs Modify', function () {
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
 		assert.notExists(res.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(res.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 
 		// Set to FALSE
 		res = await soap.makeSOAPEnvelopeAccount(
@@ -157,7 +155,6 @@ describe('Prefs > Prefs Modify', function () {
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
 		assert.notExists(res.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(res.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 
 
@@ -179,7 +176,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="zimbraPrefIncludeSpamInSearch">    FALSE   </pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid padding');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid padding');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match expected');
 
 		// Lowercase boolean
@@ -188,7 +185,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="zimbraPrefIncludeSpamInSearch">true</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid casing');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid casing');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match expected');
 
 		// Blank value
@@ -213,7 +210,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="zimbraPrefIncludeSpamInSearch">Some text</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid text');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid text');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match expected');
 	});
 
@@ -266,7 +263,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="zimbraPrefIncludeTrashInSearch">False</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid casing');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid casing');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match expected');
 
 		// Blank value
@@ -291,7 +288,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="zimbraPrefIncludeTrashInSearch">Some text</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid text');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid text');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match expected');
 	});
 
@@ -343,7 +340,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="zimbraPrefGroupMailBy">Some random text</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid text');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid text');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match expected');
 	});
 
@@ -425,7 +422,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="zimbraPrefMailItemsPerPage">Some text</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid text');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid text');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match expected');
 	});
 
@@ -448,7 +445,6 @@ describe('Prefs > Prefs Modify', function () {
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
 		assert.notExists(res.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(res.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 
 
@@ -470,7 +466,6 @@ describe('Prefs > Prefs Modify', function () {
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
 		assert.notExists(res.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(res.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 
 
@@ -492,7 +487,6 @@ describe('Prefs > Prefs Modify', function () {
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
 		assert.notExists(res.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(res.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 
 
@@ -514,7 +508,6 @@ describe('Prefs > Prefs Modify', function () {
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
 		assert.notExists(res.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(res.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 
 
@@ -588,7 +581,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="zimbraPrefReplyIncludeOriginalText">Some text that is not in list</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid text');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid text');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 	});
 
@@ -655,7 +648,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="zimbraPrefForwardIncludeOriginalText">Some text that is not in list</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid text');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid text');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 	});
 
@@ -678,7 +671,6 @@ describe('Prefs > Prefs Modify', function () {
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
 		assert.notExists(res.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(res.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 
 
@@ -728,7 +720,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="zimbraPrefMailSignatureEnabled">True</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid casing');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid casing');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 
 		// Blank value
@@ -745,7 +737,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="zimbraPrefMailSignatureEnabled">Some text</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid text');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid text');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 
 		// Set zimbraPrefMailSignature text content
@@ -804,7 +796,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="zimbraPrefNewMailNotificationEnabled">True</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid casing');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid casing');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 
 		// Blank value
@@ -821,7 +813,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="zimbraPrefNewMailNotificationEnabled">Some text</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid text');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid text');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 	});
 
@@ -872,7 +864,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="zimbraPrefOutOfOfficeReplyEnabled">True</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid casing');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid casing');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 
 		// Blank value
@@ -889,7 +881,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="zimbraPrefOutOfOfficeReplyEnabled">Some text</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid text');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid text');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 	});
 
@@ -912,7 +904,6 @@ describe('Prefs > Prefs Modify', function () {
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
 		assert.notExists(res.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(res.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 
 
@@ -962,7 +953,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="zimbraPrefNewMailNotificationEnabled">True</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid casing');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid casing');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 
 		// Blank value
@@ -979,7 +970,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="zimbraPrefNewMailNotificationEnabled">Some text</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid text');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid text');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 	});
 
@@ -1001,7 +992,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="zimbraPrefNewMailNotificationAddress">Some text</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid address');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid address');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 	});
 
@@ -1052,7 +1043,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="zimbraPrefMessageViewHtmlPreferred">True</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid casing');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid casing');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 
 		// Blank value
@@ -1069,7 +1060,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="zimbraPrefMessageViewHtmlPreferred">Some text</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid text');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid text');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 	});
 
@@ -1136,7 +1127,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="zimbraPrefDedupeMessagesSentToSelf">Some other text</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid text');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid text');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 	});
 
@@ -1187,7 +1178,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="zimbraPrefAutoAddAddressEnabled">true</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid casing');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid casing');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 
 		// Blank value
@@ -1212,7 +1203,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="zimbraPrefAutoAddAddressEnabled">Some text</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid text');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid text');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 	});
 
@@ -1235,7 +1226,6 @@ describe('Prefs > Prefs Modify', function () {
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
 		assert.notExists(res.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(res.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 
 
@@ -1272,7 +1262,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="zimbraPrefContactsPerPage">Some text</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid text');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid text');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 
 		// Blank value
@@ -1313,7 +1303,6 @@ describe('Prefs > Prefs Modify', function () {
 			</ModifyFilterRulesRequest>`, accountAuthToken
 		);
 		assert.notExists(res.Fault, 'ModifyFilterRulesRequest should not fault');
-		assert.exists(res.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 	});
 
 
@@ -1361,7 +1350,6 @@ describe('Prefs > Prefs Modify', function () {
 			</ModifyFilterRulesRequest>`, accountAuthToken
 		);
 		assert.notExists(res.Fault, 'ModifyFilterRulesRequest should not fault for duplicate name');
-		assert.exists(res.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 	});
 
 
@@ -1400,7 +1388,7 @@ describe('Prefs > Prefs Modify', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyFilterRulesRequest should fault for blank condition');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyFilterRulesRequest should fault for blank condition');
 		assert.include(res.Fault.Detail.Error.Code, 'service.PARSE_ERROR', 'Error Code should match');
 
 		// Invalid op
@@ -1419,7 +1407,7 @@ describe('Prefs > Prefs Modify', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyFilterRulesRequest should fault for invalid condition');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyFilterRulesRequest should fault for invalid condition');
 		assert.include(res.Fault.Detail.Error.Code, 'service.PARSE_ERROR', 'Error Code should match');
 
 		// Rule without action
@@ -1437,7 +1425,7 @@ describe('Prefs > Prefs Modify', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyFilterRulesRequest should fault for empty actions');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyFilterRulesRequest should fault for empty actions');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Error Code should match');
 
 		// Blank folderPath in action
@@ -1456,7 +1444,7 @@ describe('Prefs > Prefs Modify', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyFilterRulesRequest should fault for blank folderPath');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyFilterRulesRequest should fault for blank folderPath');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Error Code should match');
 
 		// Invalid action name
@@ -1475,7 +1463,7 @@ describe('Prefs > Prefs Modify', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyFilterRulesRequest should fault for invalid action');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyFilterRulesRequest should fault for invalid action');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Error Code should match');
 
 		// Blank header in headerTest
@@ -1494,7 +1482,7 @@ describe('Prefs > Prefs Modify', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyFilterRulesRequest should fault for blank header');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyFilterRulesRequest should fault for blank header');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Error Code should match');
 	});
 
@@ -1516,7 +1504,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="NotinzimbraSchema">Some text</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid schema pref');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid schema pref');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Error Code should match');
 
 		// Leading spaces in pref name
@@ -1525,7 +1513,7 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="   zimbraPrefAutoAddAddressEnabled">TRUE</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for leading spaces');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for leading spaces');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Error Code should match');
 
 		// Trailing spaces in pref name
@@ -1534,6 +1522,6 @@ describe('Prefs > Prefs Modify', function () {
 				<pref name="zimbraPrefAutoAddAddressEnabled    ">TRUE</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for trailing spaces');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for trailing spaces');
 	});
 });

@@ -51,7 +51,6 @@ describe('Tags > Tags Action', function () {
 
 		// Verify response
 		assert.notExists(deleteRes.Fault, 'Response should not be a Fault');
-		assert.exists(deleteRes.TagActionResponse, 'TagActionResponse should exist');
 		assert.equal(deleteRes.TagActionResponse.action.op, 'delete', 'Op should be delete');
 		assert.equal(deleteRes.TagActionResponse.action.id, tagId, 'Id should match');
 	});
@@ -68,7 +67,6 @@ describe('Tags > Tags Action', function () {
 		if (!res.Fault) {
 
 			// Verify response
-			assert.exists(res.TagActionResponse, 'TagActionResponse should exist');
 		}
 	});
 
@@ -98,7 +96,6 @@ describe('Tags > Tags Action', function () {
 
 		// Verify response
 		assert.notExists(renameRes.Fault, 'Response should not be a Fault');
-		assert.exists(renameRes.TagActionResponse, 'TagActionResponse should exist');
 
 		// Verify
 		const getRes = await soap.makeSOAPEnvelopeAccount(
@@ -147,7 +144,7 @@ describe('Tags > Tags Action', function () {
 		);
 
 		// Verify response
-		assert.exists(renameRes.Fault, 'Duplicate rename should be a Fault');
+		assert.isString(renameRes.Fault.Detail.Error.Code, 'Duplicate rename should be a Fault');
 	});
 
 
@@ -160,7 +157,7 @@ describe('Tags > Tags Action', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Non-existing tag id rename should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Non-existing tag id rename should be a Fault');
 	});
 
 
@@ -186,7 +183,7 @@ describe('Tags > Tags Action', function () {
 		);
 
 		// Verify response
-		assert.exists(blankRes.Fault, 'Blank rename should be a Fault');
+		assert.isString(blankRes.Fault.Detail.Error.Code, 'Blank rename should be a Fault');
 
 		// Try spaces
 		const spacesRes = await soap.makeSOAPEnvelopeAccount(
@@ -196,7 +193,7 @@ describe('Tags > Tags Action', function () {
 		);
 
 		// Verify response
-		assert.exists(spacesRes.Fault, 'Spaces-only rename should be a Fault');
+		assert.isString(spacesRes.Fault.Detail.Error.Code, 'Spaces-only rename should be a Fault');
 	});
 
 
@@ -223,7 +220,6 @@ describe('Tags > Tags Action', function () {
 
 		// Verify response
 		assert.notExists(readRes.Fault, 'Response should not be a Fault');
-		assert.exists(readRes.TagActionResponse, 'TagActionResponse should exist');
 	});
 
 
@@ -238,7 +234,6 @@ describe('Tags > Tags Action', function () {
 		if (!res.Fault) {
 
 			// Verify response
-			assert.exists(res.TagActionResponse, 'TagActionResponse should exist');
 		}
 	});
 
@@ -290,7 +285,7 @@ describe('Tags > Tags Action', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Non-existing tag color should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Non-existing tag color should be a Fault');
 	});
 
 
@@ -316,7 +311,7 @@ describe('Tags > Tags Action', function () {
 		);
 
 		// Verify response
-		assert.exists(invalidRes.Fault, 'Invalid color should be a Fault');
+		assert.isString(invalidRes.Fault.Detail.Error.Code, 'Invalid color should be a Fault');
 
 		// TagActionRequest
 		const negRes = await soap.makeSOAPEnvelopeAccount(
@@ -328,9 +323,8 @@ describe('Tags > Tags Action', function () {
 		if (negRes.Fault) {
 
 			// Verify response
-			assert.exists(negRes.Fault, 'Negative color should be a Fault');
+			assert.isString(negRes.Fault.Detail.Error.Code, 'Negative color should be a Fault');
 		} else {
-			assert.exists(negRes.TagActionResponse, 'TagActionResponse should exist');
 		}
 	});
 
@@ -370,7 +364,6 @@ describe('Tags > Tags Action', function () {
 
 		// Verify response
 		assert.notExists(deleteRes.Fault, 'Response should not be a Fault');
-		assert.exists(deleteRes.TagActionResponse, 'TagActionResponse should exist');
 	});
 
 
@@ -383,7 +376,7 @@ describe('Tags > Tags Action', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Delete with only color should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Delete with only color should be a Fault');
 	});
 
 
@@ -396,7 +389,7 @@ describe('Tags > Tags Action', function () {
 		);
 
 		// Verify response
-		assert.exists(res1.Fault, 'Special char id should be a Fault');
+		assert.isString(res1.Fault.Detail.Error.Code, 'Special char id should be a Fault');
 
 		// TagActionRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -406,7 +399,7 @@ describe('Tags > Tags Action', function () {
 		);
 
 		// Verify response
-		assert.exists(res2.Fault, 'Blank id should be a Fault');
+		assert.isString(res2.Fault.Detail.Error.Code, 'Blank id should be a Fault');
 	});
 
 
@@ -471,7 +464,6 @@ describe('Tags > Tags Action', function () {
 
 		// Verify response
 		assert.notExists(colorRes.Fault, 'Response should not be a Fault');
-		assert.exists(colorRes.TagActionResponse, 'TagActionResponse should exist');
 	});
 
 
@@ -484,7 +476,7 @@ describe('Tags > Tags Action', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Non-existing tag name should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Non-existing tag name should be a Fault');
 	});
 
 
@@ -497,7 +489,7 @@ describe('Tags > Tags Action', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Invalid tag name should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Invalid tag name should be a Fault');
 	});
 
 
@@ -510,7 +502,7 @@ describe('Tags > Tags Action', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Blank tag name should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Blank tag name should be a Fault');
 	});
 
 
@@ -523,6 +515,6 @@ describe('Tags > Tags Action', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Space-only tag name should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Space-only tag name should be a Fault');
 	});
 });

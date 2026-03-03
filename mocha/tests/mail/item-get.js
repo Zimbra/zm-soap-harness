@@ -64,7 +64,7 @@ describe('Mail > Item Get', function () {
 		assert.notExists(getByIdRes.Fault, 'GetItemRequest by ID should not fault');
 		const folderById = Array.isArray(getByIdRes.GetItemResponse.folder)
 			? getByIdRes.GetItemResponse.folder[0] : getByIdRes.GetItemResponse.folder;
-		assert.exists(folderById, 'GetItemResponse should contain folder');
+		assert.exists(folderById.id, 'folder id should exist');
 		assert.equal(folderById.id, inboxId, 'Folder ID should match inbox ID');
 		assert.equal(folderById.name, 'Inbox', 'Folder name should be Inbox');
 
@@ -79,7 +79,7 @@ describe('Mail > Item Get', function () {
 		assert.notExists(getByPathRes.Fault, 'GetItemRequest by path should not fault');
 		const folderByPath = Array.isArray(getByPathRes.GetItemResponse.folder)
 			? getByPathRes.GetItemResponse.folder[0] : getByPathRes.GetItemResponse.folder;
-		assert.exists(folderByPath, 'GetItemResponse should contain folder');
+		assert.exists(folderByPath.id, 'folder id should exist');
 		assert.equal(folderByPath.id, inboxId, 'Folder ID should match inbox ID');
 		assert.equal(folderByPath.name, 'Inbox', 'Folder name should be Inbox');
 	});
@@ -168,7 +168,7 @@ describe('Mail > Item Get', function () {
 		const linkById = getByIdRes.GetItemResponse.link
 			? (Array.isArray(getByIdRes.GetItemResponse.link) ? getByIdRes.GetItemResponse.link[0] : getByIdRes.GetItemResponse.link)
 			: (Array.isArray(getByIdRes.GetItemResponse.folder) ? getByIdRes.GetItemResponse.folder[0] : getByIdRes.GetItemResponse.folder);
-		assert.exists(linkById, 'GetItemResponse should contain link or folder');
+		assert.exists(linkById.id, 'link id should exist');
 		assert.equal(linkById.id, delegatedId, 'Link ID should match delegated ID');
 
 		// Get item by path
@@ -183,7 +183,7 @@ describe('Mail > Item Get', function () {
 		const linkByPath = getByPathRes.GetItemResponse.link
 			? (Array.isArray(getByPathRes.GetItemResponse.link) ? getByPathRes.GetItemResponse.link[0] : getByPathRes.GetItemResponse.link)
 			: (Array.isArray(getByPathRes.GetItemResponse.folder) ? getByPathRes.GetItemResponse.folder[0] : getByPathRes.GetItemResponse.folder);
-		assert.exists(linkByPath, 'GetItemResponse should contain link or folder');
+		assert.exists(linkByPath.id, 'link id should exist');
 		assert.equal(linkByPath.id, delegatedId, 'Link ID should match delegated ID');
 	});
 });

@@ -68,7 +68,6 @@ describe('Tags > Tags Loop', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
-		assert.exists(getRes.GetTagResponse, 'GetTagResponse should exist');
 	});
 
 

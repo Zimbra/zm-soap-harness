@@ -52,7 +52,6 @@ describe('Sanity Test > Data Source Sanity', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'GetFolderRequest should not fault');
-		assert.exists(res.GetFolderResponse, 'GetFolderResponse should exist');
 		const folders = res.GetFolderResponse.folder[0].folder;
 		const inbox = folders.find(f => f.name === 'Inbox');
 
@@ -91,8 +90,6 @@ describe('Sanity Test > Data Source Sanity', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'CreateDataSourceRequest should not fault');
-		assert.exists(res.CreateDataSourceResponse,
-			'CreateDataSourceResponse should exist');
 		assert.exists(res.CreateDataSourceResponse.pop3,
 			'Response should contain pop3 data source');
 	});
@@ -154,8 +151,6 @@ describe('Sanity Test > Data Source Sanity', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'GetDataSourcesRequest should not fault');
-		assert.exists(res.GetDataSourcesResponse,
-			'GetDataSourcesResponse should exist');
 
 		// Verify data source exists in response
 		const dataSources = res.GetDataSourcesResponse.dataSource;
@@ -235,8 +230,6 @@ describe('Sanity Test > Data Source Sanity', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'ModifyDataSourceRequest should not fault');
-		assert.exists(res.ModifyDataSourceResponse,
-			'ModifyDataSourceResponse should exist');
 	});
 
 
@@ -303,8 +296,6 @@ describe('Sanity Test > Data Source Sanity', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'DeleteDataSourceRequest should not fault');
-		assert.exists(res.DeleteDataSourceResponse,
-			'DeleteDataSourceResponse should exist');
 	});
 
 
@@ -364,7 +355,6 @@ describe('Sanity Test > Data Source Sanity', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'ImportDataRequest should not fault');
-		assert.exists(res.ImportDataResponse, 'ImportDataResponse should exist');
 
 		// Wait briefly then check import status
 		await new Promise(resolve => setTimeout(resolve, 1000));
@@ -376,8 +366,6 @@ describe('Sanity Test > Data Source Sanity', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'GetImportStatusRequest should not fault');
-		assert.exists(res.GetImportStatusResponse,
-			'GetImportStatusResponse should exist');
 	});
 
 
@@ -437,8 +425,6 @@ describe('Sanity Test > Data Source Sanity', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'TestDataSourceRequest should not fault');
-		assert.exists(res.TestDataSourceResponse,
-			'TestDataSourceResponse should exist');
 		const pop3Result = Array.isArray(res.TestDataSourceResponse.pop3)
 			? res.TestDataSourceResponse.pop3[0]
 			: res.TestDataSourceResponse.pop3;

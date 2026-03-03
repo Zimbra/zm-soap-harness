@@ -123,8 +123,8 @@ describe('Folders > Sharing > Sharing Toadmin', function () {
 		const addRes = await soap.makeSOAPEnvelopeAccount(addMsgRequest, adminAuthUser);
 
 		// Verify response
-		assert.exists(addRes.Fault,
-			'Admin using User Auth should be denied write access on Read-Only share');
+		assert.include(addRes.Fault.Detail.Error.Code, 'PERM_DENIED',
+			'Should return PERM_DENIED');
 	});
 
 

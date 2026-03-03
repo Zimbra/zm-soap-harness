@@ -39,7 +39,6 @@ describe('Admin > Accounts > Create Account Multinode 2', function () {
 
 		// Verify response
 		assert.notExists(serversRes.Fault, 'Response should not be a Fault');
-		assert.exists(serversRes.GetAllServersResponse, 'GetAllServersResponse should exist');
 		const servers = Array.isArray(serversRes.GetAllServersResponse.server)
 			? serversRes.GetAllServersResponse.server
 			: [serversRes.GetAllServersResponse.server];
@@ -57,7 +56,6 @@ describe('Admin > Accounts > Create Account Multinode 2', function () {
 
 		// Verify response
 		assert.notExists(cosRes.Fault, 'Response should not be a Fault');
-		assert.exists(cosRes.CreateCosResponse, 'CreateCosResponse should exist');
 		const cosId = cosRes.CreateCosResponse.cos[0].id;
 
 		// Create account 1 with COS
@@ -70,7 +68,6 @@ describe('Admin > Accounts > Create Account Multinode 2', function () {
 
 		// Verify response
 		assert.notExists(acct1Res.Fault, 'Response should not be a Fault');
-		assert.exists(acct1Res.CreateAccountResponse, 'Should create account 1');
 		const acct1 = Array.isArray(acct1Res.CreateAccountResponse.account)
 			? acct1Res.CreateAccountResponse.account[0]
 			: acct1Res.CreateAccountResponse.account;
@@ -89,7 +86,6 @@ describe('Admin > Accounts > Create Account Multinode 2', function () {
 
 		// Verify response
 		assert.notExists(acct2Res.Fault, 'Response should not be a Fault');
-		assert.exists(acct2Res.CreateAccountResponse, 'Should create account 2');
 		const acct2 = Array.isArray(acct2Res.CreateAccountResponse.account)
 			? acct2Res.CreateAccountResponse.account[0]
 			: acct2Res.CreateAccountResponse.account;

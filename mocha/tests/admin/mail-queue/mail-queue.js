@@ -61,7 +61,6 @@ describe('Admin > Mail Queue > Mail Queue', function () {
 			</GetMailQueueInfoRequest>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'GetMailQueueInfoRequest should not fault');
-		assert.exists(res.GetMailQueueInfoResponse, 'GetMailQueueInfoResponse should exist');
 		const server = Array.isArray(res.GetMailQueueInfoResponse.server)
 			? res.GetMailQueueInfoResponse.server[0] : res.GetMailQueueInfoResponse.server;
 		assert.equal(server.name, mtaServer, 'Server name should match MTA server');
@@ -79,7 +78,6 @@ describe('Admin > Mail Queue > Mail Queue', function () {
 			</GetMailQueueRequest>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'GetMailQueueRequest should not fault');
-		assert.exists(res.GetMailQueueResponse, 'GetMailQueueResponse should exist');
 		const server = Array.isArray(res.GetMailQueueResponse.server)
 			? res.GetMailQueueResponse.server[0] : res.GetMailQueueResponse.server;
 		assert.equal(server.name, mtaServer, 'Server name should match MTA server');
@@ -97,7 +95,6 @@ describe('Admin > Mail Queue > Mail Queue', function () {
 			</MailQueueActionRequest>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'MailQueueActionRequest should not fault');
-		assert.exists(res.MailQueueActionResponse, 'MailQueueActionResponse should exist');
 	});
 
 
@@ -108,6 +105,5 @@ describe('Admin > Mail Queue > Mail Queue', function () {
 			</MailQueueFlushRequest>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'MailQueueFlushRequest should not fault');
-		assert.exists(res.MailQueueFlushResponse, 'MailQueueFlushResponse should exist');
 	});
 });

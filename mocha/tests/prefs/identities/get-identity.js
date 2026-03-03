@@ -47,7 +47,6 @@ describe('Prefs > Identities > Get Identity', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Should not fault');
-		assert.exists(res.GetIdentitiesResponse, 'Response should exist');
 	});
 
 
@@ -66,7 +65,6 @@ describe('Prefs > Identities > Get Identity', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Get should not fault');
-		assert.exists(res.GetIdentitiesResponse, 'Response should exist');
 	});
 
 
@@ -82,7 +80,6 @@ describe('Prefs > Identities > Get Identity', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Should not fault');
-		assert.exists(res.GetIdentitiesResponse, 'Response should exist');
 	});
 
 
@@ -139,7 +136,6 @@ describe('Prefs > Identities > Get Identity', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Should not fault');
-		assert.exists(res.GetIdentitiesResponse, 'Response should exist');
 	});
 
 

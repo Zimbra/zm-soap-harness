@@ -134,19 +134,16 @@ describe('Calendar > Sharing > New Appointment Get', function () {
 			sharee.token
 		);
 		assert.notExists(sumRes.Fault, 'Should not fault');
-		if (sumRes.GetApptSummariesResponse.appt) {
-			const appts = Array.isArray(sumRes.GetApptSummariesResponse.appt)
-				? sumRes.GetApptSummariesResponse.appt
-				: [sumRes.GetApptSummariesResponse.appt];
-			const found = appts.find(a => a.name === subject);
-			if (found) {
-				const getRes = await soap.makeSOAPEnvelopeAccount(
-					`<GetAppointmentRequest xmlns="urn:zimbraMail"
-						id="${found.invId}"/>`, sharee.token
-				);
-				assert.notExists(getRes.Fault, 'Get should not fault');
-			}
-		}
+		const appts = Array.isArray(sumRes.GetApptSummariesResponse.appt)
+			? sumRes.GetApptSummariesResponse.appt
+			: [sumRes.GetApptSummariesResponse.appt];
+		const found = appts.find(a => a.name === subject);
+		assert.exists(found, 'Appointment should be found');
+		const getRes = await soap.makeSOAPEnvelopeAccount(
+			`<GetAppointmentRequest xmlns="urn:zimbraMail"
+				id="${found.invId}"/>`, sharee.token
+		);
+		assert.notExists(getRes.Fault, 'Get should not fault');
 	});
 
 });

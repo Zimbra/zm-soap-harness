@@ -95,7 +95,9 @@ describe('Calendar > Appointments > Cancel Appointment Request Basic', function 
 			</SearchRequest>`, accountToken
         );
         assert.notExists(searchRes1.Fault, 'SearchRequest should not fault');
-        assert.exists(searchRes1.SearchResponse.appt, 'Appointment should exist');
+        const appts = Array.isArray(searchRes1.SearchResponse.appt)
+            ? searchRes1.SearchResponse.appt : [searchRes1.SearchResponse.appt];
+        assert.exists(appts[0].name, 'Appointment name should exist');
 
         // Cancel appointment
         const cancelRes = await soap.makeSOAPEnvelopeAccount(
@@ -120,13 +122,13 @@ describe('Calendar > Appointments > Cancel Appointment Request Basic', function 
 			</SearchRequest>`, accountToken
         );
         assert.notExists(searchRes2.Fault, 'SearchRequest should not fault');
-        if (searchRes2.SearchResponse.appt) {
-            const appts = Array.isArray(searchRes2.SearchResponse.appt)
+        const appts2 = searchRes2.SearchResponse.appt
+            ? (Array.isArray(searchRes2.SearchResponse.appt)
                 ? searchRes2.SearchResponse.appt
-                : [searchRes2.SearchResponse.appt];
-            const found = appts.find(a => a.invId === invId);
-            assert.notExists(found, 'Cancelled appointment should not exist');
-        }
+                : [searchRes2.SearchResponse.appt])
+            : [];
+        const found = appts2.find(a => a.invId === invId);
+        assert.notExists(found, 'Cancelled appointment should not exist');
     });
 
 
@@ -203,7 +205,7 @@ describe('Calendar > Appointments > Cancel Appointment Request Basic', function 
 				</m>
 			</CancelAppointmentRequest>`, accountToken
         );
-        assert.exists(cancelRes2.Fault, 'Second cancel should fault');
+        assert.isString(cancelRes2.Fault.Detail.Error.Code, 'Second cancel should fault');
 
         // Try to modify cancelled appointment - should get INVALID_REQUEST
         const modifyRes = await soap.makeSOAPEnvelopeAccount(
@@ -223,7 +225,7 @@ describe('Calendar > Appointments > Cancel Appointment Request Basic', function 
 				</m>
 			</ModifyAppointmentRequest>`, accountToken
         );
-        assert.exists(modifyRes.Fault, 'Modify cancelled appt should fault');
+        assert.isString(modifyRes.Fault.Detail.Error.Code, 'Modify cancelled appt should fault');
 
         // Try to create appointment in trash - should get INVALID_REQUEST
         const trashCreateRes = await soap.makeSOAPEnvelopeAccount(
@@ -244,6 +246,6 @@ describe('Calendar > Appointments > Cancel Appointment Request Basic', function 
 				</m>
 			</CreateAppointmentRequest>`, accountToken
         );
-        assert.exists(trashCreateRes.Fault, 'Create in trash should fault');
+        assert.isString(trashCreateRes.Fault.Detail.Error.Code, 'Create in trash should fault');
     });
 });

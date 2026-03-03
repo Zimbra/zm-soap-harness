@@ -34,7 +34,10 @@ describe('Briefcase > Mountpoint > Briefcase Get Mountpoint', function () {
 
 		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
-		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
+		const acct1Data = Array.isArray(createRes1.CreateAccountResponse.account)
+			? createRes1.CreateAccountResponse.account[0]
+			: createRes1.CreateAccountResponse.account;
+		assert.exists(acct1Data.id, 'Account1 ID should exist');
 
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
 			? createRes1.CreateAccountResponse.account[0]
@@ -54,7 +57,10 @@ describe('Briefcase > Mountpoint > Briefcase Get Mountpoint', function () {
 
 		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
-		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
+		const acct2Data = Array.isArray(createRes2.CreateAccountResponse.account)
+			? createRes2.CreateAccountResponse.account[0]
+			: createRes2.CreateAccountResponse.account;
+		assert.exists(acct2Data.id, 'Account2 ID should exist');
 
 		// Auth account1
 		account1Token = await soap.getAccountAuthToken(account1Name);
@@ -80,7 +86,6 @@ describe('Briefcase > Mountpoint > Briefcase Get Mountpoint', function () {
 
 		// Verify response
 		assert.notExists(folderRes2.Fault, 'Response should not be a Fault');
-		assert.exists(folderRes2.GetFolderResponse, 'GetFolderResponse should exist');
 
 		// Create a folder under account1's briefcase
 		const createFolderRes = await soap.makeSOAPEnvelopeAccount(
@@ -93,7 +98,7 @@ describe('Briefcase > Mountpoint > Briefcase Get Mountpoint', function () {
 		assert.notExists(createFolderRes.Fault, 'Response should not be a Fault');
 		const createdFolder = Array.isArray(createFolderRes.CreateFolderResponse.folder)
 			? createFolderRes.CreateFolderResponse.folder[0] : createFolderRes.CreateFolderResponse.folder;
-		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
+		assert.exists(createdFolder.id, 'folder id should exist');
 		const folder1 = Array.isArray(createFolderRes.CreateFolderResponse.folder)
 			? createFolderRes.CreateFolderResponse.folder[0]
 			: createFolderRes.CreateFolderResponse.folder;
@@ -167,8 +172,6 @@ describe('Briefcase > Mountpoint > Briefcase Get Mountpoint', function () {
 
 		// Verify response
 		assert.notExists(mountRes.Fault, 'Response should not be a Fault');
-		assert.exists(mountRes.CreateMountpointResponse,
-			'CreateMountpointResponse should exist');
 
 		const link = Array.isArray(mountRes.CreateMountpointResponse.link)
 			? mountRes.CreateMountpointResponse.link[0]
@@ -184,7 +187,9 @@ describe('Briefcase > Mountpoint > Briefcase Get Mountpoint', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
-		assert.exists(getRes.GetFolderResponse, 'GetFolderResponse should exist');
+		const folderContent = getRes.GetFolderResponse.link || getRes.GetFolderResponse.folder;
+		const folderItem = Array.isArray(folderContent) ? folderContent[0] : folderContent;
+		assert.exists(folderItem.id, 'folder content id should exist');
 	});
 
 
@@ -201,8 +206,6 @@ describe('Briefcase > Mountpoint > Briefcase Get Mountpoint', function () {
 
 		// Verify response
 		assert.notExists(mountRes.Fault, 'Response should not be a Fault');
-		assert.exists(mountRes.CreateMountpointResponse,
-			'CreateMountpointResponse should exist');
 
 		// GetFolder by path for the sub-folder
 		const getRes = await soap.makeSOAPEnvelopeAccount(
@@ -213,7 +216,9 @@ describe('Briefcase > Mountpoint > Briefcase Get Mountpoint', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
-		assert.exists(getRes.GetFolderResponse, 'GetFolderResponse should exist');
+		const folderContent = getRes.GetFolderResponse.link || getRes.GetFolderResponse.folder;
+		const folderItem = Array.isArray(folderContent) ? folderContent[0] : folderContent;
+		assert.exists(folderItem.id, 'folder content id should exist');
 
 		// Search the sub-folder's document
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
@@ -224,6 +229,7 @@ describe('Briefcase > Mountpoint > Briefcase Get Mountpoint', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
+		assert.exists(searchRes.SearchResponse.doc,
+			'SearchResponse should contain doc results');
 	});
 });

@@ -41,8 +41,6 @@ describe('Admin > Accounts > Foreign Principal > Account Create', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CreateAccountResponse,
-			'CreateAccountResponse should exist');
 		const account = Array.isArray(response.CreateAccountResponse.account)
 			? response.CreateAccountResponse.account[0]
 			: response.CreateAccountResponse.account;
@@ -69,8 +67,6 @@ describe('Admin > Accounts > Foreign Principal > Account Create', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CreateAccountResponse,
-			'CreateAccountResponse should exist');
 		const account = Array.isArray(response.CreateAccountResponse.account)
 			? response.CreateAccountResponse.account[0]
 			: response.CreateAccountResponse.account;
@@ -96,8 +92,6 @@ describe('Admin > Accounts > Foreign Principal > Account Create', function () {
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		assert.exists(res1.CreateAccountResponse,
-			'CreateAccountResponse should exist');
 		const account = Array.isArray(res1.CreateAccountResponse.account)
 			? res1.CreateAccountResponse.account[0]
 			: res1.CreateAccountResponse.account;
@@ -116,8 +110,6 @@ describe('Admin > Accounts > Foreign Principal > Account Create', function () {
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.CreateAccountResponse,
-			'CreateAccountResponse should exist');
 		const account2 = Array.isArray(res2.CreateAccountResponse.account)
 			? res2.CreateAccountResponse.account[0]
 			: res2.CreateAccountResponse.account;
@@ -144,8 +136,8 @@ describe('Admin > Accounts > Foreign Principal > Account Create', function () {
 
 			// Verify response
 			assert.notExists(response.Fault, 'Response should not be a Fault');
-			assert.exists(response.CreateAccountResponse,
-				`Should succeed for zimbraForeignPrincipal="${val}"`);
+			assert.exists(response.CreateAccountResponse.account[0].id,
+				`Account id should exist for zimbraForeignPrincipal="${val}"`);
 		}
 		// Empty and whitespace-only values are trimmed by Zimbra — server may accept or reject
 		for (const val of ['', '             ']) {
@@ -161,9 +153,9 @@ describe('Admin > Accounts > Foreign Principal > Account Create', function () {
 			);
 
 			// Verify response
-			assert.isTrue(response.CreateAccountResponse !== undefined || response.Fault !== undefined,
-				`Expected a response for zimbraForeignPrincipal="${val}"`
-			);
+			assert.notExists(response.Fault, 'Response should not be a Fault');
+			assert.exists(response.CreateAccountResponse.account[0].id,
+				`Account id should exist for zimbraForeignPrincipal="${val}"`);
 		}
 	});
 });

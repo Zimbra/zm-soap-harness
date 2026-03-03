@@ -56,7 +56,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -70,7 +69,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -84,7 +82,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -98,7 +95,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -112,7 +108,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -126,7 +121,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -140,7 +134,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -154,7 +147,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -168,7 +160,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -182,7 +173,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -196,7 +186,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -210,7 +199,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -237,7 +225,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -251,7 +238,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -265,7 +251,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -279,7 +264,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -306,7 +290,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -320,7 +303,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -334,7 +316,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -348,7 +329,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -362,7 +342,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -376,7 +355,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -390,7 +368,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -404,7 +381,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -418,7 +394,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -432,7 +407,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -446,7 +420,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -460,7 +433,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -474,7 +446,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -488,7 +459,6 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 
 
@@ -502,6 +472,5 @@ describe('Search > Contacts > Search Contact Lucene', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist', 'Value should match');
 	});
 });

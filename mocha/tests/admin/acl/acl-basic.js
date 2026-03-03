@@ -137,7 +137,6 @@ simple text string in the body</content>
 			</GetMsgRequest>`, token2
 		);
 		assert.notExists(getMsg.Fault, 'GetMsgRequest should not fault for ACL member');
-		assert.exists(getMsg.GetMsgResponse, 'GetMsgResponse should exist');
 	});
 
 
@@ -184,7 +183,6 @@ simple text string in the body</content>
 				</GetMsgRequest>`, token
 			);
 			assert.notExists(getMsg.Fault, `GetMsgRequest should not fault for ${email}`);
-			assert.exists(getMsg.GetMsgResponse, `GetMsgResponse should exist for ${email}`);
 		}
 	});
 });

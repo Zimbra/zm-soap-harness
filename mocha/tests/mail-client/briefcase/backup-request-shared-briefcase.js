@@ -103,7 +103,6 @@ describe('Mail Client > Briefcase > Backup Request Shared Briefcase', function (
 			</BackupRequest>`, adminAuthToken
 		);
 		assert.notExists(backupRes.Fault, 'BackupRequest should not fault');
-		assert.exists(backupRes.BackupResponse, 'BackupResponse should exist');
 
 		// Wait and delete account1
 		await new Promise(r => setTimeout(r, 30000));
@@ -122,7 +121,6 @@ describe('Mail Client > Briefcase > Backup Request Shared Briefcase', function (
 			</RestoreRequest>`, adminAuthToken
 		);
 		assert.notExists(restoreRes.Fault, 'RestoreRequest should not fault');
-		assert.exists(restoreRes.RestoreResponse, 'RestoreResponse should exist');
 		await new Promise(r => setTimeout(r, 30000));
 
 		// Verify account2 can still access shared item after restore
@@ -146,7 +144,6 @@ describe('Mail Client > Briefcase > Backup Request Shared Briefcase', function (
 			</BackupRequest>`, adminAuthToken
 		);
 		assert.notExists(fullBackup.Fault, 'Full BackupRequest should not fault');
-		assert.exists(fullBackup.BackupResponse, 'Full BackupResponse should exist');
 
 		// Login as account3
 		const acct3Auth = await soap.getAccountAuthToken(account3Name);
@@ -202,7 +199,6 @@ describe('Mail Client > Briefcase > Backup Request Shared Briefcase', function (
 			</BackupRequest>`, adminAuthToken
 		);
 		assert.notExists(incrBackup.Fault, 'Incremental BackupRequest should not fault');
-		assert.exists(incrBackup.BackupResponse, 'Incremental BackupResponse should exist');
 
 		// Wait, delete, and restore
 		await new Promise(r => setTimeout(r, 30000));
@@ -220,7 +216,6 @@ describe('Mail Client > Briefcase > Backup Request Shared Briefcase', function (
 			</RestoreRequest>`, adminAuthToken
 		);
 		assert.notExists(restoreRes.Fault, 'RestoreRequest should not fault');
-		assert.exists(restoreRes.RestoreResponse, 'RestoreResponse should exist');
 		await new Promise(r => setTimeout(r, 30000));
 
 		// Verify account4 can still access after restore

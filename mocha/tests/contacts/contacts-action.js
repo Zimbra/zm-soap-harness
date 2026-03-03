@@ -74,7 +74,6 @@ describe('Contacts > Contacts Action', function () {
 			</CreateContactRequest>`, accountToken
 		);
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 		assert.exists(cn.id, 'Contact id should exist');
@@ -93,7 +92,6 @@ describe('Contacts > Contacts Action', function () {
 			</CreateContactRequest>`, accountToken
 		);
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 		const contactId = cn.id;
@@ -105,8 +103,8 @@ describe('Contacts > Contacts Action', function () {
 			</ContactActionRequest>`, accountToken
 		);
 		assert.notExists(del1.Fault, 'First delete should not be a Fault');
-		assert.exists(del1.ContactActionResponse, 'ContactActionResponse should exist');
-		assert.exists(del1.ContactActionResponse.action, 'Action should exist');
+		assert.equal(del1.ContactActionResponse.action.op, 'delete', 'Verify op is delete');
+		assert.equal(del1.ContactActionResponse.action.id, contactId, 'Verify action id');
 
 		// Delete second time
 		const del2 = await soap.makeSOAPEnvelopeAccount(
@@ -115,8 +113,8 @@ describe('Contacts > Contacts Action', function () {
 			</ContactActionRequest>`, accountToken
 		);
 		assert.notExists(del2.Fault, 'Second delete should not be a Fault');
-		assert.exists(del2.ContactActionResponse, 'ContactActionResponse should exist');
-		assert.exists(del2.ContactActionResponse.action, 'Action should exist');
+		assert.equal(del2.ContactActionResponse.action.op, 'delete', 'Verify op is delete');
+		assert.equal(del2.ContactActionResponse.action.id, contactId, 'Verify action id');
 	});
 
 
@@ -131,7 +129,6 @@ describe('Contacts > Contacts Action', function () {
 			</CreateContactRequest>`, accountToken
 		);
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
@@ -141,8 +138,8 @@ describe('Contacts > Contacts Action', function () {
 			</ContactActionRequest>`, accountToken
 		);
 		assert.notExists(delRes.Fault, 'Delete should not be a Fault');
-		assert.exists(delRes.ContactActionResponse, 'ContactActionResponse should exist');
-		assert.exists(delRes.ContactActionResponse.action, 'Action should exist');
+		assert.equal(delRes.ContactActionResponse.action.op, 'delete', 'Verify op is delete');
+		assert.equal(delRes.ContactActionResponse.action.id, cn.id, 'Verify action id');
 	});
 
 
@@ -153,8 +150,7 @@ describe('Contacts > Contacts Action', function () {
 			</ContactActionRequest>`, accountToken
 		);
 		assert.notExists(delRes.Fault, 'Delete invalid should not be a Fault');
-		assert.exists(delRes.ContactActionResponse, 'ContactActionResponse should exist');
-		assert.exists(delRes.ContactActionResponse.action, 'Action should exist');
+		assert.equal(delRes.ContactActionResponse.action.op, 'delete', 'Verify op is delete');
 	});
 
 
@@ -169,7 +165,6 @@ describe('Contacts > Contacts Action', function () {
 			</CreateContactRequest>`, accountToken
 		);
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
@@ -196,7 +191,6 @@ describe('Contacts > Contacts Action', function () {
 			</CreateContactRequest>`, accountToken
 		);
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
@@ -223,7 +217,6 @@ describe('Contacts > Contacts Action', function () {
 			</CreateContactRequest>`, accountToken
 		);
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
@@ -250,7 +243,6 @@ describe('Contacts > Contacts Action', function () {
 			</CreateContactRequest>`, accountToken
 		);
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
@@ -300,7 +292,6 @@ describe('Contacts > Contacts Action', function () {
 			</CreateContactRequest>`, accountToken
 		);
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
@@ -380,8 +371,8 @@ describe('Contacts > Contacts Action', function () {
 			</ContactActionRequest>`, accountToken
 		);
 		assert.notExists(actionRes.Fault, 'Flag should not be a Fault');
-		assert.exists(actionRes.ContactActionResponse, 'ContactActionResponse should exist');
-		assert.exists(actionRes.ContactActionResponse.action, 'Action should exist');
+		assert.equal(actionRes.ContactActionResponse.action.op, 'flag', 'Verify op is flag');
+		assert.equal(actionRes.ContactActionResponse.action.id, cn.id, 'Verify action id');
 	});
 
 
@@ -412,8 +403,8 @@ describe('Contacts > Contacts Action', function () {
 			</ContactActionRequest>`, accountToken
 		);
 		assert.notExists(actionRes.Fault, 'Unflag should not be a Fault');
-		assert.exists(actionRes.ContactActionResponse, 'ContactActionResponse should exist');
-		assert.exists(actionRes.ContactActionResponse.action, 'Action should exist');
+		assert.equal(actionRes.ContactActionResponse.action.op, '!flag', 'Verify op is !flag');
+		assert.equal(actionRes.ContactActionResponse.action.id, cn.id, 'Verify action id');
 	});
 
 
@@ -449,8 +440,8 @@ describe('Contacts > Contacts Action', function () {
 			</ContactActionRequest>`, accountToken
 		);
 		assert.notExists(actionRes.Fault, 'Update should not be a Fault');
-		assert.exists(actionRes.ContactActionResponse, 'ContactActionResponse should exist');
-		assert.exists(actionRes.ContactActionResponse.action, 'Action should exist');
+		assert.equal(actionRes.ContactActionResponse.action.op, 'update', 'Verify op is update');
+		assert.equal(actionRes.ContactActionResponse.action.id, cn.id, 'Verify action id');
 	});
 
 
@@ -473,8 +464,8 @@ describe('Contacts > Contacts Action', function () {
 			</ContactActionRequest>`, accountToken
 		);
 		assert.notExists(actionRes.Fault, 'Unflag unflagged should not be a Fault');
-		assert.exists(actionRes.ContactActionResponse, 'ContactActionResponse should exist');
-		assert.exists(actionRes.ContactActionResponse.action, 'Action should exist');
+		assert.equal(actionRes.ContactActionResponse.action.op, '!flag', 'Verify op is !flag');
+		assert.equal(actionRes.ContactActionResponse.action.id, cn.id, 'Verify action id');
 	});
 
 
@@ -501,7 +492,7 @@ describe('Contacts > Contacts Action', function () {
 			</ContactActionRequest>`, accountToken
 		);
 		assert.notExists(delRes.Fault, 'Batch delete should not be a Fault');
-		assert.exists(delRes.ContactActionResponse, 'ContactActionResponse should exist');
-		assert.exists(delRes.ContactActionResponse.action, 'Action should exist');
+		assert.equal(delRes.ContactActionResponse.action.op, 'delete', 'Verify op is delete');
+		assert.include(delRes.ContactActionResponse.action.id, ids[0], 'Verify action contains first id');
 	});
 });

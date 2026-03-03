@@ -68,9 +68,7 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 		assert.equal(res.SearchResponse?.m?.[0].su, 'test mail', 'su should match');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -84,7 +82,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 		assert.equal(res.SearchResponse?.m?.[0].su, 'test mail', 'su should match');
 		// Verify empty result set
 	});
@@ -100,7 +97,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 		assert.equal(res.SearchResponse?.m?.[0].su, 'test mail', 'su should match');
 	});
 
@@ -113,11 +109,7 @@ Test content</content>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		if (res1.Fault) {
-			assert.exists(res1.Fault, 'Response may be a Fault for blank fetch');
-		} else {
-			assert.exists(res1.SearchResponse, 'SearchResponse should exist');
-		}
+		assert.notExists(res1.Fault, 'SearchRequest with blank fetch should not fault');
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -126,11 +118,7 @@ Test content</content>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		if (res2.Fault) {
-			assert.exists(res2.Fault, 'Response may be a Fault for spchar fetch');
-		} else {
-			assert.exists(res2.SearchResponse, 'SearchResponse should exist');
-		}
+		assert.notExists(res2.Fault, 'SearchRequest with spchar fetch should not fault');
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -161,11 +149,7 @@ Test content</content>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		if (res5.Fault) {
-			assert.exists(res5.Fault, 'Response may be a Fault for text fetch');
-		} else {
-			assert.exists(res5.SearchResponse, 'SearchResponse should exist');
-		}
+		assert.notExists(res5.Fault, 'SearchRequest with text fetch should not fault');
 
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
@@ -174,11 +158,7 @@ Test content</content>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		if (res6.Fault) {
-			assert.exists(res6.Fault, 'Response may be a Fault for alpha fetch');
-		} else {
-			assert.exists(res6.SearchResponse, 'SearchResponse should exist');
-		}
+		assert.notExists(res6.Fault, 'SearchRequest with alpha fetch should not fault');
 
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
@@ -187,11 +167,7 @@ Test content</content>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		if (res7.Fault) {
-			assert.exists(res7.Fault, 'Response may be a Fault for spaces fetch');
-		} else {
-			assert.exists(res7.SearchResponse, 'SearchResponse should exist');
-		}
+		assert.notExists(res7.Fault, 'SearchRequest with spaces fetch should not fault');
 	});
 
 
@@ -200,12 +176,13 @@ Test content</content>
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message,appointment" fetch=" 1">
 				<query>subject:(test mail)</query>
-			</SearchRequest>`, accountAuthToken
+			</SearchRequest>`, accountAuthToken, false
 		);
 
-		// Verify response
+		// Server does not trim whitespace from fetch attribute
+		// Verify response - may fault or succeed depending on server version
 		if (res.Fault) {
-			assert.exists(res.Fault, 'Response should be a Fault for leading space');
+			assert.isString(res.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		} else {
 			assert.exists(res.SearchResponse, 'SearchResponse should exist');
 		}
@@ -217,12 +194,13 @@ Test content</content>
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message,appointment" fetch="1 ">
 				<query>subject:(test mail)</query>
-			</SearchRequest>`, accountAuthToken
+			</SearchRequest>`, accountAuthToken, false
 		);
 
-		// Verify response
+		// Server does not trim whitespace from fetch attribute
+		// Verify response - may fault or succeed depending on server version
 		if (res.Fault) {
-			assert.exists(res.Fault, 'Response should be a Fault for trailing space');
+			assert.isString(res.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		} else {
 			assert.exists(res.SearchResponse, 'SearchResponse should exist');
 		}
@@ -234,11 +212,13 @@ Test content</content>
 		res = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message,appointment" fetch="1.0">
 				<query>subject:(test mail)</query>
-			</SearchRequest>`, accountAuthToken
+			</SearchRequest>`, accountAuthToken, false
 		);
 
+		// Server may not accept decimal values for fetch attribute
+		// Verify response - may fault or succeed depending on server version
 		if (res.Fault) {
-			assert.exists(res.Fault, 'Response should be a Fault for decimal');
+			assert.isString(res.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		} else {
 			assert.exists(res.SearchResponse, 'SearchResponse should exist');
 		}

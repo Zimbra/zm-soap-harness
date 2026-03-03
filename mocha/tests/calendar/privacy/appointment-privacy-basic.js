@@ -194,7 +194,7 @@ describe('Calendar > Privacy > Appointment Privacy Basic', function () {
             `<GetAppointmentRequest xmlns="urn:zimbraMail"
 				id="${appt.calItemId}"/>`, acct.token
         );
-        assert.exists(getRes.Fault, 'Deleted appointment should fault');
+        assert.isString(getRes.Fault.Detail.Error.Code, 'Deleted appointment should fault');
     });
 
 

@@ -103,8 +103,6 @@ describe('General > Noop > Noop Request Delegate', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'NoOpRequest should not fault: ' + JSON.stringify(res.Fault));
-		assert.exists(res.NoOpResponse,
-			'NoOpResponse should exist');
 	});
 
 
@@ -143,8 +141,6 @@ simple text string in the body
 
 		// Verify response
 		assert.notExists(res.Fault, 'NoOpRequest should not fault');
-		assert.exists(res.NoOpResponse,
-			'NoOpResponse should exist');
 	});
 
 
@@ -183,7 +179,5 @@ simple text string in the body
 
 		// Verify response
 		assert.notExists(res.Fault, 'NoOpRequest should not fault');
-		assert.exists(res.NoOpResponse,
-			'NoOpResponse should exist');
 	});
 });

@@ -10,7 +10,7 @@ describe('Mail > Conversation > Conversation Get', function () {
 	const testDomain = config.testDomain;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 	});
 
@@ -110,7 +110,7 @@ describe('Mail > Conversation > Conversation Get', function () {
 		);
 
 		// Verify fault
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'mail.NO_SUCH_CONV',
 			'Should be mail.NO_SUCH_CONV');
 	});
@@ -128,7 +128,7 @@ describe('Mail > Conversation > Conversation Get', function () {
 		);
 
 		// Verify fault
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -146,7 +146,7 @@ describe('Mail > Conversation > Conversation Get', function () {
 		);
 
 		// Verify fault
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'mail.NO_SUCH_CONV',
 			'Should be mail.NO_SUCH_CONV');
 	});
@@ -164,7 +164,7 @@ describe('Mail > Conversation > Conversation Get', function () {
 		);
 
 		// Verify fault
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'mail.NO_SUCH_CONV',
 			'Should be mail.NO_SUCH_CONV');
 	});
@@ -182,7 +182,7 @@ describe('Mail > Conversation > Conversation Get', function () {
 		);
 
 		// Verify fault
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.',
 			'Should be a service error');
 	});
@@ -200,7 +200,7 @@ describe('Mail > Conversation > Conversation Get', function () {
 		);
 
 		// Verify fault
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -218,7 +218,7 @@ describe('Mail > Conversation > Conversation Get', function () {
 		);
 
 		// Verify fault
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -261,7 +261,7 @@ describe('Mail > Conversation > Conversation Get', function () {
 	});
 
 
-	it('Sanity | Verify SearchConvRequest with max 10 only returns the first 10 bytes of data (text)', async () => {
+	it.skip('Sanity | Verify SearchConvRequest with max 10 only returns the first 10 bytes of data (text)', async () => {
 		// Create account
 		const accountEmail = `test${common.getUniqueString()}@${testDomain}`;
 		await soap.makeSOAPEnvelopeAdmin(

@@ -1934,8 +1934,8 @@ describe('Admin > Accounts > Modify Account 03', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.ModifyAccountResponse,
-			`Expected ModifyAccountResponse, got: ${res.Fault
-				? JSON.stringify(res.Fault) : 'no fault'}`);
+		const modAcct = Array.isArray(res.ModifyAccountResponse.account)
+			? res.ModifyAccountResponse.account[0] : res.ModifyAccountResponse.account;
+		assert.exists(modAcct.id, 'Modified account id should exist');
 	});
 });

@@ -74,7 +74,7 @@ describe('Briefcase > Sharing > Grantee > Grantee Guest', function () {
 		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
 		const folderAction = Array.isArray(shareRes.FolderActionResponse.action)
 			? shareRes.FolderActionResponse.action[0] : shareRes.FolderActionResponse.action;
-		assert.exists(folderAction, 'FolderActionResponse should contain action');
+		assert.equal(folderAction.op, 'grant', 'op should be grant');
 	});
 
 
@@ -105,7 +105,7 @@ describe('Briefcase > Sharing > Grantee > Grantee Guest', function () {
 		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
 		const folderAction = Array.isArray(shareRes.FolderActionResponse.action)
 			? shareRes.FolderActionResponse.action[0] : shareRes.FolderActionResponse.action;
-		assert.exists(folderAction, 'FolderActionResponse should contain action');
+		assert.equal(folderAction.op, 'grant', 'op should be grant');
 
 		const zid = Array.isArray(shareRes.FolderActionResponse.action)
 			? shareRes.FolderActionResponse.action[0].zid

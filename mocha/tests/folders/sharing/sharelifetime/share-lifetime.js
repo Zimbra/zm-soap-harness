@@ -153,14 +153,11 @@ describe('Folders > Sharing > Sharelifetime > Share Lifetime', function () {
 		// If no grants, `acl` might be missing or empty.
 		// If `acl` exists, attributes should be missing.
 		const folder3 = getFolder3.GetFolderResponse.folder[0];
-		if (folder3.acl) {
-
-			// Verify response
-			assert.notExists(folder3.acl.guestGrantExpiry,
-				'guestGrantExpiry should be gone');
-			assert.notExists(folder3.acl.internalGrantExpiry,
-				'internalGrantExpiry should be gone');
-		}
+		// After revoking all grants, acl expiry attributes should be gone
+		assert.notExists(folder3.acl?.guestGrantExpiry,
+			'guestGrantExpiry should be gone');
+		assert.notExists(folder3.acl?.internalGrantExpiry,
+			'internalGrantExpiry should be gone');
 	});
 
 

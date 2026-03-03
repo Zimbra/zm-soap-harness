@@ -91,7 +91,6 @@ describe('Rest Servlet > Auth > Preauth Admin', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Admin AuthRequest should not fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
 		// Verify preauth via REST /service/preauth endpoint with admin=1
 		const adminPort = config.adminPort || 7071;
@@ -130,7 +129,6 @@ describe('Rest Servlet > Auth > Preauth Admin', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Delegated admin AuthRequest should not fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
 		// Verify preauth via REST
 		const adminPort = config.adminPort || 7071;

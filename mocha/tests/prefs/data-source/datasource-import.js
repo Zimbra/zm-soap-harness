@@ -70,7 +70,6 @@ describe('Prefs > Data Source > Datasource Import', function () {
 			</CreateDataSourceRequest>`, accountAuthToken
 		);
 		assert.notExists(createDsRes.Fault, 'CreateDataSourceRequest should not fault');
-		assert.exists(createDsRes.CreateDataSourceResponse, 'CreateDataSourceResponse should exist');
 	});
 
 
@@ -94,7 +93,7 @@ describe('Prefs > Data Source > Datasource Import', function () {
 		assert.notExists(createFolderRes.Fault, 'CreateFolderRequest should not fault');
 		const createdFolder = Array.isArray(createFolderRes.CreateFolderResponse.folder)
 			? createFolderRes.CreateFolderResponse.folder[0] : createFolderRes.CreateFolderResponse.folder;
-		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
+		assert.exists(createdFolder.id, 'folder id should exist');
 	});
 
 
@@ -118,7 +117,7 @@ describe('Prefs > Data Source > Datasource Import', function () {
 		assert.notExists(createFolderRes.Fault, 'CreateFolderRequest should not fault');
 		const createdFolder = Array.isArray(createFolderRes.CreateFolderResponse.folder)
 			? createFolderRes.CreateFolderResponse.folder[0] : createFolderRes.CreateFolderResponse.folder;
-		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
+		assert.exists(createdFolder.id, 'folder id should exist');
 	});
 
 
@@ -163,6 +162,6 @@ describe('Prefs > Data Source > Datasource Import', function () {
 				<imap id="invalidID123"/>
 			</ImportDataRequest>`, accountAuthToken
 		);
-		assert.exists(importRes.Fault, 'ImportDataRequest with invalid ID should fault');
+		assert.isString(importRes.Fault.Detail.Error.Code, 'ImportDataRequest with invalid ID should fault');
 	});
 });

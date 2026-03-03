@@ -57,7 +57,7 @@ describe('General > Password > Complex Password', function () {
 		);
 
 		// Verify response
-		assert.exists(failRes.Fault, 'Should fail with not enough upper case');
+		assert.isString(failRes.Fault.Detail.Error.Code, 'Should fail with not enough upper case');
 		assert.include(failRes.Fault.Detail.Error.Code, 'account.INVALID_PASSWORD',
 			'Error code should be account.INVALID_PASSWORD');
 
@@ -104,7 +104,7 @@ describe('General > Password > Complex Password', function () {
 		);
 
 		// Verify response
-		assert.exists(failRes.Fault, 'Should fail with not enough lower case');
+		assert.isString(failRes.Fault.Detail.Error.Code, 'Should fail with not enough lower case');
 
 		// Change password
 		const successRes = await soap.makeSOAPEnvelopeAccount(
@@ -149,7 +149,7 @@ describe('General > Password > Complex Password', function () {
 		);
 
 		// Verify response
-		assert.exists(failRes.Fault, 'Should fail with not enough numeric chars');
+		assert.isString(failRes.Fault.Detail.Error.Code, 'Should fail with not enough numeric chars');
 
 		// Change password
 		const successRes = await soap.makeSOAPEnvelopeAccount(
@@ -194,7 +194,7 @@ describe('General > Password > Complex Password', function () {
 		);
 
 		// Verify response
-		assert.exists(failRes.Fault, 'Should fail with not enough punctuation chars');
+		assert.isString(failRes.Fault.Detail.Error.Code, 'Should fail with not enough punctuation chars');
 
 		// Change password
 		const successRes = await soap.makeSOAPEnvelopeAccount(

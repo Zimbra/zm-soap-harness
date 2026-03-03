@@ -51,7 +51,6 @@ describe('Contacts > Contact Request', function () {
 			</CreateContactRequest>`, accountToken
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(res.CreateContactResponse.cn)
 			? res.CreateContactResponse.cn[0] : res.CreateContactResponse.cn;
 		assert.exists(cn.id, 'Contact id should exist');
@@ -76,7 +75,6 @@ describe('Contacts > Contact Request', function () {
 			</CreateContactRequest>`, accountToken
 		);
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
@@ -89,7 +87,9 @@ describe('Contacts > Contact Request', function () {
 			</ModifyContactRequest>`, accountToken
 		);
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
-		assert.exists(modRes.ModifyContactResponse.cn, 'Modified contact should exist');
+		const modCn = Array.isArray(modRes.ModifyContactResponse.cn)
+			? modRes.ModifyContactResponse.cn[0] : modRes.ModifyContactResponse.cn;
+		assert.exists(modCn.id, 'Modified contact id should exist');
 	});
 
 
@@ -109,7 +109,6 @@ describe('Contacts > Contact Request', function () {
 			</CreateContactRequest>`, accountToken
 		);
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
@@ -120,7 +119,9 @@ describe('Contacts > Contact Request', function () {
 			</GetContactsRequest>`, accountToken
 		);
 		assert.notExists(getRes.Fault, 'Get should not be a Fault');
-		assert.exists(getRes.GetContactsResponse.cn, 'Contact should exist');
+		const getCn = Array.isArray(getRes.GetContactsResponse.cn)
+			? getRes.GetContactsResponse.cn[0] : getRes.GetContactsResponse.cn;
+		assert.exists(getCn.id, 'Contact id should exist');
 	});
 
 
@@ -140,7 +141,6 @@ describe('Contacts > Contact Request', function () {
 			</CreateContactRequest>`, accountToken
 		);
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
@@ -151,8 +151,8 @@ describe('Contacts > Contact Request', function () {
 			</ContactActionRequest>`, accountToken
 		);
 		assert.notExists(actionRes.Fault, 'Trash should not be a Fault');
-		assert.exists(actionRes.ContactActionResponse, 'ContactActionResponse should exist');
-		assert.exists(actionRes.ContactActionResponse.action, 'Action should exist');
+		assert.equal(actionRes.ContactActionResponse.action.op, 'trash', 'Verify op is trash');
+		assert.equal(actionRes.ContactActionResponse.action.id, cn.id, 'Verify action id');
 	});
 
 
@@ -165,7 +165,9 @@ TestFirst${common.getUniqueString()},TestLast${common.getUniqueString()},testema
 			</ImportContactsRequest>`, accountToken
 		);
 		assert.notExists(res.Fault, 'Import should not be a Fault');
-		assert.exists(res.ImportContactsResponse.cn, 'Import response should contain cn');
+		const importCn = Array.isArray(res.ImportContactsResponse.cn)
+			? res.ImportContactsResponse.cn[0] : res.ImportContactsResponse.cn;
+		assert.exists(importCn.ids, 'Import cn should have ids');
 	});
 
 

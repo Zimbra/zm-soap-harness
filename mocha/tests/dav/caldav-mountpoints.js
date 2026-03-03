@@ -36,7 +36,6 @@ describe('DAV > Caldav Mountpoints', function () {
 
 		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
-		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
 			? createRes1.CreateAccountResponse.account[0]
 			: createRes1.CreateAccountResponse.account;
@@ -59,7 +58,6 @@ describe('DAV > Caldav Mountpoints', function () {
 
 		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
-		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 		const acct2 = Array.isArray(createRes2.CreateAccountResponse.account)
 			? createRes2.CreateAccountResponse.account[0]
 			: createRes2.CreateAccountResponse.account;
@@ -123,7 +121,6 @@ describe('DAV > Caldav Mountpoints', function () {
 
 		// Verify response
 		assert.notExists(grantRes.Fault, 'Response should not be a Fault');
-		assert.exists(grantRes.FolderActionResponse, 'Should grant access');
 	});
 
 	beforeEach(async function () {
@@ -161,7 +158,6 @@ describe('DAV > Caldav Mountpoints', function () {
 
 		// Verify response
 		assert.notExists(createMpRes.Fault, 'Response should not be a Fault');
-		assert.exists(createMpRes.CreateMountpointResponse, 'Should create mountpoint');
 
 		// PROPFIND on account1 root to see mounted calendar
 		const res = await makeDavRequest({
@@ -253,8 +249,6 @@ describe('DAV > Caldav Mountpoints', function () {
 
 		// Verify response
 		assert.notExists(createApptRes.Fault, 'Response should not be a Fault');
-		assert.exists(createApptRes.CreateAppointmentResponse,
-			'account2 should create appointment');
 
 		// Verify ctag changed
 		const res2 = await makeDavRequest({
@@ -635,7 +629,6 @@ describe('DAV > Caldav Mountpoints', function () {
 
 		// Verify response
 		assert.notExists(renameRes.Fault, 'Response should not be a Fault');
-		assert.exists(renameRes.ItemActionResponse, 'Should rename folder');
 
 		// Verify ctag changed
 		const res2 = await makeDavRequest({
@@ -737,7 +730,6 @@ describe('DAV > Caldav Mountpoints', function () {
 
 		// Verify response
 		assert.notExists(verifyRes.Fault, 'Response should not be a Fault');
-		assert.exists(verifyRes.GetFolderResponse, 'GetFolderResponse should exist');
 
 		// Verify source folder still exists on account2
 		const verifyRes2 = await soap.makeSOAPEnvelopeAccount(
@@ -776,7 +768,6 @@ describe('DAV > Caldav Mountpoints', function () {
 
 		// Verify response
 		assert.notExists(createApptRes.Fault, 'Response should not be a Fault');
-		assert.exists(createApptRes.CreateAppointmentResponse, 'Should create appointment');
 		const invId = createApptRes.CreateAppointmentResponse.invId
 			|| createApptRes.CreateAppointmentResponse.$.invId;
 
@@ -946,7 +937,6 @@ describe('DAV > Caldav Mountpoints', function () {
 
 		// Verify response
 		assert.notExists(createApptRes.Fault, 'Response should not be a Fault');
-		assert.exists(createApptRes.CreateAppointmentResponse, 'Should create appointment');
 		const invId = createApptRes.CreateAppointmentResponse.invId
 			|| createApptRes.CreateAppointmentResponse.$.invId;
 
@@ -1140,7 +1130,6 @@ describe('DAV > Caldav Mountpoints', function () {
 
 		// Verify response
 		assert.notExists(createApptRes.Fault, 'Response should not be a Fault');
-		assert.exists(createApptRes.CreateAppointmentResponse, 'Should create appointment');
 		const invId = createApptRes.CreateAppointmentResponse.invId
 			|| createApptRes.CreateAppointmentResponse.$.invId;
 

@@ -75,7 +75,7 @@ describe('General > Headers > Context > Harvesting', function () {
 		);
 
 		// Verify response
-		assert.exists(batchRes1.Fault, 'Should return Fault for accessing another account');
+		assert.isString(batchRes1.Fault.Detail.Error.Code, 'Should return Fault for accessing another account');
 		assert.include(batchRes1.Fault.Detail.Error.Code, 'service.PERM_DENIED',
 			'Error code should be PERM_DENIED');
 		const nonExistentEmail = `account${common.getUniqueString()}@${config.testDomain}`;
@@ -91,7 +91,7 @@ describe('General > Headers > Context > Harvesting', function () {
 		);
 
 		// Verify response
-		assert.exists(batchRes2.Fault, 'Should return Fault for non-existent account');
+		assert.isString(batchRes2.Fault.Detail.Error.Code, 'Should return Fault for non-existent account');
 		assert.include(batchRes2.Fault.Detail.Error.Code, 'service.PERM_DENIED',
 			'Error code should be PERM_DENIED, not NO_SUCH_ACCOUNT');
 	});
@@ -109,7 +109,7 @@ describe('General > Headers > Context > Harvesting', function () {
 		);
 
 		// Verify response
-		assert.exists(batchRes1.Fault, 'Should return Fault for accessing another account');
+		assert.isString(batchRes1.Fault.Detail.Error.Code, 'Should return Fault for accessing another account');
 		assert.include(batchRes1.Fault.Detail.Error.Code, 'service.PERM_DENIED',
 			'Error code should be PERM_DENIED');
 
@@ -124,7 +124,7 @@ describe('General > Headers > Context > Harvesting', function () {
 		);
 
 		// Verify response
-		assert.exists(batchRes2.Fault, 'Should return Fault for non-existent account');
+		assert.isString(batchRes2.Fault.Detail.Error.Code, 'Should return Fault for non-existent account');
 		assert.include(batchRes2.Fault.Detail.Error.Code, 'service.PERM_DENIED',
 			'Error code should be PERM_DENIED, not NO_SUCH_ACCOUNT');
 	});

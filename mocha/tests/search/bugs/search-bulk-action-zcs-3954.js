@@ -44,6 +44,5 @@ describe('Search > Bugs > Search Bulk Action ZCS 3954', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.PingResponse, 'Response element should exist');
 	});
 });

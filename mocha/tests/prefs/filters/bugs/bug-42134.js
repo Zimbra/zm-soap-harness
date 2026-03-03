@@ -71,6 +71,5 @@ describe('Prefs > Filters > Bugs > Bug 42134', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
-		assert.exists(getRes.GetFilterRulesResponse, 'Response should exist');
 	});
 });

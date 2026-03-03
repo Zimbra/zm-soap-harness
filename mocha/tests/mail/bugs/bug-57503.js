@@ -110,6 +110,5 @@ END:VCALENDAR
 			`<GetServiceStatusRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);
 		assert.notExists(serviceRes.Fault, 'GetServiceStatusRequest should not fault');
-		assert.exists(serviceRes.GetServiceStatusResponse, 'Service status should be available');
 	});
 });

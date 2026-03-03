@@ -1,19 +1,21 @@
 import path from 'node:path';
 import { assert } from 'chai';
 import config from '../conf/config.js';
-import { soap } from '../framework/backend/soap-client.js';
+import soap from '../framework/backend/soap-client.js';
 import { main } from '../pages/main.js';
 
 describe('Inject MIME', function () {
 	this.timeout(30 * 1000);
 
-	before(async () => {
+	before(async function () {
 		await main.before(this);
 	});
-	beforeEach(async () => {
+
+	beforeEach(async function () {
 		await main.beforeEach(this);
 	});
-	afterEach(async () => {
+
+	afterEach(async function () {
 		await main.afterEach(this);
 	});
 

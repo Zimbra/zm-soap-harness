@@ -64,7 +64,7 @@ describe('Mail > Bugs > Bug 48297', function () {
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
 		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
-		assert.exists(getMsg, 'GetMsgResponse should contain m');
+		assert.exists(getMsg.id, 'message id should exist');
 	});
 
 
@@ -181,6 +181,5 @@ describe('Mail > Bugs > Bug 48297', function () {
 			`<GetTaskRequest xmlns="urn:zimbraMail" id="${taskId}"/>`, authToken
 		);
 		assert.notExists(getTaskRes.Fault, 'GetTaskRequest should not fault');
-		assert.exists(getTaskRes.GetTaskResponse, 'GetTaskResponse should exist');
 	});
 });

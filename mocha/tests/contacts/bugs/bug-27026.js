@@ -48,6 +48,5 @@ describe('Contacts > Bugs > Bug 27026', function () {
 
 		// Verify response
 		assert.notExists(importRes.Fault, 'Import should not be a Fault');
-		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});
 });

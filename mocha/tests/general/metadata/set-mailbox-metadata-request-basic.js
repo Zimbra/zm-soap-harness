@@ -54,8 +54,6 @@ describe('General > Metadata > Set Mailbox Metadata Request Basic', function () 
 
 		// Verify response
 		assert.notExists(setRes.Fault, 'Response should not be a Fault');
-		assert.exists(setRes.SetMailboxMetadataResponse,
-			'SetMailboxMetadataResponse should exist');
 
 		// Get mailbox metadata
 		const getRes = await soap.makeSOAPEnvelopeAccount(
@@ -127,8 +125,6 @@ describe('General > Metadata > Set Mailbox Metadata Request Basic', function () 
 
 		// Verify response
 		assert.notExists(clearRes.Fault, 'Clear should not fault');
-		assert.exists(clearRes.SetMailboxMetadataResponse,
-			'SetMailboxMetadataResponse should exist');
 
 		// Get mailbox metadata
 		const getRes = await soap.makeSOAPEnvelopeAccount(
@@ -159,7 +155,7 @@ describe('General > Metadata > Set Mailbox Metadata Request Basic', function () 
 		);
 
 		// Verify response
-		assert.exists(setRes.Fault, 'Should return Fault for empty value');
+		assert.isString(setRes.Fault.Detail.Error.Code, 'Should return Fault for empty value');
 		assert.include(setRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Error code should be service.INVALID_REQUEST');
 	});

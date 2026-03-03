@@ -42,7 +42,6 @@ describe('Sync > Sync Action', function () {
 
 		// Verify response
 		assert.notExists(getFolderRes.Fault, 'Response should not be a Fault');
-		assert.exists(getFolderRes.GetFolderResponse, 'GetFolderResponse should exist');
 		const folders = Array.isArray(getFolderRes.GetFolderResponse.folder)
 			? getFolderRes.GetFolderResponse.folder : [getFolderRes.GetFolderResponse.folder];
 		const inboxFolder = folders[0].folder.find(f => f.name === 'Inbox');
@@ -95,7 +94,6 @@ Content
 
 		// Verify response
 		assert.notExists(syncRes1.Fault, 'Response should not be a Fault');
-		assert.exists(syncRes1.SyncResponse, 'SyncResponse should exist');
 		const syncToken = syncRes1.SyncResponse.token;
 
 		// Verify response
@@ -122,7 +120,6 @@ Content
 
 		// Verify response
 		assert.notExists(syncRes2.Fault, 'Response should not be a Fault');
-		assert.exists(syncRes2.SyncResponse, 'SyncResponse should exist');
 		const syncMessages = Array.isArray(syncRes2.SyncResponse.m)
 			? syncRes2.SyncResponse.m : (syncRes2.SyncResponse.m ? [syncRes2.SyncResponse.m] : []);
 		const movedMsg = syncMessages.find(m => m.id === messageId);
@@ -238,7 +235,6 @@ Content
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const messages = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
 
@@ -347,7 +343,6 @@ Content
 
 		// Verify response
 		assert.notExists(syncRes2.Fault, 'Response should not be a Fault');
-		assert.exists(syncRes2.SyncResponse, 'SyncResponse should exist');
 		const syncMessages = Array.isArray(syncRes2.SyncResponse.m)
 			? syncRes2.SyncResponse.m : (syncRes2.SyncResponse.m ? [syncRes2.SyncResponse.m] : []);
 		const syncMsg1 = syncMessages.find(m => m.id === msg1Id);

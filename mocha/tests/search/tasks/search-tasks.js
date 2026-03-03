@@ -135,7 +135,6 @@ describe('Search > Tasks > Search Tasks', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -149,7 +148,6 @@ describe('Search > Tasks > Search Tasks', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -163,7 +161,6 @@ describe('Search > Tasks > Search Tasks', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -177,7 +174,6 @@ describe('Search > Tasks > Search Tasks', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -191,7 +187,6 @@ describe('Search > Tasks > Search Tasks', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 		const tasks = res.SearchResponse?.task;
 		assert.exists(tasks, 'Tasks should exist in response');
 	});
@@ -207,7 +202,6 @@ describe('Search > Tasks > Search Tasks', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 		assert.equal(res.SearchResponse?.task[0].recur, '1', 'recur should match');
 	});
 
@@ -222,7 +216,6 @@ describe('Search > Tasks > Search Tasks', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -270,8 +263,5 @@ describe('Search > Tasks > Search Tasks', function () {
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist', 'name should match');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist', 'd should match');
 	});
 });

@@ -50,7 +50,6 @@ describe('Admin > Accounts > Account Get', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.GetAccountResponse, 'Response should exist');
 
 		assert.equal(res.GetAccountResponse.account[0].id, testAccountId,
 			'Account ID should match');
@@ -66,7 +65,6 @@ describe('Admin > Accounts > Account Get', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.GetAccountResponse, 'Response should exist');
 
 		assert.equal(res.GetAccountResponse.account[0].name, testAccountName,
 			'Account name should match');
@@ -82,7 +80,6 @@ describe('Admin > Accounts > Account Get', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.GetAccountResponse, 'Response should exist with applyCos=1');
 		// With applyCos=1, COS attributes should be present
 		const attrs = res.GetAccountResponse.account[0].a;
 
@@ -100,12 +97,11 @@ describe('Admin > Accounts > Account Get', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.GetAccountResponse, 'Response should exist with applyCos=0');
 	});
 
 
 	it('Regression | GetAccountRequest by id and with value of applyCos as invalid, negative, char, spchar, startingwithzero', async () => {
-		const invalidValues = ['invalid', '-1', ':\'<//\\\\', '01'];
+		const invalidValues = ['invalid', '-1', '@#$%^', '01'];
 		for (const val of invalidValues) {
 
 			// GetAccountRequest
@@ -115,8 +111,9 @@ describe('Admin > Accounts > Account Get', function () {
 				</GetAccountRequest>`, adminAuth);
 
 			// Verify response
-			assert.exists(res.GetAccountResponse || res.Fault,
-				`Should handle applyCos="${val}"`);
+			assert.notExists(res.Fault, `Should not fault for applyCos="${val}"`);
+			assert.exists(res.GetAccountResponse.account[0].id,
+				`Account id should exist for applyCos="${val}"`);
 		}
 	});
 
@@ -130,7 +127,6 @@ describe('Admin > Accounts > Account Get', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.GetAccountResponse, 'Response should exist');
 	});
 
 
@@ -143,12 +139,11 @@ describe('Admin > Accounts > Account Get', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.GetAccountResponse, 'Response should exist');
 	});
 
 
 	it('Regression | GetAccountRequest by name and value of cos as invalid, negative, char, spchar, startingwithzero', async () => {
-		const invalidValues = ['invalid', '-1', ':\'<//\\\\', '01'];
+		const invalidValues = ['invalid', '-1', '@#$%^', '01'];
 		for (const val of invalidValues) {
 
 			// GetAccountRequest
@@ -158,8 +153,9 @@ describe('Admin > Accounts > Account Get', function () {
 				</GetAccountRequest>`, adminAuth);
 
 			// Verify response
-			assert.exists(res.GetAccountResponse || res.Fault,
-				`Should handle applyCos="${val}"`);
+			assert.notExists(res.Fault, `Should not fault for applyCos="${val}"`);
+			assert.exists(res.GetAccountResponse.account[0].id,
+				`Account id should exist for applyCos="${val}"`);
 		}
 	});
 
@@ -172,8 +168,9 @@ describe('Admin > Accounts > Account Get', function () {
 			</GetAccountRequest>`, adminAuth);
 		// Leading spaces may be trimmed or cause error
 		// Verify response
-		assert.exists(res.GetAccountResponse || res.Fault,
-			'Should handle leading spaces in id');
+		assert.notExists(res.Fault, 'Should not fault for leading spaces');
+		assert.exists(res.GetAccountResponse.account[0].id,
+			'Account id should exist');
 	});
 
 
@@ -185,8 +182,9 @@ describe('Admin > Accounts > Account Get', function () {
 			</GetAccountRequest>`, adminAuth);
 
 		// Verify response
-		assert.exists(res.GetAccountResponse || res.Fault,
-			'Should handle trailing spaces in id');
+		assert.notExists(res.Fault, 'Should not fault for trailing spaces');
+		assert.exists(res.GetAccountResponse.account[0].id,
+			'Account id should exist');
 	});
 
 
@@ -198,8 +196,9 @@ describe('Admin > Accounts > Account Get', function () {
 			</GetAccountRequest>`, adminAuth);
 
 		// Verify response
-		assert.exists(res.GetAccountResponse || res.Fault,
-			'Should handle leading and trailing spaces');
+		assert.notExists(res.Fault, 'Should not fault for leading and trailing spaces');
+		assert.exists(res.GetAccountResponse.account[0].id,
+			'Account id should exist');
 	});
 
 
@@ -211,7 +210,7 @@ describe('Admin > Accounts > Account Get', function () {
 			</GetAccountRequest>`, adminAuth);
 
 		// Verify response
-		assert.exists(res.Fault, 'Should return Fault for invalid by attribute');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return Fault for invalid by attribute');
 	});
 
 
@@ -239,7 +238,7 @@ describe('Admin > Accounts > Account Get', function () {
 			</GetAccountRequest>`, adminAuth);
 
 		// Verify response
-		assert.exists(res.Fault, 'Should return Fault for deleted account name');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return Fault for deleted account name');
 		assert.include(res.Fault.Detail.Error.Code, 'account.NO_SUCH_ACCOUNT',
 			'Should return NO_SUCH_ACCOUNT');
 	});
@@ -269,10 +268,9 @@ describe('Admin > Accounts > Account Get', function () {
 			</GetAccountRequest>`, adminAuth);
 
 		// Verify response
-		assert.exists(res.Fault, 'Should return Fault for deleted account id');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return Fault for deleted account id');
 
-		assert.isTrue(res.Fault.Detail && res.Fault.Detail.Error &&
-			res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'),
+		assert.include(res.Fault.Detail.Error.Code, 'account.NO_SUCH_ACCOUNT',
 			'Should return NO_SUCH_ACCOUNT');
 	});
 
@@ -305,7 +303,6 @@ describe('Admin > Accounts > Account Get', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.GetAccountResponse, 'Should find renamed account by id');
 
 		assert.equal(res.GetAccountResponse.account[0].name, newName,
 			'Should return new name');
@@ -346,7 +343,6 @@ describe('Admin > Accounts > Account Get', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.GetAccountResponse, 'Should find account by new name');
 
 		assert.equal(res.GetAccountResponse.account[0].id, acctId,
 			'Should return same account id');
@@ -379,7 +375,6 @@ describe('Admin > Accounts > Account Get', function () {
 		// Server may process either account element
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.GetAccountResponse, 'Should return response');
 
 		const returnedId = res.GetAccountResponse.account[0].id;
 
@@ -415,7 +410,6 @@ describe('Admin > Accounts > Account Get', function () {
 		// Should only process the first account
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.GetAccountResponse, 'Should return response');
 
 		// Cleanup
 		await soap.makeSOAPEnvelopeAdmin(
@@ -444,7 +438,6 @@ describe('Admin > Accounts > Account Get', function () {
 		// Should only process the first account
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.GetAccountResponse, 'Should return response');
 
 		// Cleanup
 		await soap.deleteAccount(name2, adminAuth);

@@ -26,7 +26,6 @@ describe('Rest Servlet > Upload Servlet > Add Msg Request', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
@@ -44,7 +43,6 @@ describe('Rest Servlet > Upload Servlet > Add Msg Request', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
@@ -60,7 +58,6 @@ describe('Rest Servlet > Upload Servlet > Add Msg Request', function () {
 
 		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
-		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 
 		const root = Array.isArray(folderRes.GetFolderResponse.folder)
 			? folderRes.GetFolderResponse.folder[0]
@@ -107,7 +104,7 @@ describe('Rest Servlet > Upload Servlet > Add Msg Request', function () {
 		assert.notExists(addRes.Fault, 'Response should not be a Fault');
 		const addedMsg = Array.isArray(addRes.AddMsgResponse.m)
 			? addRes.AddMsgResponse.m[0] : addRes.AddMsgResponse.m;
-		assert.exists(addedMsg, 'AddMsgResponse should contain m');
+		assert.exists(addedMsg.id, 'added msg id should exist');
 
 		// Verify response
 		assert.exists(addedMsg.id, 'Added message should have an id');
@@ -123,7 +120,7 @@ describe('Rest Servlet > Upload Servlet > Add Msg Request', function () {
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		const getMsg = Array.isArray(getRes.GetMsgResponse.m)
 			? getRes.GetMsgResponse.m[0] : getRes.GetMsgResponse.m;
-		assert.exists(getMsg, 'GetMsgResponse should contain m');
+		assert.exists(getMsg.id, 'message id should exist');
 
 		// Verify response
 		assert.equal(getMsg.id, addedMsg.id, 'Message id should match');

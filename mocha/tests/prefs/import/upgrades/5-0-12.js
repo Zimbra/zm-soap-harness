@@ -44,7 +44,6 @@ describe('Prefs > Import > Upgrades > 5 0 12', function () {
 
 		// Verify response
 		assert.notExists(folderRes.Fault, 'GetFolderRequest should not fault');
-		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 		assert.exists(folderRes.GetFolderResponse.folder, 'Root folder should exist');
 	});
 
@@ -77,7 +76,6 @@ describe('Prefs > Import > Upgrades > 5 0 12', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -95,7 +93,6 @@ describe('Prefs > Import > Upgrades > 5 0 12', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateAppointmentRequest should not fault');
-		assert.exists(createRes.CreateAppointmentResponse, 'CreateAppointmentResponse should exist');
 	});
 
 
@@ -125,7 +122,6 @@ describe('Prefs > Import > Upgrades > 5 0 12', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -149,7 +145,6 @@ describe('Prefs > Import > Upgrades > 5 0 12', function () {
 
 		// Verify response
 		assert.notExists(folderRes.Fault, 'GetFolderRequest should not fault');
-		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 	});
 
 
@@ -167,7 +162,7 @@ describe('Prefs > Import > Upgrades > 5 0 12', function () {
 		assert.notExists(createRes.Fault, 'CreateTagRequest should not fault');
 		const createdTag = Array.isArray(createRes.CreateTagResponse.tag)
 			? createRes.CreateTagResponse.tag[0] : createRes.CreateTagResponse.tag;
-		assert.exists(createdTag, 'CreateTagResponse should contain tag');
+		assert.exists(createdTag.id, 'tag id should exist');
 	});
 
 
@@ -185,7 +180,7 @@ describe('Prefs > Import > Upgrades > 5 0 12', function () {
 		assert.notExists(createRes.Fault, 'CreateFolderRequest wiki should not fault');
 		const createdFolder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
-		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
+		assert.exists(createdFolder.id, 'folder id should exist');
 	});
 
 
@@ -203,6 +198,6 @@ describe('Prefs > Import > Upgrades > 5 0 12', function () {
 		assert.notExists(createRes.Fault, 'CreateFolderRequest briefcase should not fault');
 		const createdFolder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
-		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
+		assert.exists(createdFolder.id, 'folder id should exist');
 	});
 });

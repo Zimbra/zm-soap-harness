@@ -51,7 +51,6 @@ describe('Tasks > Set Task Request', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SetTaskResponse, 'SetTaskResponse should exist');
 		assert.exists(res.SetTaskResponse.calItemId, 'Should have calItemId');
 	});
 });

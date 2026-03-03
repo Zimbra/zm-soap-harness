@@ -156,7 +156,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Domain', function () {
 		const accessCheck = await soap.makeSOAPEnvelopeAccount(getMsgRequest, auth2);
 
 		// Verify response
-		assert.notExists(accessCheck.Fault,
+		assert.exists(accessCheck.GetMsgResponse.m,
 			'Domain user should have access before revoke');
 
 		// Revoke the grant
@@ -176,7 +176,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Domain', function () {
 		const revokedCheck = await soap.makeSOAPEnvelopeAccount(getMsgRequest2, auth2);
 
 		// Verify response
-		assert.exists(revokedCheck.Fault, 'Domain user should be denied after revoke');
+		assert.exists(revokedCheck.Fault.Detail.Error, 'Fault Error should exist - Domain user should be denied after revoke');
 	});
 
 });

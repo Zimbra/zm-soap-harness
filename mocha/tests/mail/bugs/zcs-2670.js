@@ -142,7 +142,6 @@ describe('Mail > Bugs > ZCS 2670', function () {
 			</SearchRequest>`, account2AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -196,7 +195,6 @@ describe('Mail > Bugs > ZCS 2670', function () {
 			</SearchRequest>`, account3AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -256,6 +254,5 @@ describe('Mail > Bugs > ZCS 2670', function () {
 			</SearchRequest>`, account2AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 });

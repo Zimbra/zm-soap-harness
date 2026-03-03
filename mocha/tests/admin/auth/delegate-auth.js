@@ -37,7 +37,6 @@ describe('Admin > Auth > Delegate Auth', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
-		assert.exists(createRes.CreateAccountResponse, 'CreateAccountResponse should exist');
 
 		// Delegate auth for the created account
 		const delegateRes = await soap.makeSOAPEnvelopeAdmin(
@@ -48,7 +47,6 @@ describe('Admin > Auth > Delegate Auth', function () {
 
 		// Verify delegate auth token is returned
 		assert.notExists(delegateRes.Fault, 'DelegateAuthRequest should not fault');
-		assert.exists(delegateRes.DelegateAuthResponse, 'DelegateAuthResponse should exist');
 		assert.exists(delegateRes.DelegateAuthResponse.authToken, 'authToken should exist');
 	});
 });

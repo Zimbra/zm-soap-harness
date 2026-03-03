@@ -57,7 +57,6 @@ describe('Contacts > Contact Modify Replacemode', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
@@ -73,7 +72,9 @@ describe('Contacts > Contact Modify Replacemode', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
-		assert.exists(modRes.ModifyContactResponse.cn, 'Modified contact should exist');
+		const modCn = Array.isArray(modRes.ModifyContactResponse.cn)
+			? modRes.ModifyContactResponse.cn[0] : modRes.ModifyContactResponse.cn;
+		assert.exists(modCn.id, 'Modified contact id should exist');
 	});
 
 
@@ -98,7 +99,6 @@ describe('Contacts > Contact Modify Replacemode', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
@@ -116,7 +116,6 @@ describe('Contacts > Contact Modify Replacemode', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
-		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});
 
 
@@ -141,7 +140,6 @@ describe('Contacts > Contact Modify Replacemode', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
@@ -159,7 +157,6 @@ describe('Contacts > Contact Modify Replacemode', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
-		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});
 
 
@@ -182,7 +179,6 @@ describe('Contacts > Contact Modify Replacemode', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
@@ -196,8 +192,8 @@ describe('Contacts > Contact Modify Replacemode', function () {
 		);
 
 		// Verify response
-		assert.exists(mod1.Fault, 'Empty userCertificate op=+ should be a Fault');
-		const code1 = mod1.Fault?.Detail?.Error?.Code || '';
+		assert.isString(mod1.Fault.Detail.Error.Code, 'Empty userCertificate op=+ should be a Fault');
+		const code1 = mod1.Fault.Detail.Error.Code;
 		assert.include(code1, 'service.INVALID_REQUEST', 'Error should be INVALID_REQUEST');
 
 		// Modify the contact
@@ -210,8 +206,8 @@ describe('Contacts > Contact Modify Replacemode', function () {
 		);
 
 		// Verify response
-		assert.exists(mod2.Fault, 'Empty userSMIMECertificate op=+ should be a Fault');
-		const code2 = mod2.Fault?.Detail?.Error?.Code || '';
+		assert.isString(mod2.Fault.Detail.Error.Code, 'Empty userSMIMECertificate op=+ should be a Fault');
+		const code2 = mod2.Fault.Detail.Error.Code;
 		assert.include(code2, 'service.INVALID_REQUEST', 'Error should be INVALID_REQUEST');
 	});
 
@@ -237,7 +233,6 @@ describe('Contacts > Contact Modify Replacemode', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
@@ -253,6 +248,8 @@ describe('Contacts > Contact Modify Replacemode', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
-		assert.exists(modRes.ModifyContactResponse.cn, 'Modified contact should exist');
+		const modCn = Array.isArray(modRes.ModifyContactResponse.cn)
+			? modRes.ModifyContactResponse.cn[0] : modRes.ModifyContactResponse.cn;
+		assert.exists(modCn.id, 'Modified contact id should exist');
 	});
 });

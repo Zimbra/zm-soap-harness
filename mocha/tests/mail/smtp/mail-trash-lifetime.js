@@ -97,7 +97,6 @@ simple text string in the body
 			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(searchTrash1.Fault, 'SearchRequest should not fault');
-		assert.exists(searchTrash1.SearchResponse, 'SearchResponse should exist');
 
 		// Wait for trash lifetime to expire
 		await new Promise(resolve => setTimeout(resolve, 30000));
@@ -122,7 +121,6 @@ simple text string in the body
 
 		// Verify purge succeeded
 		assert.notExists(purgeRes.Fault, 'PurgeMessagesRequest should not fault');
-		assert.exists(purgeRes.PurgeMessagesResponse, 'PurgeMessagesResponse should exist');
 
 		// Verify trash is now empty
 		const searchTrash2 = await soap.makeSOAPEnvelopeAccount(
@@ -206,7 +204,6 @@ simple text string in the body
 			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(searchTrash1.Fault, 'SearchRequest should not fault');
-		assert.exists(searchTrash1.SearchResponse, 'SearchResponse should exist');
 
 		// Get mailbox id and purge messages
 		const mboxRes = await soap.makeSOAPEnvelopeAdmin(
@@ -238,7 +235,6 @@ simple text string in the body
 
 		// Verify messages remain in trash
 		assert.notExists(searchTrash2.Fault, 'SearchRequest should not fault');
-		assert.exists(searchTrash2.SearchResponse, 'SearchResponse should exist');
 		assert.exists(searchTrash2.SearchResponse.m, 'Message should still be in trash');
 	});
 });

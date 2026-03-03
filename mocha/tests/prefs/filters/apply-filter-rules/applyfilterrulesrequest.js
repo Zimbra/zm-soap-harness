@@ -104,6 +104,6 @@ describe('Prefs > Filters > Apply Filter Rules > Applyfilterrulesrequest', funct
 		);
 
 		// Verify response
-		assert.exists(applyRes.Fault, 'Apply non-existent filter should fault');
+		assert.isString(applyRes.Fault.Detail.Error.Code, 'Apply non-existent filter should fault');
 	});
 });

@@ -89,7 +89,9 @@ describe('Calendar > Appointments > Create Appointment Request Reminder', functi
 			</SearchRequest>`, accountToken
         );
         assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-        assert.exists(searchRes.SearchResponse.appt, 'Appointment should exist');
+        const appts = Array.isArray(searchRes.SearchResponse.appt)
+            ? searchRes.SearchResponse.appt : [searchRes.SearchResponse.appt];
+        assert.exists(appts[0].name, 'Appointment name should exist');
     });
 
 

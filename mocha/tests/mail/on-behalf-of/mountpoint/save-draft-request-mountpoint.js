@@ -156,7 +156,7 @@ ${content}
 		assert.notExists(draftRes.Fault, 'SaveDraftRequest should not fault');
 		const draftMsg = Array.isArray(draftRes.SaveDraftResponse.m)
 			? draftRes.SaveDraftResponse.m[0] : draftRes.SaveDraftResponse.m;
-		assert.exists(draftMsg, 'SaveDraftResponse should contain m');
+		assert.exists(draftMsg.id, 'draft msg id should exist');
 		assert.exists(draftRes.SaveDraftResponse.m, 'Draft message should exist');
 	});
 
@@ -288,7 +288,7 @@ ${content}
 		assert.notExists(draftRes.Fault, 'SaveDraftRequest should not fault');
 		const draftMsg = Array.isArray(draftRes.SaveDraftResponse.m)
 			? draftRes.SaveDraftResponse.m[0] : draftRes.SaveDraftResponse.m;
-		assert.exists(draftMsg, 'SaveDraftResponse should contain m');
+		assert.exists(draftMsg.id, 'draft msg id should exist');
 		assert.exists(draftRes.SaveDraftResponse.m, 'Draft message should exist');
 	});
 });

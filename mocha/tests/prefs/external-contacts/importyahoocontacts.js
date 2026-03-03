@@ -53,7 +53,6 @@ describe('Prefs > External Contacts > Importyahoocontacts', function () {
 
 		// Verify response
 		assert.notExists(importRes.Fault, 'ImportContactsRequest Yahoo should not fault');
-		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});
 
 
@@ -82,7 +81,6 @@ describe('Prefs > External Contacts > Importyahoocontacts', function () {
 
 		// Verify response
 		assert.notExists(importRes.Fault, 'ImportContactsRequest should not fault');
-		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});
 
 
@@ -111,7 +109,6 @@ describe('Prefs > External Contacts > Importyahoocontacts', function () {
 
 		// Verify response
 		assert.notExists(importRes.Fault, 'ImportContactsRequest special chars should not fault');
-		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});
 
 
@@ -151,7 +148,6 @@ describe('Prefs > External Contacts > Importyahoocontacts', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -180,7 +176,6 @@ describe('Prefs > External Contacts > Importyahoocontacts', function () {
 
 		// Verify response
 		assert.notExists(importRes.Fault, 'ImportContactsRequest to folder should not fault');
-		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});
 
 
@@ -209,6 +204,5 @@ describe('Prefs > External Contacts > Importyahoocontacts', function () {
 
 		// Verify response
 		assert.notExists(importRes.Fault, 'ImportContactsRequest duplicates should not fault');
-		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});
 });

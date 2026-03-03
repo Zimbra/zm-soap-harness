@@ -105,56 +105,56 @@ describe('Calendar > Appointments > Appointment Get', function () {
             '<GetAppointmentRequest xmlns="urn:zimbraMail" id=""/>',
             accountToken
         );
-        assert.exists(res1.Fault, 'Blank id should fault');
+        assert.isString(res1.Fault.Detail.Error.Code, 'Blank id should fault');
 
         // Test with space id
         const res2 = await soap.makeSOAPEnvelopeAccount(
             '<GetAppointmentRequest xmlns="urn:zimbraMail" id="            "/>',
             accountToken
         );
-        assert.exists(res2.Fault, 'Space id should fault');
+        assert.isString(res2.Fault.Detail.Error.Code, 'Space id should fault');
 
         // Test with sometext id
         const res3 = await soap.makeSOAPEnvelopeAccount(
             '<GetAppointmentRequest xmlns="urn:zimbraMail" id="some text"/>',
             accountToken
         );
-        assert.exists(res3.Fault, 'Sometext id should fault');
+        assert.isString(res3.Fault.Detail.Error.Code, 'Sometext id should fault');
 
         // Test with negative id
         const res4 = await soap.makeSOAPEnvelopeAccount(
             '<GetAppointmentRequest xmlns="urn:zimbraMail" id="-1"/>',
             accountToken
         );
-        assert.exists(res4.Fault, 'Negative id should fault');
+        assert.isString(res4.Fault.Detail.Error.Code, 'Negative id should fault');
 
         // Test with zero id
         const res5 = await soap.makeSOAPEnvelopeAccount(
             '<GetAppointmentRequest xmlns="urn:zimbraMail" id="0"/>',
             accountToken
         );
-        assert.exists(res5.Fault, 'Zero id should fault');
+        assert.isString(res5.Fault.Detail.Error.Code, 'Zero id should fault');
 
         // Test with large number id
         const res6 = await soap.makeSOAPEnvelopeAccount(
             '<GetAppointmentRequest xmlns="urn:zimbraMail" id="1234567890"/>',
             accountToken
         );
-        assert.exists(res6.Fault, 'Large number id should fault');
+        assert.isString(res6.Fault.Detail.Error.Code, 'Large number id should fault');
 
         // Test with decimal id
         const res7 = await soap.makeSOAPEnvelopeAccount(
             '<GetAppointmentRequest xmlns="urn:zimbraMail" id="12.34"/>',
             accountToken
         );
-        assert.exists(res7.Fault, 'Decimal id should fault');
+        assert.isString(res7.Fault.Detail.Error.Code, 'Decimal id should fault');
 
         // Test without id attribute
         const res8 = await soap.makeSOAPEnvelopeAccount(
             '<GetAppointmentRequest xmlns="urn:zimbraMail"/>',
             accountToken
         );
-        assert.exists(res8.Fault, 'Missing id should fault');
+        assert.isString(res8.Fault.Detail.Error.Code, 'Missing id should fault');
     });
 
 

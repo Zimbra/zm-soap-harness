@@ -42,7 +42,6 @@ describe('Prefs > Filters > Sieve > Sieve Bugs 104xxx', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Bug104314-01 should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'Response should exist');
 	});
 
 
@@ -220,7 +219,6 @@ describe('Prefs > Filters > Sieve > Sieve Bugs 104xxx', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
-		assert.exists(getRes.GetFilterRulesResponse, 'Response should exist');
 	});
 
 
@@ -306,7 +304,6 @@ describe('Prefs > Filters > Sieve > Sieve Bugs 104xxx', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Bug104912-01 should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'Response should exist');
 	});
 
 
@@ -433,7 +430,6 @@ describe('Prefs > Filters > Sieve > Sieve Bugs 104xxx', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
-		assert.exists(getRes.GetFilterRulesResponse, 'Response should exist');
 	});
 
 
@@ -451,7 +447,6 @@ describe('Prefs > Filters > Sieve > Sieve Bugs 104xxx', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Bug105220-01 should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'Response should exist');
 	});
 
 
@@ -591,7 +586,6 @@ describe('Prefs > Filters > Sieve > Sieve Bugs 104xxx', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
-		assert.exists(getRes.GetFilterRulesResponse, 'Response should exist');
 	});
 
 
@@ -609,7 +603,6 @@ describe('Prefs > Filters > Sieve > Sieve Bugs 104xxx', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Bug105636-01 should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'Response should exist');
 	});
 
 

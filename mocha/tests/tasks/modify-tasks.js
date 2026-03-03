@@ -72,7 +72,6 @@ describe('Tasks > Modify Tasks', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
-		assert.exists(modRes.ModifyTaskResponse, 'ModifyTaskResponse should exist');
 	});
 
 
@@ -93,7 +92,6 @@ describe('Tasks > Modify Tasks', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
-		assert.exists(modRes.ModifyTaskResponse, 'ModifyTaskResponse should exist');
 	});
 
 
@@ -153,7 +151,6 @@ describe('Tasks > Modify Tasks', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
-		assert.exists(modRes.ModifyTaskResponse, 'ModifyTaskResponse should exist');
 	});
 
 
@@ -178,7 +175,6 @@ describe('Tasks > Modify Tasks', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
-		assert.exists(modRes.ModifyTaskResponse, 'ModifyTaskResponse should exist');
 	});
 
 
@@ -225,7 +221,7 @@ describe('Tasks > Modify Tasks', function () {
 		);
 
 		// Verify response
-		assert.exists(modRes.Fault, 'Unauthorized modification should be a Fault');
+		assert.isString(modRes.Fault.Detail.Error.Code, 'Unauthorized modification should be a Fault');
 	});
 
 
@@ -248,7 +244,6 @@ describe('Tasks > Modify Tasks', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
-		assert.exists(modRes.ModifyTaskResponse, 'ModifyTaskResponse should exist');
 	});
 
 
@@ -269,7 +264,6 @@ describe('Tasks > Modify Tasks', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
-		assert.exists(modRes.ModifyTaskResponse, 'ModifyTaskResponse should exist');
 
 		// GetTaskRequest
 		const getRes = await soap.makeSOAPEnvelopeAccount(

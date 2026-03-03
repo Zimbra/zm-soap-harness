@@ -146,7 +146,7 @@ describe('Calendar > Appointments > Appointment Create', function () {
         const r = await createAppt(acct1.token, acct1.email, s, {
             start: 'aaaa', end: 'bbbb', attendees: [acct2.email]
         });
-        assert.exists(r.Fault, 'Should fault with invalid time');
+        assert.isString(r.Fault.Detail.Error.Code, 'Should fault with invalid time');
     });
 
     it('Smoke | Create appointment inviting multiple people', async () => {

@@ -219,7 +219,6 @@ describe('EWS > Calendar > Recurring Appointment > ZCS 17704 > Recurring Appoint
 			account1Email, accountPassword
 		);
 		const deleteBody = ews.getBody(deleteRes);
-		assert.exists(deleteBody.DeleteItemResponse, 'DeleteItemResponse should exist');
 		// Server may return DeleteItemResponseMessage or GetItemResponseMessage for occurrence deletions
 		const deleteMsg = deleteBody.DeleteItemResponse
 			.ResponseMessages.DeleteItemResponseMessage

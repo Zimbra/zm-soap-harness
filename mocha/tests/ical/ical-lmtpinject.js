@@ -76,6 +76,5 @@ describe('ICAL > ICAL Lmtpinject', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
 });

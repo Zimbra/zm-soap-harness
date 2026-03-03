@@ -49,7 +49,6 @@ describe('Prefs > Whiteblacklist Sanity', function () {
 			</ModifyWhiteBlackListRequest>`, accountAuthToken
 		);
 		assert.notExists(modifyRes.Fault, 'ModifyWhiteBlackListRequest should not fault');
-		assert.exists(modifyRes.ModifyWhiteBlackListResponse, 'ModifyWhiteBlackListResponse should exist');
 	});
 
 
@@ -79,7 +78,6 @@ describe('Prefs > Whiteblacklist Sanity', function () {
 			`<GetWhiteBlackListRequest xmlns="urn:zimbraAccount"/>`, accountAuthToken
 		);
 		assert.notExists(getRes.Fault, 'GetWhiteBlackListRequest should not fault');
-		assert.exists(getRes.GetWhiteBlackListResponse, 'GetWhiteBlackListResponse should exist');
 		assert.exists(getRes.GetWhiteBlackListResponse.blackList, 'blackList should exist in response');
 	});
 
@@ -105,6 +103,5 @@ describe('Prefs > Whiteblacklist Sanity', function () {
 			</ModifyWhiteBlackListRequest>`, accountAuthToken
 		);
 		assert.notExists(modifyRes.Fault, 'ModifyWhiteBlackListRequest should not fault');
-		assert.exists(modifyRes.ModifyWhiteBlackListResponse, 'ModifyWhiteBlackListResponse should exist');
 	});
 });

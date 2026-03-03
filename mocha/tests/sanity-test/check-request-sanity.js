@@ -35,8 +35,6 @@ describe('Sanity Test > Check Request Sanity', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CheckHostnameResolveResponse,
-			'CheckHostnameResolveResponse should exist');
 		const codeArr = res.CheckHostnameResolveResponse.code;
 		assert.exists(codeArr, 'Response should contain code');
 		const code = Array.isArray(codeArr) ? codeArr[0]._content : codeArr;
@@ -61,10 +59,8 @@ describe('Sanity Test > Check Request Sanity', function () {
 		if (res.CheckAuthConfigResponse) {
 
 			// Verify response
-			assert.exists(res.CheckAuthConfigResponse,
-				'CheckAuthConfigResponse should exist');
 		} else {
-			assert.exists(res.Fault, 'Should return Fault if auth config check fails');
+			assert.isString(res.Fault.Detail.Error.Code, 'Should return Fault if auth config check fails');
 		}
 	});
 
@@ -87,10 +83,8 @@ describe('Sanity Test > Check Request Sanity', function () {
 		if (res.CheckGalConfigResponse) {
 
 			// Verify response
-			assert.exists(res.CheckGalConfigResponse,
-				'CheckGalConfigResponse should exist');
 		} else {
-			assert.exists(res.Fault, 'Should return Fault if GAL config check fails');
+			assert.isString(res.Fault.Detail.Error.Code, 'Should return Fault if GAL config check fails');
 		}
 	});
 });

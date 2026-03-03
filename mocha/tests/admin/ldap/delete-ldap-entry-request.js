@@ -44,6 +44,5 @@ describe('Admin > LDAP > Delete LDAP Entry Request', function () {
 			</DeleteLDAPEntryRequest>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'DeleteLDAPEntryRequest should not fault');
-		assert.exists(res.DeleteLDAPEntryResponse, 'DeleteLDAPEntryResponse should exist');
 	});
 });

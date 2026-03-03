@@ -137,7 +137,6 @@ describe('EWS > Delete Mail From Zwc', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const messages = searchRes.SearchResponse?.m
 			|| searchRes.SearchResponse?.c;
 		const msgArr = Array.isArray(messages) ? messages : messages
@@ -323,7 +322,6 @@ describe('EWS > Delete Mail From Zwc', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const messages = searchRes.SearchResponse?.m
 			|| searchRes.SearchResponse?.c;
 		const msgArr = Array.isArray(messages)
@@ -463,7 +461,6 @@ describe('EWS > Delete Mail From Zwc', function () {
 		// Verify response
 		assert.notExists(searchDumpsterRes.Fault,
 			'SearchRequest should not be a Fault');
-		assert.exists(searchDumpsterRes.SearchResponse, 'SearchResponse should exist');
 		const dumpsterSu = searchDumpsterRes.SearchResponse?.m?.su
 			|| (Array.isArray(searchDumpsterRes.SearchResponse?.m)
 				? searchDumpsterRes.SearchResponse.m[0]?.su : undefined);

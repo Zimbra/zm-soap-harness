@@ -31,7 +31,6 @@ describe('Auth > Forget Password > Reset Password ZCS 4802', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse, 'Should create account1');
 
 		Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
@@ -64,7 +63,6 @@ describe('Auth > Forget Password > Reset Password ZCS 4802', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
@@ -85,8 +83,6 @@ describe('Auth > Forget Password > Reset Password ZCS 4802', function () {
 
 		// Verify response
 		assert.notExists(resetRes.Fault, 'Response should not be a Fault');
-		assert.exists(resetRes.ResetPasswordResponse,
-			'ResetPasswordResponse should exist');
 
 		// Login with new password - should pass
 		// Send the message
@@ -99,8 +95,6 @@ describe('Auth > Forget Password > Reset Password ZCS 4802', function () {
 
 		// Verify response
 		assert.notExists(authResNew.Fault, 'Response should not be a Fault');
-		assert.exists(authResNew.AuthResponse,
-			'AuthResponse with new password should exist');
 		assert.exists(authResNew.AuthResponse.authToken, 'authToken should exist');
 
 		// Login with old password - should fail
@@ -113,7 +107,7 @@ describe('Auth > Forget Password > Reset Password ZCS 4802', function () {
 		);
 
 		// Verify response
-		assert.exists(authResOld.Fault, 'Should return Fault for old password');
+		assert.isString(authResOld.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.match(authResOld.Fault.Detail.Error.Code, /^account.AUTH_FAILED/,
 			'Should return AUTH_FAILED');
 	});
@@ -131,7 +125,6 @@ describe('Auth > Forget Password > Reset Password ZCS 4802', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
@@ -148,7 +141,7 @@ describe('Auth > Forget Password > Reset Password ZCS 4802', function () {
 		);
 
 		// Verify response
-		assert.exists(resetRes.Fault, 'Should return Fault for short password');
+		assert.isString(resetRes.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.match(resetRes.Fault.Detail.Error.Code, /account.INVALID_PASSWORD/,
 			'Should return INVALID_PASSWORD');
 		assert.match(resetRes.Fault.Reason.Text, /too short/,
@@ -168,7 +161,6 @@ describe('Auth > Forget Password > Reset Password ZCS 4802', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
@@ -185,7 +177,6 @@ describe('Auth > Forget Password > Reset Password ZCS 4802', function () {
 		);
 
 		// Verify response
-		assert.exists(resetRes.Fault, 'Should return Fault for empty password');
-		assert.exists(resetRes.Fault.Detail.Error.Code, 'Error code should exist');
+		assert.isString(resetRes.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 	});
 });

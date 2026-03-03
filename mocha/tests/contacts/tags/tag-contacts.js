@@ -77,7 +77,6 @@ describe('Contacts > Tags > Tag Contacts', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -118,7 +117,7 @@ describe('Contacts > Tags > Tag Contacts', function () {
 		);
 
 		// Verify response
-		assert.exists(actionRes.Fault, 'Tag deleted contact should be a Fault');
+		assert.isString(actionRes.Fault.Detail.Error.Code, 'Tag deleted contact should be a Fault');
 	});
 
 
@@ -146,7 +145,7 @@ describe('Contacts > Tags > Tag Contacts', function () {
 			);
 
 			// Verify response
-			assert.exists(res.Fault, `tag="${tagVal}" should be a Fault`);
+			assert.isString(res.Fault.Detail.Error.Code, `tag="${tagVal}" should be a Fault`);
 		}
 	});
 
@@ -216,7 +215,7 @@ describe('Contacts > Tags > Tag Contacts', function () {
 			);
 
 			// Verify response
-			assert.exists(res.Fault, `id="${id}" should be a Fault`);
+			assert.isString(res.Fault.Detail.Error.Code, `id="${id}" should be a Fault`);
 		}
 	});
 
@@ -258,6 +257,6 @@ describe('Contacts > Tags > Tag Contacts', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Tag with multiple tags should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Tag with multiple tags should be a Fault');
 	});
 });

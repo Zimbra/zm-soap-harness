@@ -46,8 +46,6 @@ describe('General > Get Available Locales Request', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.GetAvailableLocalesResponse,
-			'GetAvailableLocalesResponse should exist');
 		const locales = Array.isArray(res.GetAvailableLocalesResponse.locale)
 			? res.GetAvailableLocalesResponse.locale
 			: [res.GetAvailableLocalesResponse.locale];

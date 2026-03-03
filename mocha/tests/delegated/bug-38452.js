@@ -89,22 +89,16 @@ describe('Delegated > Bug 38452', function () {
 		assert.notExists(res.Fault, 'AuthRequest should not fault');
 		const delegatedAuthToken = res.AuthResponse.authToken;
 
-		// GetConfigRequest - delegated admin may get pd=1 or restricted
+		// GetConfigRequest - delegated admin lacks permission for GetConfigRequest
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<GetConfigRequest xmlns="urn:zimbraAdmin">
 				<a n="zimbraLmtpBindPort"/>
 			</GetConfigRequest>`, delegatedAuthToken, false
 		);
-		if (res.GetConfigResponse) {
-			const configAttrs = res.GetConfigResponse.a;
-			const configPd = Array.isArray(configAttrs)
-				? configAttrs.find(a => a.pd) : configAttrs;
-
-			// Verify response
-			assert.exists(configPd, 'GetConfigResponse should have pd attribute');
-		} else {
-			assert.exists(res.Fault, 'Should return Fault if GetConfig is restricted');
-		}
+		assert.exists(res.Fault, 'GetConfigRequest should fault for delegated admin');
+		assert.isString(res.Fault.Detail.Error.Code, 'Fault error Code should be a string');
+		assert.include(res.Fault.Detail.Error.Code, 'service.PERM_DENIED',
+			'Delegated admin should get PERM_DENIED for GetConfigRequest');
 
 		// GetCosRequest - should return pd=1
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -112,11 +106,7 @@ describe('Delegated > Bug 38452', function () {
 				<cos by="name">default</cos>
 			</GetCosRequest>`, delegatedAuthToken, false
 		);
-		if (res.GetCosResponse) {
-			assert.exists(res.GetCosResponse, 'GetCosResponse should exist');
-		} else {
-			assert.exists(res.Fault, 'Should return Fault if GetCos is restricted');
-		}
+		assert.notExists(res.Fault, 'GetCosRequest should not fault');
 
 		// GetDomainRequest - may succeed or be restricted for delegated admin
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -124,13 +114,7 @@ describe('Delegated > Bug 38452', function () {
 				<domain by="name">${testDomain}</domain>
 			</GetDomainRequest>`, delegatedAuthToken, false
 		);
-		if (res.GetDomainResponse) {
-
-			// Verify response
-			assert.exists(res.GetDomainResponse, 'GetDomainResponse should exist');
-		} else {
-			assert.exists(res.Fault, 'Should return Fault if restricted');
-		}
+		assert.notExists(res.Fault, 'GetDomainRequest should not fault');
 
 		// GetServerRequest - may succeed or be restricted for delegated admin
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -138,13 +122,7 @@ describe('Delegated > Bug 38452', function () {
 				<server by="name">${testDomain}</server>
 			</GetServerRequest>`, delegatedAuthToken, false
 		);
-		if (res.GetServerResponse) {
-
-			// Verify response
-			assert.exists(res.GetServerResponse, 'GetServerResponse should exist');
-		} else {
-			assert.exists(res.Fault, 'Should return Fault if restricted');
-		}
+		assert.notExists(res.Fault, 'GetServerRequest should not fault');
 
 		// GetAccountRequest - may succeed or be restricted
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -152,13 +130,7 @@ describe('Delegated > Bug 38452', function () {
 				<account by="id">${granteeId}</account>
 			</GetAccountRequest>`, delegatedAuthToken, false
 		);
-		if (res.GetAccountResponse) {
-
-			// Verify response
-			assert.exists(res.GetAccountResponse, 'GetAccountResponse should exist');
-		} else {
-			assert.exists(res.Fault, 'Should return Fault if restricted');
-		}
+		assert.notExists(res.Fault, 'GetAccountRequest should not fault');
 
 		// GetCalendarResourceRequest - may succeed or be restricted
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -166,14 +138,7 @@ describe('Delegated > Bug 38452', function () {
 				<calresource by="id">${equipmentId}</calresource>
 			</GetCalendarResourceRequest>`, delegatedAuthToken, false
 		);
-		if (res.GetCalendarResourceResponse) {
-
-			// Verify response
-			assert.exists(res.GetCalendarResourceResponse,
-				'GetCalendarResourceResponse should exist');
-		} else {
-			assert.exists(res.Fault, 'Should return Fault if restricted');
-		}
+		assert.notExists(res.Fault, 'GetCalendarResourceRequest should not fault');
 
 		// GetZimletRequest - may succeed or be restricted for delegated admin
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -181,12 +146,6 @@ describe('Delegated > Bug 38452', function () {
 				<zimlet name="com_zimbra_date"/>
 			</GetZimletRequest>`, delegatedAuthToken, false
 		);
-		if (res.GetZimletResponse) {
-
-			// Verify response
-			assert.exists(res.GetZimletResponse, 'GetZimletResponse should exist');
-		} else {
-			assert.exists(res.Fault, 'Should return Fault if restricted');
-		}
+		assert.notExists(res.Fault, 'GetZimletRequest should not fault');
 	});
 });

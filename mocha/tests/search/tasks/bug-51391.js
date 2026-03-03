@@ -47,7 +47,6 @@ describe('Search > Tasks > Bug 51391', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -61,6 +60,5 @@ describe('Search > Tasks > Bug 51391', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
 });

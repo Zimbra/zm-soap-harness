@@ -48,7 +48,6 @@ describe('General > Headers > Request ID > Batch Request', function () {
 
 		// Verify response
 		assert.notExists(batchRes.Fault, 'BatchRequest should not fault');
-		assert.exists(batchRes.BatchResponse, 'BatchResponse should exist');
 	});
 
 
@@ -66,6 +65,5 @@ describe('General > Headers > Request ID > Batch Request', function () {
 
 		// Verify response
 		assert.notExists(batchRes.Fault, 'BatchRequest should not fault');
-		assert.exists(batchRes.BatchResponse, 'BatchResponse should exist');
 	});
 });

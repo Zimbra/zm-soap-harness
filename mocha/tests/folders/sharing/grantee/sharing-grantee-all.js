@@ -147,7 +147,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee All', function () {
 		const accessCheck = await soap.makeSOAPEnvelopeAccount(getMsgRequest, auth2);
 
 		// Verify response
-		assert.notExists(accessCheck.Fault, 'User should have access before revoke');
+		assert.exists(accessCheck.GetMsgResponse.m, 'User should have access before revoke');
 
 		// Revoke the grant using zid from grant response
 		const folderActionRequest3 =
@@ -166,8 +166,8 @@ describe('Folders > Sharing > Grantee > Sharing Grantee All', function () {
 		const revokedCheck = await soap.makeSOAPEnvelopeAccount(getMsgRequest2, auth2);
 
 		// Verify response
-		assert.exists(revokedCheck.Fault,
-			'User should be denied after revoking all grant');
+		assert.exists(revokedCheck.Fault.Detail.Error,
+			'Fault Error should exist - User should be denied after revoking all grant');
 	});
 
 });

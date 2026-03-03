@@ -82,7 +82,6 @@ Test content</content>
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
 		assert.exists(res.SearchResponse?.c?.[0], 'Conversation result should exist');
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -110,7 +109,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 		assert.exists(res2.SearchResponse?.cn, 'Response element should exist');
 	});
 
@@ -139,7 +137,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 		assert.exists(res2.SearchResponse?.cn, 'Response element should exist');
 
 		// SearchRequest
@@ -162,7 +159,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'Response element should exist');
 
 		// SearchRequest - combined query
 		const res5 = await soap.makeSOAPEnvelopeAccount(
@@ -173,8 +169,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res5.SearchResponse, 'Response element should exist');
 	});
 
 

@@ -285,7 +285,7 @@ describe('Mail > Drafts > Message Save Draft', function () {
 				</m>
 			</SaveDraftRequest>`, accountAuthToken, false
 		);
-		assert.exists(resaveRes.Fault, 'Resave of deleted draft should fault');
+		assert.isString(resaveRes.Fault.Detail.Error.Code, 'Resave of deleted draft should fault');
 		assert.include(resaveRes.Fault.Detail.Error.Code,
 			'mail.NO_SUCH_MSG',
 			'Error code should be mail.NO_SUCH_MSG');
@@ -327,7 +327,7 @@ describe('Mail > Drafts > Message Save Draft', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 

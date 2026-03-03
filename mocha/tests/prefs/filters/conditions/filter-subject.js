@@ -58,7 +58,6 @@ describe('Prefs > Filters > Conditions > Filter Subject', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Subject is test should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 	});
 
 

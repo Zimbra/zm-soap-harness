@@ -26,7 +26,6 @@ describe('Auth > Multihost > Multihost Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
-		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		account2Name = 'mh2.' + common.getUniqueString() + '@' + config.testDomain;
 
@@ -40,7 +39,6 @@ describe('Auth > Multihost > Multihost Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
-		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 	});
 
 	beforeEach(async function () {
@@ -68,7 +66,6 @@ describe('Auth > Multihost > Multihost Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 	});
 
@@ -84,8 +81,6 @@ describe('Auth > Multihost > Multihost Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
-
 		const authToken = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
 			: authRes.AuthResponse.authToken._content || authRes.AuthResponse.authToken;
@@ -97,7 +92,6 @@ describe('Auth > Multihost > Multihost Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
-		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 	});
 
 
@@ -112,7 +106,6 @@ describe('Auth > Multihost > Multihost Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 	});
 
@@ -128,8 +121,6 @@ describe('Auth > Multihost > Multihost Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
-
 		const authToken = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
 			: authRes.AuthResponse.authToken._content || authRes.AuthResponse.authToken;
@@ -141,7 +132,6 @@ describe('Auth > Multihost > Multihost Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
-		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 	});
 
 
@@ -156,8 +146,6 @@ describe('Auth > Multihost > Multihost Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
-
 		const authToken = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
 			: authRes.AuthResponse.authToken._content || authRes.AuthResponse.authToken;
@@ -169,6 +157,5 @@ describe('Auth > Multihost > Multihost Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
-		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 	});
 });

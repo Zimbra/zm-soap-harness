@@ -67,7 +67,6 @@ describe('Contacts > Contact Group', function () {
 			</CreateContactRequest>`, account1Token
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(res.CreateContactResponse.cn)
 			? res.CreateContactResponse.cn[0] : res.CreateContactResponse.cn;
 		assert.exists(cn.id, 'Group id should exist');
@@ -78,7 +77,6 @@ describe('Contacts > Contact Group', function () {
 			</SearchRequest>`, account1Token
 		);
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -97,7 +95,6 @@ describe('Contacts > Contact Group', function () {
 			</CreateContactRequest>`, account1Token
 		);
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
@@ -109,7 +106,6 @@ describe('Contacts > Contact Group', function () {
 			</ModifyContactRequest>`, account1Token
 		);
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
-		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});
 
 
@@ -126,7 +122,6 @@ describe('Contacts > Contact Group', function () {
 			</CreateContactRequest>`, account1Token
 		);
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
@@ -141,7 +136,6 @@ describe('Contacts > Contact Group', function () {
 			</ModifyContactRequest>`, account1Token
 		);
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
-		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});
 
 
@@ -190,7 +184,9 @@ describe('Contacts > Contact Group', function () {
 			</CreateContactRequest>`, account1Token
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateContactResponse.cn, 'Group should be created');
+		const cn = Array.isArray(res.CreateContactResponse.cn)
+			? res.CreateContactResponse.cn[0] : res.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Group id should exist');
 	});
 
 
@@ -223,7 +219,6 @@ describe('Contacts > Contact Group', function () {
 			</SearchRequest>`, account1Token
 		);
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -356,7 +351,9 @@ describe('Contacts > Contact Group', function () {
 			</CreateContactRequest>`, account1Token
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateContactResponse.cn, 'Group should be created');
+		const cn = Array.isArray(res.CreateContactResponse.cn)
+			? res.CreateContactResponse.cn[0] : res.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Group id should exist');
 	});
 
 
@@ -388,7 +385,6 @@ describe('Contacts > Contact Group', function () {
 			</CreateContactRequest>`, account1Token
 		);
 		assert.notExists(res.Fault, 'Create empty group should not be a Fault');
-		assert.exists(res.CreateContactResponse, 'CreateContactResponse should exist');
 	});
 
 
@@ -418,6 +414,5 @@ describe('Contacts > Contact Group', function () {
 			</ModifyContactRequest>`, account1Token
 		);
 		assert.notExists(modRes.Fault, 'Rename group should not be a Fault');
-		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});
 });

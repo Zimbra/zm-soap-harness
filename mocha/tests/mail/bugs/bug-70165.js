@@ -48,7 +48,6 @@ describe('Mail > Bugs > Bug 70165', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'CheckSpellingRequest should not fault');
-		assert.exists(res.CheckSpellingResponse, 'CheckSpellingResponse should exist');
 		assert.notExists(res.CheckSpellingResponse.misspelled,
 			'No misspelled words should be returned for a valid word');
 	});
@@ -74,7 +73,6 @@ describe('Mail > Bugs > Bug 70165', function () {
 
 		// Verify response contains misspelled word
 		assert.notExists(res.Fault, 'CheckSpellingRequest should not fault');
-		assert.exists(res.CheckSpellingResponse, 'CheckSpellingResponse should exist');
 		const misspelled = Array.isArray(res.CheckSpellingResponse.misspelled)
 			? res.CheckSpellingResponse.misspelled : [res.CheckSpellingResponse.misspelled];
 		assert.exists(misspelled[0], 'Misspelled entry should exist');

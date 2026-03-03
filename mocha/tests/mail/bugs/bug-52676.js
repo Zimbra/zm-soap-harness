@@ -83,7 +83,7 @@ JVBERi0xLjQKMSAwIG9iago8PAovVHlwZSAvQ2F0YWxvZwo+PgplbmRvYmoKdHJhaWxlcgo8PAov
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
 		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
-		assert.exists(getMsg, 'GetMsgResponse should contain m');
+		assert.exists(getMsg.id, 'message id should exist');
 
 		// Verify attachment filename contains "z" and is not corrupted to "%"
 		const msg = Array.isArray(getMsgRes.GetMsgResponse.m) ? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;

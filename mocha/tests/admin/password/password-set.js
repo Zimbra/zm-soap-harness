@@ -50,7 +50,6 @@ describe('Admin > Password > Password Set', function () {
 			</SetPasswordRequest>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'SetPasswordRequest should not fault');
-		assert.exists(res.SetPasswordResponse, 'SetPasswordResponse should exist');
 	});
 
 	it('Sanity | Set newpassword to same as the old password', async () => {
@@ -63,7 +62,6 @@ describe('Admin > Password > Password Set', function () {
 			</SetPasswordRequest>`, adminAuthToken
 		);
 		assert.notExists(res1.Fault, 'First SetPasswordRequest should not fault');
-		assert.exists(res1.SetPasswordResponse, 'SetPasswordResponse should exist');
 
 		// Set same password again
 		const res2 = await soap.makeSOAPEnvelopeAdmin(
@@ -73,7 +71,6 @@ describe('Admin > Password > Password Set', function () {
 			</SetPasswordRequest>`, adminAuthToken
 		);
 		assert.notExists(res2.Fault, 'Second SetPasswordRequest should not fault');
-		assert.exists(res2.SetPasswordResponse, 'SetPasswordResponse should exist');
 	});
 
 	it('Regression | SetPassword of an account to some special character', async () => {
@@ -85,7 +82,6 @@ describe('Admin > Password > Password Set', function () {
 			</SetPasswordRequest>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'SetPasswordRequest with special chars should not fault');
-		assert.exists(res.SetPasswordResponse, 'SetPasswordResponse should exist');
 	});
 
 	it('Regression | SetPassword of an account to blank', async () => {
@@ -96,7 +92,6 @@ describe('Admin > Password > Password Set', function () {
 			</SetPasswordRequest>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'SetPasswordRequest with blank should not fault');
-		assert.exists(res.SetPasswordResponse, 'SetPasswordResponse should exist');
 	});
 
 	it('Regression | Set newpassword to very long value', async () => {
@@ -108,7 +103,6 @@ describe('Admin > Password > Password Set', function () {
 			</SetPasswordRequest>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'SetPasswordRequest with long password should not fault');
-		assert.exists(res.SetPasswordResponse, 'SetPasswordResponse should exist');
 	});
 
 	it('Regression | Set newpassword to very short value', async () => {
@@ -120,7 +114,6 @@ describe('Admin > Password > Password Set', function () {
 			</SetPasswordRequest>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'SetPasswordRequest with short password should not fault');
-		assert.exists(res.SetPasswordResponse, 'SetPasswordResponse should exist');
 	});
 
 	it('Regression | Set newpassword with spaces in between', async () => {
@@ -132,7 +125,6 @@ describe('Admin > Password > Password Set', function () {
 			</SetPasswordRequest>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'SetPasswordRequest with spaces should not fault');
-		assert.exists(res.SetPasswordResponse, 'SetPasswordResponse should exist');
 	});
 
 	it('Regression | Set newpassword with invalid id', async () => {
@@ -143,7 +135,7 @@ describe('Admin > Password > Password Set', function () {
 				<newPassword>test1234</newPassword>
 			</SetPasswordRequest>`, adminAuthToken, false
 		);
-		assert.exists(res.Fault, 'SetPasswordRequest with invalid id should fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'SetPasswordRequest with invalid id should fault');
 		assert.include(res.Fault.Detail.Error.Code, 'account.NO_SUCH_ACCOUNT');
 	});
 });

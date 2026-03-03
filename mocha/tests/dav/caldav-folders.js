@@ -35,7 +35,6 @@ describe('DAV > Caldav Folders', function () {
 
 		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
-		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
 			? createRes1.CreateAccountResponse.account[0]
 			: createRes1.CreateAccountResponse.account;
@@ -78,7 +77,6 @@ describe('DAV > Caldav Folders', function () {
 
 		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
-		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 		const acct2 = Array.isArray(createRes2.CreateAccountResponse.account)
 			? createRes2.CreateAccountResponse.account[0]
 			: createRes2.CreateAccountResponse.account;
@@ -315,7 +313,6 @@ describe('DAV > Caldav Folders', function () {
 
 		// Verify response
 		assert.notExists(createFolderRes.Fault, 'Response should not be a Fault');
-		assert.exists(createFolderRes.CreateFolderResponse, 'Should create folder');
 		const folder = Array.isArray(createFolderRes.CreateFolderResponse.folder)
 			? createFolderRes.CreateFolderResponse.folder[0]
 			: createFolderRes.CreateFolderResponse.folder;
@@ -345,7 +342,6 @@ describe('DAV > Caldav Folders', function () {
 
 		// Verify response
 		assert.notExists(createApptRes.Fault, 'Response should not be a Fault');
-		assert.exists(createApptRes.CreateAppointmentResponse, 'Should create appointment');
 		const invId = createApptRes.CreateAppointmentResponse.invId
 			|| createApptRes.CreateAppointmentResponse.$.invId;
 

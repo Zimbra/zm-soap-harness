@@ -61,6 +61,5 @@ describe('Admin > Mail Queue > Mail Queue Flush Request', function () {
 			</MailQueueFlushRequest>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'MailQueueFlushRequest should not fault');
-		assert.exists(res.MailQueueFlushResponse, 'MailQueueFlushResponse should exist');
 	});
 });

@@ -59,7 +59,6 @@ describe('Mail > Bugs > Bug 30269', function () {
 			</SearchRequest>`, authToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const msg = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m[0] : searchRes.SearchResponse.m;
 		assert.exists(msg, 'Message should be found');

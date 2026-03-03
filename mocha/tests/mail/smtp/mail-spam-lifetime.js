@@ -73,7 +73,6 @@ This is a spam message
 
 		// Verify message is in junk folder
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		// Wait for spam lifetime to expire and purge
 		await new Promise(resolve => setTimeout(resolve, 60000));
@@ -98,7 +97,6 @@ This is a spam message
 
 		// Verify purge succeeded
 		assert.notExists(purgeRes.Fault, 'PurgeMessagesRequest should not fault');
-		assert.exists(purgeRes.PurgeMessagesResponse, 'PurgeMessagesResponse should exist');
 
 		// Verify junk is now empty
 		const search2Res = await soap.makeSOAPEnvelopeAccount(

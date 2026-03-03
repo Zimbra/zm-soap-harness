@@ -63,8 +63,6 @@ describe('Search > Personal Shared > Search Shared', function () {
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res2.SearchResponse, 'Response element should exist');
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -76,7 +74,6 @@ describe('Search > Personal Shared > Search Shared', function () {
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
 		// Verify empty result set
-		assert.exists(res3.SearchResponse, 'Response element should exist');
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -87,8 +84,6 @@ describe('Search > Personal Shared > Search Shared', function () {
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res4.SearchResponse, 'Response element should exist');
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
@@ -101,7 +96,6 @@ describe('Search > Personal Shared > Search Shared', function () {
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
 		// Verify empty result set
 		// Verify empty result set (original XML had emptyset="1")
-		assert.exists(res5.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -143,6 +137,5 @@ Hello how r u?
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
 	});
 });

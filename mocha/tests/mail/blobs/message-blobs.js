@@ -72,7 +72,7 @@ describe('Mail > Blobs > Message Blobs', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Search for the message as account2 and delete it
@@ -87,7 +87,6 @@ describe('Mail > Blobs > Message Blobs', function () {
 
 		// Verify message found in account2
 		assert.notExists(search2Res.Fault, 'SearchRequest should not fault');
-		assert.exists(search2Res.SearchResponse, 'SearchResponse should exist');
 		const msgs2 = Array.isArray(search2Res.SearchResponse.m)
 			? search2Res.SearchResponse.m : [search2Res.SearchResponse.m];
 		const msg2Id = msgs2[0].id;
@@ -103,7 +102,7 @@ describe('Mail > Blobs > Message Blobs', function () {
 		assert.notExists(deleteRes.Fault, 'MsgActionRequest should not fault');
 		const msgAction = Array.isArray(deleteRes.MsgActionResponse.action)
 			? deleteRes.MsgActionResponse.action[0] : deleteRes.MsgActionResponse.action;
-		assert.exists(msgAction, 'MsgActionResponse should contain action');
+		assert.equal(msgAction.op, 'delete', 'op should be delete');
 
 		// Verify account3 can still see the message
 		const account3AuthToken = await soap.getAccountAuthToken(account3Email);
@@ -117,7 +116,6 @@ describe('Mail > Blobs > Message Blobs', function () {
 
 		// Verify message still exists in account3
 		assert.notExists(search3Res.Fault, 'SearchRequest should not fault');
-		assert.exists(search3Res.SearchResponse, 'SearchResponse should exist');
 		const msgs3 = Array.isArray(search3Res.SearchResponse.m)
 			? search3Res.SearchResponse.m : [search3Res.SearchResponse.m];
 		const msg3Id = msgs3[0].id;
@@ -133,7 +131,7 @@ describe('Mail > Blobs > Message Blobs', function () {
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
 		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
-		assert.exists(getMsg, 'GetMsgResponse should contain m');
+		assert.exists(getMsg.id, 'message id should exist');
 	});
 
 
@@ -189,7 +187,7 @@ describe('Mail > Blobs > Message Blobs', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Search for the message as account2 and delete it
@@ -246,7 +244,6 @@ describe('Mail > Blobs > Message Blobs', function () {
 
 		// Verify message still exists in account4
 		assert.notExists(search4Res.Fault, 'SearchRequest should not fault');
-		assert.exists(search4Res.SearchResponse, 'SearchResponse should exist');
 		const msgs4 = Array.isArray(search4Res.SearchResponse.m)
 			? search4Res.SearchResponse.m : [search4Res.SearchResponse.m];
 		const msg4Id = msgs4[0].id;
@@ -262,7 +259,7 @@ describe('Mail > Blobs > Message Blobs', function () {
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
 		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
-		assert.exists(getMsg, 'GetMsgResponse should contain m');
+		assert.exists(getMsg.id, 'message id should exist');
 	});
 
 
@@ -310,7 +307,7 @@ describe('Mail > Blobs > Message Blobs', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Search for the message as account2 and delete it
@@ -347,7 +344,6 @@ describe('Mail > Blobs > Message Blobs', function () {
 
 		// Verify message still exists in account3
 		assert.notExists(search3Res.Fault, 'SearchRequest should not fault');
-		assert.exists(search3Res.SearchResponse, 'SearchResponse should exist');
 		const msgs3 = Array.isArray(search3Res.SearchResponse.m)
 			? search3Res.SearchResponse.m : [search3Res.SearchResponse.m];
 		const msg3Id = msgs3[0].id;
@@ -363,6 +359,6 @@ describe('Mail > Blobs > Message Blobs', function () {
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
 		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
-		assert.exists(getMsg, 'GetMsgResponse should contain m');
+		assert.exists(getMsg.id, 'message id should exist');
 	});
 });

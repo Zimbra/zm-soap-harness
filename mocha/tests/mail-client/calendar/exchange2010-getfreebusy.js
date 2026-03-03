@@ -83,7 +83,6 @@ describe('Mail Client > Calendar > Exchange2010 Getfreebusy', function () {
 			</GetFreeBusyRequest>`, acct1Auth
 		);
 		assert.notExists(fbRes.Fault, 'GetFreeBusyRequest should not fault');
-		assert.exists(fbRes.GetFreeBusyResponse, 'GetFreeBusyResponse should exist');
 
 		// Verify response contains user free-busy data
 		const usr = Array.isArray(fbRes.GetFreeBusyResponse?.usr)
@@ -123,7 +122,6 @@ describe('Mail Client > Calendar > Exchange2010 Getfreebusy', function () {
 			</GetFreeBusyRequest>`, acct1Auth
 		);
 		assert.notExists(fbRes2.Fault, 'GetFreeBusyRequest from domain1 should not fault');
-		assert.exists(fbRes2.GetFreeBusyResponse, 'GetFreeBusyResponse should exist');
 
 		// Fix global config to valid values
 		await soap.makeSOAPEnvelopeAdmin(

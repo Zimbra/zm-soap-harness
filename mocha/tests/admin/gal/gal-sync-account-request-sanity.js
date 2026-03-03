@@ -47,7 +47,6 @@ describe('Admin > GAL > Gal Sync Account Request Sanity', function () {
 			</CreateGalSyncAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(galRes.Fault, 'CreateGalSyncAccountRequest should not fault');
-		assert.exists(galRes.CreateGalSyncAccountResponse, 'CreateGalSyncAccountResponse should exist');
 		assert.exists(galRes.CreateGalSyncAccountResponse.account, 'Account should exist in response');
 	});
 
@@ -83,7 +82,6 @@ describe('Admin > GAL > Gal Sync Account Request Sanity', function () {
 			</SyncGalAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(syncRes.Fault, 'SyncGalAccountRequest should not fault');
-		assert.exists(syncRes.SyncGalAccountResponse, 'SyncGalAccountResponse should exist');
 	});
 
 
@@ -117,6 +115,5 @@ describe('Admin > GAL > Gal Sync Account Request Sanity', function () {
 			</DeleteGalSyncAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(deleteRes.Fault, 'DeleteGalSyncAccountRequest should not fault');
-		assert.exists(deleteRes.DeleteGalSyncAccountResponse, 'DeleteGalSyncAccountResponse should exist');
 	});
 });

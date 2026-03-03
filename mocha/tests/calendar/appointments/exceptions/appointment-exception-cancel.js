@@ -482,7 +482,7 @@ describe('Calendar > Appointments > Exceptions > Appointment Exception Cancel', 
 			);
 
 			// Verify response
-			assert.exists(res.Fault, `Cancel with invalid date '${d}' should fault`);
+			assert.isString(res.Fault.Detail.Error.Code, `Cancel with invalid date '${d}' should fault`);
 			assert.match(res.Fault.Detail.Error.Code, /^service.INVALID_REQUEST/, 'Correct fault code');
 		}
 	});

@@ -49,7 +49,7 @@ describe('General > Password > Change Password', function () {
 		);
 
 		// Verify response
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes.AuthResponse.authToken, 'AuthResponse should exist');
 		const resetPassword = authRes.AuthResponse.resetPassword
 			? (authRes.AuthResponse.resetPassword._content || authRes.AuthResponse.resetPassword._)
 			: undefined;
@@ -67,7 +67,7 @@ describe('General > Password > Change Password', function () {
 
 		// Verify response
 		assert.notExists(changeRes.Fault, 'AuthRequest with newPassword should not fault: ' + JSON.stringify(changeRes.Fault));
-		assert.exists(changeRes.AuthResponse, 'AuthResponse should exist after password change');
+		assert.exists(changeRes.AuthResponse.authToken, 'AuthResponse should exist after password change');
 	});
 
 
@@ -93,8 +93,6 @@ describe('General > Password > Change Password', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Should login normally');
-		assert.exists(authRes.AuthResponse,
-			'AuthResponse should exist');
 	});
 
 
@@ -142,8 +140,6 @@ describe('General > Password > Change Password', function () {
 
 		// Verify response
 		assert.notExists(changeRes.Fault, 'ChangePasswordRequest should not fault');
-		assert.exists(changeRes.ChangePasswordResponse,
-			'ChangePasswordResponse should exist');
 	});
 
 
@@ -176,6 +172,6 @@ describe('General > Password > Change Password', function () {
 		);
 
 		// Verify response
-		assert.exists(changeRes.Fault, 'Should return Fault for operation denied');
+		assert.isString(changeRes.Fault.Detail.Error.Code, 'Should return Fault for operation denied');
 	});
 });

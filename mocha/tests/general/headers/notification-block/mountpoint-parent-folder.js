@@ -128,8 +128,6 @@ describe('General > Headers > Notification Block > Mountpoint Parent Folder', fu
 
 		// Verify response
 		assert.notExists(mpRes.Fault, 'CreateMountpointRequest should not fault');
-		assert.exists(mpRes.CreateMountpointResponse,
-			'CreateMountpointResponse should exist');
 
 		// Get the folder
 		const getRes = await soap.makeSOAPEnvelopeAccount(
@@ -138,6 +136,5 @@ describe('General > Headers > Notification Block > Mountpoint Parent Folder', fu
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'GetFolderRequest should not fault');
-		assert.exists(getRes.GetFolderResponse, 'GetFolderResponse should exist');
 	});
 });

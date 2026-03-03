@@ -221,7 +221,7 @@ describe('Calendar > Appointments > Get Appt Summaries > Calender Get Appt Summa
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Blank range should fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Blank range should fault');
 	});
 
 
@@ -340,7 +340,7 @@ describe('Calendar > Appointments > Get Appt Summaries > Calender Get Appt Summa
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Text range should fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Text range should fault');
 	});
 
 

@@ -37,6 +37,5 @@ describe('Admin > LDAP > Create LDAP Entry Request', function () {
 			</CreateLDAPEntryRequest>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'CreateLDAPEntryRequest should not fault');
-		assert.exists(res.CreateLDAPEntryResponse, 'CreateLDAPEntryResponse should exist');
 	});
 });

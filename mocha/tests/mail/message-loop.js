@@ -69,7 +69,7 @@ describe('Mail > Message Loop', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Send additional messages in a loop (reduced from 1000 to 10 for JS performance)
@@ -93,7 +93,6 @@ describe('Mail > Message Loop', function () {
 			`<GetInfoRequest xmlns="urn:zimbraAccount"/>`, account1AuthToken
 		);
 		assert.notExists(infoRes.Fault, 'GetInfoRequest should not fault');
-		assert.exists(infoRes.GetInfoResponse, 'GetInfoResponse should exist');
 	});
 
 
@@ -297,7 +296,7 @@ describe('Mail > Message Loop', function () {
 		assert.notExists(res.Fault, 'SendMsgRequest should not fault');
 		const replyMsg = Array.isArray(res.SendMsgResponse.m)
 			? res.SendMsgResponse.m[0] : res.SendMsgResponse.m;
-		assert.exists(replyMsg, 'SendMsgResponse should contain m');
+		assert.exists(replyMsg.id, 'reply msg id should exist');
 		assert.isString(replyMsg.id, 'Reply message should have an id');
 	});
 
@@ -318,7 +317,7 @@ describe('Mail > Message Loop', function () {
 		assert.notExists(res.Fault, 'SendMsgRequest should not fault');
 		const fwdMsg = Array.isArray(res.SendMsgResponse.m)
 			? res.SendMsgResponse.m[0] : res.SendMsgResponse.m;
-		assert.exists(fwdMsg, 'SendMsgResponse should contain m');
+		assert.exists(fwdMsg.id, 'forward msg id should exist');
 		assert.isString(fwdMsg.id, 'Forwarded message should have an id');
 	});
 

@@ -249,7 +249,7 @@ describe('Mail > Message Add', function () {
 		);
 
 		// Verify fault
-		assert.exists(addMsgRes.Fault, 'Should return a Fault');
+		assert.isString(addMsgRes.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(addMsgRes.Fault.Detail.Error.Code, 'mail.NO_SUCH_ITEM', 'Should be mail.NO_SUCH_ITEM');
 	});
 
@@ -287,7 +287,7 @@ describe('Mail > Message Add', function () {
 		);
 
 		// Verify fault
-		assert.exists(addMsgRes.Fault, 'Should return a Fault');
+		assert.isString(addMsgRes.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(addMsgRes.Fault.Detail.Error.Code, 'mail.NO_SUCH_ITEM', 'Should be mail.NO_SUCH_ITEM');
 	});
 
@@ -339,7 +339,7 @@ describe('Mail > Message Add', function () {
 		);
 
 		// Verify fault
-		assert.exists(addMsgRes.Fault, 'Should return a Fault');
+		assert.isString(addMsgRes.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(addMsgRes.Fault.Detail.Error.Code, 'mail.NO_SUCH_FOLDER', 'Should be mail.NO_SUCH_FOLDER');
 	});
 
@@ -363,7 +363,7 @@ describe('Mail > Message Add', function () {
 		);
 
 		// Verify fault
-		assert.exists(addMsgRes.Fault, 'Should return a Fault');
+		assert.isString(addMsgRes.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(addMsgRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be service.INVALID_REQUEST');
 	});
 
@@ -537,7 +537,7 @@ describe('Mail > Message Add', function () {
 			'</m>' +
 			'</AddMsgRequest>', authToken, false
 		);
-		assert.exists(res1.Fault, 'Should return a Fault for sometext');
+		assert.isString(res1.Fault.Detail.Error.Code, 'Should return a Fault for sometext');
 		assert.include(res1.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be service.INVALID_REQUEST');
 
 		// Test with spchar - should fault
@@ -548,7 +548,7 @@ describe('Mail > Message Add', function () {
 			'</m>' +
 			'</AddMsgRequest>', authToken, false
 		);
-		assert.exists(res2.Fault, 'Should return a Fault for spchar');
+		assert.isString(res2.Fault.Detail.Error.Code, 'Should return a Fault for spchar');
 		assert.include(res2.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be service.INVALID_REQUEST');
 
 		// Test with number - should succeed
@@ -581,7 +581,7 @@ describe('Mail > Message Add', function () {
 			'</m>' +
 			'</AddMsgRequest>', authToken, false
 		);
-		assert.exists(res5.Fault, 'Should return a Fault for decimal');
+		assert.isString(res5.Fault.Detail.Error.Code, 'Should return a Fault for decimal');
 		assert.include(res5.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be service.INVALID_REQUEST');
 
 		// Test with blank - should fault
@@ -592,7 +592,7 @@ describe('Mail > Message Add', function () {
 			'</m>' +
 			'</AddMsgRequest>', authToken, false
 		);
-		assert.exists(res6.Fault, 'Should return a Fault for blank');
+		assert.isString(res6.Fault.Detail.Error.Code, 'Should return a Fault for blank');
 		assert.include(res6.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be service.INVALID_REQUEST');
 	});
 
@@ -610,7 +610,7 @@ describe('Mail > Message Add', function () {
 			'</m>' +
 			'</AddMsgRequest>', authToken, false
 		);
-		assert.exists(res1.Fault, 'Should return a Fault for sometext');
+		assert.isString(res1.Fault.Detail.Error.Code, 'Should return a Fault for sometext');
 		assert.include(res1.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be service.INVALID_REQUEST');
 
 		// Test with spchar
@@ -621,7 +621,7 @@ describe('Mail > Message Add', function () {
 			'</m>' +
 			'</AddMsgRequest>', authToken, false
 		);
-		assert.exists(res2.Fault, 'Should return a Fault for spchar');
+		assert.isString(res2.Fault.Detail.Error.Code, 'Should return a Fault for spchar');
 		assert.include(res2.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be service.INVALID_REQUEST');
 
 		// Test with number
@@ -632,7 +632,7 @@ describe('Mail > Message Add', function () {
 			'</m>' +
 			'</AddMsgRequest>', authToken, false
 		);
-		assert.exists(res3.Fault, 'Should return a Fault for number');
+		assert.isString(res3.Fault.Detail.Error.Code, 'Should return a Fault for number');
 		assert.include(res3.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be service.INVALID_REQUEST');
 
 		// Test with negative
@@ -643,7 +643,7 @@ describe('Mail > Message Add', function () {
 			'</m>' +
 			'</AddMsgRequest>', authToken, false
 		);
-		assert.exists(res4.Fault, 'Should return a Fault for negative');
+		assert.isString(res4.Fault.Detail.Error.Code, 'Should return a Fault for negative');
 		assert.include(res4.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be service.INVALID_REQUEST');
 
 		// Test with decimal
@@ -654,7 +654,7 @@ describe('Mail > Message Add', function () {
 			'</m>' +
 			'</AddMsgRequest>', authToken, false
 		);
-		assert.exists(res5.Fault, 'Should return a Fault for decimal');
+		assert.isString(res5.Fault.Detail.Error.Code, 'Should return a Fault for decimal');
 		assert.include(res5.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be service.INVALID_REQUEST');
 
 		// Test with blank
@@ -665,7 +665,7 @@ describe('Mail > Message Add', function () {
 			'</m>' +
 			'</AddMsgRequest>', authToken, false
 		);
-		assert.exists(res6.Fault, 'Should return a Fault for blank');
+		assert.isString(res6.Fault.Detail.Error.Code, 'Should return a Fault for blank');
 		assert.include(res6.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be service.INVALID_REQUEST');
 	});
 
@@ -712,7 +712,7 @@ describe('Mail > Message Add', function () {
 			'</m>' +
 			'</AddMsgRequest>', authToken, false
 		);
-		assert.exists(res1.Fault, 'Should return a Fault for sometext');
+		assert.isString(res1.Fault.Detail.Error.Code, 'Should return a Fault for sometext');
 		assert.include(res1.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be service.INVALID_REQUEST');
 
 		// Test with spchar
@@ -723,7 +723,7 @@ describe('Mail > Message Add', function () {
 			'</m>' +
 			'</AddMsgRequest>', authToken, false
 		);
-		assert.exists(res2.Fault, 'Should return a Fault for spchar');
+		assert.isString(res2.Fault.Detail.Error.Code, 'Should return a Fault for spchar');
 		assert.include(res2.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be service.INVALID_REQUEST');
 
 		// Test with number
@@ -734,7 +734,7 @@ describe('Mail > Message Add', function () {
 			'</m>' +
 			'</AddMsgRequest>', authToken, false
 		);
-		assert.exists(res3.Fault, 'Should return a Fault for number');
+		assert.isString(res3.Fault.Detail.Error.Code, 'Should return a Fault for number');
 		assert.include(res3.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be service.INVALID_REQUEST');
 
 		// Test with negative
@@ -745,7 +745,7 @@ describe('Mail > Message Add', function () {
 			'</m>' +
 			'</AddMsgRequest>', authToken, false
 		);
-		assert.exists(res4.Fault, 'Should return a Fault for negative');
+		assert.isString(res4.Fault.Detail.Error.Code, 'Should return a Fault for negative');
 		assert.include(res4.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be service.INVALID_REQUEST');
 
 		// Test with decimal
@@ -756,7 +756,7 @@ describe('Mail > Message Add', function () {
 			'</m>' +
 			'</AddMsgRequest>', authToken, false
 		);
-		assert.exists(res5.Fault, 'Should return a Fault for decimal');
+		assert.isString(res5.Fault.Detail.Error.Code, 'Should return a Fault for decimal');
 		assert.include(res5.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be service.INVALID_REQUEST');
 
 		// Test with blank
@@ -767,7 +767,7 @@ describe('Mail > Message Add', function () {
 			'</m>' +
 			'</AddMsgRequest>', authToken, false
 		);
-		assert.exists(res6.Fault, 'Should return a Fault for blank');
+		assert.isString(res6.Fault.Detail.Error.Code, 'Should return a Fault for blank');
 		assert.include(res6.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be service.INVALID_REQUEST');
 	});
 
@@ -862,7 +862,7 @@ describe('Mail > Message Add', function () {
 		);
 
 		// Verify fault
-		assert.exists(addMsgRes.Fault, 'Should return a Fault');
+		assert.isString(addMsgRes.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(addMsgRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be service.INVALID_REQUEST');
 	});
 });

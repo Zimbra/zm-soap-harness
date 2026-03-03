@@ -59,9 +59,7 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
 		// Verify empty result set
-		assert.exists(res1.SearchResponse, 'Response element should exist');
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -72,9 +70,7 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 		// Verify empty result set
-		assert.exists(res2.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -88,9 +84,7 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
 		// Verify empty result set
-		assert.exists(res1.SearchResponse, 'Response element should exist');
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -101,8 +95,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 		// Verify empty result set
-		assert.exists(res2.SearchResponse, 'Response element should exist');
 	});
 });

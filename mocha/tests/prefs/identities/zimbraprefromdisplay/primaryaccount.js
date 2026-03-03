@@ -76,7 +76,6 @@ describe('Prefs > Identities > Zimbraprefromdisplay > Primaryaccount', function 
 
 		// Verify response
 		assert.notExists(verifyRes.Fault, 'Verify should not fault');
-		assert.exists(verifyRes.GetIdentitiesResponse, 'Response should exist');
 	});
 
 

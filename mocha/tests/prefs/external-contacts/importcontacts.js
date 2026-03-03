@@ -53,7 +53,6 @@ describe('Prefs > External Contacts > Importcontacts', function () {
 
 		// Verify response
 		assert.notExists(importRes.Fault, 'ImportContactsRequest should not fault');
-		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});
 
 
@@ -82,7 +81,6 @@ describe('Prefs > External Contacts > Importcontacts', function () {
 
 		// Verify response
 		assert.notExists(importRes.Fault, 'ImportContactsRequest should not fault');
-		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});
 
 

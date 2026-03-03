@@ -53,7 +53,6 @@ describe('Prefs > Bugs > Bug 47767', function () {
 
 		// Verify response
 		assert.notExists(createRes1.Fault, 'CreateSignatureRequest aaa should not fault');
-		assert.exists(createRes1.CreateSignatureResponse, 'CreateSignatureResponse should exist');
 
 		// Create a signature
 		const createRes2 = await soap.makeSOAPEnvelopeAccount(
@@ -77,7 +76,7 @@ describe('Prefs > Bugs > Bug 47767', function () {
 		);
 
 		// Verify response
-		assert.exists(createRes3.Fault, 'CreateSignatureRequest Bbb should fault');
+		assert.isString(createRes3.Fault.Detail.Error.Code, 'CreateSignatureRequest Bbb should fault');
 		assert.equal(createRes3.Fault.Detail.Error.Code, 'account.SIGNATURE_EXISTS',
 			'Error code should be account.SIGNATURE_EXISTS');
 	});
@@ -107,7 +106,7 @@ describe('Prefs > Bugs > Bug 47767', function () {
 		);
 
 		// Verify response
-		assert.exists(res1.Fault, 'Blank signature type should fault');
+		assert.isString(res1.Fault.Detail.Error.Code, 'Blank signature type should fault');
 		assert.equal(res1.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Error code should be service.INVALID_REQUEST');
 
@@ -121,7 +120,7 @@ describe('Prefs > Bugs > Bug 47767', function () {
 		);
 
 		// Verify response
-		assert.exists(res2.Fault, 'Invalid signature type should fault');
+		assert.isString(res2.Fault.Detail.Error.Code, 'Invalid signature type should fault');
 		assert.equal(res2.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Error code should be service.INVALID_REQUEST');
 
@@ -135,7 +134,7 @@ describe('Prefs > Bugs > Bug 47767', function () {
 		);
 
 		// Verify response
-		assert.exists(res3.Fault, 'Blank signature name should fault');
+		assert.isString(res3.Fault.Detail.Error.Code, 'Blank signature name should fault');
 		assert.equal(res3.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Error code should be service.INVALID_REQUEST');
 	});

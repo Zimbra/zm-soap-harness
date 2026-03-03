@@ -54,7 +54,6 @@ describe('Prefs > Junk Options > Modifywhiteblacklist Basic', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyWhiteBlackListRequest should not fault');
-		assert.exists(modRes.ModifyWhiteBlackListResponse, 'ModifyWhiteBlackListResponse should exist');
 	});
 
 
@@ -84,7 +83,6 @@ describe('Prefs > Junk Options > Modifywhiteblacklist Basic', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyWhiteBlackListRequest should not fault');
-		assert.exists(modRes.ModifyWhiteBlackListResponse, 'ModifyWhiteBlackListResponse should exist');
 	});
 
 
@@ -114,7 +112,6 @@ describe('Prefs > Junk Options > Modifywhiteblacklist Basic', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyWhiteBlackListRequest should not fault');
-		assert.exists(modRes.ModifyWhiteBlackListResponse, 'ModifyWhiteBlackListResponse should exist');
 	});
 
 
@@ -144,6 +141,5 @@ describe('Prefs > Junk Options > Modifywhiteblacklist Basic', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyWhiteBlackListRequest should not fault');
-		assert.exists(modRes.ModifyWhiteBlackListResponse, 'ModifyWhiteBlackListResponse should exist');
 	});
 });

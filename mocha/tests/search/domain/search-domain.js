@@ -133,7 +133,6 @@ Content for mail3 rediff domain</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
 
 

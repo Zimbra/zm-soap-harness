@@ -82,6 +82,8 @@ describe('Calendar > Appointments > Item Action Appointment', function () {
 			</ItemActionRequest>`, accountToken
         );
         assert.notExists(actionRes.Fault, 'ItemAction move should not fault');
+        assert.exists(actionRes.ItemActionResponse.action.id, 'Action id should exist');
+        assert.equal(actionRes.ItemActionResponse.action.op, 'move', 'Action op should be move');
     });
 
 
@@ -124,6 +126,8 @@ describe('Calendar > Appointments > Item Action Appointment', function () {
 			</ItemActionRequest>`, accountToken
         );
         assert.notExists(actionRes.Fault, 'ItemAction delete should not fault');
+        assert.exists(actionRes.ItemActionResponse.action.id, 'Action id should exist');
+        assert.equal(actionRes.ItemActionResponse.action.op, 'delete', 'Action op should be delete');
     });
 
 
@@ -177,6 +181,8 @@ describe('Calendar > Appointments > Item Action Appointment', function () {
 			</ItemActionRequest>`, accountToken
         );
         assert.notExists(actionRes.Fault, 'ItemAction tag should not fault');
+        assert.exists(actionRes.ItemActionResponse.action.id, 'Action id should exist');
+        assert.equal(actionRes.ItemActionResponse.action.op, 'tag', 'Action op should be tag');
     });
 
 
@@ -219,6 +225,8 @@ describe('Calendar > Appointments > Item Action Appointment', function () {
 			</ItemActionRequest>`, accountToken
         );
         assert.notExists(actionRes.Fault, 'ItemAction flag should not fault');
+        assert.exists(actionRes.ItemActionResponse.action.id, 'Action id should exist');
+        assert.equal(actionRes.ItemActionResponse.action.op, 'flag', 'Action op should be flag');
     });
 
 
@@ -255,17 +263,20 @@ describe('Calendar > Appointments > Item Action Appointment', function () {
         const calItemId = createRes.CreateAppointmentResponse.calItemId;
 
         // Flag then unflag
-        await soap.makeSOAPEnvelopeAccount(
+        const flagRes = await soap.makeSOAPEnvelopeAccount(
             `<ItemActionRequest xmlns="urn:zimbraMail">
 				<action id="${calItemId}" op="flag"/>
 			</ItemActionRequest>`, accountToken
         );
+        assert.notExists(flagRes.Fault, 'Flag should not fault');
         const actionRes = await soap.makeSOAPEnvelopeAccount(
             `<ItemActionRequest xmlns="urn:zimbraMail">
 				<action id="${calItemId}" op="!flag"/>
 			</ItemActionRequest>`, accountToken
         );
         assert.notExists(actionRes.Fault, 'ItemAction unflag should not fault');
+        assert.exists(actionRes.ItemActionResponse.action.id, 'Action id should exist');
+        assert.equal(actionRes.ItemActionResponse.action.op, '!flag', 'Action op should be !flag');
     });
 
 
@@ -328,6 +339,8 @@ describe('Calendar > Appointments > Item Action Appointment', function () {
 			</ItemActionRequest>`, accountToken
         );
         assert.notExists(actionRes.Fault, 'ItemAction move should not fault');
+        assert.exists(actionRes.ItemActionResponse.action.id, 'Action id should exist');
+        assert.equal(actionRes.ItemActionResponse.action.op, 'move', 'Action op should be move');
     });
 
 
@@ -346,14 +359,8 @@ describe('Calendar > Appointments > Item Action Appointment', function () {
 				<action id="999999" op="delete"/>
 			</ItemActionRequest>`, accountToken
         );
-        // Invalid id may or may not fault depending on server behavior
-        if (actionRes.Fault) {
-            assert.exists(actionRes.Fault, 'Should fault with invalid id');
-        } else {
-            assert.exists(
-                actionRes.ItemActionResponse,
-                'Response should exist'
-            );
-        }
+        assert.notExists(actionRes.Fault, 'ItemAction on invalid id should not fault');
+        assert.exists(actionRes.ItemActionResponse.action.id, 'Action id should exist');
+        assert.equal(actionRes.ItemActionResponse.action.op, 'delete', 'Action op should be delete');
     });
 });

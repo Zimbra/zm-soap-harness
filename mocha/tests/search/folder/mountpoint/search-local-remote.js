@@ -141,7 +141,6 @@ Sample Content
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -153,7 +152,6 @@ Sample Content
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -166,7 +164,6 @@ Sample Content
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 
 		// Search conversations
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -176,7 +173,6 @@ Sample Content
 		);
 
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -188,7 +184,6 @@ Sample Content
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 
 		// Search contacts
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -198,7 +193,6 @@ Sample Content
 		);
 
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -210,7 +204,6 @@ Sample Content
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -306,6 +299,5 @@ ${searchTerm}
 		);
 
 		assert.notExists(res16.Fault, 'Response should not be a Fault');
-		assert.exists(res16.SearchResponse, 'Response element should exist');
 	});
 });

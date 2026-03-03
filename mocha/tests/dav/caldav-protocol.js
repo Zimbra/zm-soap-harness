@@ -30,7 +30,6 @@ describe('DAV > Caldav Protocol', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;

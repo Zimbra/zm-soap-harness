@@ -93,7 +93,7 @@ describe('Mail > On Behalf Of > Send Msg Request On Behalf Of Basic', function (
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Login as account3 and verify receipt (allow delivery time)
@@ -108,7 +108,6 @@ describe('Mail > On Behalf Of > Send Msg Request On Behalf Of Basic', function (
 
 		// Verify message received
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		assert.exists(searchRes.SearchResponse.m, 'Message should exist in search results');
 	});
 
@@ -177,7 +176,7 @@ describe('Mail > On Behalf Of > Send Msg Request On Behalf Of Basic', function (
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Login as account3 and search for the message
@@ -193,7 +192,6 @@ describe('Mail > On Behalf Of > Send Msg Request On Behalf Of Basic', function (
 			);
 		}
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		assert.exists(searchRes.SearchResponse.m, 'Message should exist');
 		const msgs = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
@@ -210,7 +208,7 @@ describe('Mail > On Behalf Of > Send Msg Request On Behalf Of Basic', function (
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
 		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
-		assert.exists(getMsg, 'GetMsgResponse should contain m');
+		assert.exists(getMsg.id, 'message id should exist');
 		const msg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
 		const emailAddrs = Array.isArray(msg.e) ? msg.e : [msg.e];

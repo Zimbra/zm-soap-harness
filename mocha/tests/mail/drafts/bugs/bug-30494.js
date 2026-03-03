@@ -82,8 +82,6 @@ describe('Mail > Drafts > Bugs > Bug 30494', function () {
 			assert.include(saveDraft2Res.Fault.Detail.Error.Code,
 				'mail.QUOTA_EXCEEDED', 'Should return QUOTA_EXCEEDED');
 		} else {
-			assert.exists(saveDraft2Res.SaveDraftResponse,
-				'SaveDraftResponse should exist if quota not exceeded');
 		}
 	});
 });

@@ -10,7 +10,7 @@ describe('Mail > Bounce Msg Request Basic', function () {
 	const testDomain = config.testDomain;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 	});
 
@@ -83,20 +83,18 @@ describe('Mail > Bounce Msg Request Basic', function () {
 
 		// Verify bounce succeeded
 		assert.notExists(bounceRes.Fault, 'BounceMsgRequest should not fault');
-		assert.exists(bounceRes.BounceMsgResponse, 'BounceMsgResponse should exist');
 
 		// Login as account3 and search for bounced message
 		const account3AuthToken = await soap.getAccountAuthToken(account3Email);
 
 		await new Promise(resolve => setTimeout(resolve, 5000));
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="message">
+			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, account3AuthToken
 		);
 
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const convs = Array.isArray(searchRes.SearchResponse.c)
 			? searchRes.SearchResponse.c : [searchRes.SearchResponse.c];
 		assert.exists(convs[0], 'Conversation should exist');
@@ -115,7 +113,7 @@ describe('Mail > Bounce Msg Request Basic', function () {
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
 		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
-		assert.exists(getMsg, 'GetMsgResponse should contain m');
+		assert.exists(getMsg.id, 'message id should exist');
 		const msg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
 		const emailAddresses = Array.isArray(msg.e) ? msg.e : [msg.e];
@@ -175,14 +173,13 @@ describe('Mail > Bounce Msg Request Basic', function () {
 
 		await new Promise(resolve => setTimeout(resolve, 5000));
 		const search2Res = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="message">
+			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, account2AuthToken
 		);
 
 		// Get account2's message ID
 		assert.notExists(search2Res.Fault, 'SearchRequest should not fault');
-		assert.exists(search2Res.SearchResponse, 'SearchResponse should exist');
 		const convs2 = Array.isArray(search2Res.SearchResponse.c)
 			? search2Res.SearchResponse.c : [search2Res.SearchResponse.c];
 		assert.exists(convs2[0], 'Conversation should exist in account2');
@@ -201,21 +198,19 @@ describe('Mail > Bounce Msg Request Basic', function () {
 
 		// Verify bounce succeeded
 		assert.notExists(bounceRes.Fault, 'BounceMsgRequest should not fault');
-		assert.exists(bounceRes.BounceMsgResponse, 'BounceMsgResponse should exist');
 
 		// Login as account3 and verify message
 		const account3AuthToken = await soap.getAccountAuthToken(account3Email);
 
 		await new Promise(resolve => setTimeout(resolve, 5000));
 		const search3Res = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="message">
+			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, account3AuthToken
 		);
 
 		// Verify bounced message found in account3
 		assert.notExists(search3Res.Fault, 'SearchRequest should not fault');
-		assert.exists(search3Res.SearchResponse, 'SearchResponse should exist');
 		const convs3 = Array.isArray(search3Res.SearchResponse.c)
 			? search3Res.SearchResponse.c : [search3Res.SearchResponse.c];
 		assert.exists(convs3[0], 'Conversation should exist in account3');
@@ -291,20 +286,18 @@ describe('Mail > Bounce Msg Request Basic', function () {
 
 		// Verify bounce succeeded
 		assert.notExists(bounceRes.Fault, 'BounceMsgRequest should not fault');
-		assert.exists(bounceRes.BounceMsgResponse, 'BounceMsgResponse should exist');
 
 		// Search for bounced message in inbox
 
 		await new Promise(resolve => setTimeout(resolve, 5000));
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="message">
+			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
 				<query>in:inbox subject:(${subject})</query>
 			</SearchRequest>`, account1AuthToken
 		);
 
 		// Verify bounced message received
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const convs = Array.isArray(searchRes.SearchResponse.c)
 			? searchRes.SearchResponse.c : [searchRes.SearchResponse.c];
 		assert.exists(convs[0], 'Conversation should exist');
@@ -377,21 +370,19 @@ describe('Mail > Bounce Msg Request Basic', function () {
 
 		// Verify bounce succeeded
 		assert.notExists(bounceRes.Fault, 'BounceMsgRequest should not fault');
-		assert.exists(bounceRes.BounceMsgResponse, 'BounceMsgResponse should exist');
 
 		// Login as account2 and search for messages sorted by date
 		const account2AuthToken = await soap.getAccountAuthToken(account2Email);
 
 		await new Promise(resolve => setTimeout(resolve, 5000));
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc">
+			`<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc">
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, account2AuthToken
 		);
 
 		// Verify bounced message found in account2
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const convs = Array.isArray(searchRes.SearchResponse.c)
 			? searchRes.SearchResponse.c : [searchRes.SearchResponse.c];
 		assert.exists(convs[0], 'Conversation should exist in account2');
@@ -489,19 +480,17 @@ describe('Mail > Bounce Msg Request Basic', function () {
 
 		// Verify bounce succeeded
 		assert.notExists(bounceRes.Fault, 'BounceMsgRequest should not fault');
-		assert.exists(bounceRes.BounceMsgResponse, 'BounceMsgResponse should exist');
 
 		// Verify account4 (To) received the message and check headers
 		const account4AuthToken = await soap.getAccountAuthToken(account4Email);
 
 		await new Promise(resolve => setTimeout(resolve, 5000));
 		const search4Res = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="message">
+			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, account4AuthToken
 		);
 		assert.notExists(search4Res.Fault, 'SearchRequest should not fault');
-		assert.exists(search4Res.SearchResponse, 'SearchResponse should exist');
 		const convs4 = Array.isArray(search4Res.SearchResponse.c)
 			? search4Res.SearchResponse.c : [search4Res.SearchResponse.c];
 		assert.exists(convs4[0], 'Conversation should exist in account4');
@@ -534,12 +523,11 @@ describe('Mail > Bounce Msg Request Basic', function () {
 
 		await new Promise(resolve => setTimeout(resolve, 5000));
 		const search5Res = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="message">
+			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, account5AuthToken
 		);
 		assert.notExists(search5Res.Fault, 'SearchRequest should not fault');
-		assert.exists(search5Res.SearchResponse, 'SearchResponse should exist');
 		const convs5 = Array.isArray(search5Res.SearchResponse.c)
 			? search5Res.SearchResponse.c : [search5Res.SearchResponse.c];
 		assert.exists(convs5[0], 'Conversation should exist in account5');
@@ -570,12 +558,11 @@ describe('Mail > Bounce Msg Request Basic', function () {
 		// Verify account6 (BCC) received the message and check headers
 		const account6AuthToken = await soap.getAccountAuthToken(account6Email);
 		const search6Res = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="message">
+			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, account6AuthToken
 		);
 		assert.notExists(search6Res.Fault, 'SearchRequest should not fault');
-		assert.exists(search6Res.SearchResponse, 'SearchResponse should exist');
 		const convs6 = Array.isArray(search6Res.SearchResponse.c)
 			? search6Res.SearchResponse.c : [search6Res.SearchResponse.c];
 		assert.exists(convs6[0], 'Conversation should exist in account6');
@@ -654,12 +641,11 @@ describe('Mail > Bounce Msg Request Basic', function () {
 
 		await new Promise(resolve => setTimeout(resolve, 5000));
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="message">
+			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, account1AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const convs = Array.isArray(searchRes.SearchResponse.c)
 			? searchRes.SearchResponse.c : [searchRes.SearchResponse.c];
 		assert.exists(convs[0], 'Conversation should exist');
@@ -678,19 +664,17 @@ describe('Mail > Bounce Msg Request Basic', function () {
 
 		// Verify bounce succeeded
 		assert.notExists(bounceRes.Fault, 'BounceMsgRequest should not fault');
-		assert.exists(bounceRes.BounceMsgResponse, 'BounceMsgResponse should exist');
 
 		// Login as account3 and verify bounced message
 		const account3AuthToken = await soap.getAccountAuthToken(account3Email);
 
 		await new Promise(resolve => setTimeout(resolve, 5000));
 		const search3Res = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="message">
+			`<SearchRequest xmlns="urn:zimbraMail" types="conversation">
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, account3AuthToken
 		);
 		assert.notExists(search3Res.Fault, 'SearchRequest should not fault');
-		assert.exists(search3Res.SearchResponse, 'SearchResponse should exist');
 		const convs3 = Array.isArray(search3Res.SearchResponse.c)
 			? search3Res.SearchResponse.c : [search3Res.SearchResponse.c];
 		assert.exists(convs3[0], 'Conversation should exist in account3');

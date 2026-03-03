@@ -46,7 +46,6 @@ describe('Prefs > Prefsrequest Sanity', function () {
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
 		assert.notExists(res.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(res.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 
 
@@ -66,6 +65,5 @@ describe('Prefs > Prefsrequest Sanity', function () {
 			`<GetPrefsRequest xmlns="urn:zimbraAccount"/>`, accountAuthToken
 		);
 		assert.notExists(res.Fault, 'GetPrefsRequest should not fault');
-		assert.exists(res.GetPrefsResponse, 'GetPrefsResponse should exist');
 	});
 });

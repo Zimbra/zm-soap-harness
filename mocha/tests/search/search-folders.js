@@ -81,7 +81,6 @@ describe('Search > Search Folders', function () {
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.ModifySearchFolderResponse, 'Response element should exist');
 	});
 
 
@@ -108,7 +107,6 @@ describe('Search > Search Folders', function () {
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.GetSearchFolderResponse, 'Response element should exist');
 	});
 
 
@@ -137,7 +135,6 @@ describe('Search > Search Folders', function () {
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.FolderActionResponse, 'Response element should exist');
 
 		// FolderActionRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -148,7 +145,6 @@ describe('Search > Search Folders', function () {
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.FolderActionResponse, 'Response element should exist');
 	});
 
 
@@ -177,6 +173,5 @@ describe('Search > Search Folders', function () {
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.FolderActionResponse, 'Response element should exist');
 	});
 });

@@ -643,7 +643,6 @@ describe('EWS > Folder Actions', function () {
 			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const hit = Array.isArray(searchRes.SearchResponse.c)
 			? searchRes.SearchResponse.c[0] : searchRes.SearchResponse.c;
 		assert.equal(hit.su, messageSubject1, 'Subject should match');
@@ -802,7 +801,6 @@ describe('EWS > Folder Actions', function () {
 			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const hit = Array.isArray(searchRes.SearchResponse.c)
 			? searchRes.SearchResponse.c[0] : searchRes.SearchResponse.c;
 		assert.equal(hit.su, messageSubject2, 'Subject should match');
@@ -922,7 +920,6 @@ describe('EWS > Folder Actions', function () {
 			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(searchRes2.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes2.SearchResponse, 'SearchResponse should exist');
 		const hit2 = Array.isArray(searchRes2.SearchResponse.c)
 			? searchRes2.SearchResponse.c[0] : searchRes2.SearchResponse.c;
 		assert.equal(hit2.su, messageSubject2, 'Subject should match');

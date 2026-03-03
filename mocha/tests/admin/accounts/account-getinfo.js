@@ -92,8 +92,6 @@ describe('Admin > Accounts > Account Getinfo', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.GetAccountInfoResponse,
-			'GetAccountInfoResponse should exist');
 		assert.exists(response.GetAccountInfoResponse.name,
 			'GetAccountInfoResponse should have name');
 
@@ -119,8 +117,6 @@ describe('Admin > Accounts > Account Getinfo', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.GetAccountInfoResponse,
-			'GetAccountInfoResponse should exist');
 		assert.exists(response.GetAccountInfoResponse.name,
 			'GetAccountInfoResponse should have name');
 
@@ -139,8 +135,6 @@ describe('Admin > Accounts > Account Getinfo', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.GetAccountInfoResponse,
-			'GetAccountInfoResponse should exist');
 		assert.exists(response.GetAccountInfoResponse.name,
 			'GetAccountInfoResponse should have name');
 
@@ -158,9 +152,8 @@ describe('Admin > Accounts > Account Getinfo', function () {
 		);
 		// The XML expects account2 info to be returned (id takes precedence)
 		// Verify response
-		assert.isTrue(!!response.GetAccountInfoResponse || (response.Fault && response.Fault.Detail &&
-			response.Fault.Detail.Error && response.Fault.Detail.Error.Code.includes('service.PERM_DENIED')),
-			'Expected PERM_DENIED or Success');
+		assert.notExists(response.Fault, 'GetAccountInfoRequest should not fault');
+		assert.exists(response.GetAccountInfoResponse.name, 'GetAccountInfoResponse name should exist');
 	});
 
 
@@ -174,12 +167,8 @@ describe('Admin > Accounts > Account Getinfo', function () {
 		);
 
 		// Verify response
-		assert.isTrue(!!response.GetAccountInfoResponse ||
-			(response.Fault && response.Fault.Detail &&
-				response.Fault.Detail.Error &&
-				response.Fault.Detail.Error.Code.includes(
-					'service.PERM_DENIED')),
-			'Expected PERM_DENIED or Success');
+		assert.notExists(response.Fault, 'GetAccountInfoRequest should not fault');
+		assert.exists(response.GetAccountInfoResponse.name, 'GetAccountInfoResponse name should exist');
 	});
 
 
@@ -195,7 +184,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 			);
 
 			// Verify response
-			assert.exists(response.Fault, `Should fault for name="${name}"`);
+			assert.isString(response.Fault.Detail.Error.Code, `Should fault for name="${name}"`);
 
 			const code = response.Fault.Detail.Error.Code;
 			const allowedCodes = ['service.PERM_DENIED', 'account.NO_SUCH_ACCOUNT', 'service.INVALID_REQUEST', 'service.PARSE_ERROR'];
@@ -217,18 +206,13 @@ describe('Admin > Accounts > Account Getinfo', function () {
 					<account by="id">${id}</account>
 				</GetAccountInfoRequest>`, userAuthToken
 			);
-			if (response.Fault) {
-				const code = response.Fault.Detail.Error.Code;
-				const allowedCodes = ['service.PERM_DENIED', 'account.NO_SUCH_ACCOUNT', 'service.INVALID_REQUEST', 'service.PARSE_ERROR'];
+			assert.isString(response.Fault.Detail.Error.Code, `Should fault for id="${id}"`);
+			const code = response.Fault.Detail.Error.Code;
+			const allowedCodes = ['service.PERM_DENIED', 'account.NO_SUCH_ACCOUNT', 'service.INVALID_REQUEST', 'service.PARSE_ERROR'];
 
-				// Verify response
-				assert.isTrue(allowedCodes.some(c => code.includes(c)),
-					`Should be an expected error for id="${id}", got: ${code}`);
-			} else {
-				assert.notExists(response.Fault, 'Response should not be a Fault');
-				assert.exists(response.GetAccountInfoResponse,
-					`Unexpected success for id="${id}"`);
-			}
+			// Verify response
+			assert.isTrue(allowedCodes.some(c => code.includes(c)),
+				`Should be an expected error for id="${id}", got: ${code}`);
 		}
 	});
 
@@ -242,7 +226,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault);
+		assert.isString(response.Fault.Detail.Error.Code, 'Should return fault');
 
 		const code = response.Fault.Detail.Error.Code;
 
@@ -260,7 +244,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault);
+		assert.isString(response.Fault.Detail.Error.Code, 'Should return fault');
 
 		const code = response.Fault.Detail.Error.Code;
 
@@ -278,7 +262,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault);
+		assert.isString(response.Fault.Detail.Error.Code, 'Should return fault');
 
 		const code = response.Fault.Detail.Error.Code;
 
@@ -296,7 +280,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault);
+		assert.isString(response.Fault.Detail.Error.Code, 'Should return fault');
 
 		const code = response.Fault.Detail.Error.Code;
 
@@ -319,7 +303,7 @@ describe('Admin > Accounts > Account Getinfo', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should return fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Should return fault');
 		const code = response.Fault.Detail.Error.Code;
 
 		// Verify response
@@ -338,10 +322,8 @@ describe('Admin > Accounts > Account Getinfo', function () {
 		);
 
 		// Verify response
-		assert.isTrue(!!response.GetAccountInfoResponse || !!response.Fault, 'Expected fault or success');
-		if (response.Fault && response.Fault.Detail && response.Fault.Detail.Error) {
-			assert.include(response.Fault.Detail.Error.Code, 'service.PERM_DENIED');
-		}
+		assert.notExists(response.Fault, 'GetAccountInfoRequest should not fault');
+		assert.exists(response.GetAccountInfoResponse.name, 'GetAccountInfoResponse name should exist');
 	});
 
 
@@ -357,8 +339,6 @@ describe('Admin > Accounts > Account Getinfo', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.GetAccountInfoResponse,
-			'GetAccountInfoResponse should exist');
 		assert.exists(response.GetAccountInfoResponse.name,
 			'GetAccountInfoResponse should have name');
 

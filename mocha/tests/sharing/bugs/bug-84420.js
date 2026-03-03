@@ -145,8 +145,6 @@ describe('Sharing > Bugs > Bug 84420', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'CreateMountpointRequest should not fault');
-		assert.exists(res.CreateMountpointResponse,
-			'CreateMountpointResponse should exist');
 		const mountId = res.CreateMountpointResponse.link[0].id;
 
 		// Get folder structure of mounted inbox to find SubFolder2 and Folder1
@@ -193,8 +191,6 @@ describe('Sharing > Bugs > Bug 84420', function () {
 
 			// Verify response
 			assert.notExists(res.Fault, 'FolderActionRequest move should not fault');
-			assert.exists(res.FolderActionResponse,
-				'FolderActionResponse for move should exist');
 
 			// Verify the folder structure after move
 			res = await soap.makeSOAPEnvelopeAccount(

@@ -46,8 +46,6 @@ describe('General > Get All Locales Request', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.GetAllLocalesResponse,
-			'GetAllLocalesResponse should exist');
 		const locales = Array.isArray(res.GetAllLocalesResponse.locale)
 			? res.GetAllLocalesResponse.locale : [res.GetAllLocalesResponse.locale];
 		const enUS = locales.find(l => l.id === 'en_US');

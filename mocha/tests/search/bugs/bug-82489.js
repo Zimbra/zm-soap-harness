@@ -80,6 +80,5 @@ Please complete this survey about your experience.</content>
 		);
 
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 	});
 });

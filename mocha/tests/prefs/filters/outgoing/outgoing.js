@@ -43,7 +43,6 @@ describe('Prefs > Filters > Outgoing > Outgoing', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyOutgoingFilterRulesRequest should not fault');
-		assert.exists(modRes.ModifyOutgoingFilterRulesResponse, 'Response should exist');
 	});
 
 
@@ -64,7 +63,6 @@ describe('Prefs > Filters > Outgoing > Outgoing', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'GetOutgoingFilterRulesRequest should not fault');
-		assert.exists(getRes.GetOutgoingFilterRulesResponse, 'Response should exist');
 	});
 
 

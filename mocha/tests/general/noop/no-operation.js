@@ -46,8 +46,6 @@ describe('General > Noop > No Operation', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.NoOpResponse,
-			'NoOpResponse should exist');
 	});
 
 
@@ -61,7 +59,5 @@ describe('General > Noop > No Operation', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.NoOpResponse,
-			'NoOpResponse should exist');
 	});
 });

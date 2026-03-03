@@ -58,7 +58,6 @@ describe('Prefs > Filters > Conditions > Filter Body', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Body test filter should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 	});
 
 

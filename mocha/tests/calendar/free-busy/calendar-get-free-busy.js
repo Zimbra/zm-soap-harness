@@ -88,7 +88,7 @@ describe('Calendar > Free Busy > Calendar Get Free Busy', function () {
 				s="calendar.blank" e="calendar.blank"
 				uid="${acct1.id}"/>`, acct1.token
         );
-        assert.exists(res.Fault, 'Should fault for blank s/e');
+        assert.isString(res.Fault.Detail.Error.Code, 'Should fault for blank s/e');
     });
 
 
@@ -98,7 +98,7 @@ describe('Calendar > Free Busy > Calendar Get Free Busy', function () {
 				s="some text" e="some text"
 				uid="${acct1.id}"/>`, acct1.token
         );
-        assert.exists(res.Fault, 'Should fault for text s/e');
+        assert.isString(res.Fault.Detail.Error.Code, 'Should fault for text s/e');
     });
 
 
@@ -110,7 +110,7 @@ describe('Calendar > Free Busy > Calendar Get Free Busy', function () {
 				s="${big}" e="${big}"
 				uid="${acct1.id}"/>`, acct1.token
         );
-        assert.exists(res.Fault, 'Should fault for large values');
+        assert.isString(res.Fault.Detail.Error.Code, 'Should fault for large values');
     });
 
 

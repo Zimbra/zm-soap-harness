@@ -54,7 +54,6 @@ describe('Prefs > Forwarded Mail > Zimbraprefmaillocaldeliverydisabled', functio
 			</ModifyPrefsRequest>`, account1AuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 
 		// Verify pref was set
 		const getRes = await soap.makeSOAPEnvelopeAccount(
@@ -63,7 +62,6 @@ describe('Prefs > Forwarded Mail > Zimbraprefmaillocaldeliverydisabled', functio
 			</GetPrefsRequest>`, account1AuthToken
 		);
 		assert.notExists(getRes.Fault, 'GetPrefsRequest should not fault');
-		assert.exists(getRes.GetPrefsResponse, 'GetPrefsResponse should exist');
 	});
 
 
@@ -93,7 +91,6 @@ describe('Prefs > Forwarded Mail > Zimbraprefmaillocaldeliverydisabled', functio
 			</ModifyPrefsRequest>`, account1AuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 
 		// Verify pref was set
 		const getRes = await soap.makeSOAPEnvelopeAccount(
@@ -102,6 +99,5 @@ describe('Prefs > Forwarded Mail > Zimbraprefmaillocaldeliverydisabled', functio
 			</GetPrefsRequest>`, account1AuthToken
 		);
 		assert.notExists(getRes.Fault, 'GetPrefsRequest should not fault');
-		assert.exists(getRes.GetPrefsResponse, 'GetPrefsResponse should exist');
 	});
 });

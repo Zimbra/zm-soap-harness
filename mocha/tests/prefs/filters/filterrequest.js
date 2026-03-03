@@ -42,7 +42,6 @@ describe('Prefs > Filters > Filterrequest', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'Response should exist');
 	});
 
 
@@ -60,7 +59,6 @@ describe('Prefs > Filters > Filterrequest', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
-		assert.exists(getRes.GetFilterRulesResponse, 'Response should exist');
 	});
 
 

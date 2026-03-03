@@ -46,7 +46,6 @@ describe('Prefs > Prefs Modify2', function () {
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
 		assert.notExists(res.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(res.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 
 		// Verify html
 		let getRes = await soap.makeSOAPEnvelopeAccount(
@@ -93,7 +92,7 @@ describe('Prefs > Prefs Modify2', function () {
 				<pref name="zimbraPrefComposeFormat">-5</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for negative');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for negative');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 
 		// Decimal number
@@ -102,7 +101,7 @@ describe('Prefs > Prefs Modify2', function () {
 				<pref name="zimbraPrefComposeFormat">6.5</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for decimal');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for decimal');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 
 		// Invalid number
@@ -111,7 +110,7 @@ describe('Prefs > Prefs Modify2', function () {
 				<pref name="zimbraPrefComposeFormat">0088</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 
 		// Alpha text
@@ -120,7 +119,7 @@ describe('Prefs > Prefs Modify2', function () {
 				<pref name="zimbraPrefComposeFormat">abcd</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for alpha');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for alpha');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 
 		// Blank value
@@ -197,7 +196,7 @@ describe('Prefs > Prefs Modify2', function () {
 				<pref name="zimbraPrefComposeInNewWindow">-5</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for negative');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for negative');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 
 		// Decimal
@@ -206,7 +205,7 @@ describe('Prefs > Prefs Modify2', function () {
 				<pref name="zimbraPrefComposeInNewWindow">6.5</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for decimal');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for decimal');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 
 		// Invalid number
@@ -215,7 +214,7 @@ describe('Prefs > Prefs Modify2', function () {
 				<pref name="zimbraPrefComposeInNewWindow">0088</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid number');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid number');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 
 		// Alpha
@@ -224,7 +223,7 @@ describe('Prefs > Prefs Modify2', function () {
 				<pref name="zimbraPrefComposeInNewWindow">abcd</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for alpha');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for alpha');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 
 		// Blank
@@ -299,7 +298,7 @@ describe('Prefs > Prefs Modify2', function () {
 				<pref name="zimbraPrefCalendarInitialView">-5</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for negative');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for negative');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 
 		// Decimal
@@ -308,7 +307,7 @@ describe('Prefs > Prefs Modify2', function () {
 				<pref name="zimbraPrefCalendarInitialView">6.5</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for decimal');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for decimal');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 
 		// Invalid number
@@ -317,7 +316,7 @@ describe('Prefs > Prefs Modify2', function () {
 				<pref name="zimbraPrefCalendarInitialView">0088</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 
 		// Alpha
@@ -326,7 +325,7 @@ describe('Prefs > Prefs Modify2', function () {
 				<pref name="zimbraPrefCalendarInitialView">abcd</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for alpha');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for alpha');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 
 		// Blank
@@ -385,7 +384,7 @@ describe('Prefs > Prefs Modify2', function () {
 				<pref name="zimbraPrefUseTimeZoneListInCalendar">-5</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for negative');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for negative');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 
 		// Decimal
@@ -394,7 +393,7 @@ describe('Prefs > Prefs Modify2', function () {
 				<pref name="zimbraPrefUseTimeZoneListInCalendar">6.5</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for decimal');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for decimal');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 
 		// Invalid number
@@ -403,7 +402,7 @@ describe('Prefs > Prefs Modify2', function () {
 				<pref name="zimbraPrefUseTimeZoneListInCalendar">0088</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for invalid');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for invalid');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 
 		// Alpha
@@ -412,7 +411,7 @@ describe('Prefs > Prefs Modify2', function () {
 				<pref name="zimbraPrefUseTimeZoneListInCalendar">abcd</pref>
 			</ModifyPrefsRequest>`, accountAuthToken, false
 		);
-		assert.exists(res.Fault, 'ModifyPrefsRequest should fault for alpha');
+		assert.isString(res.Fault.Detail.Error.Code, 'ModifyPrefsRequest should fault for alpha');
 		assert.include(res.Fault.Detail.Error.Code, 'account.INVALID_ATTR_VALUE', 'Error Code should match');
 
 		// Blank

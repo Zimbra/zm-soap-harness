@@ -66,7 +66,6 @@ simple text string in the body
 
 		// Verify the message was found
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		assert.exists(searchRes.SearchResponse.m, 'Message should exist in search results');
 	});
 });

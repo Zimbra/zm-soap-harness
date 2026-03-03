@@ -57,8 +57,6 @@ describe('General > Password > Passwd Basic', function () {
 
 		// Verify response
 		assert.notExists(changeRes.Fault, 'ChangePasswordRequest should not fault');
-		assert.exists(changeRes.ChangePasswordResponse,
-			'ChangePasswordResponse should exist');
 		await new Promise(resolve => setTimeout(resolve, 10000));
 
 		// Authenticate account

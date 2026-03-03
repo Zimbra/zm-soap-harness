@@ -68,12 +68,8 @@ describe('Contacts > Bugs > Get Contacts ZCS 6232', function () {
 				<cn id="999999999"/>
 			</GetContactsRequest>`, account1Token, false
 		);
-		if (getRes.Fault) {
 
-			// Verify response
-			assert.exists(getRes.Fault, 'Invalid id should return Fault');
-		} else {
-			assert.exists(getRes.GetContactsResponse, 'Response should exist');
-		}
+		// Verify response
+		assert.isString(getRes.Fault.Detail.Error.Code, 'Invalid id should return Fault');
 	});
 });

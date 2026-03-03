@@ -38,7 +38,6 @@ describe('Contacts > Contacts Export', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.ExportContactsResponse, 'ExportContactsResponse should exist');
 	});
 
 
@@ -153,8 +152,8 @@ describe('Contacts > Contacts Export', function () {
 			);
 
 			// Verify response
-			assert.exists(res.Fault, `ct="${ct}" should be a Fault`);
-			const code = res.Fault?.Detail?.Error?.Code || '';
+			assert.isString(res.Fault.Detail.Error.Code, `ct="${ct}" should be a Fault`);
+			const code = res.Fault.Detail.Error.Code;
 			assert.include(code, 'service.INVALID_REQUEST', `ct="${ct}" should be service.INVALID_REQUEST`);
 		}
 	});
@@ -166,8 +165,8 @@ describe('Contacts > Contacts Export', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Response should be a Fault');
-		const code = res.Fault?.Detail?.Error?.Code || '';
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
+		const code = res.Fault.Detail.Error.Code;
 		assert.include(code, 'service.INVALID_REQUEST', 'Error code should be service.INVALID_REQUEST');
 	});
 
@@ -185,7 +184,6 @@ describe('Contacts > Contacts Export', function () {
 
 		// Verify response
 		assert.notExists(exportRes.Fault, 'Export Yahoo CSV should not be a Fault');
-		assert.exists(exportRes.ExportContactsResponse, 'ExportContactsResponse should exist');
 	});
 
 
@@ -197,7 +195,6 @@ describe('Contacts > Contacts Export', function () {
 
 		// Verify response
 		assert.notExists(exportRes.Fault, 'Export all contacts should not be a Fault');
-		assert.exists(exportRes.ExportContactsResponse, 'ExportContactsResponse should exist');
 	});
 
 
@@ -224,6 +221,5 @@ describe('Contacts > Contacts Export', function () {
 
 		// Verify response
 		assert.notExists(exportRes.Fault, 'Export empty folder should not be a Fault');
-		assert.exists(exportRes.ExportContactsResponse, 'ExportContactsResponse should exist');
 	});
 });

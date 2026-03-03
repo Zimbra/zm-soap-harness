@@ -295,7 +295,7 @@ simple text string in the body</content>
 				<mbox id="${acct.id}"/>
 			</PurgeMessagesRequest>`, adminAuthToken, null, false
         );
-        assert.exists(purgeRes.Fault, 'PurgeMessagesRequest should fault for deleted account');
+        assert.isString(purgeRes.Fault.Detail.Error.Code, 'PurgeMessagesRequest should fault for deleted account');
         assert.include(purgeRes.Fault.Detail.Error.Code, 'account.NO_SUCH_ACCOUNT');
     });
 });

@@ -237,7 +237,7 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 		);
 
 		// Verify response
-		assert.exists(domRes.Fault,
+		assert.isString(domRes.Fault.Detail.Error.Code,
 			'Domain create with zimbraCalendarReminderDeviceEmail should fault');
 
 		// Create domain normally
@@ -258,7 +258,7 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 		);
 
 		// Verify response
-		assert.exists(modDomRes.Fault,
+		assert.isString(modDomRes.Fault.Detail.Error.Code,
 			'Domain modify with zimbraCalendarReminderDeviceEmail should fault');
 
 		// Create COS and try to modify with zimbraCalendarReminderDeviceEmail - should fail
@@ -282,7 +282,7 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 		);
 
 		// Verify response
-		assert.exists(modCosRes.Fault,
+		assert.isString(modCosRes.Fault.Detail.Error.Code,
 			'COS modify with zimbraCalendarReminderDeviceEmail should fault');
 
 		// Create COS with zimbraCalendarReminderDeviceEmail should fail
@@ -294,7 +294,7 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 		);
 
 		// Verify response
-		assert.exists(cosRes2.Fault,
+		assert.isString(cosRes2.Fault.Detail.Error.Code,
 			'COS create with zimbraCalendarReminderDeviceEmail should fault');
 	});
 });

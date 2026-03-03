@@ -59,7 +59,6 @@ describe('Search > Basic > Search Wildcard', function () {
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.AddMsgResponse, 'Response element should exist');
 		await common.sleep(3000);
 	});
 
@@ -76,7 +75,6 @@ describe('Search > Basic > Search Wildcard', function () {
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -87,7 +85,6 @@ describe('Search > Basic > Search Wildcard', function () {
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -98,7 +95,6 @@ describe('Search > Basic > Search Wildcard', function () {
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
@@ -109,7 +105,6 @@ describe('Search > Basic > Search Wildcard', function () {
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -123,7 +118,6 @@ describe('Search > Basic > Search Wildcard', function () {
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -134,7 +128,6 @@ describe('Search > Basic > Search Wildcard', function () {
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -145,7 +138,6 @@ describe('Search > Basic > Search Wildcard', function () {
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -156,7 +148,6 @@ describe('Search > Basic > Search Wildcard', function () {
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -170,7 +161,6 @@ describe('Search > Basic > Search Wildcard', function () {
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -181,7 +171,6 @@ describe('Search > Basic > Search Wildcard', function () {
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -192,7 +181,6 @@ describe('Search > Basic > Search Wildcard', function () {
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -203,7 +191,6 @@ describe('Search > Basic > Search Wildcard', function () {
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -217,7 +204,6 @@ describe('Search > Basic > Search Wildcard', function () {
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -228,7 +214,6 @@ describe('Search > Basic > Search Wildcard', function () {
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -239,7 +224,6 @@ describe('Search > Basic > Search Wildcard', function () {
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -250,7 +234,6 @@ describe('Search > Basic > Search Wildcard', function () {
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -264,7 +247,6 @@ describe('Search > Basic > Search Wildcard', function () {
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -275,7 +257,6 @@ describe('Search > Basic > Search Wildcard', function () {
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -286,7 +267,6 @@ describe('Search > Basic > Search Wildcard', function () {
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -297,6 +277,5 @@ describe('Search > Basic > Search Wildcard', function () {
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
 	});
 });

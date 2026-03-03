@@ -51,7 +51,7 @@ describe('General > Password > History Password', function () {
 		);
 
 		// Verify response
-		assert.exists(changeRes.Fault, 'Should fail - password recently used');
+		assert.isString(changeRes.Fault.Detail.Error.Code, 'Should fail - password recently used');
 		assert.include(changeRes.Fault.Detail.Error.Code,
 			'account.PASSWORD_RECENTLY_USED',
 			'Error code should be PASSWORD_RECENTLY_USED');
@@ -120,7 +120,7 @@ describe('General > Password > History Password', function () {
 		);
 
 		// Verify response
-		assert.exists(reuseRes.Fault, 'Should fail - password recently used');
+		assert.isString(reuseRes.Fault.Detail.Error.Code, 'Should fail - password recently used');
 	});
 
 
@@ -231,7 +231,7 @@ describe('General > Password > History Password', function () {
 		);
 
 		// Verify response
-		assert.exists(reuseRes.Fault,
+		assert.isString(reuseRes.Fault.Detail.Error.Code,
 			'Should fail - password within last 3 history');
 	});
 

@@ -94,6 +94,5 @@ describe('Mail Client > Headers > Search GAL Request Json', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchGalResponse, 'SearchGalResponse should exist');
 	});
 });

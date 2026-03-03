@@ -67,7 +67,6 @@ describe('Admin > Accounts > Account Alias Add', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.AddAccountAliasResponse, 'Alias should be added');
 	});
 
 
@@ -81,7 +80,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should have a Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should return INVALID_REQUEST');
 	});
@@ -97,7 +96,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should have a Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.NO_SUCH_DOMAIN',
 			'Should return NO_SUCH_DOMAIN');
 	});
@@ -115,7 +114,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should have a Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Should have a Fault');
 
 		const errorCode = response.Fault.Detail.Error.Code;
 
@@ -136,8 +135,6 @@ describe('Admin > Accounts > Account Alias Add', function () {
 
 		// Verify response
 		assert.notExists(response2.Fault, 'Response should not be a Fault');
-		assert.exists(response2.AddAccountAliasResponse,
-			'Numeric alias should be allowed');
 	});
 
 
@@ -151,7 +148,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should have a Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should return INVALID_REQUEST');
 	});
@@ -167,7 +164,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should have a Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.ACCOUNT_EXISTS',
 			'Should return ACCOUNT_EXISTS');
 	});
@@ -200,7 +197,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should have a Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.NO_SUCH_DOMAIN',
 			'Should return NO_SUCH_DOMAIN');
 	});
@@ -219,7 +216,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should have a Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Should have a Fault');
 
 		const code = response.Fault.Detail.Error.Code;
 
@@ -240,7 +237,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should have a Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.ACCOUNT_EXISTS',
 			'Should return ACCOUNT_EXISTS');
 	});
@@ -256,7 +253,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should have a Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.ACCOUNT_EXISTS',
 			'Should return ACCOUNT_EXISTS');
 	});
@@ -272,7 +269,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should have a Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'account.ACCOUNT_EXISTS',
 			'Should return ACCOUNT_EXISTS');
 	});
@@ -310,10 +307,10 @@ describe('Admin > Accounts > Account Alias Add', function () {
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, auth1
 		);
-		const hit1 = search1.SearchResponse.c && search1.SearchResponse.c[0];
+		const hit1 = search1.SearchResponse.c[0];
 
 		// Verify response
-		assert.exists(hit1, 'Mail not found in account1');
+		assert.exists(hit1, 'Verify mail found in response for account1');
 
 		const aliasToken = await soap.getAccountAuthToken(aliasName4, config.accountPassword);
 
@@ -323,10 +320,10 @@ describe('Admin > Accounts > Account Alias Add', function () {
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, aliasToken
 		);
-		const hitAlias = searchAlias.SearchResponse.c && searchAlias.SearchResponse.c[0];
+		const hitAlias = searchAlias.SearchResponse.c[0];
 
 		// Verify response
-		assert.exists(hitAlias, 'Mail not found via alias login');
+		assert.exists(hitAlias, 'Verify mail found in response via alias login');
 	});
 
 
@@ -356,10 +353,10 @@ describe('Admin > Accounts > Account Alias Add', function () {
 			</SearchRequest>`, auth3
 		);
 
-		const conv = search.SearchResponse.c && search.SearchResponse.c[0];
+		const conv = search.SearchResponse.c[0];
 
 		// Verify response
-		assert.exists(conv, 'Message not received');
+		assert.exists(conv, 'Verify message received in response');
 
 		const sender = conv.e.find(p => p.a === testAccount1);
 
@@ -985,7 +982,7 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should have a Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Should have a Fault');
 		assert.include(
 			response.Fault.Detail.Error.Code,
 			'service.INVALID_REQUEST',

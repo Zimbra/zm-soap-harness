@@ -162,7 +162,7 @@ describe('Mail Client > Auth > Auth Active Directory', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Should return Fault for invalid password');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return Fault for invalid password');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Error code should be AUTH_FAILED');
 	});
@@ -177,7 +177,7 @@ describe('Mail Client > Auth > Auth Active Directory', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Should return Fault for internal password');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return Fault for internal password');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Error code should be AUTH_FAILED');
 	});
@@ -192,7 +192,7 @@ describe('Mail Client > Auth > Auth Active Directory', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Should return Fault for invalid password');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return Fault for invalid password');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Error code should be AUTH_FAILED');
 	});
@@ -207,7 +207,7 @@ describe('Mail Client > Auth > Auth Active Directory', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Should return Fault for invalid password');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return Fault for invalid password');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Error code should be AUTH_FAILED');
 	});
@@ -222,8 +222,8 @@ describe('Mail Client > Auth > Auth Active Directory', function () {
 		);
 
 		// Verify response
-		assert.isTrue(!!res.AuthResponse || !!res.Fault,
-			'Should get AuthResponse or AUTH_FAILED');
+		assert.notExists(res.Fault, 'AuthRequest should not fault');
+		assert.exists(res.AuthResponse.authToken, 'authToken should exist');
 	});
 
 
@@ -236,7 +236,7 @@ describe('Mail Client > Auth > Auth Active Directory', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Should return Fault for invalid password');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return Fault for invalid password');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Error code should be AUTH_FAILED');
 	});
@@ -251,7 +251,7 @@ describe('Mail Client > Auth > Auth Active Directory', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Should return Fault for internal password');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return Fault for internal password');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Error code should be AUTH_FAILED');
 	});
@@ -266,7 +266,7 @@ describe('Mail Client > Auth > Auth Active Directory', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Should return Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Error code should be AUTH_FAILED');
 	});

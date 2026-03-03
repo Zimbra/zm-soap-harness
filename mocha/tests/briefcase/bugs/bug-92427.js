@@ -24,7 +24,9 @@ describe('Briefcase > Bugs > Bug 92427', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse, 'Should create account');
+		const acct = Array.isArray(createRes.CreateAccountResponse.account)
+			? createRes.CreateAccountResponse.account[0] : createRes.CreateAccountResponse.account;
+		assert.exists(acct.id, 'Account ID should exist');
 
 		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
@@ -36,7 +38,7 @@ describe('Briefcase > Bugs > Bug 92427', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 
 		account1Token = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
@@ -71,7 +73,7 @@ describe('Briefcase > Bugs > Bug 92427', function () {
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		const createdFolder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
-		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
+		assert.exists(createdFolder.id, 'folder id should exist');
 		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
 		const folderId = folder.id;
@@ -87,7 +89,6 @@ describe('Briefcase > Bugs > Bug 92427', function () {
 
 		// Verify response
 		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
-		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		// Share folder to public
 		const shareRes = await soap.makeSOAPEnvelopeAccount(
@@ -102,6 +103,6 @@ describe('Briefcase > Bugs > Bug 92427', function () {
 		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
 		const folderAction = Array.isArray(shareRes.FolderActionResponse.action)
 			? shareRes.FolderActionResponse.action[0] : shareRes.FolderActionResponse.action;
-		assert.exists(folderAction, 'FolderActionResponse should contain action');
+		assert.equal(folderAction.op, 'grant', 'op should be grant');
 	});
 });

@@ -126,7 +126,7 @@ describe('General > Password > Lockout Password', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Should login with valid password');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes.AuthResponse.authToken, 'AuthResponse should exist');
 	});
 
 
@@ -385,7 +385,7 @@ describe('General > Password > Lockout Password', function () {
 		);
 
 		// Verify response
-		assert.exists(authRes.Fault, 'Should fail - account is locked out');
+		assert.isString(authRes.Fault.Detail.Error.Code, 'Should fail - account is locked out');
 	});
 
 
@@ -644,6 +644,5 @@ describe('General > Password > Lockout Password', function () {
 
 		// Verify response
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should succeed to locked account');
-		assert.exists(sendRes.SendMsgResponse, 'Message should be sent');
 	});
 });

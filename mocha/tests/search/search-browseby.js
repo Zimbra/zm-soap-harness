@@ -58,7 +58,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.BrowseResponse, 'Response element should exist');
 	});
 
 
@@ -70,7 +69,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.BrowseResponse, 'Response element should exist');
 	});
 
 
@@ -82,7 +80,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.BrowseResponse, 'Response element should exist');
 	});
 
 

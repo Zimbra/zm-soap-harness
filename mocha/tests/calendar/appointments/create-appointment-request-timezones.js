@@ -186,14 +186,8 @@ describe('Calendar > Appointments > Create Appointment Request Timezones', funct
 			</CreateAppointmentRequest>`, accountToken
         );
 
-        // Invalid timezone may cause fault or create with fallback
-        if (createRes.Fault) {
-            assert.exists(createRes.Fault, 'Invalid timezone should fault');
-        } else {
-            assert.exists(
-                createRes.CreateAppointmentResponse,
-                'Response should exist even with invalid timezone'
-            );
-        }
+        // Invalid timezone causes a fault on the server
+        assert.exists(createRes.Fault, 'CreateAppointmentRequest with invalid timezone should fault');
+        assert.isString(createRes.Fault.Detail.Error.Code, 'Fault error Code should be a string');
     });
 });

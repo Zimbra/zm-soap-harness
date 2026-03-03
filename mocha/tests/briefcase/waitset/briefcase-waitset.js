@@ -71,8 +71,6 @@ describe('Briefcase > Waitset > Briefcase Waitset', function () {
 
 		// Verify response
 		assert.notExists(createWS.Fault, 'Response should not be a Fault');
-		assert.exists(createWS.CreateWaitSetResponse,
-			'CreateWaitSetResponse should exist');
 		const wsId = createWS.CreateWaitSetResponse.waitSet;
 		const seq = createWS.CreateWaitSetResponse.seq;
 
@@ -99,7 +97,7 @@ describe('Briefcase > Waitset > Briefcase Waitset', function () {
 
 		// Verify response
 		assert.notExists(waitRes.Fault, 'Response should not be a Fault');
-		assert.exists(waitRes.WaitSetResponse, 'WaitSetResponse should exist');
+		assert.exists(waitRes.WaitSetResponse.seq, 'WaitSetResponse seq should exist');
 
 		// Destroy waitset
 		const destroyRes = await soap.makeSOAPEnvelopeAccount(
@@ -108,8 +106,6 @@ describe('Briefcase > Waitset > Briefcase Waitset', function () {
 
 		// Verify response
 		assert.notExists(destroyRes.Fault, 'Response should not be a Fault');
-		assert.exists(destroyRes.DestroyWaitSetResponse,
-			'DestroyWaitSetResponse should exist');
 	});
 
 
@@ -125,8 +121,6 @@ describe('Briefcase > Waitset > Briefcase Waitset', function () {
 
 		// Verify response
 		assert.notExists(createWS.Fault, 'Response should not be a Fault');
-		assert.exists(createWS.CreateWaitSetResponse,
-			'CreateWaitSetResponse should exist');
 		const wsId = createWS.CreateWaitSetResponse.waitSet;
 		const seq = createWS.CreateWaitSetResponse.seq;
 
@@ -152,7 +146,7 @@ describe('Briefcase > Waitset > Briefcase Waitset', function () {
 
 		// Verify response
 		assert.notExists(waitRes.Fault, 'Response should not be a Fault');
-		assert.exists(waitRes.WaitSetResponse, 'WaitSetResponse should exist');
+		assert.exists(waitRes.WaitSetResponse.seq, 'WaitSetResponse seq should exist');
 
 		// Modify document
 		await soap.makeSOAPEnvelopeAccount(
@@ -173,7 +167,7 @@ describe('Briefcase > Waitset > Briefcase Waitset', function () {
 
 		// Verify response
 		assert.notExists(waitRes2.Fault, 'Response should not be a Fault');
-		assert.exists(waitRes2.WaitSetResponse, 'WaitSetResponse should exist');
+		assert.exists(waitRes2.WaitSetResponse.seq, 'WaitSetResponse seq should exist');
 
 		// Cleanup
 		await soap.makeSOAPEnvelopeAccount(
@@ -194,8 +188,6 @@ describe('Briefcase > Waitset > Briefcase Waitset', function () {
 
 		// Verify response
 		assert.notExists(createWS.Fault, 'Response should not be a Fault');
-		assert.exists(createWS.CreateWaitSetResponse,
-			'CreateWaitSetResponse should exist');
 		const wsId = createWS.CreateWaitSetResponse.waitSet;
 		const seq = createWS.CreateWaitSetResponse.seq;
 
@@ -228,7 +220,7 @@ describe('Briefcase > Waitset > Briefcase Waitset', function () {
 
 		// Verify response
 		assert.notExists(waitRes.Fault, 'Response should not be a Fault');
-		assert.exists(waitRes.WaitSetResponse, 'WaitSetResponse should exist');
+		assert.exists(waitRes.WaitSetResponse.seq, 'WaitSetResponse seq should exist');
 
 		// Cleanup
 		await soap.makeSOAPEnvelopeAccount(

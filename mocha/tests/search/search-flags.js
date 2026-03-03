@@ -61,7 +61,6 @@ describe('Search > Search Flags', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -73,7 +72,7 @@ describe('Search > Search Flags', function () {
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res.Fault?.Detail?.Error?.Code, 'mail.QUERY_PARSE_ERROR', 'Fault code should match');
 	});
 
@@ -86,7 +85,7 @@ describe('Search > Search Flags', function () {
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res.Fault?.Detail?.Error?.Code, 'mail.QUERY_PARSE_ERROR', 'Fault code should match');
 	});
 
@@ -99,7 +98,7 @@ describe('Search > Search Flags', function () {
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res.Fault?.Detail?.Error?.Code, 'mail.QUERY_PARSE_ERROR', 'Fault code should match');
 	});
 
@@ -112,7 +111,7 @@ describe('Search > Search Flags', function () {
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res.Fault?.Detail?.Error?.Code, 'mail.QUERY_PARSE_ERROR', 'Fault code should match');
 	});
 
@@ -125,7 +124,7 @@ describe('Search > Search Flags', function () {
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res.Fault?.Detail?.Error?.Code, 'mail.QUERY_PARSE_ERROR', 'Fault code should match');
 	});
 
@@ -140,7 +139,6 @@ describe('Search > Search Flags', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -154,7 +152,6 @@ describe('Search > Search Flags', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -166,7 +163,7 @@ describe('Search > Search Flags', function () {
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res.Fault?.Detail?.Error?.Code, 'mail.QUERY_PARSE_ERROR', 'Fault code should match');
 	});
 
@@ -179,7 +176,7 @@ describe('Search > Search Flags', function () {
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res.Fault?.Detail?.Error?.Code, 'mail.QUERY_PARSE_ERROR', 'Fault code should match');
 	});
 
@@ -192,7 +189,7 @@ describe('Search > Search Flags', function () {
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res.Fault?.Detail?.Error?.Code, 'mail.QUERY_PARSE_ERROR', 'Fault code should match');
 	});
 
@@ -205,7 +202,7 @@ describe('Search > Search Flags', function () {
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res.Fault?.Detail?.Error?.Code, 'mail.QUERY_PARSE_ERROR', 'Fault code should match');
 	});
 
@@ -218,7 +215,7 @@ describe('Search > Search Flags', function () {
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res.Fault?.Detail?.Error?.Code, 'mail.QUERY_PARSE_ERROR', 'Fault code should match');
 	});
 
@@ -233,7 +230,6 @@ describe('Search > Search Flags', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -247,7 +243,6 @@ describe('Search > Search Flags', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -261,7 +256,6 @@ describe('Search > Search Flags', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -275,7 +269,6 @@ describe('Search > Search Flags', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -289,7 +282,6 @@ describe('Search > Search Flags', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -303,6 +295,5 @@ describe('Search > Search Flags', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 });

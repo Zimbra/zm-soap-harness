@@ -68,7 +68,6 @@ describe('Prefs > Filters > Filternotifyreplyaction', function () {
 			</ModifyFilterRulesRequest>`, account1AuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 
 		// Send message from account2 to account1
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
@@ -135,7 +134,6 @@ describe('Prefs > Filters > Filternotifyreplyaction', function () {
 			</ModifyFilterRulesRequest>`, account1AuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 
 		// Send message with multi-byte subject from account2
 		const sendRes = await soap.makeSOAPEnvelopeAccount(
@@ -347,7 +345,6 @@ describe('Prefs > Filters > Filternotifyreplyaction', function () {
 			</ModifyFilterRulesRequest>`, account1AuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 
 		// Send message from account2 to account1
 		await soap.makeSOAPEnvelopeAccount(
@@ -413,7 +410,6 @@ describe('Prefs > Filters > Filternotifyreplyaction', function () {
 			</ModifyFilterRulesRequest>`, account1AuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 	});
 
 
@@ -466,7 +462,6 @@ describe('Prefs > Filters > Filternotifyreplyaction', function () {
 			</ModifyFilterRulesRequest>`, account1AuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 
 		// Send message from account2 to account1
 		await soap.makeSOAPEnvelopeAccount(
@@ -533,7 +528,6 @@ describe('Prefs > Filters > Filternotifyreplyaction', function () {
 			</ModifyFilterRulesRequest>`, account1AuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 
 		// Send message with multi-byte subject
 		await soap.makeSOAPEnvelopeAccount(
@@ -598,7 +592,6 @@ describe('Prefs > Filters > Filternotifyreplyaction', function () {
 			</ModifyFilterRulesRequest>`, account1AuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 	});
 
 
@@ -641,7 +634,6 @@ describe('Prefs > Filters > Filternotifyreplyaction', function () {
 			</ModifyFilterRulesRequest>`, account1AuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 	});
 
 

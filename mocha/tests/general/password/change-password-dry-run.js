@@ -87,7 +87,7 @@ describe('General > Password > Change Password Dry Run', function () {
 		);
 
 		// Verify response
-		assert.exists(changeRes.Fault, 'Should return Fault for invalid password');
+		assert.isString(changeRes.Fault.Detail.Error.Code, 'Should return Fault for invalid password');
 		assert.include(changeRes.Fault.Detail.Error.Code, 'account.INVALID_PASSWORD',
 			'Error code should be INVALID_PASSWORD');
 
@@ -100,7 +100,7 @@ describe('General > Password > Change Password Dry Run', function () {
 		);
 
 		// Verify response
-		assert.exists(verifyRes.Fault, 'Short password should not work');
+		assert.isString(verifyRes.Fault.Detail.Error.Code, 'Short password should not work');
 		assert.include(verifyRes.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 
 		// AuthRequest
@@ -164,7 +164,7 @@ describe('General > Password > Change Password Dry Run', function () {
 		);
 
 		// Verify response
-		assert.exists(dryRunRes.Fault, 'Should return Fault for password recently used');
+		assert.isString(dryRunRes.Fault.Detail.Error.Code, 'Should return Fault for password recently used');
 		assert.include(dryRunRes.Fault.Detail.Error.Code, 'account.PASSWORD_RECENTLY_USED',
 			'Error code should be PASSWORD_RECENTLY_USED');
 
@@ -177,7 +177,7 @@ describe('General > Password > Change Password Dry Run', function () {
 		);
 
 		// Verify response
-		assert.exists(verifyOldRes.Fault, 'Old password should not work');
+		assert.isString(verifyOldRes.Fault.Detail.Error.Code, 'Old password should not work');
 
 		// AuthRequest
 		const verifyCurRes = await soap.makeSOAPEnvelopeAccount(
@@ -216,7 +216,7 @@ describe('General > Password > Change Password Dry Run', function () {
 		);
 
 		// Verify response
-		assert.exists(numPuncRes.Fault, 'Should fault for insufficient digits/puncs');
+		assert.isString(numPuncRes.Fault.Detail.Error.Code, 'Should fault for insufficient digits/puncs');
 		assert.include(numPuncRes.Fault.Detail.Error.Code, 'account.INVALID_PASSWORD');
 
 		// Change password
@@ -230,7 +230,7 @@ describe('General > Password > Change Password Dry Run', function () {
 		);
 
 		// Verify response
-		assert.exists(upperRes.Fault, 'Should fault for insufficient uppercase');
+		assert.isString(upperRes.Fault.Detail.Error.Code, 'Should fault for insufficient uppercase');
 		assert.include(upperRes.Fault.Detail.Error.Code, 'account.INVALID_PASSWORD');
 
 		// Change password
@@ -244,7 +244,7 @@ describe('General > Password > Change Password Dry Run', function () {
 		);
 
 		// Verify response
-		assert.exists(lowerRes.Fault, 'Should fault for insufficient lowercase');
+		assert.isString(lowerRes.Fault.Detail.Error.Code, 'Should fault for insufficient lowercase');
 		assert.include(lowerRes.Fault.Detail.Error.Code, 'account.INVALID_PASSWORD');
 
 		// AuthRequest
@@ -256,7 +256,7 @@ describe('General > Password > Change Password Dry Run', function () {
 		);
 
 		// Verify response
-		assert.exists(verifyRes1.Fault, 'Invalid password should not work');
+		assert.isString(verifyRes1.Fault.Detail.Error.Code, 'Invalid password should not work');
 
 		// AuthRequest
 		const verifyRes2 = await soap.makeSOAPEnvelopeAccount(
@@ -267,7 +267,7 @@ describe('General > Password > Change Password Dry Run', function () {
 		);
 
 		// Verify response
-		assert.exists(verifyRes2.Fault, 'Invalid password should not work');
+		assert.isString(verifyRes2.Fault.Detail.Error.Code, 'Invalid password should not work');
 
 		// AuthRequest
 		const verifyRes3 = await soap.makeSOAPEnvelopeAccount(
@@ -278,7 +278,7 @@ describe('General > Password > Change Password Dry Run', function () {
 		);
 
 		// Verify response
-		assert.exists(verifyRes3.Fault, 'Invalid password should not work');
+		assert.isString(verifyRes3.Fault.Detail.Error.Code, 'Invalid password should not work');
 	});
 
 
@@ -317,7 +317,7 @@ describe('General > Password > Change Password Dry Run', function () {
 		);
 
 		// Verify response
-		assert.exists(verifyNewRes.Fault, 'DryRun password should not work');
+		assert.isString(verifyNewRes.Fault.Detail.Error.Code, 'DryRun password should not work');
 
 		// AuthRequest
 		const verifyOldRes = await soap.makeSOAPEnvelopeAccount(
@@ -342,7 +342,6 @@ describe('General > Password > Change Password Dry Run', function () {
 
 		// Verify response
 		assert.notExists(changeRes.Fault, 'ChangePasswordRequest should not fault');
-		assert.exists(changeRes.ChangePasswordResponse, 'ChangePasswordResponse should exist');
 
 		// AuthRequest
 		const finalRes = await soap.makeSOAPEnvelopeAccount(

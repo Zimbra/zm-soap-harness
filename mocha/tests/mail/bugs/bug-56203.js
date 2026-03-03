@@ -130,7 +130,7 @@ dGVzdA==
 		assert.notExists(fwdRes.Fault, 'SendMsgRequest forward should not fault');
 		const sentMsg = Array.isArray(fwdRes.SendMsgResponse.m)
 			? fwdRes.SendMsgResponse.m[0] : fwdRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Verify the forwarded message is received by account2

@@ -31,7 +31,6 @@ describe('DAV > Caldav Appointments', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
@@ -55,7 +54,7 @@ describe('DAV > Caldav Appointments', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes.AuthResponse.authToken, 'AuthResponse should exist');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 
 		account1Token = Array.isArray(authRes.AuthResponse.authToken)
@@ -118,7 +117,6 @@ END:VCALENDAR`,
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		// Verify via CalDAV REPORT (calendar-multiget)
 		const reportRes = await makeDavRequest({
@@ -169,7 +167,6 @@ END:VCALENDAR`,
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAppointmentResponse, 'Should create appointment');
 		const invId = createRes.CreateAppointmentResponse.invId
 			|| createRes.CreateAppointmentResponse.$.invId;
 
@@ -241,7 +238,6 @@ END:VCALENDAR`,
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const appt = searchRes.SearchResponse.appt;
 
 		// Verify response
@@ -274,7 +270,6 @@ END:VCALENDAR`,
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAppointmentResponse, 'Should create appointment');
 		const invId = createRes.CreateAppointmentResponse.invId
 			|| createRes.CreateAppointmentResponse.$.invId;
 
@@ -315,7 +310,6 @@ END:VCALENDAR`,
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const appt = searchRes.SearchResponse.appt;
 
 		// Verify response
@@ -330,7 +324,6 @@ END:VCALENDAR`,
 
 		// Verify response
 		assert.notExists(trashRes.Fault, 'Response should not be a Fault');
-		assert.exists(trashRes.SearchResponse, 'SearchResponse for Trash should exist');
 		const trashAppt = Array.isArray(trashRes.SearchResponse.appt)
 			? trashRes.SearchResponse.appt[0]
 			: trashRes.SearchResponse.appt;
@@ -367,7 +360,6 @@ END:VCALENDAR`,
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAppointmentResponse, 'Should create appointment');
 		const invId = createRes.CreateAppointmentResponse.invId
 			|| createRes.CreateAppointmentResponse.$.invId;
 
@@ -438,7 +430,6 @@ END:VCALENDAR`,
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAppointmentResponse, 'Should create appointment');
 		const invId = createRes.CreateAppointmentResponse.invId
 			|| createRes.CreateAppointmentResponse.$.invId;
 
@@ -495,7 +486,6 @@ END:VCALENDAR`,
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const appt = Array.isArray(searchRes.SearchResponse.appt)
 			? searchRes.SearchResponse.appt[0]
 			: searchRes.SearchResponse.appt;

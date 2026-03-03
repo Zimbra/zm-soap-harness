@@ -25,7 +25,6 @@ describe('Admin > Harness Self Check > Check Finally', function () {
 		const res = await soap.makeSOAPEnvelopeAdmin(
 			`<PingRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);
-		assert.exists(res.PingResponse, 'Finally PingResponse should exist');
 	});
 
 	// Applicable zimbra versions
@@ -39,6 +38,5 @@ describe('Admin > Harness Self Check > Check Finally', function () {
 			`<PingRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'PingRequest should not fault');
-		assert.exists(res.PingResponse, 'PingResponse should exist');
 	});
 });

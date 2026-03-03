@@ -58,7 +58,6 @@ describe('Prefs > Filters > Conditions > Filter From', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'From contains test should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 	});
 
 

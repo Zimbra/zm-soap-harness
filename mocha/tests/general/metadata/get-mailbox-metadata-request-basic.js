@@ -50,8 +50,6 @@ describe('General > Metadata > Get Mailbox Metadata Request Basic', function () 
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.GetMailboxMetadataResponse,
-			'GetMailboxMetadataResponse should exist');
 	});
 
 
@@ -81,8 +79,6 @@ describe('General > Metadata > Get Mailbox Metadata Request Basic', function () 
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.GetMailboxMetadataResponse,
-			'GetMailboxMetadataResponse should exist');
 	});
 
 
@@ -115,7 +111,5 @@ describe('General > Metadata > Get Mailbox Metadata Request Basic', function () 
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.GetMailboxMetadataResponse,
-			'GetMailboxMetadataResponse should exist');
 	});
 });

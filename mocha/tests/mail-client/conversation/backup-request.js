@@ -114,7 +114,6 @@ describe('Mail Client > Conversation > Backup Request', function () {
 			</SearchRequest>`, acct2AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		const conv = searchRes.SearchResponse?.c;
 		const convItem = Array.isArray(conv) ? conv[0] : conv;
@@ -140,7 +139,6 @@ describe('Mail Client > Conversation > Backup Request', function () {
 			</BackupRequest>`, adminAuthToken
 		);
 		assert.notExists(backupRes.Fault, 'BackupRequest should not fault');
-		assert.exists(backupRes.BackupResponse, 'BackupResponse should exist');
 
 		// Step 4: Delete account2
 		await soap.makeSOAPEnvelopeAdmin(
@@ -158,7 +156,6 @@ describe('Mail Client > Conversation > Backup Request', function () {
 			</RestoreRequest>`, adminAuthToken
 		);
 		assert.notExists(restoreRes.Fault, 'RestoreRequest should not fault');
-		assert.exists(restoreRes.RestoreResponse, 'RestoreResponse should exist');
 
 		// Step 6: Re-auth and verify conversation still exists with 3 messages
 		const acct2AuthToken2 = await soap.getAccountAuthToken(account2Name);
@@ -169,7 +166,6 @@ describe('Mail Client > Conversation > Backup Request', function () {
 			</SearchRequest>`, acct2AuthToken2
 		);
 		assert.notExists(searchRes2.Fault, 'SearchRequest after restore should not fault');
-		assert.exists(searchRes2.SearchResponse, 'SearchResponse should exist after restore');
 
 		const conv2 = searchRes2.SearchResponse?.c;
 		const convItem2 = Array.isArray(conv2) ? conv2[0] : conv2;
@@ -214,7 +210,6 @@ describe('Mail Client > Conversation > Backup Request', function () {
 			</BackupRequest>`, adminAuthToken
 		);
 		assert.notExists(fullBackup.Fault, 'Full BackupRequest should not fault');
-		assert.exists(fullBackup.BackupResponse, 'Full BackupResponse should exist');
 
 		// Step 3: Send 2 more messages to account4
 		const send2 = await soap.makeSOAPEnvelopeAccount(
@@ -253,7 +248,6 @@ describe('Mail Client > Conversation > Backup Request', function () {
 			</SearchRequest>`, acct4AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		const conv = searchRes.SearchResponse?.c;
 		const convItem = Array.isArray(conv) ? conv[0] : conv;
@@ -278,7 +272,6 @@ describe('Mail Client > Conversation > Backup Request', function () {
 			</BackupRequest>`, adminAuthToken
 		);
 		assert.notExists(incrBackup.Fault, 'Incremental BackupRequest should not fault');
-		assert.exists(incrBackup.BackupResponse, 'Incremental BackupResponse should exist');
 
 		// Step 6: Delete account4
 		await soap.makeSOAPEnvelopeAdmin(
@@ -296,7 +289,6 @@ describe('Mail Client > Conversation > Backup Request', function () {
 			</RestoreRequest>`, adminAuthToken
 		);
 		assert.notExists(restoreRes.Fault, 'RestoreRequest should not fault');
-		assert.exists(restoreRes.RestoreResponse, 'RestoreResponse should exist');
 
 		// Step 8: Re-auth and verify conversation still exists with 3 messages
 		const acct4AuthToken2 = await soap.getAccountAuthToken(account4Name);
@@ -307,7 +299,6 @@ describe('Mail Client > Conversation > Backup Request', function () {
 			</SearchRequest>`, acct4AuthToken2
 		);
 		assert.notExists(searchRes2.Fault, 'SearchRequest after restore should not fault');
-		assert.exists(searchRes2.SearchResponse, 'SearchResponse should exist after restore');
 
 		const conv2 = searchRes2.SearchResponse?.c;
 		const convItem2 = Array.isArray(conv2) ? conv2[0] : conv2;

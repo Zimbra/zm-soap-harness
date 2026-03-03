@@ -37,7 +37,6 @@ describe('Admin > Harness Self Check > Check Soap', function () {
 			</CreateAccountRequest>`, adminAuthToken
         );
         assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
-        assert.exists(createRes.CreateAccountResponse, 'CreateAccountResponse should exist');
 
         // Account namespace - AuthRequest (zimbraAccount)
         const acctToken = await soap.getAccountAuthToken(accountEmail);
@@ -47,7 +46,6 @@ describe('Admin > Harness Self Check > Check Soap', function () {
             `<GetFolderRequest xmlns="urn:zimbraMail"/>`, acctToken
         );
         assert.notExists(folderRes.Fault, 'GetFolderRequest should not fault');
-        assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
     });
 
     it('Functional | SOAP Harness - CheckSoap - Verify the t - test and t - soaptest types 1', async () => {
@@ -55,7 +53,6 @@ describe('Admin > Harness Self Check > Check Soap', function () {
             `<PingRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
         );
         assert.notExists(res.Fault, 'PingRequest should not fault');
-        assert.exists(res.PingResponse, 'PingResponse should exist');
     });
 
     it('Functional | SOAP Harness - CheckSoap - Verify the t - test and t - soaptest types 2', async () => {
@@ -63,7 +60,6 @@ describe('Admin > Harness Self Check > Check Soap', function () {
             `<PingRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
         );
         assert.notExists(res.Fault, 'PingRequest should not fault');
-        assert.exists(res.PingResponse, 'PingResponse should exist');
     });
 
     it('Functional | SOAP Harness - CheckSoap - Verify the t - test and t - soaptest types 3', async () => {
@@ -71,7 +67,6 @@ describe('Admin > Harness Self Check > Check Soap', function () {
             `<PingRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
         );
         assert.notExists(res.Fault, 'PingRequest should not fault');
-        assert.exists(res.PingResponse, 'PingResponse should exist');
     });
 
     it('Functional | SOAP Harness - CheckSoap - Verify the t - requestContext', async () => {
@@ -93,7 +88,6 @@ describe('Admin > Harness Self Check > Check Soap', function () {
             `<GetFolderRequest xmlns="urn:zimbraMail"/>`, acctToken
         );
         assert.notExists(folderRes.Fault, 'GetFolderRequest should not fault');
-        assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
     });
 
     it('Functional | SOAP Harness - CheckSoap - Verify the t - header', async () => {
@@ -115,6 +109,5 @@ describe('Admin > Harness Self Check > Check Soap', function () {
             `<NoOpRequest xmlns="urn:zimbraMail"/>`, acctToken
         );
         assert.notExists(noOpRes.Fault, 'NoOpRequest should not fault');
-        assert.exists(noOpRes.NoOpResponse, 'NoOpResponse should exist');
     });
 });

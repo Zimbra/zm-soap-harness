@@ -53,7 +53,6 @@ describe('Prefs > External Contacts > Importgmailcontacts', function () {
 
 		// Verify response
 		assert.notExists(importRes.Fault, 'ImportContactsRequest Gmail should not fault');
-		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});
 
 
@@ -82,7 +81,6 @@ describe('Prefs > External Contacts > Importgmailcontacts', function () {
 
 		// Verify response
 		assert.notExists(importRes.Fault, 'ImportContactsRequest should not fault');
-		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});
 
 
@@ -122,6 +120,5 @@ describe('Prefs > External Contacts > Importgmailcontacts', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 });

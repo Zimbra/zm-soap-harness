@@ -25,7 +25,9 @@ describe('Briefcase > Briefcase Upload Files', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse, 'Should create account');
+		const acct = Array.isArray(createRes.CreateAccountResponse.account)
+			? createRes.CreateAccountResponse.account[0] : createRes.CreateAccountResponse.account;
+		assert.exists(acct.id, 'Account ID should exist');
 
 		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
@@ -37,7 +39,7 @@ describe('Briefcase > Briefcase Upload Files', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 
 		account1Token = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
@@ -50,7 +52,6 @@ describe('Briefcase > Briefcase Upload Files', function () {
 
 		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
-		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 
 		const root = Array.isArray(folderRes.GetFolderResponse.folder)
 			? folderRes.GetFolderResponse.folder[0] : folderRes.GetFolderResponse.folder;
@@ -91,8 +92,6 @@ describe('Briefcase > Briefcase Upload Files', function () {
 
 			// Verify response
 			assert.notExists(saveRes.Fault, 'Response should not be a Fault');
-			assert.exists(saveRes.SaveDocumentResponse,
-				`SaveDocumentResponse should exist for ${fileType}`);
 			const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
 				? saveRes.SaveDocumentResponse.doc[0] : saveRes.SaveDocumentResponse.doc;
 
@@ -109,12 +108,8 @@ describe('Briefcase > Briefcase Upload Files', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
-
 		const docs = searchRes.SearchResponse.doc;
-
-		// Verify response
-		assert.exists(docs, 'Should find documents in Briefcase');
+		assert.exists(docs[0].id, 'doc id should exist in search results');
 
 		const firstDoc = Array.isArray(docs) ? docs[0] : docs;
 
@@ -129,6 +124,6 @@ describe('Briefcase > Briefcase Upload Files', function () {
 		assert.notExists(trashRes.Fault, 'Response should not be a Fault');
 		const itemAction = Array.isArray(trashRes.ItemActionResponse.action)
 			? trashRes.ItemActionResponse.action[0] : trashRes.ItemActionResponse.action;
-		assert.exists(itemAction, 'ItemActionResponse should contain action');
+		assert.equal(itemAction.op, 'trash', 'op should be trash');
 	});
 });

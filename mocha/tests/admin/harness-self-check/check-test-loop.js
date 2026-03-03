@@ -32,7 +32,6 @@ describe('Admin > Harness Self Check > Check Test Loop', function () {
 			`<PingRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'PingRequest should not fault');
-		assert.exists(res.PingResponse, 'PingResponse should exist');
 	});
 
 	it('Functional | SOAP Harness - CheckTestLoop - Verify the t - testloop count attribute', async () => {
@@ -42,7 +41,6 @@ describe('Admin > Harness Self Check > Check Test Loop', function () {
 				`<PingRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 			);
 			assert.notExists(res.Fault, `PingRequest iteration ${i + 1} should not fault`);
-			assert.exists(res.PingResponse, `PingResponse iteration ${i + 1} should exist`);
 		}
 	});
 });

@@ -54,9 +54,7 @@ describe('Folders > Sharing > Sharing Combine', function () {
 			</CreateDomainRequest>`;
 		const domResp = await soap.makeSOAPEnvelopeAdmin(createDomain, adminAuth);
 
-		if (domResp.Fault) {
-			throw new Error(`Failed to create domain: ${JSON.stringify(domResp.Fault)}`);
-		}
+		assert.notExists(domResp.Fault, 'CreateDomainRequest should not be a Fault');
 
 		testAccount3 = `combine3_${common.getUniqueString()}@${domainName}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuth, testAccount3, testAccount3);
@@ -266,17 +264,15 @@ describe('Folders > Sharing > Sharing Combine', function () {
 		await soap.makeSOAPEnvelopeAccount(folderActionRequest5, auth1);
 
 		// Grant delete to COS
-		if (cosId) {
-			const folderActionRequest6 =
-				`<FolderActionRequest xmlns="urn:zimbraMail">
-					<action op="grant" id="${testFolderId}">
-						<grant gt="cos" d="${cosId}" perm="d"/>
-					</action>
-				</FolderActionRequest>`;
+		const folderActionRequest6 =
+			`<FolderActionRequest xmlns="urn:zimbraMail">
+				<action op="grant" id="${testFolderId}">
+					<grant gt="cos" d="${cosId}" perm="d"/>
+				</action>
+			</FolderActionRequest>`;
 
-			// CreateMountpointRequest
-			await soap.makeSOAPEnvelopeAccount(folderActionRequest6, auth1);
-		}
+		// CreateMountpointRequest
+		await soap.makeSOAPEnvelopeAccount(folderActionRequest6, auth1);
 
 		// Verify Account2 can mount (has combined read + delete)
 		const mountName = `mount_cos_${common.getUniqueString()}`;
@@ -289,8 +285,7 @@ describe('Folders > Sharing > Sharing Combine', function () {
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest3, auth2);
 
 		// Verify response
-		assert.notExists(mountResp.Fault, 'Response should not be a Fault');
-		assert.exists(mountResp.CreateMountpointResponse,
+		assert.exists(mountResp.CreateMountpointResponse.link,
 			'Should mount with combined COS+Account rights');
 	});
 
@@ -350,8 +345,7 @@ describe('Folders > Sharing > Sharing Combine', function () {
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest4, auth2);
 
 		// Verify response
-		assert.notExists(mountResp.Fault, 'Response should not be a Fault');
-		assert.exists(mountResp.CreateMountpointResponse,
+		assert.exists(mountResp.CreateMountpointResponse.link,
 			'Should mount with combined All+Account rights');
 	});
 
@@ -400,8 +394,7 @@ describe('Folders > Sharing > Sharing Combine', function () {
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest5, auth2);
 
 		// Verify response
-		assert.notExists(mountResp.Fault, 'Response should not be a Fault');
-		assert.exists(mountResp.CreateMountpointResponse,
+		assert.exists(mountResp.CreateMountpointResponse.link,
 			'Should mount with combined Guest+Account rights');
 	});
 
@@ -461,8 +454,7 @@ describe('Folders > Sharing > Sharing Combine', function () {
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest6, auth2);
 
 		// Verify response
-		assert.notExists(mountResp.Fault, 'Response should not be a Fault');
-		assert.exists(mountResp.CreateMountpointResponse,
+		assert.exists(mountResp.CreateMountpointResponse.link,
 			'Should mount with combined Public+Account rights');
 	});
 
@@ -511,8 +503,7 @@ describe('Folders > Sharing > Sharing Combine', function () {
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest7, auth2);
 
 		// Verify response
-		assert.notExists(mountResp.Fault, 'Response should not be a Fault');
-		assert.exists(mountResp.CreateMountpointResponse,
+		assert.exists(mountResp.CreateMountpointResponse.link,
 			'Should mount with combined read+insert rights');
 	});
 
@@ -573,8 +564,7 @@ describe('Folders > Sharing > Sharing Combine', function () {
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest8, auth2);
 
 		// Verify response
-		assert.notExists(mountResp.Fault, 'Response should not be a Fault');
-		assert.exists(mountResp.CreateMountpointResponse,
+		assert.exists(mountResp.CreateMountpointResponse.link,
 			'Should mount with combined read+none rights');
 
 		// Verify read access

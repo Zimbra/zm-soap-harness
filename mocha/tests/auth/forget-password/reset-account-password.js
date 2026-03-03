@@ -27,7 +27,6 @@ describe('Auth > Forget Password > Reset Account Password', function () {
 
 		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
-		assert.exists(createRes1.CreateAccountResponse, 'Should create test_account1');
 
 		// Create account1 with recovery email pre-configured
 		account1Name = 'test.' + common.getUniqueString() + '@' + config.testDomain;
@@ -45,7 +44,6 @@ describe('Auth > Forget Password > Reset Account Password', function () {
 
 		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
-		assert.exists(createRes2.CreateAccountResponse, 'Should create account1');
 	});
 
 	beforeEach(async function () {
@@ -74,7 +72,6 @@ describe('Auth > Forget Password > Reset Account Password', function () {
 
 		// Verify response
 		assert.notExists(authRes1.Fault, 'Response should not be a Fault');
-		assert.exists(authRes1.AuthResponse, 'AuthResponse should exist');
 
 		const acct1Token = Array.isArray(authRes1.AuthResponse.authToken)
 			? authRes1.AuthResponse.authToken[0]._content || authRes1.AuthResponse.authToken[0]
@@ -90,8 +87,6 @@ describe('Auth > Forget Password > Reset Account Password', function () {
 
 		// Verify response
 		assert.notExists(recoverRes.Fault, 'Response should not be a Fault');
-		assert.exists(recoverRes.RecoverAccountResponse,
-			'RecoverAccountResponse should exist');
 
 		// Reset account password via admin
 		adminAuthToken = await soap.getAdminAuthToken();
@@ -105,8 +100,6 @@ describe('Auth > Forget Password > Reset Account Password', function () {
 
 		// Verify response
 		assert.notExists(resetRes.Fault, 'Response should not be a Fault');
-		assert.exists(resetRes.ResetAccountPasswordResponse,
-			'ResetAccountPasswordResponse should exist');
 
 		// Wait for email delivery
 		await new Promise(resolve => setTimeout(resolve, 5000));
@@ -122,7 +115,6 @@ describe('Auth > Forget Password > Reset Account Password', function () {
 
 		// Verify response
 		assert.notExists(authRes2.Fault, 'Response should not be a Fault');
-		assert.exists(authRes2.AuthResponse, 'AuthResponse should exist');
 
 		const testAcct1Token = Array.isArray(authRes2.AuthResponse.authToken)
 			? authRes2.AuthResponse.authToken[0]._content || authRes2.AuthResponse.authToken[0]
@@ -137,7 +129,6 @@ describe('Auth > Forget Password > Reset Account Password', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		const msgs = searchRes.SearchResponse.m;
 

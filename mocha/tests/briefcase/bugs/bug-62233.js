@@ -26,7 +26,6 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 
 		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
-		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
 			? createRes1.CreateAccountResponse.account[0]
@@ -45,7 +44,6 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 
 		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
-		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 
 		// Auth as account1
 		// Send the message
@@ -58,7 +56,7 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 
 		// Verify response
 		assert.notExists(authRes1.Fault, 'Response should not be a Fault');
-		assert.exists(authRes1.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes1.AuthResponse.authToken, 'AuthResponse should exist');
 
 		account1Token = Array.isArray(authRes1.AuthResponse.authToken)
 			? authRes1.AuthResponse.authToken[0]._content || authRes1.AuthResponse.authToken[0]
@@ -85,7 +83,6 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 
 		// Verify response
 		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
-		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		// Share briefcase with read access to account2
 		await soap.makeSOAPEnvelopeAccount(
@@ -107,7 +104,7 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 
 		// Verify response
 		assert.notExists(authRes2.Fault, 'Response should not be a Fault');
-		assert.exists(authRes2.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes2.AuthResponse.authToken, 'AuthResponse should exist');
 
 		account2Token = Array.isArray(authRes2.AuthResponse.authToken)
 			? authRes2.AuthResponse.authToken[0]._content || authRes2.AuthResponse.authToken[0]
@@ -150,12 +147,11 @@ describe('Briefcase > Bugs > Bug 62233', function () {
 
 		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
-		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 		const folder = Array.isArray(folderRes.GetFolderResponse.folder)
 			? folderRes.GetFolderResponse.folder[0]
 			: folderRes.GetFolderResponse.folder;
 
 		// Verify response
-		assert.exists(folder, 'folder should exist');
+		assert.exists(folder.id, 'folder id should exist');
 	});
 });

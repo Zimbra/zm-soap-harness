@@ -120,7 +120,7 @@ describe('Mail > Message Get', function () {
 		);
 
 		// Verify fault
-		assert.exists(getMsgRes.Fault, 'Should return a Fault');
+		assert.isString(getMsgRes.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(getMsgRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be service.INVALID_REQUEST');
 	});
 
@@ -139,7 +139,7 @@ describe('Mail > Message Get', function () {
 		);
 
 		// Verify fault
-		assert.exists(getMsgRes.Fault, 'Should return a Fault');
+		assert.isString(getMsgRes.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(getMsgRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be service.INVALID_REQUEST');
 	});
 
@@ -158,7 +158,7 @@ describe('Mail > Message Get', function () {
 		);
 
 		// Verify fault
-		assert.exists(getMsgRes.Fault, 'Should return a Fault');
+		assert.isString(getMsgRes.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(getMsgRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be service.INVALID_REQUEST');
 	});
 
@@ -175,7 +175,7 @@ describe('Mail > Message Get', function () {
 		);
 
 		// Verify fault
-		assert.exists(getMsgRes.Fault, 'Should return a Fault');
+		assert.isString(getMsgRes.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(getMsgRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be service.INVALID_REQUEST');
 	});
 
@@ -192,7 +192,7 @@ describe('Mail > Message Get', function () {
 		);
 
 		// Verify fault
-		assert.exists(getMsgRes.Fault, 'Should return a Fault');
+		assert.isString(getMsgRes.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(getMsgRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be service.INVALID_REQUEST');
 	});
 
@@ -209,7 +209,7 @@ describe('Mail > Message Get', function () {
 		);
 
 		// Verify fault
-		assert.exists(getMsgRes.Fault, 'Should return a Fault');
+		assert.isString(getMsgRes.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(getMsgRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be service.INVALID_REQUEST');
 	});
 
@@ -247,7 +247,7 @@ describe('Mail > Message Get', function () {
 		);
 
 		// Verify fault
-		assert.exists(getMsgRes.Fault, 'Should return a Fault');
+		assert.isString(getMsgRes.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(getMsgRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be service.INVALID_REQUEST');
 	});
 
@@ -276,7 +276,7 @@ describe('Mail > Message Get', function () {
 		);
 
 		// Verify fault
-		assert.exists(getMsgRes.Fault, 'Should return a Fault');
+		assert.isString(getMsgRes.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(getMsgRes.Fault.Detail.Error.Code, 'mail.NO_SUCH_MSG', 'Should be mail.NO_SUCH_MSG');
 	});
 
@@ -652,7 +652,7 @@ describe('Mail > Message Get', function () {
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
 		const msg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
-		assert.exists(msg, 'GetMsgResponse should contain m');
+		assert.exists(msg.id, 'message id should exist');
 	});
 
 
@@ -698,7 +698,7 @@ describe('Mail > Message Get', function () {
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
 		const msg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
-		assert.exists(msg, 'GetMsgResponse should contain m');
+		assert.exists(msg.id, 'message id should exist');
 	});
 
 
@@ -719,7 +719,6 @@ describe('Mail > Message Get', function () {
 				'</AddMsgRequest>', authToken
 			);
 			assert.notExists(addRes.Fault, 'AddMsgRequest for ' + file + ' should not fault');
-			assert.exists(addRes.AddMsgResponse, 'AddMsgResponse should exist for ' + file);
 		}
 	});
 

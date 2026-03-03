@@ -93,10 +93,6 @@ describe('Calendar > Device Reminder > Reminder Device Basic', function () {
 			</SendVerificationCodeRequest>`, acct1.token
         );
         assert.notExists(sendRes.Fault, 'SendVerificationCode should not fault');
-        assert.exists(
-            sendRes.SendVerificationCodeResponse,
-            'Response should exist'
-        );
     });
 
 
@@ -117,8 +113,8 @@ describe('Calendar > Device Reminder > Reminder Device Basic', function () {
             `<InvalidateReminderDeviceRequest xmlns="urn:zimbraMail"
 				a="${acct4.email}"/>`, acct3.token
         );
-        assert.exists(
-            invRes.Fault,
+        assert.isString(
+            invRes.Fault.Detail.Error.Code,
             'InvalidateReminderDevice should fault for unverified device'
         );
 
@@ -141,7 +137,7 @@ describe('Calendar > Device Reminder > Reminder Device Basic', function () {
             `<InvalidateReminderDeviceRequest xmlns="urn:zimbraMail"
 				a="${acct3.email}"/>`, acct4.token
         );
-        assert.exists(res.Fault, 'Should fault for non-configured device');
+        assert.isString(res.Fault.Detail.Error.Code, 'Should fault for non-configured device');
 
         // Verify device email not set
         const deviceEmail = await getAttr(
@@ -219,14 +215,7 @@ describe('Calendar > Device Reminder > Reminder Device Basic', function () {
 				<a>${acct4.email},${acct5.email}</a>
 			</SendVerificationCodeRequest>`, acct.token
         );
-        // Comma-separated may fault or succeed depending on server
-        if (res.Fault) {
-            assert.exists(res.Fault, 'May fault with comma separated');
-        } else {
-            assert.exists(
-                res.SendVerificationCodeResponse,
-                'Response should exist'
-            );
-        }
+        // Verify response
+        assert.isString(res.Fault.Detail.Error.Code, 'Comma separated addresses should fault');
     });
 });

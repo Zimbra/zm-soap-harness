@@ -95,7 +95,7 @@ describe('Mail > Bugs > Bug 11313', function () {
 		assert.notExists(forwardRes.Fault, 'Forward SendMsgRequest should not fault');
 		const sentMsg = Array.isArray(forwardRes.SendMsgResponse.m)
 			? forwardRes.SendMsgResponse.m[0] : forwardRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 });

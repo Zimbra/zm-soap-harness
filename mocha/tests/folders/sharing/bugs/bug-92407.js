@@ -103,7 +103,6 @@ describe('Folders > Sharing > Bugs > Bug 92407', function () {
 		const res = await soap.makeSOAPEnvelopeAccount(createMountpointRequest, auth2);
 
 		// Verify response
-		assert.exists(res.Fault, 'Should have failed with Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'PERM_DENIED',
 			'Should return PERM_DENIED');
 	});

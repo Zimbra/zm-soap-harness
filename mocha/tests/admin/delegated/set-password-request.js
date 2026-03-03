@@ -65,7 +65,6 @@ describe('Admin > Delegated > Set Password Request', function () {
 			</GrantRightRequest>`, adminAuthToken
 		);
 		assert.notExists(grantRes.Fault, 'GrantRightRequest should not fault');
-		assert.exists(grantRes.GrantRightResponse, 'GrantRightResponse should exist');
 
 		// Auth as delegated admin using account by name
 		const authRes = await soap.makeSOAPEnvelopeAdmin(

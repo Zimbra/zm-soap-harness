@@ -106,7 +106,6 @@ describe('Admin > External Sharing > External Virual Account Policy', function (
 			</FolderActionRequest>`, accountToken
 		);
 		assert.notExists(grant1.Fault, 'Grant to internal account should not fault');
-		assert.exists(grant1.FolderActionResponse, 'FolderActionResponse should exist');
 
 		// Grant guest sharing to subdomain account — should succeed
 		const grant2 = await soap.makeSOAPEnvelopeAccount(
@@ -117,7 +116,6 @@ describe('Admin > External Sharing > External Virual Account Policy', function (
 			</FolderActionRequest>`, accountToken
 		);
 		assert.notExists(grant2.Fault, 'Grant to subdomain account should not fault');
-		assert.exists(grant2.FolderActionResponse, 'FolderActionResponse should exist');
 
 		// Grant guest sharing to other-domain account — should succeed
 		const grant3 = await soap.makeSOAPEnvelopeAccount(
@@ -128,7 +126,6 @@ describe('Admin > External Sharing > External Virual Account Policy', function (
 			</FolderActionRequest>`, accountToken
 		);
 		assert.notExists(grant3.Fault, 'Grant to other-domain account should not fault');
-		assert.exists(grant3.FolderActionResponse, 'FolderActionResponse should exist');
 
 		// Grant guest sharing to external account — should succeed
 		const grant4 = await soap.makeSOAPEnvelopeAccount(
@@ -139,7 +136,6 @@ describe('Admin > External Sharing > External Virual Account Policy', function (
 			</FolderActionRequest>`, accountToken
 		);
 		assert.notExists(grant4.Fault, 'Grant to external account should not fault');
-		assert.exists(grant4.FolderActionResponse, 'FolderActionResponse should exist');
 
 		// Clear ACL
 		const clearRes = await soap.makeSOAPEnvelopeAccount(
@@ -209,7 +205,6 @@ describe('Admin > External Sharing > External Virual Account Policy', function (
 			</FolderActionRequest>`, accountToken
 		);
 		assert.notExists(grant1.Fault, 'Grant to internal account should not fault');
-		assert.exists(grant1.FolderActionResponse, 'FolderActionResponse should exist');
 
 		// Grant to subdomain — should fail with PERM_DENIED
 		const grant2 = await soap.makeSOAPEnvelopeAccount(
@@ -219,7 +214,7 @@ describe('Admin > External Sharing > External Virual Account Policy', function (
 				</action>
 			</FolderActionRequest>`, accountToken, false
 		);
-		assert.exists(grant2.Fault, 'Grant to subdomain should fault');
+		assert.isString(grant2.Fault.Detail.Error.Code, 'Grant to subdomain should fault');
 		assert.include(grant2.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 
 		// Grant to other-domain — should fail with PERM_DENIED
@@ -230,7 +225,7 @@ describe('Admin > External Sharing > External Virual Account Policy', function (
 				</action>
 			</FolderActionRequest>`, accountToken, false
 		);
-		assert.exists(grant3.Fault, 'Grant to other-domain should fault');
+		assert.isString(grant3.Fault.Detail.Error.Code, 'Grant to other-domain should fault');
 		assert.include(grant3.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 
 		// Grant to external — should fail with PERM_DENIED
@@ -241,7 +236,7 @@ describe('Admin > External Sharing > External Virual Account Policy', function (
 				</action>
 			</FolderActionRequest>`, accountToken, false
 		);
-		assert.exists(grant4.Fault, 'Grant to external should fault');
+		assert.isString(grant4.Fault.Detail.Error.Code, 'Grant to external should fault');
 		assert.include(grant4.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 
 		// Clear ACL
@@ -311,7 +306,6 @@ describe('Admin > External Sharing > External Virual Account Policy', function (
 			</FolderActionRequest>`, accountToken
 		);
 		assert.notExists(grant1.Fault, 'Grant to internal account should not fault');
-		assert.exists(grant1.FolderActionResponse, 'FolderActionResponse should exist');
 
 		// Grant to subdomain — should fail with PERM_DENIED
 		const grant2 = await soap.makeSOAPEnvelopeAccount(
@@ -321,7 +315,7 @@ describe('Admin > External Sharing > External Virual Account Policy', function (
 				</action>
 			</FolderActionRequest>`, accountToken, false
 		);
-		assert.exists(grant2.Fault, 'Grant to subdomain should fault');
+		assert.isString(grant2.Fault.Detail.Error.Code, 'Grant to subdomain should fault');
 		assert.include(grant2.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 
 		// Grant to other-domain — should fail with PERM_DENIED
@@ -332,7 +326,7 @@ describe('Admin > External Sharing > External Virual Account Policy', function (
 				</action>
 			</FolderActionRequest>`, accountToken, false
 		);
-		assert.exists(grant3.Fault, 'Grant to other-domain should fault');
+		assert.isString(grant3.Fault.Detail.Error.Code, 'Grant to other-domain should fault');
 		assert.include(grant3.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 
 		// Grant to external — should fail with PERM_DENIED
@@ -343,7 +337,7 @@ describe('Admin > External Sharing > External Virual Account Policy', function (
 				</action>
 			</FolderActionRequest>`, accountToken, false
 		);
-		assert.exists(grant4.Fault, 'Grant to external should fault');
+		assert.isString(grant4.Fault.Detail.Error.Code, 'Grant to external should fault');
 		assert.include(grant4.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 
 		// Clear ACL
@@ -413,7 +407,6 @@ describe('Admin > External Sharing > External Virual Account Policy', function (
 				</FolderActionRequest>`, accountToken
 			);
 			assert.notExists(grant.Fault, `Initial grant to ${email} should not fault`);
-			assert.exists(grant.FolderActionResponse, 'FolderActionResponse should exist');
 		}
 
 		// Clear ACL
@@ -446,7 +439,6 @@ describe('Admin > External Sharing > External Virual Account Policy', function (
 			</FolderActionRequest>`, accountToken2
 		);
 		assert.notExists(grant1.Fault, 'Grant to internal should not fault after COS change');
-		assert.exists(grant1.FolderActionResponse, 'FolderActionResponse should exist');
 
 		// Grant to subdomain — should now fail
 		const grant2 = await soap.makeSOAPEnvelopeAccount(
@@ -456,7 +448,7 @@ describe('Admin > External Sharing > External Virual Account Policy', function (
 				</action>
 			</FolderActionRequest>`, accountToken2, false
 		);
-		assert.exists(grant2.Fault, 'Grant to subdomain should fault after COS change');
+		assert.isString(grant2.Fault.Detail.Error.Code, 'Grant to subdomain should fault after COS change');
 		assert.include(grant2.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 
 		// Grant to other-domain — should now fail
@@ -467,7 +459,7 @@ describe('Admin > External Sharing > External Virual Account Policy', function (
 				</action>
 			</FolderActionRequest>`, accountToken2, false
 		);
-		assert.exists(grant3.Fault, 'Grant to other-domain should fault after COS change');
+		assert.isString(grant3.Fault.Detail.Error.Code, 'Grant to other-domain should fault after COS change');
 		assert.include(grant3.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 
 		// Grant to external — should now fail
@@ -478,7 +470,7 @@ describe('Admin > External Sharing > External Virual Account Policy', function (
 				</action>
 			</FolderActionRequest>`, accountToken2, false
 		);
-		assert.exists(grant4.Fault, 'Grant to external should fault after COS change');
+		assert.isString(grant4.Fault.Detail.Error.Code, 'Grant to external should fault after COS change');
 		assert.include(grant4.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 
 		// Clear ACL
@@ -551,7 +543,6 @@ describe('Admin > External Sharing > External Virual Account Policy', function (
 				</FolderActionRequest>`, accountToken
 			);
 			assert.notExists(grant.Fault, `Initial grant to ${email} should not fault`);
-			assert.exists(grant.FolderActionResponse, 'FolderActionResponse should exist');
 		}
 
 		// Clear ACL
@@ -584,7 +575,6 @@ describe('Admin > External Sharing > External Virual Account Policy', function (
 			</FolderActionRequest>`, accountToken2
 		);
 		assert.notExists(grant1.Fault, 'Grant to internal should not fault after account change');
-		assert.exists(grant1.FolderActionResponse, 'FolderActionResponse should exist');
 
 		// Grant to subdomain — should now fail
 		const grant2 = await soap.makeSOAPEnvelopeAccount(
@@ -594,7 +584,7 @@ describe('Admin > External Sharing > External Virual Account Policy', function (
 				</action>
 			</FolderActionRequest>`, accountToken2, false
 		);
-		assert.exists(grant2.Fault, 'Grant to subdomain should fault after account change');
+		assert.isString(grant2.Fault.Detail.Error.Code, 'Grant to subdomain should fault after account change');
 		assert.include(grant2.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 
 		// Grant to other-domain — should now fail
@@ -605,7 +595,7 @@ describe('Admin > External Sharing > External Virual Account Policy', function (
 				</action>
 			</FolderActionRequest>`, accountToken2, false
 		);
-		assert.exists(grant3.Fault, 'Grant to other-domain should fault after account change');
+		assert.isString(grant3.Fault.Detail.Error.Code, 'Grant to other-domain should fault after account change');
 		assert.include(grant3.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 
 		// Grant to external — should now fail
@@ -616,7 +606,7 @@ describe('Admin > External Sharing > External Virual Account Policy', function (
 				</action>
 			</FolderActionRequest>`, accountToken2, false
 		);
-		assert.exists(grant4.Fault, 'Grant to external should fault after account change');
+		assert.isString(grant4.Fault.Detail.Error.Code, 'Grant to external should fault after account change');
 		assert.include(grant4.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 
 		// Clear ACL

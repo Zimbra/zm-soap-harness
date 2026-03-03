@@ -131,7 +131,7 @@ describe('Calendar > Mountpoint > New Calendar Rights', function () {
 				</m>
 			</CreateAppointmentRequest>`, sharee.token
 		);
-		assert.exists(res.Fault, 'Write on read-only should fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Write on read-only should fault');
 	});
 
 

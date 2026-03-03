@@ -90,8 +90,6 @@ describe('EWS > ZCS 2623 Cal Add Attendee', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAppointmentResponse,
-			'CreateAppointmentResponse should exist');
 
 		await soap.waitFor(10000);
 

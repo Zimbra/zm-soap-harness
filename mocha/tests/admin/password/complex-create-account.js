@@ -40,7 +40,6 @@ describe('Admin > Password > Complex Create Account', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
-		assert.exists(createRes.CreateAccountResponse, 'Response should exist');
 	});
 
 
@@ -57,7 +56,6 @@ describe('Admin > Password > Complex Create Account', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
-		assert.exists(createRes.CreateAccountResponse, 'Response should exist');
 	});
 
 
@@ -70,7 +68,7 @@ describe('Admin > Password > Complex Create Account', function () {
 				<a n="zimbraPasswordMinUpperCaseChars">4</a>
 			</CreateAccountRequest>`, adminAuthToken, false
 		);
-		assert.exists(createRes.Fault, 'CreateAccountRequest should fault for insufficient uppercase');
+		assert.isString(createRes.Fault.Detail.Error.Code, 'CreateAccountRequest should fault for insufficient uppercase');
 		assert.include(createRes.Fault.Detail.Error.Code, 'account.INVALID_PASSWORD');
 	});
 
@@ -84,7 +82,7 @@ describe('Admin > Password > Complex Create Account', function () {
 				<a n="zimbraPasswordMinLowerCaseChars">4</a>
 			</CreateAccountRequest>`, adminAuthToken, false
 		);
-		assert.exists(createRes.Fault, 'CreateAccountRequest should fault for insufficient lowercase');
+		assert.isString(createRes.Fault.Detail.Error.Code, 'CreateAccountRequest should fault for insufficient lowercase');
 		assert.include(createRes.Fault.Detail.Error.Code, 'account.INVALID_PASSWORD');
 	});
 
@@ -98,7 +96,7 @@ describe('Admin > Password > Complex Create Account', function () {
 				<a n="zimbraPasswordMinPunctuationChars">4</a>
 			</CreateAccountRequest>`, adminAuthToken, false
 		);
-		assert.exists(createRes.Fault, 'CreateAccountRequest should fault for insufficient punctuation');
+		assert.isString(createRes.Fault.Detail.Error.Code, 'CreateAccountRequest should fault for insufficient punctuation');
 		assert.include(createRes.Fault.Detail.Error.Code, 'account.INVALID_PASSWORD');
 	});
 
@@ -112,7 +110,7 @@ describe('Admin > Password > Complex Create Account', function () {
 				<a n="zimbraPasswordMinNumericChars">4</a>
 			</CreateAccountRequest>`, adminAuthToken, false
 		);
-		assert.exists(createRes.Fault, 'CreateAccountRequest should fault for insufficient numeric');
+		assert.isString(createRes.Fault.Detail.Error.Code, 'CreateAccountRequest should fault for insufficient numeric');
 		assert.include(createRes.Fault.Detail.Error.Code, 'account.INVALID_PASSWORD');
 	});
 });

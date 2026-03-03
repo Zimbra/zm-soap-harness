@@ -52,7 +52,6 @@ describe('Mail > LMTP > OWASP > OWASP MIME', function () {
 		);
 
 		// Verify the message was found
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const msgs = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
 		assert.exists(msgs[0], 'Message should exist in inbox');

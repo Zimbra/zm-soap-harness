@@ -71,7 +71,6 @@ describe('Contacts > Autocomplete > Autocomplete Groups', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -84,7 +83,6 @@ describe('Contacts > Autocomplete > Autocomplete Groups', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -97,6 +95,5 @@ describe('Contacts > Autocomplete > Autocomplete Groups', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 });

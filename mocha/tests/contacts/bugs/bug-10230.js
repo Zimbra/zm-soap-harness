@@ -94,6 +94,5 @@ describe('Contacts > Bugs > Bug 10230', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 });

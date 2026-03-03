@@ -79,9 +79,11 @@ Test content ${uniqueStr}</content>
 				</m>
 			</AddMsgRequest>`;
 
-		// MsgActionRequest
+		// AddMsgRequest
 		const addMsgResponse = await soap.makeSOAPEnvelopeAccount(addMsgRequest, accountAuthToken);
+		assert.notExists(addMsgResponse.Fault, 'AddMsg should not be a Fault');
 		const messageId = addMsgResponse.AddMsgResponse.m[0].id;
+		assert.exists(messageId, 'Message ID should exist');
 
 		// Try to move message to search folder
 		const moveRequest =
@@ -89,11 +91,11 @@ Test content ${uniqueStr}</content>
 				<action id='${messageId}' op='move' l='${searchFolderId1}'/>
 			</MsgActionRequest>`;
 
-		// CreateContactRequest
+		// MsgActionRequest
 		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken, false);
 
 		// Verify response
-		assert.exists(moveResponse.Fault, 'Verify Fault exists');
+		assert.exists(moveResponse.Fault.Detail.Error, 'Fault Error should exist');
 		assert.include(moveResponse.Fault.Reason.Text, 'cannot put object in that folder',
 			'Verify CANNOT_CONTAIN error');
 	});
@@ -110,9 +112,11 @@ Test content ${uniqueStr}</content>
 				</cn>
 			</CreateContactRequest>`;
 
-		// ContactActionRequest
+		// CreateContactRequest
 		const contactResponse = await soap.makeSOAPEnvelopeAccount(createContactRequest, accountAuthToken);
+		assert.notExists(contactResponse.Fault, 'CreateContact should not be a Fault');
 		const contactId = contactResponse.CreateContactResponse.cn[0].id;
+		assert.exists(contactId, 'Contact ID should exist');
 
 		// Try to move contact to search folder
 		const moveRequest =
@@ -120,11 +124,11 @@ Test content ${uniqueStr}</content>
 				<action id='${contactId}' op='move' l='${searchFolderId1}'/>
 			</ContactActionRequest>`;
 
-		// CreateTagRequest
+		// ContactActionRequest
 		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken, false);
 
 		// Verify response
-		assert.exists(moveResponse.Fault, 'Verify Fault exists');
+		assert.exists(moveResponse.Fault.Detail.Error, 'Fault Error should exist');
 		assert.include(moveResponse.Fault.Reason.Text, 'cannot put object in that folder',
 			'Verify CANNOT_CONTAIN error');
 	});
@@ -138,9 +142,11 @@ Test content ${uniqueStr}</content>
 				<tag name='${tagName}' color='1'/>
 			</CreateTagRequest>`;
 
-		// ItemActionRequest
+		// CreateTagRequest
 		const tagResponse = await soap.makeSOAPEnvelopeAccount(createTagRequest, accountAuthToken);
+		assert.notExists(tagResponse.Fault, 'CreateTag should not be a Fault');
 		const tagId = tagResponse.CreateTagResponse.tag[0].id;
+		assert.exists(tagId, 'Tag ID should exist');
 
 		// Try to move tag to search folder
 		const moveRequest =
@@ -148,12 +154,11 @@ Test content ${uniqueStr}</content>
 				<action id='${tagId}' op='move' l='${searchFolderId1}'/>
 			</ItemActionRequest>`;
 
-		// CreateFolderRequest
+		// ItemActionRequest
 		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken, false);
 
 		// Verify response
-		assert.exists(moveResponse.Fault,
-			'Verify Fault exists when moving tag to search folder');
+		assert.exists(moveResponse.Fault.Detail.Error, 'Fault Error should exist');
 	});
 
 
@@ -164,9 +169,11 @@ Test content ${uniqueStr}</content>
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
 
-		// FolderActionRequest
+		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createFolderRequest, accountAuthToken);
+		assert.notExists(createResponse.Fault, 'Create should not be a Fault');
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
+		assert.exists(folderId, 'Folder ID should exist');
 
 		// Try to move folder to search folder
 		const moveRequest =
@@ -174,11 +181,11 @@ Test content ${uniqueStr}</content>
 				<action op='move' id='${folderId}' l='${searchFolderId1}'/>
 			</FolderActionRequest>`;
 
-		// CreateSearchFolderRequest
+		// FolderActionRequest
 		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken, false);
 
 		// Verify response
-		assert.exists(moveResponse.Fault, 'Verify Fault exists');
+		assert.exists(moveResponse.Fault.Detail.Error, 'Fault Error should exist');
 		assert.include(moveResponse.Fault.Reason.Text, 'cannot put object in that folder',
 			'Verify CANNOT_CONTAIN error');
 	});
@@ -194,7 +201,9 @@ Test content ${uniqueStr}</content>
 
 		// CreateSearchFolderRequest
 		const sfResp1 = await soap.makeSOAPEnvelopeAccount(sfReq1, accountAuthToken);
+		assert.notExists(sfResp1.Fault, 'Create search A should not be a Fault');
 		const sfId1 = sfResp1.CreateSearchFolderResponse.search[0].id;
+		assert.exists(sfId1, 'Search folder A ID should exist');
 
 		const sfName2 = `SearchB${common.getUniqueString()}`;
 		const sfReq2 =
@@ -202,9 +211,11 @@ Test content ${uniqueStr}</content>
 				<search name='${sfName2}' query='in:sent' types='message' sortBy='dateDesc' l='1'/>
 			</CreateSearchFolderRequest>`;
 
-		// FolderActionRequest
+		// CreateSearchFolderRequest
 		const sfResp2 = await soap.makeSOAPEnvelopeAccount(sfReq2, accountAuthToken);
+		assert.notExists(sfResp2.Fault, 'Create search B should not be a Fault');
 		const sfId2 = sfResp2.CreateSearchFolderResponse.search[0].id;
+		assert.exists(sfId2, 'Search folder B ID should exist');
 
 		const moveRequest =
 			`<FolderActionRequest xmlns='urn:zimbraMail'>
@@ -216,7 +227,10 @@ Test content ${uniqueStr}</content>
 
 		// Verify response
 		assert.notExists(moveResponse.Fault, 'Response should not be a Fault');
-		assert.exists(moveResponse.FolderActionResponse, 'Verify move succeeded');
+		assert.equal(moveResponse.FolderActionResponse.action.id, sfId2,
+			'Verify moved search folder id');
+		assert.equal(moveResponse.FolderActionResponse.action.op, 'move',
+			'Verify op is move');
 	});
 
 
@@ -229,12 +243,11 @@ Test content ${uniqueStr}</content>
 					<action op='move' id='${folderId}' l='${searchFolderId1}'/>
 				</FolderActionRequest>`;
 
-			// CreateSearchFolderRequest
+			// FolderActionRequest
 			const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken, false);
 
 			// Verify response
-			assert.exists(moveResponse.Fault,
-				`Verify Fault when moving default folder ${folderId} into search folder`);
+			assert.exists(moveResponse.Fault.Detail.Error, 'Fault Error should exist');
 			assert.include(moveResponse.Fault.Reason.Text, 'immutable',
 				'Verify immutable error');
 		}
@@ -248,21 +261,26 @@ Test content ${uniqueStr}</content>
 				<search name='${sfName}' query='in:inbox' types='message' sortBy='dateDesc' l='1'/>
 			</CreateSearchFolderRequest>`;
 
-		// FolderActionRequest
+		// CreateSearchFolderRequest
 		const sfResp = await soap.makeSOAPEnvelopeAccount(sfReq, accountAuthToken);
+		assert.notExists(sfResp.Fault, 'Create search should not be a Fault');
 		const sfId = sfResp.CreateSearchFolderResponse.search[0].id;
+		assert.exists(sfId, 'Search folder ID should exist');
 
 		const moveRequest =
 			`<FolderActionRequest xmlns='urn:zimbraMail'>
 				<action op='move' id='${sfId}' l='${folderIds.junk}'/>
 			</FolderActionRequest>`;
 
-		// CreateSearchFolderRequest
+		// FolderActionRequest
 		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken);
 
 		// Verify response
 		assert.notExists(moveResponse.Fault, 'Response should not be a Fault');
-		assert.exists(moveResponse.FolderActionResponse, 'Verify move succeeded');
+		assert.equal(moveResponse.FolderActionResponse.action.id, sfId,
+			'Verify search folder id');
+		assert.equal(moveResponse.FolderActionResponse.action.op, 'move',
+			'Verify op is move');
 	});
 
 
@@ -273,9 +291,11 @@ Test content ${uniqueStr}</content>
 				<search name='${sfName}' query='in:inbox' types='message' sortBy='dateDesc' l='1'/>
 			</CreateSearchFolderRequest>`;
 
-		// FolderActionRequest
+		// CreateSearchFolderRequest
 		const sfResp = await soap.makeSOAPEnvelopeAccount(sfReq, accountAuthToken);
+		assert.notExists(sfResp.Fault, 'Create search should not be a Fault');
 		const sfId = sfResp.CreateSearchFolderResponse.search[0].id;
+		assert.exists(sfId, 'Search folder ID should exist');
 
 		const newName = `SearchRenamed${common.getUniqueString()}`;
 		const renameRequest =
@@ -283,12 +303,15 @@ Test content ${uniqueStr}</content>
 				<action op='rename' id='${sfId}' name='${newName}'/>
 			</FolderActionRequest>`;
 
-		// CreateSearchFolderRequest
+		// FolderActionRequest
 		const renameResponse = await soap.makeSOAPEnvelopeAccount(renameRequest, accountAuthToken);
 
 		// Verify response
 		assert.notExists(renameResponse.Fault, 'Response should not be a Fault');
-		assert.exists(renameResponse.FolderActionResponse, 'Verify rename succeeded');
+		assert.equal(renameResponse.FolderActionResponse.action.id, sfId,
+			'Verify search folder id');
+		assert.equal(renameResponse.FolderActionResponse.action.op, 'rename',
+			'Verify op is rename');
 	});
 
 
@@ -299,21 +322,26 @@ Test content ${uniqueStr}</content>
 				<search name='${sfName}' query='in:inbox' types='message' sortBy='dateDesc' l='1'/>
 			</CreateSearchFolderRequest>`;
 
-		// FolderActionRequest
+		// CreateSearchFolderRequest
 		const sfResp = await soap.makeSOAPEnvelopeAccount(sfReq, accountAuthToken);
+		assert.notExists(sfResp.Fault, 'Create search should not be a Fault');
 		const sfId = sfResp.CreateSearchFolderResponse.search[0].id;
+		assert.exists(sfId, 'Search folder ID should exist');
 
 		const deleteRequest =
 			`<FolderActionRequest xmlns='urn:zimbraMail'>
 				<action op='delete' id='${sfId}'/>
 			</FolderActionRequest>`;
 
-		// CreateSearchFolderRequest
+		// FolderActionRequest
 		const deleteResponse = await soap.makeSOAPEnvelopeAccount(deleteRequest, accountAuthToken);
 
 		// Verify response
 		assert.notExists(deleteResponse.Fault, 'Response should not be a Fault');
-		assert.exists(deleteResponse.FolderActionResponse, 'Verify delete succeeded');
+		assert.equal(deleteResponse.FolderActionResponse.action.id, sfId,
+			'Verify search folder id');
+		assert.equal(deleteResponse.FolderActionResponse.action.op, 'delete',
+			'Verify op is delete');
 	});
 
 
@@ -324,9 +352,11 @@ Test content ${uniqueStr}</content>
 				<search name='${sfName}' query='in:inbox' types='message' sortBy='dateDesc' l='1'/>
 			</CreateSearchFolderRequest>`;
 
-		// FolderActionRequest
+		// CreateSearchFolderRequest
 		const sfResp = await soap.makeSOAPEnvelopeAccount(sfReq, accountAuthToken);
+		assert.notExists(sfResp.Fault, 'Create search should not be a Fault');
 		const sfId = sfResp.CreateSearchFolderResponse.search[0].id;
+		assert.exists(sfId, 'Search folder ID should exist');
 
 		// Delete first time
 		const deleteRequest1 =
@@ -335,7 +365,9 @@ Test content ${uniqueStr}</content>
 			</FolderActionRequest>`;
 
 		// FolderActionRequest
-		await soap.makeSOAPEnvelopeAccount(deleteRequest1, accountAuthToken);
+		const del1Resp = await soap.makeSOAPEnvelopeAccount(deleteRequest1, accountAuthToken);
+		assert.notExists(del1Resp.Fault, 'First delete should not be a Fault');
+		assert.equal(del1Resp.FolderActionResponse.action.op, 'delete', 'Verify op is delete');
 
 		// Delete again
 		const deleteRequest2 =
@@ -347,8 +379,7 @@ Test content ${uniqueStr}</content>
 		// Should not fail (idempotent)
 		// Verify response
 		assert.notExists(deleteResponse2.Fault, 'Response should not be a Fault');
-		assert.exists(deleteResponse2.FolderActionResponse,
-			'Verify re-delete does not fail');
+
 	});
 
 });

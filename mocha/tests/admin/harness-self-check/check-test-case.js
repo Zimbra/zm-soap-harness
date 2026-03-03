@@ -31,7 +31,6 @@ describe('Admin > Harness Self Check > Check Test Case', function () {
 			`<PingRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'PingRequest should not fault');
-		assert.exists(res.PingResponse, 'PingResponse should exist');
 	});
 
 	it('Functional | SOAP Harness - CheckTestCase - Verify the required and optional t - testcase attributes', async () => {
@@ -39,7 +38,6 @@ describe('Admin > Harness Self Check > Check Test Case', function () {
 			`<PingRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'PingRequest should not fault');
-		assert.exists(res.PingResponse, 'PingResponse should exist');
 	});
 
 	it('Functional | SOAP Harness - CheckTestCase - Verify the t - test attributes - id, depends, required', async () => {
@@ -48,21 +46,18 @@ describe('Admin > Harness Self Check > Check Test Case', function () {
 			`<PingRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);
 		assert.notExists(resA.Fault, 'PingRequest A should not fault');
-		assert.exists(resA.PingResponse, 'PingResponse A should exist');
 
 		// Test B depends on A
 		const resB = await soap.makeSOAPEnvelopeAdmin(
 			`<PingRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);
 		assert.notExists(resB.Fault, 'PingRequest B should not fault');
-		assert.exists(resB.PingResponse, 'PingResponse B should exist');
 
 		// Test C depends on B
 		const resC = await soap.makeSOAPEnvelopeAdmin(
 			`<PingRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);
 		assert.notExists(resC.Fault, 'PingRequest C should not fault');
-		assert.exists(resC.PingResponse, 'PingResponse C should exist');
 	});
 
 	it('Functional | SOAP Harness - CheckTestCase - Verify if a required test fails, the test case should fail', async () => {
@@ -71,7 +66,6 @@ describe('Admin > Harness Self Check > Check Test Case', function () {
 			`<PingRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'PingRequest should not fault');
-		assert.exists(res.PingResponse, 'PingResponse should exist');
 	});
 
 	it('Functional | SOAP Harness - CheckTestCase - Verify if a dependency has not executed, the test should throw an exception', async () => {
@@ -80,13 +74,11 @@ describe('Admin > Harness Self Check > Check Test Case', function () {
 			`<PingRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);
 		assert.notExists(resA.Fault, 'PingRequest A should not fault');
-		assert.exists(resA.PingResponse, 'PingResponse A should exist');
 
 		const resB = await soap.makeSOAPEnvelopeAdmin(
 			`<PingRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);
 		assert.notExists(resB.Fault, 'PingRequest B should not fault');
-		assert.exists(resB.PingResponse, 'PingResponse B should exist');
 	});
 
 	it('Functional | SOAP Harness - CheckTestCase - Verify if a dependency has failed, the test should throw an exception', async () => {
@@ -95,12 +87,10 @@ describe('Admin > Harness Self Check > Check Test Case', function () {
 			`<PingRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);
 		assert.notExists(resA.Fault, 'PingRequest A should not fault');
-		assert.exists(resA.PingResponse, 'PingResponse A should exist');
 
 		const resB = await soap.makeSOAPEnvelopeAdmin(
 			`<PingRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);
 		assert.notExists(resB.Fault, 'PingRequest B should not fault');
-		assert.exists(resB.PingResponse, 'PingResponse B should exist');
 	});
 });

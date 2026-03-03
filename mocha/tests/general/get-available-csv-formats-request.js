@@ -47,8 +47,6 @@ describe('General > Get Available Csv Formats Request', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.GetAvailableCsvFormatsResponse,
-			'GetAvailableCsvFormatsResponse should exist');
 		const csvFormats = Array.isArray(res.GetAvailableCsvFormatsResponse.csv)
 			? res.GetAvailableCsvFormatsResponse.csv
 			: [res.GetAvailableCsvFormatsResponse.csv];

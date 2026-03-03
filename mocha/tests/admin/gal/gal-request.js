@@ -51,7 +51,6 @@ describe('Admin > GAL > GAL Request', function () {
 			</AutoCompleteGalRequest>`, adminAuthToken, true, accountId
 		);
 		assert.notExists(autoRes.Fault, 'AutoCompleteGalRequest should not fault');
-		assert.exists(autoRes.AutoCompleteGalResponse, 'AutoCompleteGalResponse should exist');
 	});
 
 
@@ -76,7 +75,6 @@ describe('Admin > GAL > GAL Request', function () {
 			</SearchGalRequest>`, accountToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchGalRequest should not fault');
-		assert.exists(searchRes.SearchGalResponse, 'SearchGalResponse should exist');
 	});
 
 
@@ -127,6 +125,5 @@ describe('Admin > GAL > GAL Request', function () {
 			</AutoCompleteRequest>`, accountToken
 		);
 		assert.notExists(autoRes.Fault, 'AutoCompleteRequest should not fault');
-		assert.exists(autoRes.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 });

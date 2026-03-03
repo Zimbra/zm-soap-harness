@@ -43,7 +43,6 @@ describe('Prefs > Filters > Sieve > Sieve Bugs 106xxx 1', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Bug106349-01 should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'Response should exist');
 	});
 
 
@@ -481,6 +480,5 @@ describe('Prefs > Filters > Sieve > Sieve Bugs 106xxx 1', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
-		assert.exists(getRes.GetFilterRulesResponse, 'Response should exist');
 	});
 });

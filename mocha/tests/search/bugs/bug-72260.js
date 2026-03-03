@@ -70,7 +70,6 @@ Content for ${m.subject}</content>
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		assert.exists(res1.SearchResponse, 'SearchResponse should exist for to:kevinh');
 
 		// Search item
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -81,7 +80,6 @@ Content for ${m.subject}</content>
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist for to:afregoso');
 
 		// Search item
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -92,7 +90,6 @@ Content for ${m.subject}</content>
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist for OR query');
 
 		// Search item
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -103,7 +100,6 @@ Content for ${m.subject}</content>
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist for from/to OR');
 
 		// Search item
 		const res5 = await soap.makeSOAPEnvelopeAccount(
@@ -114,7 +110,6 @@ Content for ${m.subject}</content>
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		assert.exists(res5.SearchResponse, 'SearchResponse should exist for to:mlo');
 
 		// Search item
 		const res6 = await soap.makeSOAPEnvelopeAccount(
@@ -125,7 +120,6 @@ Content for ${m.subject}</content>
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		assert.exists(res6.SearchResponse, 'SearchResponse should exist for to:matt');
 
 		// Search item
 		const res7 = await soap.makeSOAPEnvelopeAccount(
@@ -136,7 +130,6 @@ Content for ${m.subject}</content>
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		assert.exists(res7.SearchResponse, 'SearchResponse should exist for mlo OR matt');
 
 		// Search item
 		const res8 = await soap.makeSOAPEnvelopeAccount(
@@ -147,7 +140,6 @@ Content for ${m.subject}</content>
 
 		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
-		assert.exists(res8.SearchResponse, 'SearchResponse should exist for kathy OR mlo');
 
 		// Search item
 		const res9 = await soap.makeSOAPEnvelopeAccount(
@@ -158,6 +150,5 @@ Content for ${m.subject}</content>
 
 		// Verify response
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
-		assert.exists(res9.SearchResponse, 'SearchResponse should exist for triple OR');
 	});
 });

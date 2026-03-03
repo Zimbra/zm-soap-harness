@@ -87,7 +87,7 @@ describe('EWS > Reply All', function () {
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		await soap.waitFor(5000);
@@ -341,7 +341,6 @@ describe('EWS > Reply All', function () {
 			</SearchRequest>`, account1AuthToken2
 		);
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const hit = Array.isArray(searchRes.SearchResponse.c)
 			? searchRes.SearchResponse.c[0] : searchRes.SearchResponse.c;
 		assert.equal(hit.su, replySubject, 'Subject should match reply subject');
@@ -379,7 +378,6 @@ describe('EWS > Reply All', function () {
 			</SearchRequest>`, account1AuthToken3
 		);
 		assert.notExists(searchRes2.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes2.SearchResponse, 'SearchResponse should exist');
 		const hit2 = Array.isArray(searchRes2.SearchResponse.c)
 			? searchRes2.SearchResponse.c[0] : searchRes2.SearchResponse.c;
 		assert.equal(hit2.su, replySubject, 'Subject should match reply subject');

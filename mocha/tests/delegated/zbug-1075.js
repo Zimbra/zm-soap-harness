@@ -141,7 +141,6 @@ describe('Delegated > ZBUG 1075', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'GetLDAPEntriesRequest should not fault');
-		assert.exists(res.GetLDAPEntriesResponse, 'GetLDAPEntriesResponse should exist');
 
 		// Verify both user accounts are in the response
 		const entries = res.GetLDAPEntriesResponse.LDAPEntry;
@@ -194,7 +193,8 @@ describe('Delegated > ZBUG 1075', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'ModifyLDAPEntryRequest should return Fault');
+		assert.isString(res.Fault.Detail.Error.Code,
+			'ModifyLDAPEntryRequest should return Fault error code');
 		assert.isTrue(
 			res.Fault.Detail.Error.Code.includes('service.PERM_DENIED') ||
 			res.Fault.Detail.Error.Code.includes('service.AUTH_REQUIRED'),
@@ -222,7 +222,8 @@ describe('Delegated > ZBUG 1075', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'ModifyLDAPEntryRequest should return Fault');
+		assert.isString(res.Fault.Detail.Error.Code,
+			'ModifyLDAPEntryRequest should return Fault error code');
 		assert.isTrue(
 			res.Fault.Detail.Error.Code.includes('service.PERM_DENIED') ||
 			res.Fault.Detail.Error.Code.includes('service.AUTH_REQUIRED'),

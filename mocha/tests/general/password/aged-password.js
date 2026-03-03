@@ -78,7 +78,7 @@ describe('General > Password > Aged Password', function () {
 		);
 
 		// Verify response
-		assert.exists(changeRes.Fault, 'Should return Fault for password change too soon');
+		assert.isString(changeRes.Fault.Detail.Error.Code, 'Should return Fault for password change too soon');
 		assert.include(changeRes.Fault.Detail.Error.Code, 'account.PASSWORD_CHANGE_TOO_SOON',
 			'Error code should be PASSWORD_CHANGE_TOO_SOON');
 	});
@@ -157,7 +157,7 @@ describe('General > Password > Aged Password', function () {
 		);
 
 		// Verify response
-		assert.exists(changeRes2.Fault, 'Should return Fault for password change too soon');
+		assert.isString(changeRes2.Fault.Detail.Error.Code, 'Should return Fault for password change too soon');
 		assert.include(changeRes2.Fault.Detail.Error.Code, 'account.PASSWORD_CHANGE_TOO_SOON',
 			'Error code should be PASSWORD_CHANGE_TOO_SOON');
 	});
@@ -216,7 +216,6 @@ describe('General > Password > Aged Password', function () {
 
 		// Verify response
 		assert.notExists(changeRes.Fault, 'ChangePasswordRequest should not fault: ' + (changeRes.Fault ? JSON.stringify(changeRes.Fault) : ''));
-		assert.exists(changeRes.ChangePasswordResponse, 'ChangePasswordResponse should exist');
 	});
 
 
@@ -260,7 +259,7 @@ describe('General > Password > Aged Password', function () {
 		);
 
 		// Verify response
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes.AuthResponse.authToken, 'AuthResponse should exist');
 		const resetPassword = authRes.AuthResponse.resetPassword
 			? (authRes.AuthResponse.resetPassword._content || authRes.AuthResponse.resetPassword._)
 			: undefined;
@@ -282,7 +281,6 @@ describe('General > Password > Aged Password', function () {
 
 		// Verify response
 		assert.notExists(changeRes.Fault, 'ChangePasswordRequest should not fault: ' + (changeRes.Fault ? JSON.stringify(changeRes.Fault) : ''));
-		assert.exists(changeRes.ChangePasswordResponse, 'ChangePasswordResponse should exist');
 		*/
 	});
 
@@ -327,7 +325,6 @@ describe('General > Password > Aged Password', function () {
 
 		// Verify response
 		assert.notExists(changeRes.Fault, 'ChangePasswordRequest should not fault: ' + (changeRes.Fault ? JSON.stringify(changeRes.Fault) : ''));
-		assert.exists(changeRes.ChangePasswordResponse, 'ChangePasswordResponse should exist');
 	});
 
 
@@ -370,7 +367,7 @@ describe('General > Password > Aged Password', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Should login normally when maxAge is 0');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes.AuthResponse.authToken, 'AuthResponse should exist');
 	});
 
 
@@ -426,7 +423,7 @@ describe('General > Password > Aged Password', function () {
 		);
 
 		// Verify response
-		assert.exists(changeRes.Fault, 'Should return Fault for password change too soon');
+		assert.isString(changeRes.Fault.Detail.Error.Code, 'Should return Fault for password change too soon');
 		assert.include(changeRes.Fault.Detail.Error.Code, 'account.PASSWORD_CHANGE_TOO_SOON',
 			'Error code should be PASSWORD_CHANGE_TOO_SOON');
 	});
@@ -486,7 +483,6 @@ describe('General > Password > Aged Password', function () {
 
 		// Verify response
 		assert.notExists(changeRes.Fault, 'ChangePasswordRequest should not fault: ' + (changeRes.Fault ? JSON.stringify(changeRes.Fault) : ''));
-		assert.exists(changeRes.ChangePasswordResponse, 'ChangePasswordResponse should exist');
 	});
 
 
@@ -529,7 +525,7 @@ describe('General > Password > Aged Password', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Should login normally since password not yet expired');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes.AuthResponse.authToken, 'AuthResponse should exist');
 	});
 
 
@@ -572,7 +568,7 @@ describe('General > Password > Aged Password', function () {
 		);
 
 		// Verify response
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes.AuthResponse.authToken, 'AuthResponse should exist');
 		const resetPassword = authRes.AuthResponse.resetPassword
 			? (authRes.AuthResponse.resetPassword._content || authRes.AuthResponse.resetPassword._)
 			: undefined;
@@ -619,7 +615,7 @@ describe('General > Password > Aged Password', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Should login normally since password not yet expired');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes.AuthResponse.authToken, 'AuthResponse should exist');
 	});
 
 
@@ -662,7 +658,7 @@ describe('General > Password > Aged Password', function () {
 		);
 
 		// Verify response
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes.AuthResponse.authToken, 'AuthResponse should exist');
 		const resetPassword = authRes.AuthResponse.resetPassword
 			? (authRes.AuthResponse.resetPassword._content || authRes.AuthResponse.resetPassword._)
 			: undefined;

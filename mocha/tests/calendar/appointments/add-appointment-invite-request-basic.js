@@ -121,9 +121,8 @@ describe('Calendar > Appointments > Add Appointment Invite Request Basic', funct
         );
 
         // Verify service.INVALID_REQUEST fault
-        assert.exists(addRes.Fault, 'AddAppointmentInviteRequest should fault');
-        const faultCode = addRes.Fault.Detail?.Error?.Code
-            || addRes.Fault.Code?.Value || '';
+        assert.isString(addRes.Fault.Detail.Error.Code, 'AddAppointmentInviteRequest should fault');
+        const faultCode = addRes.Fault.Detail.Error.Code;
         assert.match(
             faultCode,
             /service\.INVALID_REQUEST|soap:Sender/,
@@ -242,8 +241,9 @@ describe('Calendar > Appointments > Add Appointment Invite Request Basic', funct
 				id="${newCalItemId}"/>`, account1Token
         );
         assert.notExists(getApptRes.Fault, 'GetAppointmentRequest should not fault');
-        const appt = getApptRes.GetAppointmentResponse.appt[0]
-            || getApptRes.GetAppointmentResponse.appt;
+        const appt = Array.isArray(getApptRes.GetAppointmentResponse.appt)
+            ? getApptRes.GetAppointmentResponse.appt[0]
+            : getApptRes.GetAppointmentResponse.appt;
         assert.equal(appt.inv[0].comp[0].uid, newUID, 'New UID should match');
     });
 
@@ -489,8 +489,9 @@ describe('Calendar > Appointments > Add Appointment Invite Request Basic', funct
 				id="${newCalItemId}"/>`, account1Token
         );
         assert.notExists(getApptRes.Fault, 'GetAppointmentRequest should not fault');
-        const appt = getApptRes.GetAppointmentResponse.appt[0]
-            || getApptRes.GetAppointmentResponse.appt;
+        const appt = Array.isArray(getApptRes.GetAppointmentResponse.appt)
+            ? getApptRes.GetAppointmentResponse.appt[0]
+            : getApptRes.GetAppointmentResponse.appt;
         assert.equal(appt.inv[0].comp[0].uid, newUID, 'New UID should match');
 
         // Verify original appointment unchanged

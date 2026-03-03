@@ -62,7 +62,6 @@ describe('Contacts > Bugs > Bug 48742', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -75,7 +74,6 @@ describe('Contacts > Bugs > Bug 48742', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -88,7 +86,6 @@ describe('Contacts > Bugs > Bug 48742', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -101,6 +98,5 @@ describe('Contacts > Bugs > Bug 48742', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 });

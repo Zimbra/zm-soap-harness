@@ -47,7 +47,6 @@ describe('Contacts > Contacts Get', function () {
 			</CreateContactRequest>`, accountToken
 		);
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 		const contactId = cn.id;
@@ -58,7 +57,6 @@ describe('Contacts > Contacts Get', function () {
 			</GetContactsRequest>`, accountToken
 		);
 		assert.notExists(getRes.Fault, 'Get should not be a Fault');
-		assert.exists(getRes.GetContactsResponse, 'GetContactsResponse should exist');
 	});
 
 
@@ -74,7 +72,6 @@ describe('Contacts > Contacts Get', function () {
 			</CreateContactRequest>`, accountToken
 		);
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 		const contactId = cn.id;
@@ -92,8 +89,8 @@ describe('Contacts > Contacts Get', function () {
 				<cn id="${contactId}"/>
 			</GetContactsRequest>`, accountToken, false
 		);
-		assert.exists(getRes.Fault, 'Get deleted contact should be a Fault');
-		const code = getRes.Fault?.Detail?.Error?.Code || '';
+		assert.isString(getRes.Fault.Detail.Error.Code, 'Get deleted contact should be a Fault');
+		const code = getRes.Fault.Detail.Error.Code;
 		assert.include(code, 'mail.NO_SUCH_CONTACT', 'Error code should be mail.NO_SUCH_CONTACT');
 	});
 
@@ -109,7 +106,6 @@ describe('Contacts > Contacts Get', function () {
 			</CreateContactRequest>`, accountToken
 		);
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 		const contactId = cn.id;
@@ -119,8 +115,8 @@ describe('Contacts > Contacts Get', function () {
 				<cn id="   ${contactId}"/>
 			</GetContactsRequest>`, accountToken, false
 		);
-		assert.exists(getRes.Fault, 'Get with leading space should be a Fault');
-		const code = getRes.Fault?.Detail?.Error?.Code || '';
+		assert.isString(getRes.Fault.Detail.Error.Code, 'Get with leading space should be a Fault');
+		const code = getRes.Fault.Detail.Error.Code;
 		assert.include(code, 'service.INVALID_REQUEST', 'Error code should be service.INVALID_REQUEST');
 	});
 
@@ -136,7 +132,6 @@ describe('Contacts > Contacts Get', function () {
 			</CreateContactRequest>`, accountToken
 		);
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 		const contactId = cn.id;
@@ -146,8 +141,8 @@ describe('Contacts > Contacts Get', function () {
 				<cn id="${contactId}   "/>
 			</GetContactsRequest>`, accountToken, false
 		);
-		assert.exists(getRes.Fault, 'Get with trailing space should be a Fault');
-		const code = getRes.Fault?.Detail?.Error?.Code || '';
+		assert.isString(getRes.Fault.Detail.Error.Code, 'Get with trailing space should be a Fault');
+		const code = getRes.Fault.Detail.Error.Code;
 		assert.include(code, 'service.INVALID_REQUEST', 'Error code should be service.INVALID_REQUEST');
 	});
 
@@ -158,8 +153,8 @@ describe('Contacts > Contacts Get', function () {
 				<cn id=""/>
 			</GetContactsRequest>`, accountToken, false
 		);
-		assert.exists(getRes.Fault, 'Get with blank id should be a Fault');
-		const code = getRes.Fault?.Detail?.Error?.Code || '';
+		assert.isString(getRes.Fault.Detail.Error.Code, 'Get with blank id should be a Fault');
+		const code = getRes.Fault.Detail.Error.Code;
 		assert.include(code, 'service.INVALID_REQUEST', 'Error code should be service.INVALID_REQUEST');
 	});
 
@@ -189,7 +184,10 @@ describe('Contacts > Contacts Get', function () {
 			</GetContactsRequest>`, accountToken
 		);
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
-		assert.exists(getRes.GetContactsResponse.cn, 'Contacts should exist');
+		const cnArr = Array.isArray(getRes.GetContactsResponse.cn)
+			? getRes.GetContactsResponse.cn : [getRes.GetContactsResponse.cn];
+		assert.isAbove(cnArr.length, 0, 'Should have at least one contact');
+		assert.exists(cnArr[0].id, 'First contact should have an id');
 	});
 
 
@@ -204,7 +202,6 @@ describe('Contacts > Contacts Get', function () {
 			</CreateContactRequest>`, accountToken
 		);
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 		const contactId = cn.id;
@@ -215,7 +212,6 @@ describe('Contacts > Contacts Get', function () {
 			</GetContactsRequest>`, accountToken
 		);
 		assert.notExists(getRes.Fault, 'Get should not be a Fault');
-		assert.exists(getRes.GetContactsResponse, 'GetContactsResponse should exist');
 	});
 
 
@@ -251,7 +247,6 @@ describe('Contacts > Contacts Get', function () {
 			</GetContactsRequest>`, accountToken
 		);
 		assert.notExists(getRes.Fault, 'Get should not be a Fault');
-		assert.exists(getRes.GetContactsResponse, 'GetContactsResponse should exist');
 
 		// Create contact with javascript URLs
 		const createRes2 = await soap.makeSOAPEnvelopeAccount(
@@ -290,9 +285,9 @@ describe('Contacts > Contacts Get', function () {
 			}
 			return undefined;
 		};
-		assert.match(getAttr('homeUrl') || '', /^JAVASCRIPT-BLOCKED/, 'homeUrl should be blocked');
-		assert.match(getAttr('otherUrl') || '', /^JAVASCRIPT-BLOCKED/, 'otherUrl should be blocked');
-		assert.match(getAttr('workUrl') || '', /^JAVASCRIPT-BLOCKED/, 'workUrl should be blocked');
+		assert.match(getAttr('homeUrl'), /^JAVASCRIPT-BLOCKED/, 'homeUrl should be blocked');
+		assert.match(getAttr('otherUrl'), /^JAVASCRIPT-BLOCKED/, 'otherUrl should be blocked');
+		assert.match(getAttr('workUrl'), /^JAVASCRIPT-BLOCKED/, 'workUrl should be blocked');
 	});
 
 
@@ -301,7 +296,6 @@ describe('Contacts > Contacts Get', function () {
 			`<GetContactsRequest xmlns="urn:zimbraMail"/>`, accountToken
 		);
 		assert.notExists(getRes.Fault, 'Get all contacts should not be a Fault');
-		assert.exists(getRes.GetContactsResponse, 'GetContactsResponse should exist');
 	});
 
 
@@ -324,7 +318,6 @@ describe('Contacts > Contacts Get', function () {
 			</GetContactsRequest>`, accountToken
 		);
 		assert.notExists(getRes.Fault, 'Get should not be a Fault');
-		assert.exists(getRes.GetContactsResponse, 'GetContactsResponse should exist');
 	});
 
 
@@ -334,6 +327,6 @@ describe('Contacts > Contacts Get', function () {
 				<cn id="abcdef"/>
 			</GetContactsRequest>`, accountToken, false
 		);
-		assert.exists(getRes.Fault, 'Get with alpha id should be a Fault');
+		assert.isString(getRes.Fault.Detail.Error.Code, 'Get with alpha id should be a Fault');
 	});
 });

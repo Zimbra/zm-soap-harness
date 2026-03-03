@@ -95,9 +95,8 @@ describe('Mail > Conversation > Bugs > Bug 95266', function () {
 
 		// SearchConvRequest may fault if offset exceeds available messages
 		if (searchConvRes.Fault) {
-			assert.exists(searchConvRes.Fault, 'May fault if offset exceeds results');
+			assert.isString(searchConvRes.Fault.Detail.Error.Code, 'May fault if offset exceeds results');
 		} else {
-			assert.exists(searchConvRes.SearchConvResponse, 'SearchConvResponse should exist');
 		}
 	});
 });

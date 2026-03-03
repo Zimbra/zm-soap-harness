@@ -30,8 +30,6 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
-		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
-
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
 			? createRes1.CreateAccountResponse.account[0]
 			: createRes1.CreateAccountResponse.account;
@@ -50,7 +48,6 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
-		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 
 		// Auth as account1
 		// Send the message
@@ -63,7 +60,6 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(authRes1.Fault, 'Response should not be a Fault');
-		assert.exists(authRes1.AuthResponse, 'AuthResponse should exist');
 
 		account1Token = Array.isArray(authRes1.AuthResponse.authToken)
 			? authRes1.AuthResponse.authToken[0]._content || authRes1.AuthResponse.authToken[0]
@@ -96,13 +92,8 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		const createdFolder = Array.isArray(createRes.CreateFolderResponse.folder)
-			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
-		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
 		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
-
-		// Verify response
 		assert.exists(folder.id, 'folder id should exist');
 	});
 
@@ -119,9 +110,9 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		const createdFolder = Array.isArray(createRes.CreateFolderResponse.folder)
+		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
-		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
+		assert.exists(folder.id, 'folder id should exist');
 
 		// Try to create same folder again — should fail
 		const dupRes = await soap.makeSOAPEnvelopeAccount(
@@ -131,7 +122,7 @@ describe('Briefcase > Briefcase Folder', function () {
 		);
 
 		// Verify response
-		assert.exists(dupRes.Fault, 'Should return Fault for duplicate folder');
+		assert.isString(dupRes.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(dupRes.Fault.Detail.Error.Code, 'mail.ALREADY_EXISTS',
 			'Should return ALREADY_EXISTS');
 	});
@@ -150,11 +141,9 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		const createdFolder = Array.isArray(createRes.CreateFolderResponse.folder)
-			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
-		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
 		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
+		assert.exists(folder.id, 'folder id should exist');
 		const folderId = folder.id;
 
 		// Rename folder
@@ -166,13 +155,8 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(renameRes.Fault, 'Response should not be a Fault');
-		const folderAction = Array.isArray(renameRes.FolderActionResponse.action)
-			? renameRes.FolderActionResponse.action[0] : renameRes.FolderActionResponse.action;
-		assert.exists(folderAction, 'FolderActionResponse should contain action');
 		const action = Array.isArray(renameRes.FolderActionResponse.action)
 			? renameRes.FolderActionResponse.action[0] : renameRes.FolderActionResponse.action;
-
-		// Verify response
 		assert.equal(action.op, 'rename', 'op should be rename');
 	});
 
@@ -190,12 +174,9 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(create3.Fault, 'Response should not be a Fault');
-		const createdFolder = Array.isArray(create3.CreateFolderResponse.folder)
-			? create3.CreateFolderResponse.folder[0] : create3.CreateFolderResponse.folder;
-		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
-
 		const folder3 = Array.isArray(create3.CreateFolderResponse.folder)
 			? create3.CreateFolderResponse.folder[0] : create3.CreateFolderResponse.folder;
+		assert.exists(folder3.id, 'folder3 id should exist');
 		const folder3Id = folder3.id;
 
 		// Create folder4
@@ -221,14 +202,8 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(trashRes.Fault, 'Response should not be a Fault');
-		const folderAction = Array.isArray(trashRes.FolderActionResponse.action)
-			? trashRes.FolderActionResponse.action[0] : trashRes.FolderActionResponse.action;
-		assert.exists(folderAction, 'FolderActionResponse should contain action');
-
 		const trashAction = Array.isArray(trashRes.FolderActionResponse.action)
 			? trashRes.FolderActionResponse.action[0] : trashRes.FolderActionResponse.action;
-
-		// Verify response
 		assert.equal(trashAction.op, 'trash', 'op should be trash');
 
 		// Delete folder4
@@ -260,11 +235,9 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		const createdFolder = Array.isArray(createRes.CreateFolderResponse.folder)
-			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
-		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
 		const folder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
+		assert.exists(folder.id, 'folder id should exist');
 		const folderId = folder.id;
 
 		// Save a document to the folder
@@ -278,7 +251,6 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
-		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
 			? saveRes.SaveDocumentResponse.doc[0] : saveRes.SaveDocumentResponse.doc;
@@ -295,9 +267,9 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(shareRes.Fault, 'Response should not be a Fault');
-		const folderAction = Array.isArray(shareRes.FolderActionResponse.action)
+		const shareAction = Array.isArray(shareRes.FolderActionResponse.action)
 			? shareRes.FolderActionResponse.action[0] : shareRes.FolderActionResponse.action;
-		assert.exists(folderAction, 'FolderActionResponse should contain action');
+		assert.equal(shareAction.op, 'grant', 'op should be grant');
 
 		// Auth as account2
 		// Send the message
@@ -310,7 +282,7 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(authRes2.Fault, 'Response should not be a Fault');
-		assert.exists(authRes2.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes2.AuthResponse.authToken, 'AuthResponse should exist');
 		assert.match(String(authRes2.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authRes2.AuthResponse.authToken, 'authToken should exist');
@@ -326,12 +298,10 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(folderRes2.Fault, 'Response should not be a Fault');
-		assert.exists(folderRes2.GetFolderResponse, 'GetFolderResponse should exist');
 		const root2 = Array.isArray(folderRes2.GetFolderResponse.folder)
 			? folderRes2.GetFolderResponse.folder[0] : folderRes2.GetFolderResponse.folder;
 
-		// Verify response
-		assert.exists(root2, 'folder should exist');
+		assert.exists(root2.id, 'root folder id should exist');
 		const rootId2 = root2.id;
 
 		// Create mountpoint
@@ -346,8 +316,6 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(mountRes.Fault, 'Response should not be a Fault');
-		assert.exists(mountRes.CreateMountpointResponse,
-			'CreateMountpointResponse should exist');
 		const link = Array.isArray(mountRes.CreateMountpointResponse.link)
 			? mountRes.CreateMountpointResponse.link[0] : mountRes.CreateMountpointResponse.link;
 
@@ -363,7 +331,7 @@ describe('Briefcase > Briefcase Folder', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
+		assert.exists(searchRes.SearchResponse.doc, 'SearchResponse should contain documents');
 
 		// Delete shared folder as account1
 		const deleteRes = await soap.makeSOAPEnvelopeAccount(

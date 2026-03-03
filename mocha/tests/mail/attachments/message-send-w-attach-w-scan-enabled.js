@@ -175,7 +175,7 @@ describe('Mail > Attachments > Message Send W Attach W Scan Enabled', function (
 			// If scan is not enabled, the send may succeed - either outcome is acceptable
 			const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 				? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-			assert.exists(sentMsg, 'SendMsgResponse should contain m');
+			assert.exists(sentMsg.id, 'sent msg id should exist');
 			assert.isString(sentMsg.id, 'Sent message should have an id');
 		}
 	});

@@ -48,7 +48,6 @@ describe('Mail > Custom Header > Custom Header', function () {
 
 		// Verify config modified
 		assert.notExists(modRes.Fault, 'ModifyConfigRequest should not fault');
-		assert.exists(modRes.ModifyConfigResponse, 'ModifyConfigResponse should exist');
 	});
 
 
@@ -103,7 +102,7 @@ describe('Mail > Custom Header > Custom Header', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Login as account2 and search for the message (allow delivery time)
@@ -120,7 +119,6 @@ describe('Mail > Custom Header > Custom Header', function () {
 
 		// Verify message found
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		assert.exists(searchRes.SearchResponse.m, 'Message should exist');
 		const msgs = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
@@ -140,7 +138,7 @@ describe('Mail > Custom Header > Custom Header', function () {
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
 		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
-		assert.exists(getMsg, 'GetMsgResponse should contain m');
+		assert.exists(getMsg.id, 'message id should exist');
 		const msg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
 		const headers = msg.header ? (Array.isArray(msg.header) ? msg.header : [msg.header]) : [];
@@ -190,10 +188,7 @@ describe('Mail > Custom Header > Custom Header', function () {
 		);
 
 		// Verify error returned
-		assert.exists(sendRes.Fault, 'Should return a Fault for non-configured header');
-		assert.exists(sendRes.Fault.Detail, 'Fault should have detail');
-		assert.exists(sendRes.Fault.Detail.Error, 'Fault should have error');
-		assert.exists(sendRes.Fault.Detail.Error.Code, 'Fault should have error code');
+		assert.isString(sendRes.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 	});
 
 
@@ -248,7 +243,7 @@ describe('Mail > Custom Header > Custom Header', function () {
 		assert.notExists(draftRes.Fault, 'SaveDraftRequest should not fault');
 		const draftMsg = Array.isArray(draftRes.SaveDraftResponse.m)
 			? draftRes.SaveDraftResponse.m[0] : draftRes.SaveDraftResponse.m;
-		assert.exists(draftMsg, 'SaveDraftResponse should contain m');
+		assert.exists(draftMsg.id, 'draft msg id should exist');
 		const draftId = Array.isArray(draftRes.SaveDraftResponse.m)
 			? draftRes.SaveDraftResponse.m[0].id : draftRes.SaveDraftResponse.m.id;
 
@@ -313,9 +308,7 @@ describe('Mail > Custom Header > Custom Header', function () {
 		);
 
 		// Verify error returned
-		assert.exists(draftRes.Fault, 'Should return a Fault for non-configured header');
-		assert.exists(draftRes.Fault.Detail, 'Fault should have detail');
-		assert.exists(draftRes.Fault.Detail.Error, 'Fault should have error');
+		assert.isString(draftRes.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 	});
 
 
@@ -378,7 +371,6 @@ describe('Mail > Custom Header > Custom Header', function () {
 
 		// Verify appointment created
 		assert.notExists(apptRes.Fault, 'CreateAppointmentRequest should not fault');
-		assert.exists(apptRes.CreateAppointmentResponse, 'CreateAppointmentResponse should exist');
 
 		// Login as account2 and search for the appointment (allow delivery time)
 		const account2AuthToken = await soap.getAccountAuthToken(account2Email);
@@ -394,7 +386,6 @@ describe('Mail > Custom Header > Custom Header', function () {
 
 		// Verify appointment found
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		assert.exists(searchRes.SearchResponse.m, 'Message should exist');
 		const msgs = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
@@ -471,8 +462,6 @@ describe('Mail > Custom Header > Custom Header', function () {
 		);
 
 		// Verify error returned
-		assert.exists(apptRes.Fault, 'Should return a Fault for non-configured header');
-		assert.exists(apptRes.Fault.Detail, 'Fault should have detail');
-		assert.exists(apptRes.Fault.Detail.Error, 'Fault should have error');
+		assert.isString(apptRes.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 	});
 });

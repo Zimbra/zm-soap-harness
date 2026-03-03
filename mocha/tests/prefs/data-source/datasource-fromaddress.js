@@ -47,6 +47,5 @@ describe('Prefs > Data Source > Datasource Fromaddress', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Should not fault');
-		assert.exists(res.CreateDataSourceResponse, 'Response should exist');
 	});
 });

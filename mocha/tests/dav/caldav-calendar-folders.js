@@ -30,7 +30,6 @@ describe('DAV > Caldav Calendar Folders', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
@@ -52,7 +51,7 @@ describe('DAV > Caldav Calendar Folders', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes.AuthResponse.authToken, 'AuthResponse should exist');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 		account1Token = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
@@ -152,7 +151,6 @@ describe('DAV > Caldav Calendar Folders', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAppointmentResponse, 'Should create appointment');
 
 		// Get ctag after creating appointment
 		const res2 = await makeDavRequest({
@@ -208,7 +206,6 @@ describe('DAV > Caldav Calendar Folders', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAppointmentResponse, 'Should create appointment');
 		const invId = createRes.CreateAppointmentResponse.invId
 			|| createRes.CreateAppointmentResponse.$.invId;
 
@@ -267,7 +264,6 @@ describe('DAV > Caldav Calendar Folders', function () {
 
 		// Verify response
 		assert.notExists(modifyRes.Fault, 'Response should not be a Fault');
-		assert.exists(modifyRes.ModifyAppointmentResponse, 'Should modify appointment');
 
 		// Get ctag after modify
 		const res2 = await makeDavRequest({
@@ -318,7 +314,6 @@ describe('DAV > Caldav Calendar Folders', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAppointmentResponse, 'Should create appointment');
 		const invId = createRes.CreateAppointmentResponse.invId
 			|| createRes.CreateAppointmentResponse.$.invId;
 
@@ -363,7 +358,6 @@ describe('DAV > Caldav Calendar Folders', function () {
 
 		// Verify response
 		assert.notExists(cancelRes.Fault, 'Response should not be a Fault');
-		assert.exists(cancelRes.CancelAppointmentResponse, 'Should cancel appointment');
 
 		// Get ctag after delete
 		const res2 = await makeDavRequest({
@@ -396,7 +390,6 @@ describe('DAV > Caldav Calendar Folders', function () {
 
 		// Verify response
 		assert.notExists(getFolderRes.Fault, 'Response should not be a Fault');
-		assert.exists(getFolderRes.GetFolderResponse, 'GetFolderResponse should exist');
 		const rootFolder = getFolderRes.GetFolderResponse.folder;
 		const rootFolderObj = Array.isArray(rootFolder) ? rootFolder[0] : rootFolder;
 		const rootId = rootFolderObj.id;
@@ -410,7 +403,6 @@ describe('DAV > Caldav Calendar Folders', function () {
 
 		// Verify response
 		assert.notExists(createFolderRes.Fault, 'Response should not be a Fault');
-		assert.exists(createFolderRes.CreateFolderResponse, 'Should create folder');
 		const folder = Array.isArray(createFolderRes.CreateFolderResponse.folder)
 			? createFolderRes.CreateFolderResponse.folder[0]
 			: createFolderRes.CreateFolderResponse.folder;
@@ -446,7 +438,6 @@ describe('DAV > Caldav Calendar Folders', function () {
 
 		// Verify response
 		assert.notExists(renameRes.Fault, 'Response should not be a Fault');
-		assert.exists(renameRes.ItemActionResponse, 'Should rename folder');
 
 		// Get ctag after rename
 		const res2 = await makeDavRequest({
@@ -492,7 +483,6 @@ describe('DAV > Caldav Calendar Folders', function () {
 
 		// Verify response
 		assert.notExists(createFolderRes.Fault, 'Response should not be a Fault');
-		assert.exists(createFolderRes.CreateFolderResponse, 'Should create folder');
 
 		// Verify folder exists via PROPFIND
 		const propfindRes = await makeDavRequest({
@@ -581,7 +571,6 @@ describe('DAV > Caldav Calendar Folders', function () {
 
 		// Verify response
 		assert.notExists(createApptRes.Fault, 'Response should not be a Fault');
-		assert.exists(createApptRes.CreateAppointmentResponse, 'Should create appointment');
 
 		// Delete folder via CalDAV
 		const deleteRes = await makeDavRequest({
@@ -702,6 +691,5 @@ describe('DAV > Caldav Calendar Folders', function () {
 
 		// Verify response
 		assert.notExists(verifyRes.Fault, 'Response should not be a Fault');
-		assert.exists(verifyRes.GetFolderResponse, 'GetFolderResponse should exist');
 	});
 });

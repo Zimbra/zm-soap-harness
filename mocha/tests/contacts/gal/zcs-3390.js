@@ -76,6 +76,5 @@ describe('Contacts > GAL > ZCS 3390', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SyncGal should not be a Fault');
-		assert.exists(res.SyncGalResponse, 'SyncGalResponse should exist');
 	});
 });

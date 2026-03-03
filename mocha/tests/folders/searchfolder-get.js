@@ -37,25 +37,27 @@ describe('Folders > Searchfolder Get', function () {
 				<search name='${searchName}' query='in:inbox' types='message' sortBy='dateDesc' l='1'/>
 			</CreateSearchFolderRequest>`;
 
-		// GetSearchFolderRequest
+		// CreateSearchFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
 
 		// Verify response
 		assert.notExists(createResponse.Fault, 'Response should not be a Fault');
-		assert.exists(createResponse.CreateSearchFolderResponse,
-			'Verify create response exists');
-		assert.equal(createResponse.CreateSearchFolderResponse.search[0].name, searchName,
+		const search = createResponse.CreateSearchFolderResponse.search[0];
+		assert.exists(search.id, 'Search folder ID should exist');
+		assert.equal(search.name, searchName,
 			'Verify search folder name');
-		assert.equal(createResponse.CreateSearchFolderResponse.search[0].query, 'in:inbox',
+		assert.equal(search.query, 'in:inbox',
 			'Verify search query');
 
 		// Get search folder
 		const getRequest = '<GetSearchFolderRequest xmlns=\'urn:zimbraMail\'/>';
+		// GetSearchFolderRequest
 		const getResponse = await soap.makeSOAPEnvelopeAccount(getRequest, accountAuthToken);
 
 		// Verify response
 		assert.notExists(getResponse.Fault, 'Response should not be a Fault');
-		assert.exists(getResponse.GetSearchFolderResponse, 'Verify get response exists');
+		assert.exists(getResponse.GetSearchFolderResponse.search,
+			'Verify search folders returned');
 	});
 
 });

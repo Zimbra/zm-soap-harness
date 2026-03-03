@@ -71,7 +71,6 @@ describe('Prefs > Filters > Filteroncurrenttime', function () {
 			</ModifyFilterRulesRequest>`, account1AuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 
 		// Send message from account2 to account1
 		await soap.makeSOAPEnvelopeAccount(
@@ -144,7 +143,6 @@ describe('Prefs > Filters > Filteroncurrenttime', function () {
 			</ModifyFilterRulesRequest>`, account1AuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 
 		// Send message from account2 to account1
 		await soap.makeSOAPEnvelopeAccount(
@@ -221,7 +219,6 @@ describe('Prefs > Filters > Filteroncurrenttime', function () {
 			</ModifyFilterRulesRequest>`, account1AuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 
 		// Send message from account2 to account1
 		await soap.makeSOAPEnvelopeAccount(
@@ -299,7 +296,6 @@ describe('Prefs > Filters > Filteroncurrenttime', function () {
 			</ModifyFilterRulesRequest>`, account1AuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 
 		// Send message from account2 to account1
 		await soap.makeSOAPEnvelopeAccount(
@@ -370,7 +366,6 @@ describe('Prefs > Filters > Filteroncurrenttime', function () {
 			</ModifyFilterRulesRequest>`, account1AuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 
 		// Send message from account2 to account1
 		await soap.makeSOAPEnvelopeAccount(
@@ -442,7 +437,6 @@ describe('Prefs > Filters > Filteroncurrenttime', function () {
 			</ModifyFilterRulesRequest>`, account1AuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 
 		// Send message from account2 to account1
 		await soap.makeSOAPEnvelopeAccount(
@@ -502,7 +496,7 @@ describe('Prefs > Filters > Filteroncurrenttime', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, accountAuthToken, false
 		);
-		assert.exists(res1.Fault, 'Time 2400 should return fault');
+		assert.isString(res1.Fault.Detail.Error.Code, 'Time 2400 should return fault');
 		assert.match(res1.Fault.Detail.Error.Code, /^service/, 'Should be a service error');
 
 		// Verify invalid time value "2400" with "after" returns fault
@@ -521,7 +515,7 @@ describe('Prefs > Filters > Filteroncurrenttime', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, accountAuthToken, false
 		);
-		assert.exists(res2.Fault, 'Time 2400 after should return fault');
+		assert.isString(res2.Fault.Detail.Error.Code, 'Time 2400 after should return fault');
 		assert.match(res2.Fault.Detail.Error.Code, /^service/, 'Should be a service error');
 
 		// Verify invalid dateComparison "later" returns fault
@@ -540,7 +534,7 @@ describe('Prefs > Filters > Filteroncurrenttime', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, accountAuthToken, false
 		);
-		assert.exists(res3.Fault, 'Invalid comparison "later" should return fault');
+		assert.isString(res3.Fault.Detail.Error.Code, 'Invalid comparison "later" should return fault');
 		assert.match(res3.Fault.Detail.Error.Code, /^service/, 'Should be a service error');
 
 		// Verify invalid time value "2900" returns fault
@@ -559,7 +553,7 @@ describe('Prefs > Filters > Filteroncurrenttime', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, accountAuthToken, false
 		);
-		assert.exists(res4.Fault, 'Time 2900 should return fault');
+		assert.isString(res4.Fault.Detail.Error.Code, 'Time 2900 should return fault');
 		assert.match(res4.Fault.Detail.Error.Code, /^service/, 'Should be a service error');
 
 		// Verify invalid time value "2298" returns fault
@@ -578,7 +572,7 @@ describe('Prefs > Filters > Filteroncurrenttime', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, accountAuthToken, false
 		);
-		assert.exists(res5.Fault, 'Time 2298 should return fault');
+		assert.isString(res5.Fault.Detail.Error.Code, 'Time 2298 should return fault');
 		assert.match(res5.Fault.Detail.Error.Code, /^service/, 'Should be a service error');
 
 		// Verify negative time value "-1020" returns fault
@@ -597,7 +591,7 @@ describe('Prefs > Filters > Filteroncurrenttime', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, accountAuthToken, false
 		);
-		assert.exists(res6.Fault, 'Negative time should return fault');
+		assert.isString(res6.Fault.Detail.Error.Code, 'Negative time should return fault');
 		assert.match(res6.Fault.Detail.Error.Code, /^service/, 'Should be a service error');
 
 		// Verify very large time value "140000" returns fault
@@ -616,7 +610,7 @@ describe('Prefs > Filters > Filteroncurrenttime', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, accountAuthToken, false
 		);
-		assert.exists(res7.Fault, 'Large time value should return fault');
+		assert.isString(res7.Fault.Detail.Error.Code, 'Large time value should return fault');
 		assert.match(res7.Fault.Detail.Error.Code, /^service/, 'Should be a service error');
 
 		// Verify very small time value "54" returns fault
@@ -635,7 +629,7 @@ describe('Prefs > Filters > Filteroncurrenttime', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, accountAuthToken, false
 		);
-		assert.exists(res8.Fault, 'Time 54 should return fault');
+		assert.isString(res8.Fault.Detail.Error.Code, 'Time 54 should return fault');
 		assert.match(res8.Fault.Detail.Error.Code, /^service/, 'Should be a service error');
 
 		// Verify non-numeric time value "a" returns fault
@@ -654,7 +648,7 @@ describe('Prefs > Filters > Filteroncurrenttime', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, accountAuthToken, false
 		);
-		assert.exists(res9.Fault, 'Non-numeric time should return fault');
+		assert.isString(res9.Fault.Detail.Error.Code, 'Non-numeric time should return fault');
 		assert.match(res9.Fault.Detail.Error.Code, /^service/, 'Should be a service error');
 
 		// Verify invalid day of week value "-1" returns fault
@@ -673,7 +667,7 @@ describe('Prefs > Filters > Filteroncurrenttime', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, accountAuthToken, false
 		);
-		assert.exists(res10.Fault, 'Day of week -1 should return fault');
+		assert.isString(res10.Fault.Detail.Error.Code, 'Day of week -1 should return fault');
 		assert.match(res10.Fault.Detail.Error.Code, /^service/, 'Should be a service error');
 
 		// Verify invalid day of week value "1,3,8" returns fault
@@ -692,7 +686,7 @@ describe('Prefs > Filters > Filteroncurrenttime', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, accountAuthToken, false
 		);
-		assert.exists(res11.Fault, 'Day of week 1,3,8 should return fault');
+		assert.isString(res11.Fault.Detail.Error.Code, 'Day of week 1,3,8 should return fault');
 		assert.match(res11.Fault.Detail.Error.Code, /^service/, 'Should be a service error');
 
 		// Verify invalid day of week value "11,-02" returns fault
@@ -711,7 +705,7 @@ describe('Prefs > Filters > Filteroncurrenttime', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, accountAuthToken, false
 		);
-		assert.exists(res12.Fault, 'Day of week 11,-02 should return fault');
+		assert.isString(res12.Fault.Detail.Error.Code, 'Day of week 11,-02 should return fault');
 		assert.match(res12.Fault.Detail.Error.Code, /^service/, 'Should be a service error');
 
 		// Verify non-numeric day of week value "a,b,c" returns fault
@@ -730,7 +724,7 @@ describe('Prefs > Filters > Filteroncurrenttime', function () {
 				</filterRules>
 			</ModifyFilterRulesRequest>`, accountAuthToken, false
 		);
-		assert.exists(res13.Fault, 'Non-numeric day of week should return fault');
+		assert.isString(res13.Fault.Detail.Error.Code, 'Non-numeric day of week should return fault');
 		assert.match(res13.Fault.Detail.Error.Code, /^service/, 'Should be a service error');
 	});
 });

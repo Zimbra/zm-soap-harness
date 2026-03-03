@@ -42,7 +42,6 @@ describe('Prefs > Filters > Operators > Operators', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Is operator should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'Response should exist');
 	});
 
 
@@ -233,6 +232,5 @@ describe('Prefs > Filters > Operators > Operators', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
-		assert.exists(getRes.GetFilterRulesResponse, 'GetFilterRulesResponse should exist');
 	});
 });

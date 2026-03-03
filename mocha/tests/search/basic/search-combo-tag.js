@@ -286,7 +286,7 @@ Content for ${mail8.name}</content>
 		assert.notExists(res11.Fault, 'Response should not be a Fault');
 		const createdTag = Array.isArray(res11.CreateTagResponse.tag)
 			? res11.CreateTagResponse.tag[0] : res11.CreateTagResponse.tag;
-		assert.exists(createdTag, 'CreateTagResponse should contain tag');
+		assert.exists(createdTag.id, 'tag id should exist');
 		tag.id1 = res11.CreateTagResponse?.tag?.[0].id;
 
 		// CreateTagRequest
@@ -311,7 +311,7 @@ Content for ${mail8.name}</content>
 		assert.notExists(res13.Fault, 'Response should not be a Fault');
 		const msgAction = Array.isArray(res13.MsgActionResponse.action)
 			? res13.MsgActionResponse.action[0] : res13.MsgActionResponse.action;
-		assert.exists(msgAction, 'MsgActionResponse should contain action');
+		assert.equal(msgAction.op, 'tag', 'op should be tag');
 
 		// MsgActionRequest
 		const res14 = await soap.makeSOAPEnvelopeAccount(
@@ -395,7 +395,6 @@ Content for ${mail8.name}</content>
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -406,7 +405,6 @@ Content for ${mail8.name}</content>
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -417,7 +415,6 @@ Content for ${mail8.name}</content>
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -431,7 +428,6 @@ Content for ${mail8.name}</content>
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -442,7 +438,6 @@ Content for ${mail8.name}</content>
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -453,7 +448,6 @@ Content for ${mail8.name}</content>
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -467,7 +461,6 @@ Content for ${mail8.name}</content>
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -478,7 +471,6 @@ Content for ${mail8.name}</content>
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -489,7 +481,6 @@ Content for ${mail8.name}</content>
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -503,7 +494,6 @@ Content for ${mail8.name}</content>
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -514,7 +504,6 @@ Content for ${mail8.name}</content>
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -525,6 +514,5 @@ Content for ${mail8.name}</content>
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 	});
 });

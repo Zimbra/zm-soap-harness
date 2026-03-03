@@ -77,7 +77,9 @@ describe('Calendar > Appointments > Appointment Search', function () {
 			</SearchRequest>`, accountToken
         );
         assert.notExists(searchRes1.Fault, 'SearchRequest should not fault');
-        assert.exists(searchRes1.SearchResponse.appt, 'Appointment should be found');
+        const appts1 = Array.isArray(searchRes1.SearchResponse.appt)
+            ? searchRes1.SearchResponse.appt : [searchRes1.SearchResponse.appt];
+        assert.exists(appts1[0].name, 'Appointment name should exist');
 
         // Search with fetch=all
         const searchRes2 = await soap.makeSOAPEnvelopeAccount(
@@ -88,7 +90,9 @@ describe('Calendar > Appointments > Appointment Search', function () {
 			</SearchRequest>`, accountToken
         );
         assert.notExists(searchRes2.Fault, 'SearchRequest should not fault');
-        assert.exists(searchRes2.SearchResponse.appt, 'Appointment should be found');
+        const appts2 = Array.isArray(searchRes2.SearchResponse.appt)
+            ? searchRes2.SearchResponse.appt : [searchRes2.SearchResponse.appt];
+        assert.exists(appts2[0].name, 'Appointment name should exist');
     });
 
 
@@ -106,7 +110,7 @@ describe('Calendar > Appointments > Appointment Search', function () {
         const now = Date.now();
 
         // Create appointment first
-        await soap.makeSOAPEnvelopeAccount(
+        const createRes = await soap.makeSOAPEnvelopeAccount(
             `<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
 					<inv method="REQUEST" type="event" fb="B" transp="O"
@@ -124,6 +128,8 @@ describe('Calendar > Appointments > Appointment Search', function () {
 				</m>
 			</CreateAppointmentRequest>`, accountToken
         );
+        assert.notExists(createRes.Fault, 'CreateAppointmentRequest should not fault');
+        assert.exists(createRes.CreateAppointmentResponse.invId, 'invId should exist');
 
         // Create search folder
         const searchName = `Search01${common.getUniqueString()}`;
@@ -178,9 +184,7 @@ describe('Calendar > Appointments > Appointment Search', function () {
 			</FolderActionRequest>`, accountToken
         );
         assert.notExists(deleteRes.Fault, 'FolderActionRequest should not fault');
-        assert.exists(
-            deleteRes.FolderActionResponse,
-            'FolderActionResponse should exist'
-        );
+        assert.equal(deleteRes.FolderActionResponse.action.op, 'delete', 'Action op should be delete');
+        assert.equal(deleteRes.FolderActionResponse.action.id, searchFolderId, 'Action id should match');
     });
 });

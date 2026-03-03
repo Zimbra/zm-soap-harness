@@ -72,9 +72,7 @@ But even against the No. 4 team in the BCS, the Bears' goals have not changed on
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 		assert.exists(res2.SearchResponse?.m, 'Message should exist');
-		assert.exists(res2.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -134,8 +132,6 @@ taking their feet off the gas when the points matter most. &lt;br&gt;&lt;/p&gt;&
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 		assert.exists(res2.SearchResponse?.m, 'Message should exist');
-		assert.exists(res2.SearchResponse, 'Response element should exist');
 	});
 });

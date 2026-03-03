@@ -134,8 +134,6 @@ describe('Admin > Accounts > Foreign Principal > Account Getmembership', functio
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.GetAccountMembershipResponse,
-			'GetAccountMembershipResponse should exist');
 
 		const dls = response.GetAccountMembershipResponse.dl || [];
 		const dlNames = dls.map(dl => dl.name);
@@ -155,8 +153,6 @@ describe('Admin > Accounts > Foreign Principal > Account Getmembership', functio
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.GetAccountMembershipResponse,
-			'GetAccountMembershipResponse should exist');
 
 		const dls = response.GetAccountMembershipResponse.dl || [];
 		const dlNames = dls.map(dl => dl.name);
@@ -178,8 +174,6 @@ describe('Admin > Accounts > Foreign Principal > Account Getmembership', functio
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.GetAccountMembershipResponse,
-			'GetAccountMembershipResponse should exist');
 
 		const dls = response.GetAccountMembershipResponse.dl || [];
 

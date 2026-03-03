@@ -46,13 +46,7 @@ describe('Mail > Persona > Send As Mail Using Persona From Nonexisting Mail ID',
 			</CreateAccountRequest>`, adminAuthToken
 		);
 
-		// Set zimbraAllowFromAddress for account1 to account3 (non-existing)
-		const create1Res = await soap.makeSOAPEnvelopeAdmin(
-			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
-				<name>${account1Email}</name>
-				<password>${config.accountPassword}</password>
-			</CreateAccountRequest>`, adminAuthToken
-		);
+		// Get account1 ID for ModifyAccountRequest (to set zimbraAllowFromAddress)
 
 		// Get account1 ID for ModifyAccountRequest
 		const getAcctRes = await soap.makeSOAPEnvelopeAdmin(
@@ -122,7 +116,6 @@ describe('Mail > Persona > Send As Mail Using Persona From Nonexisting Mail ID',
 			</SearchRequest>`, account2AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		assert.exists(searchRes.SearchResponse.m, 'Message should exist');
 		const msgs = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
@@ -149,8 +142,6 @@ describe('Mail > Persona > Send As Mail Using Persona From Nonexisting Mail ID',
 			</SearchRequest>`, account1AuthToken
 		);
 		assert.notExists(draftSearchRes.Fault, 'SearchRequest should not fault');
-const draftMsgs = Array.isArray(draftSearchRes.SearchResponse.m)
-			? draftSearchRes.SearchResponse.m : [draftSearchRes.SearchResponse.m];
-		assert.equal(draftMsgs.length, 0, 'Drafts folder should be empty');
+		assert.notExists(draftSearchRes.SearchResponse.m, 'Drafts folder should be empty');
 	});
 });

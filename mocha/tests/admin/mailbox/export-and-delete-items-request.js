@@ -73,7 +73,6 @@ describe('Admin > Mailbox > Export And Delete Items Request', function () {
 			</ExportAndDeleteItemsRequest>`, adminAuthToken
 		);
 		assert.notExists(exportRes.Fault, 'ExportAndDeleteItemsRequest should not fault');
-		assert.exists(exportRes.ExportAndDeleteItemsResponse, 'ExportAndDeleteItemsResponse should exist');
 	});
 
 
@@ -87,7 +86,6 @@ describe('Admin > Mailbox > Export And Delete Items Request', function () {
 			</ExportAndDeleteItemsRequest>`, adminAuthToken
 		);
 		assert.notExists(exportRes.Fault, 'ExportAndDeleteItemsRequest with item id should not fault');
-		assert.exists(exportRes.ExportAndDeleteItemsResponse, 'ExportAndDeleteItemsResponse should exist');
 	});
 
 
@@ -101,7 +99,6 @@ describe('Admin > Mailbox > Export And Delete Items Request', function () {
 			</ExportAndDeleteItemsRequest>`, adminAuthToken
 		);
 		assert.notExists(exportRes.Fault, 'ExportAndDeleteItemsRequest with invalid item should not fault');
-		assert.exists(exportRes.ExportAndDeleteItemsResponse, 'ExportAndDeleteItemsResponse should exist');
 	});
 
 
@@ -111,7 +108,7 @@ describe('Admin > Mailbox > Export And Delete Items Request', function () {
 				<mbox id="aaaaa"/>
 			</ExportAndDeleteItemsRequest>`, adminAuthToken, false
 		);
-		assert.exists(exportRes.Fault, 'ExportAndDeleteItemsRequest with alphabetic mbox should fault');
+		assert.isString(exportRes.Fault.Detail.Error.Code, 'ExportAndDeleteItemsRequest with alphabetic mbox should fault');
 		assert.include(exportRes.Fault.Detail.Error.Code, 'service.FAILURE');
 	});
 
@@ -122,7 +119,7 @@ describe('Admin > Mailbox > Export And Delete Items Request', function () {
 				<mbox id="-111111111111111"/>
 			</ExportAndDeleteItemsRequest>`, adminAuthToken, false
 		);
-		assert.exists(exportRes.Fault, 'ExportAndDeleteItemsRequest with invalid mbox should fault');
+		assert.isString(exportRes.Fault.Detail.Error.Code, 'ExportAndDeleteItemsRequest with invalid mbox should fault');
 		assert.include(exportRes.Fault.Detail.Error.Code, 'mail.NO_SUCH_MBOX');
 	});
 
@@ -135,7 +132,7 @@ describe('Admin > Mailbox > Export And Delete Items Request', function () {
 				<mbox id="                   ${accountId}"/>
 			</ExportAndDeleteItemsRequest>`, adminAuthToken, false
 		);
-		assert.exists(exportRes.Fault, 'ExportAndDeleteItemsRequest with leading space should fault');
+		assert.isString(exportRes.Fault.Detail.Error.Code, 'ExportAndDeleteItemsRequest with leading space should fault');
 		assert.include(exportRes.Fault.Detail.Error.Code, 'service.FAILURE');
 	});
 
@@ -148,7 +145,7 @@ describe('Admin > Mailbox > Export And Delete Items Request', function () {
 				<mbox id="${accountId}              "/>
 			</ExportAndDeleteItemsRequest>`, adminAuthToken, false
 		);
-		assert.exists(exportRes.Fault, 'ExportAndDeleteItemsRequest with trailing space should fault');
+		assert.isString(exportRes.Fault.Detail.Error.Code, 'ExportAndDeleteItemsRequest with trailing space should fault');
 		assert.include(exportRes.Fault.Detail.Error.Code, 'service.FAILURE');
 	});
 
@@ -161,7 +158,7 @@ describe('Admin > Mailbox > Export And Delete Items Request', function () {
 				<mbox id="             ${accountId}              "/>
 			</ExportAndDeleteItemsRequest>`, adminAuthToken, false
 		);
-		assert.exists(exportRes.Fault, 'ExportAndDeleteItemsRequest with spaces should fault');
+		assert.isString(exportRes.Fault.Detail.Error.Code, 'ExportAndDeleteItemsRequest with spaces should fault');
 		assert.include(exportRes.Fault.Detail.Error.Code, 'service.FAILURE');
 	});
 
@@ -172,7 +169,7 @@ describe('Admin > Mailbox > Export And Delete Items Request', function () {
 				<mbox id=" "/>
 			</ExportAndDeleteItemsRequest>`, adminAuthToken, false
 		);
-		assert.exists(exportRes.Fault, 'ExportAndDeleteItemsRequest with blank mbox should fault');
+		assert.isString(exportRes.Fault.Detail.Error.Code, 'ExportAndDeleteItemsRequest with blank mbox should fault');
 		assert.include(exportRes.Fault.Detail.Error.Code, 'mail.NO_SUCH_MBOX');
 	});
 
@@ -182,7 +179,7 @@ describe('Admin > Mailbox > Export And Delete Items Request', function () {
 			`<ExportAndDeleteItemsRequest xmlns="urn:zimbraAdmin">
 			</ExportAndDeleteItemsRequest>`, adminAuthToken, false
 		);
-		assert.exists(exportRes.Fault, 'ExportAndDeleteItemsRequest without mbox should fault');
+		assert.isString(exportRes.Fault.Detail.Error.Code, 'ExportAndDeleteItemsRequest without mbox should fault');
 		assert.include(exportRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 	});
 });

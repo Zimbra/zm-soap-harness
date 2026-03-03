@@ -64,13 +64,15 @@ describe('Calendar > Mountpoint > Create Mountpoint', function () {
 		const ownerCal = await getCalFolder(owner.token);
 
 		// Perform folder action
-		await soap.makeSOAPEnvelopeAccount(
+		const grantRes = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action id="${ownerCal.calId}" op="grant">
 					<grant d="${sharee.email}" gt="usr" perm="rwidx"/>
 				</action>
 			</FolderActionRequest>`, owner.token
 		);
+		assert.notExists(grantRes.Fault, 'FolderActionRequest should not fault');
+		assert.equal(grantRes.FolderActionResponse.action.op, 'grant', 'Action op should be grant');
 		const shareeCal = await getCalFolder(sharee.token);
 
 		// Create a mountpoint
@@ -85,7 +87,7 @@ describe('Calendar > Mountpoint > Create Mountpoint', function () {
 
 		// Verify response
 		assert.notExists(mpRes.Fault, 'Mount should not fault');
-		assert.exists(mpRes.CreateMountpointResponse.link, 'Link should exist');
+		assert.exists(mpRes.CreateMountpointResponse.link[0].id, 'Link id should exist');
 	});
 
 
@@ -105,8 +107,8 @@ describe('Calendar > Mountpoint > Create Mountpoint', function () {
 		);
 
 		// Verify response
-		assert.exists(
-			mpRes.Fault,
+		assert.isString(
+			mpRes.Fault.Detail.Error.Code,
 			'Mountpoint with non-existing account should fault'
 		);
 	});
@@ -118,13 +120,15 @@ describe('Calendar > Mountpoint > Create Mountpoint', function () {
 		const ownerCal = await getCalFolder(owner.token);
 
 		// Perform folder action
-		await soap.makeSOAPEnvelopeAccount(
+		const grantRes = await soap.makeSOAPEnvelopeAccount(
 			`<FolderActionRequest xmlns="urn:zimbraMail">
 				<action id="${ownerCal.calId}" op="grant">
 					<grant d="${sharee.email}" gt="usr" perm="rwidx"/>
 				</action>
 			</FolderActionRequest>`, owner.token
 		);
+		assert.notExists(grantRes.Fault, 'FolderActionRequest should not fault');
+		assert.equal(grantRes.FolderActionResponse.action.op, 'grant', 'Action op should be grant');
 		const shareeCal = await getCalFolder(sharee.token);
 
 		// Create a mountpoint
@@ -139,11 +143,12 @@ describe('Calendar > Mountpoint > Create Mountpoint', function () {
 		const mpId = mpRes.CreateMountpointResponse.link[0].id;
 
 		// Delete the account
-		await soap.makeSOAPEnvelopeAdmin(
+		const delRes = await soap.makeSOAPEnvelopeAdmin(
 			`<DeleteAccountRequest xmlns="urn:zimbraAdmin">
 				<id>${owner.id}</id>
 			</DeleteAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(delRes.Fault, 'DeleteAccountRequest should not fault');
 		const now = Date.now();
 
 		// Send get mini cal request

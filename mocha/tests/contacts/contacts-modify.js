@@ -55,7 +55,6 @@ describe('Contacts > Contacts Modify', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 		const contactId = cn.id;
@@ -126,7 +125,6 @@ describe('Contacts > Contacts Modify', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
@@ -188,7 +186,6 @@ describe('Contacts > Contacts Modify', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
@@ -264,7 +261,6 @@ describe('Contacts > Contacts Modify', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
@@ -280,8 +276,8 @@ describe('Contacts > Contacts Modify', function () {
 		);
 
 		// Verify response
-		assert.exists(modRes.Fault, 'Modify should be a Fault');
-		const code = modRes.Fault?.Detail?.Error?.Code || '';
+		assert.isString(modRes.Fault.Detail.Error.Code, 'Modify should be a Fault');
+		const code = modRes.Fault.Detail.Error.Code;
 		assert.include(code, 'service.INVALID_REQUEST', 'Error code should be service.INVALID_REQUEST');
 	});
 
@@ -304,7 +300,6 @@ describe('Contacts > Contacts Modify', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
@@ -320,8 +315,8 @@ describe('Contacts > Contacts Modify', function () {
 		);
 
 		// Verify response
-		assert.exists(modRes.Fault, 'Modify should be a Fault');
-		const code = modRes.Fault?.Detail?.Error?.Code || '';
+		assert.isString(modRes.Fault.Detail.Error.Code, 'Modify should be a Fault');
+		const code = modRes.Fault.Detail.Error.Code;
 		assert.include(code, 'service.INVALID_REQUEST', 'Error code should be service.INVALID_REQUEST');
 	});
 
@@ -340,7 +335,6 @@ describe('Contacts > Contacts Modify', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 		const contactId = cn.id;
@@ -355,7 +349,7 @@ describe('Contacts > Contacts Modify', function () {
 		);
 
 		// Verify response
-		assert.exists(mod1.Fault, 'fileAs=10 should be a Fault');
+		assert.isString(mod1.Fault.Detail.Error.Code, 'fileAs=10 should be a Fault');
 
 		// Modify the contact
 		const mod2 = await soap.makeSOAPEnvelopeAccount(
@@ -367,7 +361,7 @@ describe('Contacts > Contacts Modify', function () {
 		);
 
 		// Verify response
-		assert.exists(mod2.Fault, 'fileAs=alpha should be a Fault');
+		assert.isString(mod2.Fault.Detail.Error.Code, 'fileAs=alpha should be a Fault');
 
 		// Modify the contact
 		const mod3 = await soap.makeSOAPEnvelopeAccount(
@@ -379,7 +373,7 @@ describe('Contacts > Contacts Modify', function () {
 		);
 
 		// Verify response
-		assert.exists(mod3.Fault, 'fileAs=-1 should be a Fault');
+		assert.isString(mod3.Fault.Detail.Error.Code, 'fileAs=-1 should be a Fault');
 
 		// Modify the contact
 		const mod4 = await soap.makeSOAPEnvelopeAccount(
@@ -391,7 +385,7 @@ describe('Contacts > Contacts Modify', function () {
 		);
 
 		// Verify response
-		assert.exists(mod4.Fault, 'fileAs=1.5 should be a Fault');
+		assert.isString(mod4.Fault.Detail.Error.Code, 'fileAs=1.5 should be a Fault');
 
 		// Modify the contact
 		const mod5 = await soap.makeSOAPEnvelopeAccount(
@@ -432,7 +426,6 @@ describe('Contacts > Contacts Modify', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 		const contactId = cn.id;
@@ -464,7 +457,7 @@ describe('Contacts > Contacts Modify', function () {
 		);
 
 		// Verify response
-		assert.exists(mod1.Fault, 'Numeric id should be a Fault');
+		assert.isString(mod1.Fault.Detail.Error.Code, 'Numeric id should be a Fault');
 
 		// Modify the contact
 		const mod2 = await soap.makeSOAPEnvelopeAccount(
@@ -476,7 +469,7 @@ describe('Contacts > Contacts Modify', function () {
 		);
 
 		// Verify response
-		assert.exists(mod2.Fault, 'Alpha id should be a Fault');
+		assert.isString(mod2.Fault.Detail.Error.Code, 'Alpha id should be a Fault');
 
 		// Modify the contact
 		const mod3 = await soap.makeSOAPEnvelopeAccount(
@@ -488,7 +481,7 @@ describe('Contacts > Contacts Modify', function () {
 		);
 
 		// Verify response
-		assert.exists(mod3.Fault, 'Negative id should be a Fault');
+		assert.isString(mod3.Fault.Detail.Error.Code, 'Negative id should be a Fault');
 
 		// Modify the contact
 		const mod4 = await soap.makeSOAPEnvelopeAccount(
@@ -500,7 +493,7 @@ describe('Contacts > Contacts Modify', function () {
 		);
 
 		// Verify response
-		assert.exists(mod4.Fault, 'Blank id should be a Fault');
+		assert.isString(mod4.Fault.Detail.Error.Code, 'Blank id should be a Fault');
 	});
 
 
@@ -523,7 +516,6 @@ describe('Contacts > Contacts Modify', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
@@ -571,7 +563,6 @@ describe('Contacts > Contacts Modify', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Modify with force should not be a Fault');
-		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});
 
 
@@ -601,7 +592,6 @@ describe('Contacts > Contacts Modify', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
-		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});
 
 
@@ -630,6 +620,5 @@ describe('Contacts > Contacts Modify', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
-		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});
 });

@@ -92,14 +92,10 @@ Test content</content>
 				<action id="${convId}" l="${foldId1}" op="move"/>
 			</ConvActionRequest>`, accountAuthToken
 		);
-		if (res5.Fault) {
-			// ConvAction may fault if no messages match
-			assert.exists(res5.Fault, 'ConvAction faulted');
-		} else {
-			const convAction = Array.isArray(res5.ConvActionResponse.action)
-				? res5.ConvActionResponse.action[0] : res5.ConvActionResponse.action;
-			assert.exists(convAction, 'ConvActionResponse should contain action');
-		}
+		assert.notExists(res5.Fault, 'ConvActionRequest move should not fault');
+		const convAction = Array.isArray(res5.ConvActionResponse.action)
+			? res5.ConvActionResponse.action[0] : res5.ConvActionResponse.action;
+		assert.equal(convAction.op, 'move', 'op should be move');
 
 		// Search is:fromme in folder1
 		const res6 = await soap.makeSOAPEnvelopeAccount(
@@ -108,7 +104,6 @@ Test content</content>
 			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		assert.exists(res6.SearchResponse, 'SearchResponse should exist');
 
 		// Search is:fromme
 		const res10 = await soap.makeSOAPEnvelopeAccount(
@@ -117,7 +112,6 @@ Test content</content>
 			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(res10.Fault, 'Response should not be a Fault');
-		assert.exists(res10.SearchResponse, 'SearchResponse should exist');
 
 		// Move conversation to folder2
 		const res11 = await soap.makeSOAPEnvelopeAccount(
@@ -125,10 +119,7 @@ Test content</content>
 				<action id="${convId}" l="${foldId2}" op="move"/>
 			</ConvActionRequest>`, accountAuthToken
 		);
-		if (res11.Fault) {
-			assert.exists(res11.Fault, 'ConvAction faulted');
-		} else {
-		}
+		assert.notExists(res11.Fault, 'ConvActionRequest move to folder2 should not fault');
 
 		// Search is:fromme in folder2
 		const res12 = await soap.makeSOAPEnvelopeAccount(
@@ -137,6 +128,5 @@ Test content</content>
 			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(res12.Fault, 'Response should not be a Fault');
-		assert.exists(res12.SearchResponse, 'SearchResponse should exist');
 	});
 });

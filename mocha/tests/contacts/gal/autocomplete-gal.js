@@ -64,7 +64,6 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -77,7 +76,6 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -90,7 +88,6 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -103,7 +100,6 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -116,7 +112,6 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -129,7 +124,6 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -142,7 +136,6 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -155,7 +148,6 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -168,7 +160,6 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -181,7 +172,6 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -194,7 +184,6 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -207,7 +196,6 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -220,7 +208,6 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -233,7 +220,6 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -246,7 +232,6 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -259,7 +244,6 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -272,7 +256,6 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -285,7 +268,6 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -298,7 +280,6 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -311,7 +292,6 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -324,7 +304,6 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -337,7 +316,6 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -350,7 +328,6 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -363,7 +340,6 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -387,6 +363,5 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 });

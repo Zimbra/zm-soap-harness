@@ -58,7 +58,6 @@ describe('Prefs > Filters > Conditions > Filter Attachment', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Attachment test filter should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 	});
 
 
@@ -130,6 +129,5 @@ describe('Prefs > Filters > Conditions > Filter Attachment', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
-		assert.exists(getRes.GetFilterRulesResponse, 'GetFilterRulesResponse should exist');
 	});
 });

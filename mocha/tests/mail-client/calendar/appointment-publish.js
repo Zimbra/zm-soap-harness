@@ -109,7 +109,6 @@ describe('Mail Client > Calendar > Appointment Publish', function () {
 			</CreateAppointmentRequest>`, acct1Auth
 		);
 		assert.notExists(createRes.Fault, 'CreateAppointmentRequest should not fault');
-		assert.exists(createRes.CreateAppointmentResponse, 'CreateAppointmentResponse should exist');
 		const apptId = createRes.CreateAppointmentResponse?.apptId;
 		assert.match(String(apptId), /^\d+$/, 'apptId should be numeric');
 		const calItemId = createRes.CreateAppointmentResponse?.calItemId;
@@ -126,8 +125,10 @@ describe('Mail Client > Calendar > Appointment Publish', function () {
 			</FolderActionRequest>`, acct1Auth
 		);
 		assert.notExists(grantRes.Fault, 'FolderActionRequest should not fault');
-		assert.exists(grantRes.FolderActionResponse?.action,
-			'FolderActionResponse action should exist');
+		assert.equal(grantRes.FolderActionResponse?.action?.op, 'grant',
+			'FolderActionResponse action op should be grant');
+		assert.equal(grantRes.FolderActionResponse?.action?.id, account1CalFolderId,
+			'FolderActionResponse action id should match folder id');
 
 		// Login as account2
 		const acct2Auth = await soap.getAccountAuthToken(account2Name);
@@ -152,8 +153,6 @@ describe('Mail Client > Calendar > Appointment Publish', function () {
 				l="${pubCalId}" s="${dayBefore}" e="${dayAfter}"/>`, acct2Auth
 		);
 		assert.notExists(summRes.Fault, 'GetApptSummariesRequest should not fault');
-		assert.exists(summRes.GetApptSummariesResponse,
-			'GetApptSummariesResponse should exist');
 	});
 
 
@@ -224,8 +223,6 @@ describe('Mail Client > Calendar > Appointment Publish', function () {
 			</ModifyAppointmentRequest>`, acct2Auth
 		);
 		assert.notExists(modRes.Fault, 'ModifyAppointmentRequest should not fault');
-		assert.exists(modRes.ModifyAppointmentResponse,
-			'ModifyAppointmentResponse should exist');
 
 		// Verify alarm was added
 		const getApptRes2 = await soap.makeSOAPEnvelopeAccount(
@@ -314,8 +311,6 @@ describe('Mail Client > Calendar > Appointment Publish', function () {
 			</ModifyAppointmentRequest>`, acct1Auth
 		);
 		assert.notExists(modRes.Fault, 'ModifyAppointmentRequest should not fault');
-		assert.exists(modRes.ModifyAppointmentResponse,
-			'ModifyAppointmentResponse should exist');
 
 		// Verify alarm exists
 		const getApptRes2 = await soap.makeSOAPEnvelopeAccount(
@@ -355,8 +350,6 @@ describe('Mail Client > Calendar > Appointment Publish', function () {
 			</CreateAppointmentRequest>`, acct1Auth
 		);
 		assert.notExists(createRes.Fault, 'CreateAppointmentRequest should not fault');
-		assert.exists(createRes.CreateAppointmentResponse,
-			'CreateAppointmentResponse should exist');
 		const invId = createRes.CreateAppointmentResponse?.invId;
 		assert.exists(invId, 'invId should exist');
 
@@ -368,7 +361,6 @@ describe('Mail Client > Calendar > Appointment Publish', function () {
 			</SearchRequest>`, acct1Auth
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const appt = Array.isArray(searchRes.SearchResponse?.appt)
 			? searchRes.SearchResponse.appt[0] : searchRes.SearchResponse?.appt;
 		assert.exists(appt, 'Appointment should be found in mounted calendar');

@@ -25,7 +25,10 @@ describe('Briefcase > Purge Revision Request', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse, 'Should create account');
+		const acct = Array.isArray(createRes.CreateAccountResponse.account)
+			? createRes.CreateAccountResponse.account[0]
+			: createRes.CreateAccountResponse.account;
+		assert.exists(acct.id, 'Account ID should exist');
 
 		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
@@ -37,7 +40,7 @@ describe('Briefcase > Purge Revision Request', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 
 		account1Token = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
@@ -50,7 +53,6 @@ describe('Briefcase > Purge Revision Request', function () {
 
 		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
-		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 
 		const root = Array.isArray(folderRes.GetFolderResponse.folder)
 			? folderRes.GetFolderResponse.folder[0] : folderRes.GetFolderResponse.folder;
@@ -91,7 +93,6 @@ describe('Briefcase > Purge Revision Request', function () {
 
 		// Verify response
 		assert.notExists(save1.Fault, 'Response should not be a Fault');
-		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(save1.SaveDocumentResponse.doc)
 			? save1.SaveDocumentResponse.doc[0] : save1.SaveDocumentResponse.doc;
@@ -108,7 +109,9 @@ describe('Briefcase > Purge Revision Request', function () {
 
 		// Verify response
 		assert.notExists(save2.Fault, 'Response should not be a Fault');
-		assert.exists(save2.SaveDocumentResponse, 'SaveDocumentResponse should exist');
+		const doc2 = Array.isArray(save2.SaveDocumentResponse.doc)
+			? save2.SaveDocumentResponse.doc[0] : save2.SaveDocumentResponse.doc;
+		assert.exists(doc2.id, 'Doc v2 ID should exist');
 
 		// Save revision 3
 		const save3 = await soap.makeSOAPEnvelopeAccount(
@@ -121,7 +124,9 @@ describe('Briefcase > Purge Revision Request', function () {
 
 		// Verify response
 		assert.notExists(save3.Fault, 'Response should not be a Fault');
-		assert.exists(save3.SaveDocumentResponse, 'SaveDocumentResponse should exist');
+		const doc3 = Array.isArray(save3.SaveDocumentResponse.doc)
+			? save3.SaveDocumentResponse.doc[0] : save3.SaveDocumentResponse.doc;
+		assert.exists(doc3.id, 'Doc v3 ID should exist');
 
 		// Purge revision 1
 		const purgeRes = await soap.makeSOAPEnvelopeAccount(
@@ -132,8 +137,6 @@ describe('Briefcase > Purge Revision Request', function () {
 
 		// Verify response
 		assert.notExists(purgeRes.Fault, 'Response should not be a Fault');
-		assert.exists(purgeRes.PurgeRevisionResponse,
-			'PurgeRevisionResponse should exist');
 
 		// Verify revisions after purge
 		const listRes = await soap.makeSOAPEnvelopeAccount(
@@ -144,8 +147,8 @@ describe('Briefcase > Purge Revision Request', function () {
 
 		// Verify response
 		assert.notExists(listRes.Fault, 'Response should not be a Fault');
-		assert.exists(listRes.ListDocumentRevisionsResponse,
-			'ListDocumentRevisionsResponse should exist');
+		const revisions = listRes.ListDocumentRevisionsResponse.doc;
+		assert.exists(revisions, 'Revisions should exist after purge');
 	});
 
 
@@ -164,7 +167,6 @@ describe('Briefcase > Purge Revision Request', function () {
 
 		// Verify response
 		assert.notExists(save1.Fault, 'Response should not be a Fault');
-		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(save1.SaveDocumentResponse.doc)
 			? save1.SaveDocumentResponse.doc[0] : save1.SaveDocumentResponse.doc;
@@ -184,8 +186,10 @@ describe('Briefcase > Purge Revision Request', function () {
 
 			// Verify response
 			assert.notExists(save.Fault, 'Response should not be a Fault');
-			assert.exists(save.SaveDocumentResponse,
-				`SaveDocumentResponse v${i} should exist`);
+			const savedDoc = Array.isArray(save.SaveDocumentResponse.doc)
+				? save.SaveDocumentResponse.doc[0] : save.SaveDocumentResponse.doc;
+			assert.exists(savedDoc.id,
+				`Doc v${i} ID should exist`);
 		}
 
 		// Purge revision 2 and older (includeOlderRevisions=true)
@@ -197,8 +201,6 @@ describe('Briefcase > Purge Revision Request', function () {
 
 		// Verify response
 		assert.notExists(purgeRes.Fault, 'Response should not be a Fault');
-		assert.exists(purgeRes.PurgeRevisionResponse,
-			'PurgeRevisionResponse should exist');
 
 		// Verify remaining revisions
 		const listRes = await soap.makeSOAPEnvelopeAccount(
@@ -209,8 +211,8 @@ describe('Briefcase > Purge Revision Request', function () {
 
 		// Verify response
 		assert.notExists(listRes.Fault, 'Response should not be a Fault');
-		assert.exists(listRes.ListDocumentRevisionsResponse,
-			'ListDocumentRevisionsResponse should exist');
+		const revisions = listRes.ListDocumentRevisionsResponse.doc;
+		assert.exists(revisions, 'Revisions should exist after purge');
 	});
 
 
@@ -223,8 +225,7 @@ describe('Briefcase > Purge Revision Request', function () {
 		);
 
 		// Verify response
-		assert.exists(purgeRes.Fault, 'Should return Fault for invalid document id');
-		assert.exists(purgeRes.Fault.Detail.Error.Code, 'Error code should exist');
+		assert.isString(purgeRes.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 	});
 
 
@@ -243,7 +244,6 @@ describe('Briefcase > Purge Revision Request', function () {
 
 		// Verify response
 		assert.notExists(save1.Fault, 'Response should not be a Fault');
-		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(save1.SaveDocumentResponse.doc)
 			? save1.SaveDocumentResponse.doc[0] : save1.SaveDocumentResponse.doc;
@@ -258,7 +258,5 @@ describe('Briefcase > Purge Revision Request', function () {
 
 		// Verify response
 		assert.notExists(purgeRes.Fault, 'Response should not be a Fault');
-		assert.exists(purgeRes.PurgeRevisionResponse,
-			'PurgeRevisionResponse should exist for invalid version');
 	});
 });

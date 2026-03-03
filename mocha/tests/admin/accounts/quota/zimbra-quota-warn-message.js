@@ -50,7 +50,6 @@ ${warnMsg}
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CreateAccountResponse, 'Account should be created');
 
 		const attrs = response.CreateAccountResponse.account[0].a || [];
 		const warnAttr = attrs.find(a => a.n === 'zimbraQuotaWarnMessage');
@@ -85,7 +84,6 @@ ${warnMsg}
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CreateAccountResponse, 'Account should be created');
 
 		const attrs = response.CreateAccountResponse.account[0].a || [];
 		const warnAttr = attrs.find(a => a.n === 'zimbraQuotaWarnMessage');
@@ -114,8 +112,6 @@ ${warnMsg}
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CreateAccountResponse,
-			'Account should be created with I18N display name');
 		const attrs = response.CreateAccountResponse.account[0].a || [];
 		const displayAttr = attrs.find(a => a.n === 'displayName');
 
@@ -150,8 +146,6 @@ ${warnMsg}
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse,
-			'Account should be created');
 
 		// Auth and search for quota warn message
 		const userAuth = await soap.getAccountAuthToken(
@@ -167,8 +161,8 @@ ${warnMsg}
 		// Warn message may not exist yet until quota
 		// threshold is reached
 		// Verify response
-		assert.isTrue(!!searchRes.SearchResponse || !!searchRes.Fault,
-			'Should return SearchResponse or fault');
+		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
+		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -195,8 +189,6 @@ Your mailbox is nearly full
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse,
-			'Account with low quota should be created');
 
 		const userAuth = await soap.getAccountAuthToken(
 			acctName, config.accountPassword);
@@ -210,8 +202,8 @@ Your mailbox is nearly full
 		);
 
 		// Verify response
-		assert.isTrue(!!searchRes.SearchResponse || !!searchRes.Fault,
-			'Should return SearchResponse or fault');
+		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
+		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -241,8 +233,6 @@ ${encoded}
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse,
-			'Account with I18N base64 warn message created');
 
 		const attrs =
 			createRes.CreateAccountResponse.account[0].a || [];
@@ -275,8 +265,6 @@ ${encoded}
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse,
-			'Account with display name created');
 		const attrs =
 			createRes.CreateAccountResponse.account[0].a || [];
 		const nameAttr = attrs.find(
@@ -307,8 +295,6 @@ ${encoded}
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse,
-			'Account with I18N display name created');
 		const attrs =
 			createRes.CreateAccountResponse.account[0].a || [];
 		const nameAttr = attrs.find(

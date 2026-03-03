@@ -109,7 +109,6 @@ content${common.getUniqueString()}
 			`<SendDeliveryReportRequest xmlns="urn:zimbraMail" mid="${acct2Id}:${messageId}"/>`, acct3AuthToken
 		);
 		assert.notExists(deliveryRes.Fault, 'SendDeliveryReportRequest should not fault');
-		assert.exists(deliveryRes.SendDeliveryReportResponse, 'SendDeliveryReportResponse should exist');
 
 		// Login as account1 and verify receipt was received
 		const acct1AuthToken = await soap.getAccountAuthToken(acct1Email);

@@ -167,6 +167,8 @@ describe('Calendar > Appointments > Modify Appointment Request Basic', function 
 			</SearchRequest>`, accountToken
         );
         assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-        assert.exists(searchRes.SearchResponse.appt, 'Updated appt should exist');
+        const appts = Array.isArray(searchRes.SearchResponse.appt)
+            ? searchRes.SearchResponse.appt : [searchRes.SearchResponse.appt];
+        assert.exists(appts[0].name, 'Updated appt name should exist');
     });
 });

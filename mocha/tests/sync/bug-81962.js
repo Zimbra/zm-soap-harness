@@ -99,7 +99,6 @@ describe('Sync > Bug 81962', function () {
 
 		// Verify response
 		assert.notExists(syncRes1.Fault, 'Response should not be a Fault');
-		assert.exists(syncRes1.SyncResponse, 'SyncResponse should exist');
 		const token1 = syncRes1.SyncResponse.token;
 
 		// Verify response
@@ -141,7 +140,6 @@ describe('Sync > Bug 81962', function () {
 
 		// Verify response
 		assert.notExists(syncRes1c.Fault, 'Response should not be a Fault');
-		assert.exists(syncRes1c.SyncResponse, 'SyncResponse should exist');
 		if (syncRes1c.SyncResponse.deleted) {
 			const delArr = Array.isArray(syncRes1c.SyncResponse.deleted)
 				? syncRes1c.SyncResponse.deleted : [syncRes1c.SyncResponse.deleted];
@@ -218,7 +216,6 @@ describe('Sync > Bug 81962', function () {
 
 		// Verify response
 		assert.notExists(syncFinalInc.Fault, 'Response should not be a Fault');
-		assert.exists(syncFinalInc.SyncResponse, 'SyncResponse should exist');
 		if (syncFinalInc.SyncResponse.deleted) {
 			const delArr = Array.isArray(syncFinalInc.SyncResponse.deleted)
 				? syncFinalInc.SyncResponse.deleted : [syncFinalInc.SyncResponse.deleted];

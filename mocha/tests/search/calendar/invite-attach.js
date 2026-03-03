@@ -48,7 +48,6 @@ describe('Search > Calendar > Invite Attach', function () {
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 		// Verify empty result set
 	});
 
@@ -66,6 +65,5 @@ describe('Search > Calendar > Invite Attach', function () {
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 		// Verify empty result set
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 	});
 });

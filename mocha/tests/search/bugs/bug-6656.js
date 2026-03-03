@@ -37,6 +37,9 @@ Meeting in Orlando next week.</content>
 					</m>
 				</AddMsgRequest>`, accountAuthToken
 		);
+
+		// Wait for message indexing
+		await new Promise(resolve => setTimeout(resolve, 2000));
 	});
 
 	beforeEach(async function () {

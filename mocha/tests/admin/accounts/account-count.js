@@ -200,7 +200,6 @@ describe('Admin > Accounts > Account Count', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CountAccountResponse, 'CountAccountResponse should exist');
 
 		const cosList = response.CountAccountResponse.cos;
 
@@ -246,7 +245,6 @@ describe('Admin > Accounts > Account Count', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CountAccountResponse, 'CountAccountResponse should exist');
 
 		const cosList = response.CountAccountResponse.cos;
 

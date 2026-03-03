@@ -111,8 +111,6 @@ describe('Folders > Sharing > Geteffectivefolderpermsrequest Basic', function ()
 		const resp = await getEffectivePerms(mountId);
 
 		// Verify response
-		assert.notExists(resp.Fault, 'Response should not be a Fault');
-		assert.exists(resp.GetEffectiveFolderPermsResponse, 'Response should exist');
 		const perms = resp.GetEffectiveFolderPermsResponse.folder[0].perm;
 
 		// Verify response
@@ -131,8 +129,6 @@ describe('Folders > Sharing > Geteffectivefolderpermsrequest Basic', function ()
 		const resp = await getEffectivePerms(mountId);
 
 		// Verify response
-		assert.notExists(resp.Fault, 'Response should not be a Fault');
-		assert.exists(resp.GetEffectiveFolderPermsResponse, 'Response should exist');
 		const perms = resp.GetEffectiveFolderPermsResponse.folder[0].perm;
 
 		// Verify response
@@ -151,8 +147,6 @@ describe('Folders > Sharing > Geteffectivefolderpermsrequest Basic', function ()
 		const resp = await getEffectivePerms(mountId);
 
 		// Verify response
-		assert.notExists(resp.Fault, 'Response should not be a Fault');
-		assert.exists(resp.GetEffectiveFolderPermsResponse, 'Response should exist');
 		const perms = resp.GetEffectiveFolderPermsResponse.folder[0].perm;
 
 		// Verify response
@@ -171,8 +165,6 @@ describe('Folders > Sharing > Geteffectivefolderpermsrequest Basic', function ()
 		const resp = await getEffectivePerms(mountId);
 
 		// Verify response
-		assert.notExists(resp.Fault, 'Response should not be a Fault');
-		assert.exists(resp.GetEffectiveFolderPermsResponse, 'Response should exist');
 		const perms = resp.GetEffectiveFolderPermsResponse.folder[0].perm;
 
 		// Verify response
@@ -191,8 +183,6 @@ describe('Folders > Sharing > Geteffectivefolderpermsrequest Basic', function ()
 		const resp = await getEffectivePerms(mountId);
 
 		// Verify response
-		assert.notExists(resp.Fault, 'Response should not be a Fault');
-		assert.exists(resp.GetEffectiveFolderPermsResponse, 'Response should exist');
 		const perms = resp.GetEffectiveFolderPermsResponse.folder[0].perm;
 
 		// Verify response
@@ -211,8 +201,6 @@ describe('Folders > Sharing > Geteffectivefolderpermsrequest Basic', function ()
 		const resp = await getEffectivePerms(mountId);
 
 		// Verify response
-		assert.notExists(resp.Fault, 'Response should not be a Fault');
-		assert.exists(resp.GetEffectiveFolderPermsResponse, 'Response should exist');
 		const perms = resp.GetEffectiveFolderPermsResponse.folder[0].perm;
 
 		// Verify response
@@ -232,8 +220,6 @@ describe('Folders > Sharing > Geteffectivefolderpermsrequest Basic', function ()
 		const resp = await getEffectivePerms(mountId);
 
 		// Verify response
-		assert.notExists(resp.Fault, 'Response should not be a Fault');
-		assert.exists(resp.GetEffectiveFolderPermsResponse, 'Response should exist');
 		const perms = resp.GetEffectiveFolderPermsResponse.folder[0].perm;
 
 		// Verify response
@@ -278,19 +264,9 @@ describe('Folders > Sharing > Geteffectivefolderpermsrequest Basic', function ()
 				<link l="1" name="${mountName}" zid="${account1Id}" rid="${folderId}" view="message"/>
 			</CreateMountpointRequest>`;
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest2, auth2);
-
-		if (mountResp.CreateMountpointResponse) {
-			const mountId = mountResp.CreateMountpointResponse.link[0].id;
-			const resp = await getEffectivePerms(mountId);
-			// After revoke, perms should be empty or mount should show broken
-			if (resp.GetEffectiveFolderPermsResponse) {
-				const perms = resp.GetEffectiveFolderPermsResponse.folder[0].perm || '';
-
-				// Verify response
-				assert.equal(perms, '', 'Effective perms should be empty after revoke');
-			}
-		}
-		// If mount itself fails, that's also acceptable — no access
+		// Mount after revoke should be denied
+		assert.exists(mountResp.Fault.Detail.Error,
+			'Fault Error should exist - mount should be denied after revoking permission');
 	});
 
 });

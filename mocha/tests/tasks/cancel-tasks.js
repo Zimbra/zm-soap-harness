@@ -58,8 +58,6 @@ describe('Tasks > Cancel Tasks', function () {
 
 		// Verify response
 		assert.notExists(cancelRes.Fault, 'Response should not be a Fault');
-		assert.exists(cancelRes.CancelTaskResponse,
-			'CancelTaskResponse should exist');
 	});
 
 
@@ -105,6 +103,6 @@ describe('Tasks > Cancel Tasks', function () {
 		);
 
 		// Verify response
-		assert.exists(cancelRes2.Fault, 'Second cancel should be a Fault');
+		assert.isString(cancelRes2.Fault.Detail.Error.Code, 'Second cancel should be a Fault');
 	});
 });

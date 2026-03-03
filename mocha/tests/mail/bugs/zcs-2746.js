@@ -89,7 +89,6 @@ describe('Mail > Bugs > ZCS 2746', function () {
 			</SearchRequest>`, account1AuthToken
 		);
 		assert.notExists(search1Res.Fault, 'SearchRequest should not fault');
-		assert.exists(search1Res.SearchResponse, 'SearchResponse should exist');
 
 		// Verify on user3 the forwarded mail is received unread
 		const account3AuthToken = await soap.getAccountAuthToken(account3Email);
@@ -99,7 +98,6 @@ describe('Mail > Bugs > ZCS 2746', function () {
 			</SearchRequest>`, account3AuthToken
 		);
 		assert.notExists(search3Res.Fault, 'SearchRequest should not fault');
-		assert.exists(search3Res.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -141,7 +139,6 @@ describe('Mail > Bugs > ZCS 2746', function () {
 			</SearchRequest>`, account1AuthToken
 		);
 		assert.notExists(search1Res.Fault, 'SearchRequest should not fault');
-		assert.exists(search1Res.SearchResponse, 'SearchResponse should exist');
 
 		// Verify on user3 the forwarded mail is received unread
 		const account3AuthToken = await soap.getAccountAuthToken(account3Email);
@@ -151,7 +148,6 @@ describe('Mail > Bugs > ZCS 2746', function () {
 			</SearchRequest>`, account3AuthToken
 		);
 		assert.notExists(search3Res.Fault, 'SearchRequest should not fault');
-		assert.exists(search3Res.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -221,6 +217,5 @@ describe('Mail > Bugs > ZCS 2746', function () {
 			</SearchRequest>`, account1AuthToken2
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 });

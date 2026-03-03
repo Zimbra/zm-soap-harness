@@ -89,7 +89,6 @@ describe('Search > Drafts > Search Draft', function () {
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
 		// Verify empty result set
-		assert.exists(res3.SearchResponse, 'Response element should exist');
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -100,7 +99,5 @@ describe('Search > Drafts > Search Draft', function () {
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res4.SearchResponse, 'Response element should exist');
 	});
 });

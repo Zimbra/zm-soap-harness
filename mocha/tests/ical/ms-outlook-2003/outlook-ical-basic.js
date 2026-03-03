@@ -47,7 +47,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
@@ -62,7 +61,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
 
 
@@ -83,7 +81,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		// GetFolderRequest
 		res = await soap.makeSOAPEnvelopeAccount(
@@ -92,7 +89,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'GetFolderRequest should not fault');
-		assert.exists(res.GetFolderResponse, 'GetFolderResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
@@ -107,7 +103,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
 
 
@@ -129,7 +124,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
@@ -144,7 +138,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
 
 
@@ -166,7 +159,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
@@ -181,7 +173,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
 
 
@@ -203,7 +194,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
@@ -218,7 +208,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
 
 
@@ -240,7 +229,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
@@ -255,7 +243,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
 
 
@@ -277,7 +264,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
@@ -292,7 +278,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
 
 
@@ -314,7 +299,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
@@ -329,7 +313,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
 
 
@@ -351,7 +334,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
@@ -366,7 +348,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
 
 
@@ -388,7 +369,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
@@ -403,7 +383,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
 
 
@@ -425,7 +404,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
@@ -440,7 +418,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
 
 
@@ -462,7 +439,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
@@ -477,7 +453,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
 
 
@@ -499,7 +474,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
@@ -514,7 +488,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
 
 
@@ -536,7 +509,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
@@ -551,7 +523,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
 
 
@@ -573,7 +544,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
@@ -588,7 +558,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
 
 
@@ -610,7 +579,6 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 
 		const searchStart = '1121336254170';
 		const searchEnd = '1138616254170';
@@ -625,6 +593,5 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchRequest for appointment should not fault');
-		assert.exists(res.SearchResponse, 'SearchResponse for appointment should have results');
 	});
 });

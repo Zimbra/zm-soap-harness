@@ -220,7 +220,7 @@ describe('Mail > Conversation > Item Action Conversation', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'mail.NO_SUCH_TAG',
 			'Should be mail.NO_SUCH_TAG');
 	});
@@ -250,7 +250,7 @@ describe('Mail > Conversation > Item Action Conversation', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'mail.NO_SUCH_TAG',
 			'Should be mail.NO_SUCH_TAG');
 	});
@@ -320,7 +320,7 @@ describe('Mail > Conversation > Item Action Conversation', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'mail.NO_SUCH_FOLDER',
 			'Should be mail.NO_SUCH_FOLDER');
 	});
@@ -333,7 +333,7 @@ describe('Mail > Conversation > Item Action Conversation', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -347,7 +347,7 @@ describe('Mail > Conversation > Item Action Conversation', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -361,7 +361,7 @@ describe('Mail > Conversation > Item Action Conversation', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -375,7 +375,7 @@ describe('Mail > Conversation > Item Action Conversation', function () {
 		);
 
 		// Verify response
-		assert.exists(res1.Fault, 'Should return a Fault for leading spaces');
+		assert.isString(res1.Fault.Detail.Error.Code, 'Should return a Fault for leading spaces');
 		assert.include(res1.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 
@@ -387,7 +387,7 @@ describe('Mail > Conversation > Item Action Conversation', function () {
 		);
 
 		// Verify response
-		assert.exists(res2.Fault, 'Should return a Fault for trailing spaces');
+		assert.isString(res2.Fault.Detail.Error.Code, 'Should return a Fault for trailing spaces');
 		assert.include(res2.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 
@@ -399,7 +399,7 @@ describe('Mail > Conversation > Item Action Conversation', function () {
 		);
 
 		// Verify response
-		assert.exists(res3.Fault, 'Should return a Fault for only spaces');
+		assert.isString(res3.Fault.Detail.Error.Code, 'Should return a Fault for only spaces');
 		assert.include(res3.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -413,7 +413,7 @@ describe('Mail > Conversation > Item Action Conversation', function () {
 		);
 
 		// Verify response
-		assert.exists(res1.Fault, 'Should return a Fault for blank id');
+		assert.isString(res1.Fault.Detail.Error.Code, 'Should return a Fault for blank id');
 		assert.include(res1.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 
@@ -425,7 +425,7 @@ describe('Mail > Conversation > Item Action Conversation', function () {
 		);
 
 		// Verify response
-		assert.exists(res2.Fault, 'Should return a Fault for sometext id');
+		assert.isString(res2.Fault.Detail.Error.Code, 'Should return a Fault for sometext id');
 		assert.include(res2.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -439,7 +439,7 @@ describe('Mail > Conversation > Item Action Conversation', function () {
 		);
 
 		// Verify response
-		assert.exists(res1.Fault, 'Should return a Fault for blank op');
+		assert.isString(res1.Fault.Detail.Error.Code, 'Should return a Fault for blank op');
 		assert.include(res1.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 
@@ -451,7 +451,7 @@ describe('Mail > Conversation > Item Action Conversation', function () {
 		);
 
 		// Verify response
-		assert.exists(res2.Fault, 'Should return a Fault for space op');
+		assert.isString(res2.Fault.Detail.Error.Code, 'Should return a Fault for space op');
 		assert.include(res2.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 
@@ -463,7 +463,7 @@ describe('Mail > Conversation > Item Action Conversation', function () {
 		);
 
 		// Verify response
-		assert.exists(res3.Fault, 'Should return a Fault for sometext op');
+		assert.isString(res3.Fault.Detail.Error.Code, 'Should return a Fault for sometext op');
 		assert.include(res3.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 
@@ -475,7 +475,7 @@ describe('Mail > Conversation > Item Action Conversation', function () {
 		);
 
 		// Verify response
-		assert.exists(res4.Fault, 'Should return a Fault for spchar op');
+		assert.isString(res4.Fault.Detail.Error.Code, 'Should return a Fault for spchar op');
 		assert.include(res4.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -489,7 +489,7 @@ describe('Mail > Conversation > Item Action Conversation', function () {
 		);
 
 		// Verify response
-		assert.exists(res1.Fault, 'Should return a Fault for leading spaces in op');
+		assert.isString(res1.Fault.Detail.Error.Code, 'Should return a Fault for leading spaces in op');
 		assert.include(res1.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 
@@ -501,7 +501,7 @@ describe('Mail > Conversation > Item Action Conversation', function () {
 		);
 
 		// Verify response
-		assert.exists(res2.Fault, 'Should return a Fault for trailing spaces in op');
+		assert.isString(res2.Fault.Detail.Error.Code, 'Should return a Fault for trailing spaces in op');
 		assert.include(res2.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});

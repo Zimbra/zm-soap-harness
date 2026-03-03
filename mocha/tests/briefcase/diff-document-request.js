@@ -25,7 +25,10 @@ describe('Briefcase > Diff Document Request', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse, 'Should create account');
+		const acct = Array.isArray(createRes.CreateAccountResponse.account)
+			? createRes.CreateAccountResponse.account[0]
+			: createRes.CreateAccountResponse.account;
+		assert.exists(acct.id, 'Account ID should exist');
 
 		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
@@ -37,7 +40,7 @@ describe('Briefcase > Diff Document Request', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 
 		account1Token = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
@@ -50,7 +53,6 @@ describe('Briefcase > Diff Document Request', function () {
 
 		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
-		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 
 		const root = Array.isArray(folderRes.GetFolderResponse.folder)
 			? folderRes.GetFolderResponse.folder[0] : folderRes.GetFolderResponse.folder;
@@ -91,7 +93,6 @@ describe('Briefcase > Diff Document Request', function () {
 
 		// Verify response
 		assert.notExists(save1.Fault, 'Response should not be a Fault');
-		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(save1.SaveDocumentResponse.doc)
 			? save1.SaveDocumentResponse.doc[0] : save1.SaveDocumentResponse.doc;
@@ -108,7 +109,9 @@ describe('Briefcase > Diff Document Request', function () {
 
 		// Verify response
 		assert.notExists(save2.Fault, 'Response should not be a Fault');
-		assert.exists(save2.SaveDocumentResponse, 'SaveDocumentResponse should exist');
+		const doc2 = Array.isArray(save2.SaveDocumentResponse.doc)
+			? save2.SaveDocumentResponse.doc[0] : save2.SaveDocumentResponse.doc;
+		assert.exists(doc2.id, 'Doc v2 ID should exist');
 
 		// Diff the two revisions
 		const diffRes = await soap.makeSOAPEnvelopeAccount(
@@ -119,7 +122,6 @@ describe('Briefcase > Diff Document Request', function () {
 
 		// Verify response
 		assert.notExists(diffRes.Fault, 'Response should not be a Fault');
-		assert.exists(diffRes.DiffDocumentResponse, 'DiffDocumentResponse should exist');
 		assert.exists(diffRes.DiffDocumentResponse.chunk,
 			'chunk should exist in diff response');
 	});
@@ -140,7 +142,6 @@ describe('Briefcase > Diff Document Request', function () {
 
 		// Verify response
 		assert.notExists(save1.Fault, 'Response should not be a Fault');
-		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(save1.SaveDocumentResponse.doc)
 			? save1.SaveDocumentResponse.doc[0] : save1.SaveDocumentResponse.doc;
@@ -157,7 +158,9 @@ describe('Briefcase > Diff Document Request', function () {
 
 		// Verify response
 		assert.notExists(save2.Fault, 'Response should not be a Fault');
-		assert.exists(save2.SaveDocumentResponse, 'SaveDocumentResponse should exist');
+		const doc2 = Array.isArray(save2.SaveDocumentResponse.doc)
+			? save2.SaveDocumentResponse.doc[0] : save2.SaveDocumentResponse.doc;
+		assert.exists(doc2.id, 'Doc v2 ID should exist');
 
 		// Diff the two revisions
 		const diffRes = await soap.makeSOAPEnvelopeAccount(
@@ -168,7 +171,6 @@ describe('Briefcase > Diff Document Request', function () {
 
 		// Verify response
 		assert.notExists(diffRes.Fault, 'Response should not be a Fault');
-		assert.exists(diffRes.DiffDocumentResponse, 'DiffDocumentResponse should exist');
 		assert.exists(diffRes.DiffDocumentResponse.chunk, 'chunk should exist');
 	});
 
@@ -188,7 +190,6 @@ describe('Briefcase > Diff Document Request', function () {
 
 		// Verify response
 		assert.notExists(save1.Fault, 'Response should not be a Fault');
-		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(save1.SaveDocumentResponse.doc)
 			? save1.SaveDocumentResponse.doc[0] : save1.SaveDocumentResponse.doc;
@@ -202,7 +203,7 @@ describe('Briefcase > Diff Document Request', function () {
 		);
 
 		// Verify response
-		assert.exists(diffRes.Fault, 'Should return Fault for invalid V1');
+		assert.isString(diffRes.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(diffRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Error code should be service.INVALID_REQUEST');
 	});
@@ -223,7 +224,6 @@ describe('Briefcase > Diff Document Request', function () {
 
 		// Verify response
 		assert.notExists(save1.Fault, 'Response should not be a Fault');
-		assert.exists(save1.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(save1.SaveDocumentResponse.doc)
 			? save1.SaveDocumentResponse.doc[0] : save1.SaveDocumentResponse.doc;
@@ -240,7 +240,9 @@ describe('Briefcase > Diff Document Request', function () {
 
 		// Verify response
 		assert.notExists(save2.Fault, 'Response should not be a Fault');
-		assert.exists(save2.SaveDocumentResponse, 'SaveDocumentResponse should exist');
+		const doc2 = Array.isArray(save2.SaveDocumentResponse.doc)
+			? save2.SaveDocumentResponse.doc[0] : save2.SaveDocumentResponse.doc;
+		assert.exists(doc2.id, 'Doc v2 ID should exist');
 
 		// Diff with invalid v2
 		const diffRes = await soap.makeSOAPEnvelopeAccount(
@@ -250,7 +252,7 @@ describe('Briefcase > Diff Document Request', function () {
 		);
 
 		// Verify response
-		assert.exists(diffRes.Fault, 'Should return Fault for invalid V2');
+		assert.isString(diffRes.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(diffRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Error code should be service.INVALID_REQUEST');
 	});

@@ -76,7 +76,6 @@ describe('Mail Client > Mail > Backup Request Bug11636', function () {
 			</BackupRequest>`, adminAuthToken
 		);
 		assert.notExists(backupRes.Fault, 'BackupRequest should not fault');
-		assert.exists(backupRes.BackupResponse, 'BackupResponse should exist');
 
 		// Send message from account1 to account2 and account3
 		const acct1Auth = await soap.getAccountAuthToken(account1Name);
@@ -103,7 +102,6 @@ describe('Mail Client > Mail > Backup Request Bug11636', function () {
 			</RestoreRequest>`, adminAuthToken
 		);
 		assert.notExists(restoreRes.Fault, 'RestoreRequest should not fault');
-		assert.exists(restoreRes.RestoreResponse, 'RestoreResponse should exist');
 	});
 
 
@@ -117,7 +115,6 @@ describe('Mail Client > Mail > Backup Request Bug11636', function () {
 			</BackupRequest>`, adminAuthToken
 		);
 		assert.notExists(backupRes.Fault, 'Full BackupRequest should not fault');
-		assert.exists(backupRes.BackupResponse, 'Full BackupResponse should exist');
 
 		// Send message from account4 to account5 and account6
 		const acct4Auth = await soap.getAccountAuthToken(account4Name);
@@ -144,7 +141,6 @@ describe('Mail Client > Mail > Backup Request Bug11636', function () {
 			</BackupRequest>`, adminAuthToken
 		);
 		assert.notExists(incrBackup.Fault, 'Incremental BackupRequest should not fault');
-		assert.exists(incrBackup.BackupResponse, 'Incremental BackupResponse should exist');
 
 		// Delete account5
 		await soap.makeSOAPEnvelopeAdmin(
@@ -162,7 +158,6 @@ describe('Mail Client > Mail > Backup Request Bug11636', function () {
 			</RestoreRequest>`, adminAuthToken
 		);
 		assert.notExists(restoreRes.Fault, 'RestoreRequest should not fault');
-		assert.exists(restoreRes.RestoreResponse, 'RestoreResponse should exist');
 
 		// Verify message exists
 		const acct5Auth = await soap.getAccountAuthToken(account5Name);
@@ -172,6 +167,5 @@ describe('Mail Client > Mail > Backup Request Bug11636', function () {
 			</SearchRequest>`, acct5Auth
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 });

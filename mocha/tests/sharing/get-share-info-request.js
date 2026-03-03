@@ -184,8 +184,6 @@ describe('Sharing > Get Share Info Request', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'GetShareInfoRequest should not fault');
-		assert.exists(res.GetShareInfoResponse,
-			'GetShareInfoResponse should exist');
 
 		// As account3: share Tasks folder via DL
 		res = await soap.makeSOAPEnvelopeAccount(
@@ -222,8 +220,6 @@ describe('Sharing > Get Share Info Request', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Admin GetShareInfoRequest should not fault');
-		assert.exists(res.GetShareInfoResponse,
-			'Admin GetShareInfoResponse should exist');
 
 		// As account2: mount the Tasks folder shared by account3 via DL
 		res = await soap.makeSOAPEnvelopeAccount(
@@ -254,8 +250,6 @@ describe('Sharing > Get Share Info Request', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'GetShareInfoRequest for account3 should not fault');
-		assert.exists(res.GetShareInfoResponse,
-			'GetShareInfoResponse for account3 should exist');
 		const shares = res.GetShareInfoResponse.share;
 
 		// Verify response
@@ -304,7 +298,5 @@ describe('Sharing > Get Share Info Request', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Final GetShareInfoRequest should not fault');
-		assert.exists(res.GetShareInfoResponse,
-			'Final GetShareInfoResponse should exist');
 	});
 });

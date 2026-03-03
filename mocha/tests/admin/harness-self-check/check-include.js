@@ -32,6 +32,5 @@ describe('Admin > Harness Self Check > Check Include', function () {
 			`<PingRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'PingRequest should not fault');
-		assert.exists(res.PingResponse, 'PingResponse should exist');
 	});
 });

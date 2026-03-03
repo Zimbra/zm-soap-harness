@@ -30,7 +30,6 @@ describe('Auth > Jwt > Jwt ZCS 3258', function () {
 
 		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
-		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
 			? createRes1.CreateAccountResponse.account[0]
@@ -87,11 +86,9 @@ describe('Auth > Jwt > Jwt ZCS 3258', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
-		assert.exists(authRes.AuthResponse.authToken, 'JWT auth token should exist');
 
 		// Note: The XML test framework uses a special <jwtToken> SOAP header element for JWT.
 		// The JS framework only supports <authToken> header, so we use a regular auth token
@@ -119,11 +116,6 @@ describe('Auth > Jwt > Jwt ZCS 3258', function () {
 				</m>
 			</SendMsgRequest>`, regularToken
 		);
-		if (sendRes.Fault) {
-
-			// Verify response
-			assert.fail('Should be able to send message: ' + sendRes.Fault.Reason.Text);
-		}
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
@@ -154,7 +146,6 @@ describe('Auth > Jwt > Jwt ZCS 3258', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		const msgs = searchRes.SearchResponse.m;
 
@@ -180,7 +171,6 @@ describe('Auth > Jwt > Jwt ZCS 3258', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'JWT AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
@@ -242,7 +232,6 @@ describe('Auth > Jwt > Jwt ZCS 3258', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		const msgs = searchRes.SearchResponse.m;
 
@@ -284,13 +273,8 @@ describe('Auth > Jwt > Jwt ZCS 3258', function () {
 				</m>
 			</SendMsgRequest>`, jwtToken, false, account1Server
 		);
-		if (sendRes.Fault) {
-
-			// Verify response
-			assert.include(sendRes.Fault.Detail.Error.Code, 'service.AUTH_REQUIRED',
-				'Should return AUTH_REQUIRED');
-		} else {
-			assert.fail('Expected Fault for expired JWT token');
-		}
+		assert.isString(sendRes.Fault.Detail.Error.Code, 'Fault error Code should be a string');
+		assert.include(sendRes.Fault.Detail.Error.Code, 'service.AUTH_REQUIRED',
+			'Should return AUTH_REQUIRED');
 	});
 });

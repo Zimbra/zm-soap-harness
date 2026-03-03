@@ -190,7 +190,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee DL', function () {
 		const accessCheck = await soap.makeSOAPEnvelopeAccount(getMsgRequest, auth2);
 
 		// Verify response
-		assert.notExists(accessCheck.Fault, 'DL member should have access before revoke');
+		assert.exists(accessCheck.GetMsgResponse.m, 'DL member should have access before revoke');
 
 		// Revoke the grant
 		const folderActionRequest3 =
@@ -211,7 +211,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee DL', function () {
 		const revokedCheck = await soap.makeSOAPEnvelopeAccount(getMsgRequest2, auth2);
 
 		// Verify response
-		assert.exists(revokedCheck.Fault, 'DL member should be denied after revoke');
+		assert.exists(revokedCheck.Fault.Detail.Error, 'Fault Error should exist - DL member should be denied after revoke');
 
 		// Cleanup DL
 		const deleteDistributionListRequest =
@@ -324,8 +324,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee DL', function () {
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest2, auth2);
 
 		// Verify response
-		assert.notExists(mountResp.Fault, 'Response should not be a Fault');
-		assert.exists(mountResp.CreateMountpointResponse,
+		assert.exists(mountResp.CreateMountpointResponse.link,
 			'Nested DL member should be able to mount folder');
 
 		// Cleanup

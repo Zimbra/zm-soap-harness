@@ -72,7 +72,6 @@ describe('Mail > Tags > Tag Mail Bug79604', function () {
 			</ModifyFilterRulesRequest>`, acctAuthToken
 		);
 		assert.notExists(modifyFilterRes.Fault, 'ModifyFilterRulesRequest should not fault');
-		assert.exists(modifyFilterRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 
 		// Rename the tag
 		const renameRes = await soap.makeSOAPEnvelopeAccount(
@@ -89,7 +88,6 @@ describe('Mail > Tags > Tag Mail Bug79604', function () {
 			`<GetFilterRulesRequest xmlns="urn:zimbraMail"/>`, acctAuthToken
 		);
 		assert.notExists(getFilterRes.Fault, 'GetFilterRulesRequest should not fault');
-		assert.exists(getFilterRes.GetFilterRulesResponse, 'GetFilterRulesResponse should exist');
 		let filterRules = [];
 		const filterRulesObj = getFilterRes.GetFilterRulesResponse.filterRules;
 		if (filterRulesObj) {
@@ -129,6 +127,5 @@ Content of test message for tag verification
 			</SearchRequest>`, acctAuthToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 });

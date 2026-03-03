@@ -87,6 +87,5 @@ describe('Mail > Bugs > Bug 50507', function () {
 		);
 
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 });

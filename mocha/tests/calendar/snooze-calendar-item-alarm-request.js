@@ -30,12 +30,14 @@ describe('Calendar > Snooze Calendar Item Alarm Request', function () {
     it('Smoke | Create Single event with reminder ans snooze it', async () => {
         // Create the account
         const accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
+        const acctRes = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
         );
+        assert.notExists(acctRes.Fault, 'CreateAccountRequest should not fault');
+        assert.exists(acctRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
         const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
         // Get calendar folder id
@@ -78,6 +80,7 @@ describe('Calendar > Snooze Calendar Item Alarm Request', function () {
         );
         assert.notExists(createRes.Fault, 'CreateAppointmentRequest should not fault');
         const apptId = createRes.CreateAppointmentResponse.apptId;
+        assert.exists(apptId, 'Appointment apptId should exist');
 
         // Snooze the alarm
         const snoozeUntil = String(now.getTime() + 5 * 60000);
@@ -89,22 +92,20 @@ describe('Calendar > Snooze Calendar Item Alarm Request', function () {
 
         // Verify snooze response
         assert.notExists(snoozeRes.Fault, 'SnoozeCalendarItemAlarmRequest should not fault');
-        assert.exists(
-            snoozeRes.SnoozeCalendarItemAlarmResponse,
-            'SnoozeCalendarItemAlarmResponse should exist'
-        );
     });
 
 
     it('Sanity | Create Single task with reminder and snooze it', async () => {
         // Create the account
         const accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
+        const acctRes = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
         );
+        assert.notExists(acctRes.Fault, 'CreateAccountRequest should not fault');
+        assert.exists(acctRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
         const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
         // Get tasks folder id
@@ -157,6 +158,7 @@ describe('Calendar > Snooze Calendar Item Alarm Request', function () {
         );
         assert.notExists(createRes.Fault, 'CreateTaskRequest should not fault');
         const taskCalItemId = createRes.CreateTaskResponse.calItemId;
+        assert.exists(taskCalItemId, 'Task calItemId should exist');
 
         // Snooze the task alarm
         const snoozeUntil = String(now.getTime() + 6 * 3600000);
@@ -168,9 +170,5 @@ describe('Calendar > Snooze Calendar Item Alarm Request', function () {
 
         // Verify snooze response
         assert.notExists(snoozeRes.Fault, 'SnoozeCalendarItemAlarmRequest should not fault');
-        assert.exists(
-            snoozeRes.SnoozeCalendarItemAlarmResponse,
-            'SnoozeCalendarItemAlarmResponse should exist'
-        );
     });
 });

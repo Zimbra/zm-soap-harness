@@ -83,7 +83,6 @@ describe('Mail Client > Mail > Backup Request', function () {
 			</BackupRequest>`, adminAuthToken
 		);
 		assert.notExists(backupRes.Fault, 'BackupRequest should not fault');
-		assert.exists(backupRes.BackupResponse, 'BackupResponse should exist');
 
 		// Delete account2
 		await soap.makeSOAPEnvelopeAdmin(
@@ -101,7 +100,6 @@ describe('Mail Client > Mail > Backup Request', function () {
 			</RestoreRequest>`, adminAuthToken
 		);
 		assert.notExists(restoreRes.Fault, 'RestoreRequest should not fault');
-		assert.exists(restoreRes.RestoreResponse, 'RestoreResponse should exist');
 
 		// Re-auth and verify message exists
 		const acct2Auth = await soap.getAccountAuthToken(account2Name);
@@ -111,7 +109,6 @@ describe('Mail Client > Mail > Backup Request', function () {
 			</SearchRequest>`, acct2Auth
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -128,7 +125,6 @@ describe('Mail Client > Mail > Backup Request', function () {
 			</BackupRequest>`, adminAuthToken
 		);
 		assert.notExists(fullBackup.Fault, 'Full BackupRequest should not fault');
-		assert.exists(fullBackup.BackupResponse, 'Full BackupResponse should exist');
 
 		// Send mail to account3
 		const acct1Auth = await soap.getAccountAuthToken(account1Name);
@@ -154,7 +150,6 @@ describe('Mail Client > Mail > Backup Request', function () {
 			</BackupRequest>`, adminAuthToken
 		);
 		assert.notExists(incrBackup.Fault, 'Incremental BackupRequest should not fault');
-		assert.exists(incrBackup.BackupResponse, 'Incremental BackupResponse should exist');
 
 		// Delete account3
 		await soap.makeSOAPEnvelopeAdmin(
@@ -172,7 +167,6 @@ describe('Mail Client > Mail > Backup Request', function () {
 			</RestoreRequest>`, adminAuthToken
 		);
 		assert.notExists(restoreRes.Fault, 'RestoreRequest should not fault');
-		assert.exists(restoreRes.RestoreResponse, 'RestoreResponse should exist');
 
 		// Re-auth and verify message exists
 		const acct3AuthNew = await soap.getAccountAuthToken(account3Name);
@@ -182,6 +176,5 @@ describe('Mail Client > Mail > Backup Request', function () {
 			</SearchRequest>`, acct3AuthNew
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 });

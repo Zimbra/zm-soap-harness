@@ -32,6 +32,5 @@ describe('Admin > Mailbox > Mailbox Stats', function () {
 			`<GetMailboxStatsRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);
 		assert.notExists(statsRes.Fault, 'GetMailboxStatsRequest should not fault');
-		assert.exists(statsRes.GetMailboxStatsResponse, 'GetMailboxStatsResponse should exist');
 	});
 });

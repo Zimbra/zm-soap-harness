@@ -151,7 +151,6 @@ describe('EWS > Forward Mail Including Original Mail As Attachment From Zwc', fu
 			</SearchRequest>`, account2AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const hit = Array.isArray(searchRes.SearchResponse.c)
 			? searchRes.SearchResponse.c[0] : searchRes.SearchResponse.c;
 		assert.equal(hit.su, messageSubject, 'Subject should match');
@@ -189,7 +188,7 @@ describe('EWS > Forward Mail Including Original Mail As Attachment From Zwc', fu
 		assert.notExists(fwdRes.Fault, 'Response should not be a Fault');
 		const sentMsg = Array.isArray(fwdRes.SendMsgResponse.m)
 			? fwdRes.SendMsgResponse.m[0] : fwdRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Verify on ZWC sent folder that mail has attachment

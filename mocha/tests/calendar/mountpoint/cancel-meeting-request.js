@@ -131,6 +131,6 @@ describe('Calendar > Mountpoint > Cancel Meeting Request', function () {
 			`<GetAppointmentRequest xmlns="urn:zimbraMail"
 				id="${calItemId}"/>`, owner.token
 		);
-		assert.exists(getRes.Fault, 'Deleted appt should fault');
+		assert.isString(getRes.Fault.Detail.Error.Code, 'Deleted appt should fault');
 	});
 });

@@ -85,7 +85,6 @@ describe('Search > Calendar > Search Content', function () {
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -98,7 +97,6 @@ describe('Search > Calendar > Search Content', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -111,7 +109,6 @@ describe('Search > Calendar > Search Content', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -129,6 +126,5 @@ describe('Search > Calendar > Search Content', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
 });

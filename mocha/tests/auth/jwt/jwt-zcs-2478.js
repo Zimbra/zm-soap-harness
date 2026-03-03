@@ -29,7 +29,6 @@ describe('Auth > Jwt > Jwt ZCS 2478', function () {
 
 		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
-		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
 			? createRes1.CreateAccountResponse.account[0]
@@ -75,11 +74,9 @@ describe('Auth > Jwt > Jwt ZCS 2478', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
-		assert.exists(authRes.AuthResponse.authToken, 'JWT token should exist');
 
 		// Wait for token to expire (1 minute)
 		await new Promise(resolve => setTimeout(resolve, 65000));
@@ -101,13 +98,8 @@ describe('Auth > Jwt > Jwt ZCS 2478', function () {
 				</m>
 			</SendMsgRequest>`, jwtToken, false, account1Server
 		);
-		if (sendRes.Fault) {
-
-			// Verify response
-			assert.include(sendRes.Fault.Detail.Error.Code, 'service.AUTH_REQUIRED',
-				'Should return AUTH_REQUIRED');
-		} else {
-			assert.fail('Expected Fault for expired JWT token');
-		}
+		assert.isString(sendRes.Fault.Detail.Error.Code, 'Fault error Code should be a string');
+		assert.include(sendRes.Fault.Detail.Error.Code, 'service.AUTH_REQUIRED',
+			'Should return AUTH_REQUIRED');
 	});
 });

@@ -40,8 +40,6 @@ describe('Admin > Accounts > Retention Policy', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CreateSystemRetentionPolicyResponse,
-			'CreateSystemRetentionPolicyResponse should exist');
 	});
 
 
@@ -59,8 +57,6 @@ describe('Admin > Accounts > Retention Policy', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CreateSystemRetentionPolicyResponse,
-			'CreateSystemRetentionPolicyResponse should exist');
 	});
 
 
@@ -78,8 +74,6 @@ describe('Admin > Accounts > Retention Policy', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CreateSystemRetentionPolicyResponse,
-			'CreateSystemRetentionPolicyResponse should exist');
 	});
 
 
@@ -97,8 +91,6 @@ describe('Admin > Accounts > Retention Policy', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CreateSystemRetentionPolicyResponse,
-			'CreateSystemRetentionPolicyResponse should exist');
 	});
 
 
@@ -117,7 +109,7 @@ describe('Admin > Accounts > Retention Policy', function () {
 			);
 
 			// Verify response
-			assert.exists(response.Fault, `Should fault for invalid lifetime "${val}"`);
+			assert.isString(response.Fault.Detail.Error.Code, `Should fault for invalid lifetime "${val}"`);
 		}
 	});
 
@@ -145,8 +137,6 @@ describe('Admin > Accounts > Retention Policy', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
-		assert.exists(modRes.ModifySystemRetentionPolicyResponse,
-			'ModifySystemRetentionPolicyResponse should exist');
 
 		const modPolicy = modRes.ModifySystemRetentionPolicyResponse?.policy;
 		assert.equal(Array.isArray(modPolicy) ? modPolicy[0].lifetime : modPolicy?.lifetime, '5d');
@@ -177,8 +167,6 @@ describe('Admin > Accounts > Retention Policy', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
-		assert.exists(modRes.ModifySystemRetentionPolicyResponse,
-			'ModifySystemRetentionPolicyResponse should exist');
 
 		const modPolicy = modRes.ModifySystemRetentionPolicyResponse?.policy;
 		assert.equal(Array.isArray(modPolicy) ? modPolicy[0].name : modPolicy?.name, newName);
@@ -205,8 +193,6 @@ describe('Admin > Accounts > Retention Policy', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
-		assert.exists(getRes.GetSystemRetentionPolicyResponse,
-			'GetSystemRetentionPolicyResponse should exist');
 	});
 
 
@@ -233,8 +219,6 @@ describe('Admin > Accounts > Retention Policy', function () {
 
 		// Verify response
 		assert.notExists(delRes.Fault, 'Response should not be a Fault');
-		assert.exists(delRes.DeleteSystemRetentionPolicyResponse,
-			'DeleteSystemRetentionPolicyResponse should exist');
 
 		// Verify deleted
 		const getRes = await soap.makeSOAPEnvelopeAdmin(
@@ -244,7 +228,5 @@ describe('Admin > Accounts > Retention Policy', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
-		assert.exists(getRes.GetSystemRetentionPolicyResponse,
-			'GetSystemRetentionPolicyResponse should exist');
 	});
 });

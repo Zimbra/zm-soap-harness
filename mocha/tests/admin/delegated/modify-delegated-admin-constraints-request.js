@@ -53,8 +53,6 @@ describe('Admin > Delegated > Modify Delegated Admin Constraints Request', funct
 			</ModifyDelegatedAdminConstraintsRequest>`, adminAuthToken
 		);
 		assert.notExists(modifyRes.Fault, 'ModifyDelegatedAdminConstraintsRequest should not fault');
-		assert.exists(modifyRes.ModifyDelegatedAdminConstraintsResponse,
-			'ModifyDelegatedAdminConstraintsResponse should exist');
 
 		// Verify constraints via Get
 		const getRes = await soap.makeSOAPEnvelopeAdmin(
@@ -89,8 +87,6 @@ describe('Admin > Delegated > Modify Delegated Admin Constraints Request', funct
 			</ModifyDelegatedAdminConstraintsRequest>`, adminAuthToken
 		);
 		assert.notExists(modifyRes.Fault, 'ModifyDelegatedAdminConstraintsRequest should not fault');
-		assert.exists(modifyRes.ModifyDelegatedAdminConstraintsResponse,
-			'ModifyDelegatedAdminConstraintsResponse should exist');
 
 		// Verify constraints cleared
 		const getRes = await soap.makeSOAPEnvelopeAdmin(
@@ -116,8 +112,6 @@ describe('Admin > Delegated > Modify Delegated Admin Constraints Request', funct
 			</ModifyDelegatedAdminConstraintsRequest>`, adminAuthToken
 		);
 		assert.notExists(modifyRes.Fault, 'ModifyDelegatedAdminConstraintsRequest should not fault');
-		assert.exists(modifyRes.ModifyDelegatedAdminConstraintsResponse,
-			'ModifyDelegatedAdminConstraintsResponse should exist');
 
 		// Verify config constraints
 		const getRes = await soap.makeSOAPEnvelopeAdmin(

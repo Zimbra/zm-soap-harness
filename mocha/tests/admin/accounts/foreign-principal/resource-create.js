@@ -55,8 +55,6 @@ describe('Admin > Accounts > Foreign Principal > Resource Create', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CreateCalendarResourceResponse,
-			'CreateCalendarResourceResponse should exist');
 		const calresource = Array.isArray(response.CreateCalendarResourceResponse.calresource)
 			? response.CreateCalendarResourceResponse.calresource[0]
 			: response.CreateCalendarResourceResponse.calresource;
@@ -88,8 +86,6 @@ describe('Admin > Accounts > Foreign Principal > Resource Create', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CreateCalendarResourceResponse,
-			'CreateCalendarResourceResponse should exist');
 		const calresource = Array.isArray(response.CreateCalendarResourceResponse.calresource)
 			? response.CreateCalendarResourceResponse.calresource[0]
 			: response.CreateCalendarResourceResponse.calresource;
@@ -120,8 +116,6 @@ describe('Admin > Accounts > Foreign Principal > Resource Create', function () {
 
 		// Verify response
 		assert.notExists(r1.Fault, 'Response should not be a Fault');
-		assert.exists(r1.CreateCalendarResourceResponse,
-			'First CreateCalendarResourceResponse should exist');
 		const res1 = Array.isArray(r1.CreateCalendarResourceResponse.calresource)
 			? r1.CreateCalendarResourceResponse.calresource[0]
 			: r1.CreateCalendarResourceResponse.calresource;
@@ -145,8 +139,6 @@ describe('Admin > Accounts > Foreign Principal > Resource Create', function () {
 
 		// Verify response
 		assert.notExists(r2.Fault, 'Response should not be a Fault');
-		assert.exists(r2.CreateCalendarResourceResponse,
-			'Second CreateCalendarResourceResponse should exist');
 		const res2 = Array.isArray(r2.CreateCalendarResourceResponse.calresource)
 			? r2.CreateCalendarResourceResponse.calresource[0]
 			: r2.CreateCalendarResourceResponse.calresource;

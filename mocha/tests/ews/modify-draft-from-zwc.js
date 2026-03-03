@@ -129,7 +129,6 @@ describe('EWS > Modify Draft From Zwc', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const su = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m[0] : searchRes.SearchResponse.m;
 		assert.exists(su, 'Should find message');
@@ -167,7 +166,7 @@ describe('EWS > Modify Draft From Zwc', function () {
 		assert.notExists(saveDraftRes.Fault, 'SaveDraftRequest should not be a Fault');
 		const draftMsg = Array.isArray(saveDraftRes.SaveDraftResponse.m)
 			? saveDraftRes.SaveDraftResponse.m[0] : saveDraftRes.SaveDraftResponse.m;
-		assert.exists(draftMsg, 'SaveDraftResponse should contain m');
+		assert.exists(draftMsg.id, 'draft msg id should exist');
 		const getFolderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>
@@ -332,7 +331,6 @@ describe('EWS > Modify Draft From Zwc', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const su = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m[0] : searchRes.SearchResponse.m;
 		assert.exists(su, 'Should find message');
@@ -371,7 +369,7 @@ describe('EWS > Modify Draft From Zwc', function () {
 		assert.notExists(saveDraftRes.Fault, 'SaveDraftRequest should not be a Fault');
 		const draftMsg = Array.isArray(saveDraftRes.SaveDraftResponse.m)
 			? saveDraftRes.SaveDraftResponse.m[0] : saveDraftRes.SaveDraftResponse.m;
-		assert.exists(draftMsg, 'SaveDraftResponse should contain m');
+		assert.exists(draftMsg.id, 'draft msg id should exist');
 		const getFolderRes = await ews.makeEWSRequest(
 			`<GetFolder xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<FolderShape>

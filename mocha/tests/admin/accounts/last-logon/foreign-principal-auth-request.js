@@ -40,8 +40,6 @@ describe('Admin > Accounts > Last Logon > Foreign Principal Auth Request', funct
 
 		// Verify response
 		assert.notExists(configRes.Fault, 'Response should not be a Fault');
-		assert.exists(configRes.GetConfigResponse,
-			'GetConfigResponse should exist');
 
 		// Create account with foreign principal
 		const createRes = await soap.makeSOAPEnvelopeAdmin(
@@ -53,8 +51,6 @@ describe('Admin > Accounts > Last Logon > Foreign Principal Auth Request', funct
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse,
-			'Should create account');
 		const acct = Array.isArray(
 			createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
@@ -69,8 +65,6 @@ describe('Admin > Accounts > Last Logon > Foreign Principal Auth Request', funct
 
 		// Verify response
 		assert.notExists(modConfigRes.Fault, 'Response should not be a Fault');
-		assert.exists(modConfigRes.ModifyConfigResponse,
-			'ModifyConfigResponse should exist');
 
 		// Flush cache
 		await soap.makeSOAPEnvelopeAdmin(
@@ -88,8 +82,6 @@ describe('Admin > Accounts > Last Logon > Foreign Principal Auth Request', funct
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse,
-			'AuthResponse should exist');
 
 		// Get timestamp
 		const getRes = await soap.makeSOAPEnvelopeAdmin(
@@ -99,8 +91,6 @@ describe('Admin > Accounts > Last Logon > Foreign Principal Auth Request', funct
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
-		assert.exists(getRes.GetAccountResponse,
-			'GetAccountResponse should exist');
 		const acctData = Array.isArray(
 			getRes.GetAccountResponse.account)
 			? getRes.GetAccountResponse.account[0]

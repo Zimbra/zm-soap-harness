@@ -48,7 +48,7 @@ describe('General > Headers > Format > Auth Request Json', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'AuthRequest should not fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes.AuthResponse.authToken, 'AuthResponse should exist');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 	});
 });

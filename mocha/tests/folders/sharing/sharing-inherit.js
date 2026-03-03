@@ -139,8 +139,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 		const getMsgResp = await soap.makeSOAPEnvelopeAccount(getMsgRequest, auth2);
 
 		// Verify response
-		assert.exists(getMsgResp.Fault,
-			'Access to subfolder should be denied with f="i"');
+		assert.exists(getMsgResp.Fault.Detail.Error,
+			'Fault Error should exist - access to subfolder with f="i" should be denied');
 	});
 
 
@@ -383,7 +383,7 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 		const delRes = await soap.makeSOAPEnvelopeAccount(msgActionRequest, auth2);
 
 		// Verify response
-		assert.notExists(delRes.Fault,
+		assert.exists(delRes.MsgActionResponse.action,
 			'Child folder override should allow delete even though parent is read-only');
 	});
 
@@ -563,8 +563,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 		const getMsgResp = await soap.makeSOAPEnvelopeAccount(getMsg, auth2);
 
 		// Verify response
-		assert.exists(getMsgResp.Fault,
-			'Access to grandchild should be denied when child has flags=i');
+		assert.exists(getMsgResp.Fault.Detail.Error,
+			'Fault Error should exist - access to grandchild with flags=i should be denied');
 	});
 
 
@@ -617,8 +617,7 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 		const subResp = await soap.makeSOAPEnvelopeAccount(createSub, auth2);
 
 		// Verify response
-		assert.notExists(subResp.Fault, 'Response should not be a Fault');
-		assert.exists(subResp.CreateFolderResponse,
+		assert.exists(subResp.CreateFolderResponse.folder,
 			'Delegatee should be able to create subfolder in shared folder');
 	});
 
@@ -680,8 +679,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 		const childAccessResp = await soap.makeSOAPEnvelopeAccount(getFolderChild, auth2);
 
 		// Verify response
-		assert.exists(childAccessResp.Fault,
-			'Child folder should not be accessible when parent has flags=i');
+		assert.exists(childAccessResp.Fault.Detail.Error,
+			'Fault Error should exist - child with flags=i should not be accessible');
 	});
 
 
@@ -744,8 +743,8 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 		const subResp = await soap.makeSOAPEnvelopeAccount(createSub, auth2);
 
 		// Verify response
-		assert.exists(subResp.Fault,
-			'Creating folder under child with flags=i should be denied');
+		assert.exists(subResp.Fault.Detail.Error,
+			'Fault Error should exist - creating folder under child with flags=i should be denied');
 	});
 
 
@@ -816,7 +815,7 @@ describe('Folders > Sharing > Sharing Inherit', function () {
 		const moveResp = await soap.makeSOAPEnvelopeAccount(moveRequest, auth2);
 
 		// Verify response
-		assert.exists(moveResp.Fault,
-			'Moving folder into target with flags=i should be denied');
+		assert.exists(moveResp.Fault.Detail.Error,
+			'Fault Error should exist - moving folder into target with flags=i should be denied');
 	});
 });

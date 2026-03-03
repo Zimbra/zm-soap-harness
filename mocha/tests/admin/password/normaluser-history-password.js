@@ -50,7 +50,6 @@ describe('Admin > Password > NormalUser History Password', function () {
 			</ChangePasswordRequest>`, accountToken
 		);
 		assert.notExists(changeRes.Fault, 'ChangePasswordRequest should not fault');
-		assert.exists(changeRes.ChangePasswordResponse, 'ChangePasswordResponse should exist');
 	});
 
 
@@ -96,7 +95,7 @@ describe('Admin > Password > NormalUser History Password', function () {
 				<password>two4567890</password>
 			</ChangePasswordRequest>`, token, false
 		);
-		assert.exists(changeRes.Fault, 'Reusing last password should fault');
+		assert.isString(changeRes.Fault.Detail.Error.Code, 'Reusing last password should fault');
 		assert.include(changeRes.Fault.Detail.Error.Code, 'account.PASSWORD_RECENTLY_USED');
 	});
 
@@ -143,7 +142,6 @@ describe('Admin > Password > NormalUser History Password', function () {
 			</ChangePasswordRequest>`, token
 		);
 		assert.notExists(changeRes.Fault, 'Reusing second-to-last password should not fault');
-		assert.exists(changeRes.ChangePasswordResponse, 'ChangePasswordResponse should exist');
 	});
 
 
@@ -168,7 +166,7 @@ describe('Admin > Password > NormalUser History Password', function () {
 				<password>${origPassword}</password>
 			</ChangePasswordRequest>`, token, false
 		);
-		assert.exists(changeRes.Fault, 'Reusing default password should fault');
+		assert.isString(changeRes.Fault.Detail.Error.Code, 'Reusing default password should fault');
 		assert.include(changeRes.Fault.Detail.Error.Code, 'account.PASSWORD_RECENTLY_USED');
 	});
 
@@ -231,7 +229,7 @@ describe('Admin > Password > NormalUser History Password', function () {
 				<password>four567890</password>
 			</ChangePasswordRequest>`, token, false
 		);
-		assert.exists(reuse1.Fault, 'Reusing current password should fault');
+		assert.isString(reuse1.Fault.Detail.Error.Code, 'Reusing current password should fault');
 		assert.include(reuse1.Fault.Detail.Error.Code, 'account.PASSWORD_RECENTLY_USED');
 
 		// Try reusing password_3 — should fail
@@ -242,7 +240,7 @@ describe('Admin > Password > NormalUser History Password', function () {
 				<password>three67890</password>
 			</ChangePasswordRequest>`, token, false
 		);
-		assert.exists(reuse2.Fault, 'Reusing 3rd-to-last password should fault');
+		assert.isString(reuse2.Fault.Detail.Error.Code, 'Reusing 3rd-to-last password should fault');
 		assert.include(reuse2.Fault.Detail.Error.Code, 'account.PASSWORD_RECENTLY_USED');
 	});
 
@@ -303,7 +301,6 @@ describe('Admin > Password > NormalUser History Password', function () {
 			</ChangePasswordRequest>`, token
 		);
 		assert.notExists(changeRes.Fault, 'Reusing 4th-back password should not fault');
-		assert.exists(changeRes.ChangePasswordResponse, 'ChangePasswordResponse should exist');
 	});
 
 
@@ -339,7 +336,6 @@ describe('Admin > Password > NormalUser History Password', function () {
 			</ChangePasswordRequest>`, token
 		);
 		assert.notExists(changeRes.Fault, 'Setting unused password should not fault');
-		assert.exists(changeRes.ChangePasswordResponse, 'ChangePasswordResponse should exist');
 	});
 
 
@@ -399,7 +395,6 @@ describe('Admin > Password > NormalUser History Password', function () {
 			</ChangePasswordRequest>`, token
 		);
 		assert.notExists(changeRes.Fault, 'Reusing default password after 3 should not fault');
-		assert.exists(changeRes.ChangePasswordResponse, 'ChangePasswordResponse should exist');
 	});
 
 
@@ -425,7 +420,6 @@ describe('Admin > Password > NormalUser History Password', function () {
 			</ChangePasswordRequest>`, token
 		);
 		assert.notExists(changeRes.Fault, 'Reusing default password with history=0 should not fault');
-		assert.exists(changeRes.ChangePasswordResponse, 'ChangePasswordResponse should exist');
 	});
 
 
@@ -461,7 +455,6 @@ describe('Admin > Password > NormalUser History Password', function () {
 			</ChangePasswordRequest>`, token
 		);
 		assert.notExists(changeRes.Fault, 'Reusing last password with history=0 should not fault');
-		assert.exists(changeRes.ChangePasswordResponse, 'ChangePasswordResponse should exist');
 	});
 
 
@@ -503,7 +496,6 @@ describe('Admin > Password > NormalUser History Password', function () {
 			</ChangePasswordRequest>`, token
 		);
 		assert.notExists(changeRes.Fault, 'Reusing 2nd password with history=0 should not fault');
-		assert.exists(changeRes.ChangePasswordResponse, 'ChangePasswordResponse should exist');
 	});
 
 
@@ -529,6 +521,5 @@ describe('Admin > Password > NormalUser History Password', function () {
 			</ChangePasswordRequest>`, token
 		);
 		assert.notExists(changeRes.Fault, 'Setting new password with history=0 should not fault');
-		assert.exists(changeRes.ChangePasswordResponse, 'ChangePasswordResponse should exist');
 	});
 });

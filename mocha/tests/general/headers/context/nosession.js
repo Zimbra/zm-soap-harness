@@ -51,7 +51,7 @@ describe('General > Headers > Context > Nosession', function () {
 		assert.notExists(createRes.Fault, 'CreateTagRequest should not fault');
 		const createdTag = Array.isArray(createRes.CreateTagResponse.tag)
 			? createRes.CreateTagResponse.tag[0] : createRes.CreateTagResponse.tag;
-		assert.exists(createdTag, 'CreateTagResponse should contain tag');
+		assert.exists(createdTag.id, 'tag id should exist');
 	});
 
 
@@ -69,6 +69,6 @@ describe('General > Headers > Context > Nosession', function () {
 		assert.notExists(createRes.Fault, 'CreateTagRequest should not fault');
 		const createdTag = Array.isArray(createRes.CreateTagResponse.tag)
 			? createRes.CreateTagResponse.tag[0] : createRes.CreateTagResponse.tag;
-		assert.exists(createdTag, 'CreateTagResponse should contain tag');
+		assert.exists(createdTag.id, 'tag id should exist');
 	});
 });

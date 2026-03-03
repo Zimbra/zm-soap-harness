@@ -157,7 +157,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Alias', function () {
 		const accessCheck = await soap.makeSOAPEnvelopeAccount(getMsgRequest, auth2);
 
 		// Verify response
-		assert.notExists(accessCheck.Fault,
+		assert.exists(accessCheck.GetMsgResponse.m,
 			'Alias owner should have access before revoke');
 
 		// Revoke the grant
@@ -177,7 +177,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Alias', function () {
 		const revokedCheck = await soap.makeSOAPEnvelopeAccount(getMsgRequest2, auth2);
 
 		// Verify response
-		assert.exists(revokedCheck.Fault, 'Alias owner should be denied after revoke');
+		assert.exists(revokedCheck.Fault.Detail.Error, 'Fault Error should exist - Alias owner should be denied after revoke');
 	});
 
 });

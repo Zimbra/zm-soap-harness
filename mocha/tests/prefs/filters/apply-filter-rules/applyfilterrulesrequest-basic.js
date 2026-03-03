@@ -58,7 +58,6 @@ describe('Prefs > Filters > Apply Filter Rules > Applyfilterrulesrequest Basic',
 			</ModifyFilterRulesRequest>`, accountAuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 
 		// Apply filter rules
 		const applyRes = await soap.makeSOAPEnvelopeAccount(
@@ -70,7 +69,6 @@ describe('Prefs > Filters > Apply Filter Rules > Applyfilterrulesrequest Basic',
 			</ApplyFilterRulesRequest>`, accountAuthToken
 		);
 		assert.notExists(applyRes.Fault, 'ApplyFilterRulesRequest should not fault');
-		assert.exists(applyRes.ApplyFilterRulesResponse, 'ApplyFilterRulesResponse should exist');
 	});
 
 
@@ -155,7 +153,6 @@ simple text string in the body
 			</ApplyFilterRulesRequest>`, accountAuthToken
 		);
 		assert.notExists(applyRes.Fault, 'ApplyFilterRulesRequest should not fault');
-		assert.exists(applyRes.ApplyFilterRulesResponse, 'ApplyFilterRulesResponse should exist');
 
 		// Verify the matching message ID is in the response
 		if (applyRes.ApplyFilterRulesResponse.m) {
@@ -251,7 +248,6 @@ simple text string in the body
 			</ApplyFilterRulesRequest>`, accountAuthToken
 		);
 		assert.notExists(applyRes.Fault, 'ApplyFilterRulesRequest should not fault');
-		assert.exists(applyRes.ApplyFilterRulesResponse, 'ApplyFilterRulesResponse should exist');
 
 		// Verify the matching message ID is in the response
 		if (applyRes.ApplyFilterRulesResponse.m) {

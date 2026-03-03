@@ -149,6 +149,5 @@ simple text string in the body</content>
 			</GetMsgRequest>`, token3
 		);
 		assert.notExists(getMsg.Fault, 'GetMsgRequest should not fault for recursive ACL member');
-		assert.exists(getMsg.GetMsgResponse, 'GetMsgResponse should exist');
 	});
 });

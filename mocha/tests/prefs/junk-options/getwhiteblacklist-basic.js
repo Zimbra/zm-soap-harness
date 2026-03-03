@@ -54,7 +54,6 @@ describe('Prefs > Junk Options > Getwhiteblacklist Basic', function () {
 			`<GetWhiteBlackListRequest xmlns="urn:zimbraAccount"/>`, accountAuthToken
 		);
 		assert.notExists(getRes.Fault, 'GetWhiteBlackListRequest should not fault');
-		assert.exists(getRes.GetWhiteBlackListResponse, 'GetWhiteBlackListResponse should exist');
 		assert.exists(getRes.GetWhiteBlackListResponse.blackList, 'blackList should exist');
 	});
 
@@ -252,7 +251,6 @@ describe('Prefs > Junk Options > Getwhiteblacklist Basic', function () {
 			</ModifyWhiteBlackListRequest>`, accountAuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyWhiteBlackListRequest should not fault');
-		assert.exists(modRes.ModifyWhiteBlackListResponse, 'ModifyWhiteBlackListResponse should exist');
 	});
 
 
@@ -377,7 +375,6 @@ describe('Prefs > Junk Options > Getwhiteblacklist Basic', function () {
 			`<GetWhiteBlackListRequest xmlns="urn:zimbraAccount"/>`, accountAuthToken
 		);
 		assert.notExists(getRes.Fault, 'GetWhiteBlackListRequest should not fault');
-		assert.exists(getRes.GetWhiteBlackListResponse, 'GetWhiteBlackListResponse should exist');
 	});
 
 

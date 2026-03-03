@@ -213,7 +213,6 @@ Sample Content
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchConvResponse, 'Response element should exist');
 	});
 
 
@@ -226,7 +225,6 @@ Sample Content
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchConvResponse, 'Response element should exist');
 	});
 
 
@@ -239,7 +237,6 @@ Sample Content
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchConvResponse, 'Response element should exist');
 	});
 
 

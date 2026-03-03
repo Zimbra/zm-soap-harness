@@ -56,7 +56,7 @@ describe('Mail Client > Mail > Bug 43359', function () {
 		assert.notExists(folderRes.Fault, 'CreateFolderRequest should not fault');
 		const createdFolder = Array.isArray(folderRes.CreateFolderResponse.folder)
 			? folderRes.CreateFolderResponse.folder[0] : folderRes.CreateFolderResponse.folder;
-		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
+		assert.exists(createdFolder.id, 'folder id should exist');
 	});
 
 
@@ -87,7 +87,6 @@ describe('Mail Client > Mail > Bug 43359', function () {
 			</SearchRequest>`, acct3Auth
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		// Login as account4 and create a folder for external IMAP
 		const acct4Auth = await soap.getAccountAuthToken(account4Name);
@@ -99,6 +98,6 @@ describe('Mail Client > Mail > Bug 43359', function () {
 		assert.notExists(folderRes.Fault, 'CreateFolderRequest should not fault');
 		const createdFolder = Array.isArray(folderRes.CreateFolderResponse.folder)
 			? folderRes.CreateFolderResponse.folder[0] : folderRes.CreateFolderResponse.folder;
-		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
+		assert.exists(createdFolder.id, 'folder id should exist');
 	});
 });

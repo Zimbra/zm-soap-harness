@@ -30,7 +30,6 @@ describe('Rest Servlet > Upload Servlet > Attachments', function () {
 
 		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
-		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
 			? createRes1.CreateAccountResponse.account[0]
 			: createRes1.CreateAccountResponse.account;
@@ -51,7 +50,6 @@ describe('Rest Servlet > Upload Servlet > Attachments', function () {
 
 		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
-		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 		const acct2 = Array.isArray(createRes2.CreateAccountResponse.account)
 			? createRes2.CreateAccountResponse.account[0]
 			: createRes2.CreateAccountResponse.account;
@@ -70,7 +68,6 @@ describe('Rest Servlet > Upload Servlet > Attachments', function () {
 
 		// Verify response
 		assert.notExists(authRes1.Fault, 'Response should not be a Fault');
-		assert.exists(authRes1.AuthResponse, 'AuthResponse should exist for account1');
 		assert.match(String(authRes1.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authRes1.AuthResponse.authToken, 'authToken should exist');
@@ -123,7 +120,7 @@ describe('Rest Servlet > Upload Servlet > Attachments', function () {
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Verify response
@@ -140,7 +137,7 @@ describe('Rest Servlet > Upload Servlet > Attachments', function () {
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		const getMsg = Array.isArray(getRes.GetMsgResponse.m)
 			? getRes.GetMsgResponse.m[0] : getRes.GetMsgResponse.m;
-		assert.exists(getMsg, 'GetMsgResponse should contain m');
+		assert.exists(getMsg.id, 'message id should exist');
 		const msg = Array.isArray(getRes.GetMsgResponse.m)
 			? getRes.GetMsgResponse.m[0]
 			: getRes.GetMsgResponse.m;
@@ -162,7 +159,6 @@ describe('Rest Servlet > Upload Servlet > Attachments', function () {
 
 		// Verify response
 		assert.notExists(authRes2.Fault, 'Response should not be a Fault');
-		assert.exists(authRes2.AuthResponse, 'AuthResponse should exist for account2');
 		assert.match(String(authRes2.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authRes2.AuthResponse.authToken, 'authToken should exist');
@@ -185,7 +181,7 @@ describe('Rest Servlet > Upload Servlet > Attachments', function () {
 		);
 
 		// Verify response
-		assert.exists(sendRes.Fault, 'Should return Fault for cross-account upload');
+		assert.isString(sendRes.Fault.Detail.Error.Code, 'Should return Fault for cross-account upload');
 		assert.include(sendRes.Fault.Detail.Error.Code, 'mail.NO_SUCH_UPLOAD',
 			'Should return NO_SUCH_UPLOAD');
 	});

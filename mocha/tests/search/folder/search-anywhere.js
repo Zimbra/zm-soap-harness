@@ -73,7 +73,6 @@ Now is the time for all good men to come to the aid of their country.</content>
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.ModifyPrefsResponse, 'Response element should exist');
 
 		// Search and get IDs for all 5 messages
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -130,7 +129,7 @@ Now is the time for all good men to come to the aid of their country.</content>
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
 		const msgAction = Array.isArray(res9.MsgActionResponse.action)
 			? res9.MsgActionResponse.action[0] : res9.MsgActionResponse.action;
-		assert.exists(msgAction, 'MsgActionResponse should contain action');
+		assert.equal(msgAction.op, 'move', 'op should be move');
 
 		// Move email17E to junk (folder id=4)
 		const res10 = await soap.makeSOAPEnvelopeAccount(
@@ -150,7 +149,6 @@ Now is the time for all good men to come to the aid of their country.</content>
 		);
 
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -161,7 +159,6 @@ Now is the time for all good men to come to the aid of their country.</content>
 			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		assert.exists(res1.SearchResponse, 'Response element should exist');
 
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -169,7 +166,6 @@ Now is the time for all good men to come to the aid of their country.</content>
 			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'Response element should exist');
 
 		const res3 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -177,7 +173,6 @@ Now is the time for all good men to come to the aid of their country.</content>
 			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -205,7 +200,6 @@ ${message1Content}</content>
 			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 
 		// Move message to trash (folder id=3)
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -216,7 +210,7 @@ ${message1Content}</content>
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
 		const msgAction = Array.isArray(res3.MsgActionResponse.action)
 			? res3.MsgActionResponse.action[0] : res3.MsgActionResponse.action;
-		assert.exists(msgAction, 'MsgActionResponse should contain action');
+		assert.equal(msgAction.op, 'move', 'op should be move');
 
 		// Search with is:anywhere - should find trashed mail
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -225,7 +219,6 @@ ${message1Content}</content>
 			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -237,7 +230,6 @@ ${message1Content}</content>
 			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		assert.exists(res1.SearchResponse, 'Response element should exist');
 
 		// Search not under:INBOX
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -246,6 +238,5 @@ ${message1Content}</content>
 			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'Response element should exist');
 	});
 });

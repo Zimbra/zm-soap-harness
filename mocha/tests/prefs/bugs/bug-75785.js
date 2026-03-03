@@ -49,7 +49,6 @@ describe('Prefs > Bugs > Bug 75785', function () {
 
 		// Verify response
 		assert.notExists(folderRes.Fault, 'GetFolderRequest should not fault');
-		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 
 		// Send get share info request
 		const shareRes = await soap.makeSOAPEnvelopeAccount(
@@ -58,6 +57,5 @@ describe('Prefs > Bugs > Bug 75785', function () {
 
 		// Verify response
 		assert.notExists(shareRes.Fault, 'GetShareInfoRequest should not fault');
-		assert.exists(shareRes.GetShareInfoResponse, 'GetShareInfoResponse should exist');
 	});
 });

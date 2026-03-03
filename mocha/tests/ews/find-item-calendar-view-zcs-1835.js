@@ -337,7 +337,6 @@ describe('EWS > Find Item Calendar View ZCS 1835', function () {
 			account1Email, account1Password
 		);
 		const findItemBody = ews.getBody(findItemRes);
-		assert.exists(findItemBody.FindItemResponse, 'FindItemResponse should exist');
 		const findItemMsg = findItemBody.FindItemResponse.ResponseMessages.FindItemResponseMessage;
 		const itemMsg = Array.isArray(findItemMsg) ? findItemMsg[0] : findItemMsg;
 		const items = itemMsg.RootFolder.Items.CalendarItem;
@@ -365,7 +364,6 @@ describe('EWS > Find Item Calendar View ZCS 1835', function () {
 			account1Email, account1Password
 		);
 		const findItemBody = ews.getBody(findItemRes);
-		assert.exists(findItemBody.FindItemResponse, 'FindItemResponse should exist');
 		const findItemMsg = findItemBody.FindItemResponse.ResponseMessages.FindItemResponseMessage;
 		const itemMsg = Array.isArray(findItemMsg) ? findItemMsg[0] : findItemMsg;
 		const items = itemMsg.RootFolder.Items.CalendarItem;
@@ -393,7 +391,6 @@ describe('EWS > Find Item Calendar View ZCS 1835', function () {
 			account1Email, account1Password
 		);
 		const findItemBody = ews.getBody(findItemRes);
-		assert.exists(findItemBody.FindItemResponse, 'FindItemResponse should exist');
 		const findItemMsg = findItemBody.FindItemResponse.ResponseMessages.FindItemResponseMessage;
 		const itemMsg = Array.isArray(findItemMsg) ? findItemMsg[0] : findItemMsg;
 		assert.equal(
@@ -419,7 +416,6 @@ describe('EWS > Find Item Calendar View ZCS 1835', function () {
 			account1Email, account1Password
 		);
 		const findItemBody = ews.getBody(findItemRes);
-		assert.exists(findItemBody.FindItemResponse, 'FindItemResponse should exist');
 		const findItemMsg = findItemBody.FindItemResponse.ResponseMessages.FindItemResponseMessage;
 		const itemMsg = Array.isArray(findItemMsg) ? findItemMsg[0] : findItemMsg;
 		const items = itemMsg.RootFolder.Items.CalendarItem;

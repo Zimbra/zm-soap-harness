@@ -28,7 +28,6 @@ describe('Auth > Bugs > Bug 65554', function () {
 
 		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
-		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
 			? createRes1.CreateAccountResponse.account[0]
@@ -49,7 +48,6 @@ describe('Auth > Bugs > Bug 65554', function () {
 
 		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
-		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
 
 		// Auth as account1 to get authToken
 		// Auth request
@@ -62,7 +60,6 @@ describe('Auth > Bugs > Bug 65554', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'Should authenticate account1');
 
 		account1AuthToken = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
@@ -94,7 +91,6 @@ describe('Auth > Bugs > Bug 65554', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(response.AuthResponse.authToken, 'authToken should exist');
@@ -109,13 +105,8 @@ describe('Auth > Bugs > Bug 65554', function () {
 				<authToken verifyAccount="1">${account1AuthToken}</authToken>
 			</AuthRequest>`, null
 		);
-		if (response.Fault) {
-
-			// Verify response
-			assert.include(response.Fault.Detail.Error.Code, 'service.AUTH_REQUIRED',
-				'Should return AUTH_REQUIRED');
-		} else {
-			assert.fail('Expected Fault response for mismatched account');
-		}
+		assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
+		assert.include(response.Fault.Detail.Error.Code, 'service.AUTH_REQUIRED',
+			'Should return AUTH_REQUIRED');
 	});
 });

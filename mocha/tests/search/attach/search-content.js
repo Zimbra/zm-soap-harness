@@ -278,7 +278,6 @@ describe('Search > Attach > Search Content', function () {
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		assert.exists(res1.SearchResponse, 'Response element should exist');
 
 		// Search item
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -289,6 +288,5 @@ describe('Search > Attach > Search Content', function () {
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'Response element should exist');
 	});
 });

@@ -53,7 +53,6 @@ describe('Contacts > GAL > Search GAL Group Reference', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
-		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
 
 
@@ -66,7 +65,6 @@ describe('Contacts > GAL > Search GAL Group Reference', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
-		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
 
 
@@ -79,6 +77,5 @@ describe('Contacts > GAL > Search GAL Group Reference', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
-		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
 });

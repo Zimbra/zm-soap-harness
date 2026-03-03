@@ -216,24 +216,22 @@ describe('Calendar > Tags > Tag Appointments Basic', function () {
 				s="${now - 86400000}" e="${now + 2 * 86400000}"/>`,
             attToken
         );
-        if (searchRes.GetApptSummariesResponse.appt) {
-            const appts = Array.isArray(searchRes.GetApptSummariesResponse.appt)
-                ? searchRes.GetApptSummariesResponse.appt
-                : [searchRes.GetApptSummariesResponse.appt];
-            const found = appts.find(a => a.name === subject);
-            if (found) {
-                const actionRes = await soap.makeSOAPEnvelopeAccount(
-                    `<ItemActionRequest xmlns="urn:zimbraMail">
+        assert.notExists(searchRes.Fault, 'GetApptSummariesRequest should not fault');
+        const appts = Array.isArray(searchRes.GetApptSummariesResponse.appt)
+            ? searchRes.GetApptSummariesResponse.appt
+            : [searchRes.GetApptSummariesResponse.appt];
+        const found = appts.find(a => a.name === subject);
+        assert.exists(found, 'Appointment should be found');
+        const actionRes = await soap.makeSOAPEnvelopeAccount(
+            `<ItemActionRequest xmlns="urn:zimbraMail">
 						<action id="${found.id}" op="tag"
 							tag="${tagId}"/>
 					</ItemActionRequest>`, attToken
-                );
-                assert.notExists(
-                    actionRes.Fault,
-                    'Tag on received appointment should not fault'
-                );
-            }
-        }
+        );
+        assert.notExists(
+            actionRes.Fault,
+            'Tag on received appointment should not fault'
+        );
     });
 
 
@@ -319,23 +317,21 @@ describe('Calendar > Tags > Tag Appointments Basic', function () {
 				s="${now - 86400000}" e="${now + 2 * 86400000}"/>`,
             attToken
         );
-        if (searchRes.GetApptSummariesResponse.appt) {
-            const appts = Array.isArray(searchRes.GetApptSummariesResponse.appt)
-                ? searchRes.GetApptSummariesResponse.appt
-                : [searchRes.GetApptSummariesResponse.appt];
-            const found = appts.find(a => a.name === subject);
-            if (found) {
-                const actionRes = await soap.makeSOAPEnvelopeAccount(
-                    `<ItemActionRequest xmlns="urn:zimbraMail">
+        assert.notExists(searchRes.Fault, 'GetApptSummariesRequest should not fault');
+        const appts = Array.isArray(searchRes.GetApptSummariesResponse.appt)
+            ? searchRes.GetApptSummariesResponse.appt
+            : [searchRes.GetApptSummariesResponse.appt];
+        const found = appts.find(a => a.name === subject);
+        assert.exists(found, 'Appointment should be found');
+        const actionRes = await soap.makeSOAPEnvelopeAccount(
+            `<ItemActionRequest xmlns="urn:zimbraMail">
 						<action id="${found.id}" op="tag"
 							tag="${tagId}"/>
 					</ItemActionRequest>`, attToken
-                );
-                assert.notExists(
-                    actionRes.Fault,
-                    'Tag on received appointment should not fault'
-                );
-            }
-        }
+        );
+        assert.notExists(
+            actionRes.Fault,
+            'Tag on received appointment should not fault'
+        );
     });
 });

@@ -176,7 +176,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee COS', function () {
 		const accessCheck = await soap.makeSOAPEnvelopeAccount(getMsgRequest, cosAuth);
 
 		// Verify response
-		assert.notExists(accessCheck.Fault,
+		assert.exists(accessCheck.GetMsgResponse.m,
 			'COS member should have access before revoke');
 
 		// Revoke the grant
@@ -196,7 +196,7 @@ describe('Folders > Sharing > Grantee > Sharing Grantee COS', function () {
 		const revokedCheck = await soap.makeSOAPEnvelopeAccount(getMsgRequest2, cosAuth);
 
 		// Verify response
-		assert.exists(revokedCheck.Fault, 'COS member should be denied after revoke');
+		assert.exists(revokedCheck.Fault.Detail.Error, 'Fault Error should exist - COS member should be denied after revoke');
 	});
 
 });

@@ -40,8 +40,6 @@ describe('Admin > Accounts > Account Migration', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CreateAccountResponse,
-			'CreateAccountResponse should exist');
 		const acct = Array.isArray(
 			response.CreateAccountResponse.account)
 			? response.CreateAccountResponse.account[0]
@@ -69,10 +67,13 @@ describe('Admin > Accounts > Account Migration', function () {
 				<sourceAdminUserPassword>${sourcePassword}</sourceAdminUserPassword>
 			</ValidateRemoteZimbraConnectionRequest>`, adminAuth);
 
-		// Verify response
-		assert.isTrue(!!response.ValidateRemoteZimbraConnectionResponse ||
-			!!response.Fault,
-			'Should return response or fault');
+		// Verify response - migration source may not be available
+		if (response.Fault) {
+			assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
+		} else {
+			assert.exists(response.ValidateRemoteZimbraConnectionResponse,
+				'ValidateRemoteZimbraConnectionResponse should exist');
+		}
 	});
 
 
@@ -86,10 +87,13 @@ describe('Admin > Accounts > Account Migration', function () {
 				<domain by="name">${sourceHost}</domain>
 			</FetchAllRemoteAccountsRequest>`, adminAuth);
 
-		// Verify response
-		assert.isTrue(!!response.FetchAllRemoteAccountsResponse ||
-			!!response.Fault,
-			'Should return response or fault');
+		// Verify response - migration source may not be available
+		if (response.Fault) {
+			assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
+		} else {
+			assert.exists(response.FetchAllRemoteAccountsResponse,
+				'FetchAllRemoteAccountsResponse should exist');
+		}
 	});
 
 
@@ -108,8 +112,6 @@ describe('Admin > Accounts > Account Migration', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse,
-			'Should create target account');
 
 		// MigrateUsersDataRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
@@ -123,10 +125,13 @@ describe('Admin > Accounts > Account Migration', function () {
 				</migrate>
 			</MigrateUsersDataRequest>`, adminAuth);
 
-		// Verify response
-		assert.isTrue(!!response.MigrateUsersDataResponse ||
-			!!response.Fault,
-			'Should return response or fault');
+		// Verify response - migration source may not be available
+		if (response.Fault) {
+			assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
+		} else {
+			assert.exists(response.MigrateUsersDataResponse,
+				'MigrateUsersDataResponse should exist');
+		}
 	});
 
 
@@ -150,8 +155,6 @@ describe('Admin > Accounts > Account Migration', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.AuthResponse,
-			'AuthResponse should exist');
 		assert.match(
 			String(response.AuthResponse.lifetime),
 			/^\d+$/,
@@ -186,7 +189,7 @@ describe('Admin > Accounts > Account Migration', function () {
 			</SearchRequest>`, userAuth);
 		// Migration mail may or may not exist depending on setup
 		// Verify response
-		assert.isTrue(!!response.SearchResponse || !!response.Fault,
-			'Should return SearchResponse or fault');
+		assert.notExists(response.Fault, 'SearchRequest should not fault');
+		assert.exists(response.SearchResponse, 'SearchResponse should exist');
 	});
 });

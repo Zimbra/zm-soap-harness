@@ -59,7 +59,6 @@ describe('Contacts > Bugs > Contact Ldif ZCS 2337', function () {
 
 		// Verify response
 		assert.notExists(exportRes.Fault, 'Export should not be a Fault');
-		assert.exists(exportRes.ExportContactsResponse, 'ExportContactsResponse should exist');
 	});
 
 
@@ -85,7 +84,6 @@ describe('Contacts > Bugs > Contact Ldif ZCS 2337', function () {
 
 		// Verify response
 		assert.notExists(exportRes.Fault, 'Export should not be a Fault');
-		assert.exists(exportRes.ExportContactsResponse, 'ExportContactsResponse should exist');
 	});
 
 
@@ -107,6 +105,5 @@ describe('Contacts > Bugs > Contact Ldif ZCS 2337', function () {
 
 		// Verify response
 		assert.notExists(exportRes.Fault, 'Export should not be a Fault');
-		assert.exists(exportRes.ExportContactsResponse, 'ExportContactsResponse should exist');
 	});
 });

@@ -74,7 +74,7 @@ describe('General > Headers > Context > Notify', function () {
 		assert.notExists(createRes.Fault, 'CreateFolderRequest should not fault');
 		const createdFolder = Array.isArray(createRes.CreateFolderResponse.folder)
 			? createRes.CreateFolderResponse.folder[0] : createRes.CreateFolderResponse.folder;
-		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
+		assert.exists(createdFolder.id, 'folder id should exist');
 		const folderId = createRes.CreateFolderResponse.folder[0].id;
 
 		// Verify response
@@ -127,7 +127,7 @@ describe('General > Headers > Context > Notify', function () {
 		assert.notExists(createRes.Fault, 'CreateTagRequest should not fault');
 		const createdTag = Array.isArray(createRes.CreateTagResponse.tag)
 			? createRes.CreateTagResponse.tag[0] : createRes.CreateTagResponse.tag;
-		assert.exists(createdTag, 'CreateTagResponse should contain tag');
+		assert.exists(createdTag.id, 'tag id should exist');
 		const tagId = createRes.CreateTagResponse.tag[0].id;
 
 		// Verify response
@@ -186,7 +186,7 @@ describe('General > Headers > Context > Notify', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 
@@ -201,7 +201,6 @@ describe('General > Headers > Context > Notify', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -279,7 +278,6 @@ simple message content
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -301,7 +299,7 @@ ${content}</content>
 		assert.notExists(addRes.Fault, 'AddMsgRequest should not fault');
 		const addedMsg = Array.isArray(addRes.AddMsgResponse.m)
 			? addRes.AddMsgResponse.m[0] : addRes.AddMsgResponse.m;
-		assert.exists(addedMsg, 'AddMsgResponse should contain m');
+		assert.exists(addedMsg.id, 'added msg id should exist');
 	});
 
 
@@ -334,8 +332,6 @@ ${content}</content>
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateAppointmentRequest should not fault');
-		assert.exists(createRes.CreateAppointmentResponse,
-			'CreateAppointmentResponse should exist');
 	});
 
 
@@ -384,8 +380,6 @@ ${content}</content>
 
 		// Verify response
 		assert.notExists(cancelRes.Fault, 'CancelAppointmentRequest should not fault');
-		assert.exists(cancelRes.CancelAppointmentResponse,
-			'CancelAppointmentResponse should exist');
 	});
 
 
@@ -444,8 +438,6 @@ ${content}</content>
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyAppointmentRequest should not fault');
-		assert.exists(modRes.ModifyAppointmentResponse,
-			'ModifyAppointmentResponse should exist');
 	});
 
 
@@ -875,7 +867,7 @@ ${content}</content>
 		assert.notExists(replyRes.Fault, 'Reply SendMsgRequest should not fault');
 		const sentMsg = Array.isArray(replyRes.SendMsgResponse.m)
 			? replyRes.SendMsgResponse.m[0] : replyRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 
@@ -917,7 +909,7 @@ ${content}</content>
 		assert.notExists(fwdRes.Fault, 'Forward SendMsgRequest should not fault');
 		const sentMsg = Array.isArray(fwdRes.SendMsgResponse.m)
 			? fwdRes.SendMsgResponse.m[0] : fwdRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 });

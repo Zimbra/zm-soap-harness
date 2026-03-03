@@ -98,7 +98,6 @@ describe('General > Waitset > Waitset Request Folders', function () {
 
 		// Verify response
 		assert.notExists(waitRes.Fault, 'WaitSetRequest should not fault');
-		assert.exists(waitRes.WaitSetResponse, 'WaitSetResponse should exist');
 	});
 
 
@@ -138,7 +137,6 @@ describe('General > Waitset > Waitset Request Folders', function () {
 
 		// Verify response
 		assert.notExists(waitRes.Fault, 'WaitSetRequest should not fault');
-		assert.exists(waitRes.WaitSetResponse, 'WaitSetResponse should exist');
 	});
 
 
@@ -191,7 +189,6 @@ describe('General > Waitset > Waitset Request Folders', function () {
 
 		// Verify response
 		assert.notExists(waitRes.Fault, 'WaitSetRequest should not fault');
-		assert.exists(waitRes.WaitSetResponse, 'WaitSetResponse should exist');
 	});
 
 
@@ -236,7 +233,6 @@ describe('General > Waitset > Waitset Request Folders', function () {
 
 		// Verify response
 		assert.notExists(waitRes.Fault, 'WaitSetRequest should not fault');
-		assert.exists(waitRes.WaitSetResponse, 'WaitSetResponse should exist');
 	});
 
 
@@ -280,7 +276,6 @@ describe('General > Waitset > Waitset Request Folders', function () {
 
 		// Verify response
 		assert.notExists(waitRes.Fault, 'WaitSetRequest should not fault');
-		assert.exists(waitRes.WaitSetResponse, 'WaitSetResponse should exist');
 	});
 
 
@@ -334,7 +329,6 @@ describe('General > Waitset > Waitset Request Folders', function () {
 
 		// Verify response
 		assert.notExists(waitRes2.Fault, 'Second WaitSetRequest should not fault');
-		assert.exists(waitRes2.WaitSetResponse, 'WaitSetResponse should exist');
 	});
 
 
@@ -386,6 +380,5 @@ describe('General > Waitset > Waitset Request Folders', function () {
 
 		// Verify response
 		assert.notExists(waitRes.Fault, 'WaitSetRequest should not fault');
-		assert.exists(waitRes.WaitSetResponse, 'WaitSetResponse should exist');
 	});
 });

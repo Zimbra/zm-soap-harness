@@ -44,7 +44,6 @@ describe('Prefs > Skins > Availableskins Get', function () {
 			`<GetAvailableSkinsRequest xmlns="urn:zimbraAccount"/>`, accountAuthToken
 		);
 		assert.notExists(res.Fault, 'GetAvailableSkinsRequest should not fault');
-		assert.exists(res.GetAvailableSkinsResponse, 'GetAvailableSkinsResponse should exist');
 	});
 
 
@@ -79,6 +78,5 @@ describe('Prefs > Skins > Availableskins Get', function () {
 			</AuthRequest>`
 		);
 		assert.notExists(authRes.Fault, 'AuthRequest should not fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 	});
 });

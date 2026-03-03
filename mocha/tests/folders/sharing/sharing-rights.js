@@ -118,7 +118,7 @@ describe('Folders > Sharing > Sharing Rights', function () {
 		const addRes = await soap.makeSOAPEnvelopeAccount(addMsgRequest2, auth2);
 
 		// Verify response
-		assert.exists(addRes.Fault, 'AddMsg should fail for Read-only share');
+		assert.exists(addRes.Fault.Detail.Error, 'Fault Error should exist for AddMsg on Read-only share');
 
 		// 3. MsgAction (Delete) - Denied
 		const msgActionRequest =
@@ -130,7 +130,7 @@ describe('Folders > Sharing > Sharing Rights', function () {
 		const delRes = await soap.makeSOAPEnvelopeAccount(msgActionRequest, auth2);
 
 		// Verify response
-		assert.exists(delRes.Fault, 'Delete should fail for Read-only share');
+		assert.exists(delRes.Fault.Detail.Error, 'Fault Error should exist for Delete on Read-only share');
 
 		// 4. MsgAction (Read/Unread) - May or may not be denied depending on server config
 		// Some Zimbra versions allow marking as read with 'r' permission
@@ -141,10 +141,8 @@ describe('Folders > Sharing > Sharing Rights', function () {
 
 		// GetFolderRequest
 		const readRes = await soap.makeSOAPEnvelopeAccount(msgActionRequest2, auth2);
-		// Accept both: Fault (denied) or MsgActionResponse (allowed)
-		// Verify response
-		assert.isTrue(readRes.Fault !== undefined || readRes.MsgActionResponse !== undefined,
-			'Mark Read should either fail or succeed gracefully');
+		// Verify response - marking as read with 'r' permission should succeed
+		assert.exists(readRes.MsgActionResponse.action, 'MsgAction should succeed with read permission');
 	});
 
 
@@ -284,10 +282,8 @@ describe('Folders > Sharing > Sharing Rights', function () {
 
 		// GetMsgRequest
 		const writeRes = await soap.makeSOAPEnvelopeAccount(msgActionRequest5, auth2);
-		// Write-only should allow flag/tag operations
-		// Verify response
-		assert.isTrue(writeRes.Fault !== undefined || writeRes.MsgActionResponse !== undefined,
-			'Write operation should have a defined response');
+		// Verify response - write-only should allow flag/tag operations
+		assert.exists(writeRes.MsgActionResponse.action, 'Write operation should succeed with write permission');
 
 		// GetMsg - Denied (no read permission)
 		const getMsgRequest3 =
@@ -299,7 +295,7 @@ describe('Folders > Sharing > Sharing Rights', function () {
 		const readRes = await soap.makeSOAPEnvelopeAccount(getMsgRequest3, auth2);
 
 		// Verify response
-		assert.exists(readRes.Fault, 'GetMsg should fail for Write-only share');
+		assert.exists(readRes.Fault.Detail.Error, 'Fault Error should exist for GetMsg on Write-only share');
 	});
 
 
@@ -370,7 +366,7 @@ describe('Folders > Sharing > Sharing Rights', function () {
 		const readRes = await soap.makeSOAPEnvelopeAccount(getMsgRequest4, auth2);
 
 		// Verify response
-		assert.exists(readRes.Fault, 'GetMsg should fail for Insert-only share');
+		assert.exists(readRes.Fault.Detail.Error, 'Fault Error should exist for GetMsg on Insert-only share');
 	});
 
 
@@ -431,7 +427,7 @@ describe('Folders > Sharing > Sharing Rights', function () {
 		const delRes = await soap.makeSOAPEnvelopeAccount(msgActionRequest6, auth2);
 
 		// Verify response
-		assert.notExists(delRes.Fault, 'Delete should succeed for Delete-only share');
+		assert.exists(delRes.MsgActionResponse.action, 'Delete should succeed for Delete-only share');
 	});
 
 
@@ -487,8 +483,8 @@ describe('Folders > Sharing > Sharing Rights', function () {
 		const contactAccessResp = await soap.makeSOAPEnvelopeAccount(getContactRequest, auth2);
 
 		// Verify response
-		assert.exists(contactAccessResp.Fault,
-			'Contact access should be denied with none permissions');
+		assert.exists(contactAccessResp.Fault.Detail.Error,
+			'Fault Error should exist for Contact access with none permissions');
 	});
 
 
@@ -541,23 +537,8 @@ describe('Folders > Sharing > Sharing Rights', function () {
 		// SearchRequest
 		const mountResp = await soap.makeSOAPEnvelopeAccount(createMountpointRequest4, auth2);
 
-		// Mount may fail or succeed with none permissions
-		if (mountResp.Fault) {
-			// Mount itself was denied - none permissions working correctly
-			// Verify response
-			assert.exists(mountResp.Fault,
-				'Mount should fail with none permissions');
-		} else {
-			// Mount succeeded - verify search is blocked
-			const searchRequest =
-				`<SearchRequest xmlns="urn:zimbraMail" types="message">
-					<query>in:"mount_none" searchable</query>
-				</SearchRequest>`;
-			const searchResp = await soap.makeSOAPEnvelopeAccount(searchRequest, auth2);
-
-			// Verify response
-			assert.isTrue(searchResp.Fault !== undefined || !searchResp.SearchResponse.m,
-				'Search in none-permission share should be denied or empty');
-		}
+		// Verify response - mounting with none permissions should fail
+		assert.exists(mountResp.Fault.Detail.Error,
+			'Mount should fail with none permissions');
 	});
 });

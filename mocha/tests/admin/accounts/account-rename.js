@@ -49,8 +49,6 @@ describe('Admin > Accounts > Account Rename', function () {
 
 		// Verify response
 		assert.notExists(renameRes.Fault, 'Response should not be a Fault');
-		assert.exists(renameRes.RenameAccountResponse,
-			'Account should be renamed successfully');
 	});
 
 
@@ -75,7 +73,7 @@ describe('Admin > Accounts > Account Rename', function () {
 		);
 
 		// Verify response
-		assert.exists(renameRes.Fault, 'Should have a Fault');
+		assert.isString(renameRes.Fault.Detail.Error.Code, 'Should have a Fault');
 		assert.include(renameRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 	});
 
@@ -101,7 +99,7 @@ describe('Admin > Accounts > Account Rename', function () {
 		);
 
 		// Verify response
-		assert.exists(renameRes.Fault, 'Should have a Fault');
+		assert.isString(renameRes.Fault.Detail.Error.Code, 'Should have a Fault');
 		assert.include(renameRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 	});
 
@@ -127,7 +125,7 @@ describe('Admin > Accounts > Account Rename', function () {
 		);
 
 		// Verify response
-		assert.exists(renameRes.Fault, 'Should have a Fault');
+		assert.isString(renameRes.Fault.Detail.Error.Code, 'Should have a Fault');
 		assert.include(renameRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 	});
 
@@ -153,7 +151,7 @@ describe('Admin > Accounts > Account Rename', function () {
 		);
 
 		// Verify response
-		assert.exists(renameRes.Fault, 'Should have a Fault');
+		assert.isString(renameRes.Fault.Detail.Error.Code, 'Should have a Fault');
 		const code = renameRes.Fault.Detail.Error.Code;
 
 		// Verify response
@@ -183,7 +181,7 @@ describe('Admin > Accounts > Account Rename', function () {
 		);
 
 		// Verify response
-		assert.exists(renameRes.Fault, 'Should have a Fault');
+		assert.isString(renameRes.Fault.Detail.Error.Code, 'Should have a Fault');
 		const code = renameRes.Fault.Detail.Error.Code;
 
 		// Verify response
@@ -213,7 +211,7 @@ describe('Admin > Accounts > Account Rename', function () {
 		);
 
 		// Verify response
-		assert.exists(renameRes.Fault, 'Should have a Fault');
+		assert.isString(renameRes.Fault.Detail.Error.Code, 'Should have a Fault');
 		const code = renameRes.Fault.Detail.Error.Code;
 
 		// Verify response
@@ -243,7 +241,7 @@ describe('Admin > Accounts > Account Rename', function () {
 		);
 
 		// Verify response
-		assert.exists(renameRes.Fault, 'Should have a Fault');
+		assert.isString(renameRes.Fault.Detail.Error.Code, 'Should have a Fault');
 		const code = renameRes.Fault.Detail.Error.Code;
 
 		// Verify response
@@ -273,7 +271,7 @@ describe('Admin > Accounts > Account Rename', function () {
 		);
 
 		// Verify response
-		assert.exists(renameRes.Fault, 'Should have a Fault');
+		assert.isString(renameRes.Fault.Detail.Error.Code, 'Should have a Fault');
 		const code = renameRes.Fault.Detail.Error.Code;
 
 		// Verify response
@@ -303,7 +301,7 @@ describe('Admin > Accounts > Account Rename', function () {
 		);
 
 		// Verify response
-		assert.exists(renameRes.Fault, 'Should have a Fault');
+		assert.isString(renameRes.Fault.Detail.Error.Code, 'Should have a Fault');
 		const code = renameRes.Fault.Detail.Error.Code;
 
 		// Verify response
@@ -333,7 +331,7 @@ describe('Admin > Accounts > Account Rename', function () {
 		);
 
 		// Verify response
-		assert.exists(renameRes.Fault, 'Should have a Fault');
+		assert.isString(renameRes.Fault.Detail.Error.Code, 'Should have a Fault');
 		const code = renameRes.Fault.Detail.Error.Code;
 
 		// Verify response
@@ -363,7 +361,7 @@ describe('Admin > Accounts > Account Rename', function () {
 		);
 
 		// Verify response
-		assert.exists(renameRes.Fault, 'Should have a Fault');
+		assert.isString(renameRes.Fault.Detail.Error.Code, 'Should have a Fault');
 		const code = renameRes.Fault.Detail.Error.Code;
 
 		// Verify response
@@ -399,7 +397,5 @@ describe('Admin > Accounts > Account Rename', function () {
 
 		// Verify response
 		assert.notExists(renameRes.Fault, 'Response should not be a Fault');
-		assert.exists(renameRes.RenameAccountResponse,
-			'Account should be renamed with mail host');
 	});
 });

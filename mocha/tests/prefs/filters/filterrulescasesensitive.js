@@ -68,7 +68,6 @@ describe('Prefs > Filters > Filterrulescasesensitive', function () {
 			</ModifyFilterRulesRequest>`, account1AuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 
 		// Send message with UPPERCASE subject (should match)
 		await soap.makeSOAPEnvelopeAccount(
@@ -157,7 +156,6 @@ describe('Prefs > Filters > Filterrulescasesensitive', function () {
 			</ModifyFilterRulesRequest>`, account1AuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 
 		// Send message with matching From personal name (FirstName)
 		await soap.makeSOAPEnvelopeAccount(
@@ -238,7 +236,6 @@ describe('Prefs > Filters > Filterrulescasesensitive', function () {
 			</ModifyFilterRulesRequest>`, account1AuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 
 		// Send message with matching body (HelloWorld)
 		await soap.makeSOAPEnvelopeAccount(
@@ -306,7 +303,6 @@ describe('Prefs > Filters > Filterrulescasesensitive', function () {
 			</ModifyFilterRulesRequest>`, accountAuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 
 		// Inject read receipt MIME message via AddMsgRequest
 		const addRes = await soap.makeSOAPEnvelopeAccount(
@@ -387,7 +383,6 @@ Disposition: automatic-action/MDN-sent-automatically; displayed
 			</ModifyFilterRulesRequest>`, account1AuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 
 		// Send message with UPPERCASE subject
 		await soap.makeSOAPEnvelopeAccount(

@@ -76,8 +76,6 @@ describe('ICAL > ICAL Create Appointment Request', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'CreateAppointmentRequest should not fault');
-		assert.exists(res.CreateAppointmentResponse,
-			'CreateAppointmentResponse should exist');
 
 		// Get iCal
 		const searchStart = now.getTime() - 2 * 86400000;
@@ -91,8 +89,6 @@ describe('ICAL > ICAL Create Appointment Request', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'GetICalRequest should not fault');
-		assert.exists(res.GetICalResponse, 'GetICalResponse should have content');
-		assert.exists(res.GetICalResponse, 'GetICalResponse should exist');
 	});
 
 
@@ -156,7 +152,5 @@ describe('ICAL > ICAL Create Appointment Request', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'GetICalRequest should not fault');
-		assert.exists(res.GetICalResponse, 'GetICalResponse should have content');
-		assert.exists(res.GetICalResponse, 'GetICalResponse should exist');
 	});
 });

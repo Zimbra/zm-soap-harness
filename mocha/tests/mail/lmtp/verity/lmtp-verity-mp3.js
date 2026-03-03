@@ -56,7 +56,6 @@ describe('Mail > LMTP > Verity > LMTP Verity MP3', function () {
 		);
 
 		// Verify response
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const msgs = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
 		assert.exists(msgs[0], 'Message should exist in inbox');

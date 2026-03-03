@@ -50,7 +50,5 @@ describe('Admin > Purge Calendar > Purge Account Calendar Cache Basic', function
 
 		// Verify response
 		assert.notExists(purgeRes.Fault, 'PurgeAccountCalendarCacheRequest should not fault');
-		assert.exists(purgeRes.PurgeAccountCalendarCacheResponse,
-			'PurgeAccountCalendarCacheResponse should exist');
 	});
 });

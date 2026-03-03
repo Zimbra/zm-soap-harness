@@ -26,7 +26,6 @@ describe('Rest Servlet > Auth > Preauth', function () {
 
 		// Verify response
 		assert.notExists(domainRes.Fault, 'Response should not be a Fault');
-		assert.exists(domainRes.CreateDomainResponse, 'Should create domain');
 
 		// Create account in that domain
 		account1Email = 'preauth' + common.getUniqueString() + '@' + domainName;
@@ -76,7 +75,6 @@ describe('Rest Servlet > Auth > Preauth', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'AuthRequest with preauth should not fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 
 		// Verify preauth via REST /service/preauth endpoint

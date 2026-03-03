@@ -268,6 +268,6 @@ describe('Calendar > Appointments > Set Appointment Request > Appointment Set', 
 		);
 
 		// Verify response
-		assert.exists(getRes.Fault, 'Deleted should fault');
+		assert.isString(getRes.Fault.Detail.Error.Code, 'Deleted should fault');
 	});
 });

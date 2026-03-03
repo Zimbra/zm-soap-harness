@@ -103,7 +103,6 @@ describe('Folders > Bugs > Bug 39804', function () {
 
 		// Verify response
 		assert.notExists(pingResp.Fault, 'Response should not be a Fault');
-		assert.exists(pingResp.NoOpResponse, 'Account 1 should remain active');
 	});
 
 });

@@ -152,7 +152,6 @@ describe('EWS > Find Item Find Folder ZCS 799', function () {
 			account1Email, account1Password
 		);
 		const body = ews.getBody(findFolderRes);
-		assert.exists(body.FindFolderResponse, 'FindFolderResponse should exist');
 		const msg = body.FindFolderResponse.ResponseMessages.FindFolderResponseMessage;
 		const folderMsg = Array.isArray(msg) ? msg[0] : msg;
 		const folders = folderMsg.RootFolder.Folders.Folder;
@@ -419,7 +418,6 @@ describe('EWS > Find Item Find Folder ZCS 799', function () {
 			account1Email, account1Password
 		);
 		const body = ews.getBody(findItemRes);
-		assert.exists(body.FindItemResponse, 'FindItemResponse should exist');
 		const msg = body.FindItemResponse.ResponseMessages.FindItemResponseMessage;
 		const itemMsg = Array.isArray(msg) ? msg[0] : msg;
 		const items = itemMsg.RootFolder.Items.Message;
@@ -566,7 +564,6 @@ describe('EWS > Find Item Find Folder ZCS 799', function () {
 			account1Email, account1Password
 		);
 		const body = ews.getBody(findItemRes);
-		assert.exists(body.FindItemResponse, 'FindItemResponse should exist');
 		const msgs = body.FindItemResponse.ResponseMessages.FindItemResponseMessage;
 		const msgArray = Array.isArray(msgs) ? msgs : [msgs];
 

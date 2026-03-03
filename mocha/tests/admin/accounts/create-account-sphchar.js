@@ -21,8 +21,6 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 
 		// Verify response
 		assert.notExists(createDomainRes.Fault, 'Response should not be a Fault');
-		assert.exists(createDomainRes.CreateDomainResponse,
-			'Test domain should be created');
 	});
 
 	beforeEach(async function () {
@@ -47,10 +45,10 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 
 			// Verify response
 			assert.notExists(res.Fault, 'Response should not be a Fault');
-			assert.exists(res.CreateAccountResponse,
+			assert.exists(res.CreateAccountResponse.account[0].id,
 				`Should succeed creating ${testName}`);
 		} else {
-			assert.exists(res.Fault, `Should fail creating ${testName}`);
+			assert.isString(res.Fault.Detail.Error.Code, `Should fail creating ${testName}`);
 			assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 				'Should throw INVALID_REQUEST');
 		}
@@ -251,8 +249,8 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 			</CreateAccountRequest>`, adminAuth);
 
 		// Verify response
-		assert.exists(res.Fault);
-		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return Fault for invalid chars');
+		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',);
 	});
 
 
@@ -302,7 +300,7 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 
 		// Should encounter INVALID_REQUEST
 		// Verify response
-		assert.exists(aliasRes.Fault);
+		assert.isString(aliasRes.Fault.Detail.Error.Code, 'Should return Fault for invalid alias');
 		assert.include(aliasRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 	});
 });

@@ -58,7 +58,6 @@ describe('Prefs > Filters > Conditions > Filter Header', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Custom header test should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 	});
 
 

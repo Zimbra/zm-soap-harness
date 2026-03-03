@@ -243,7 +243,7 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'mail.NO_SUCH_TAG', 'Should be NO_SUCH_TAG');
 	});
 
@@ -283,7 +283,7 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'mail.NO_SUCH_TAG', 'Should be NO_SUCH_TAG');
 	});
 
@@ -344,8 +344,8 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
-		assert.exists(res.Fault.Detail.Error.Code, 'Should have error code');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 	});
 
 
@@ -367,7 +367,7 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 	});
 
@@ -391,7 +391,7 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 	});
 
@@ -408,7 +408,7 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 	});
 
@@ -432,7 +432,7 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 	});
 
@@ -456,7 +456,7 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 	});
 
@@ -471,7 +471,7 @@ Content of the message
 				<action id="${messageId}" op=""/>
 			</ItemActionRequest>`, authToken, false
 		);
-		assert.exists(res1.Fault, 'Blank op should return a Fault');
+		assert.isString(res1.Fault.Detail.Error.Code, 'Blank op should return a Fault');
 		assert.include(res1.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 
 		// Spaces op
@@ -480,7 +480,7 @@ Content of the message
 				<action id="${messageId}" op="           "/>
 			</ItemActionRequest>`, authToken, false
 		);
-		assert.exists(res2.Fault, 'Spaces op should return a Fault');
+		assert.isString(res2.Fault.Detail.Error.Code, 'Spaces op should return a Fault');
 		assert.include(res2.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 
 		// Sometext op
@@ -489,7 +489,7 @@ Content of the message
 				<action id="${messageId}" op="some text"/>
 			</ItemActionRequest>`, authToken, false
 		);
-		assert.exists(res3.Fault, 'Sometext op should return a Fault');
+		assert.isString(res3.Fault.Detail.Error.Code, 'Sometext op should return a Fault');
 		assert.include(res3.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 
 		// Special character op
@@ -498,7 +498,7 @@ Content of the message
 				<action id="${messageId}" op="//\\\\'^%"/>
 			</ItemActionRequest>`, authToken, false
 		);
-		assert.exists(res4.Fault, 'Special char op should return a Fault');
+		assert.isString(res4.Fault.Detail.Error.Code, 'Special char op should return a Fault');
 		assert.include(res4.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 	});
 
@@ -513,7 +513,7 @@ Content of the message
 				<action id="${messageId}" op="       read"/>
 			</ItemActionRequest>`, authToken, false
 		);
-		assert.exists(res1.Fault, 'Leading spaces in op should return a Fault');
+		assert.isString(res1.Fault.Detail.Error.Code, 'Leading spaces in op should return a Fault');
 		assert.include(res1.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 
 		// Trailing spaces in op
@@ -522,7 +522,7 @@ Content of the message
 				<action id="${messageId}" op="read    "/>
 			</ItemActionRequest>`, authToken, false
 		);
-		assert.exists(res2.Fault, 'Trailing spaces in op should return a Fault');
+		assert.isString(res2.Fault.Detail.Error.Code, 'Trailing spaces in op should return a Fault');
 		assert.include(res2.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 
 		// All spaces in op
@@ -531,7 +531,7 @@ Content of the message
 				<action id="${messageId}" op="           "/>
 			</ItemActionRequest>`, authToken, false
 		);
-		assert.exists(res3.Fault, 'All spaces in op should return a Fault');
+		assert.isString(res3.Fault.Detail.Error.Code, 'All spaces in op should return a Fault');
 		assert.include(res3.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 	});
 

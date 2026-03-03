@@ -55,7 +55,6 @@ describe('Mail > Bugs > Bug 91799', function () {
 
 		// Verify unread conversation attributes
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const conversations = Array.isArray(searchRes.SearchResponse.c)
 			? searchRes.SearchResponse.c : [searchRes.SearchResponse.c];
 		assert.exists(conversations[0], 'Conversation should exist');

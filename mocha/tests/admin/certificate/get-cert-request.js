@@ -49,7 +49,6 @@ describe('Admin > Certificate > Get Cert Request', function () {
 
 		// Verify certificate response
 		assert.notExists(res.Fault, 'GetCertRequest should not fault');
-		assert.exists(res.GetCertResponse, 'GetCertResponse should exist');
 		const cert = Array.isArray(res.GetCertResponse.cert)
 			? res.GetCertResponse.cert[0] : res.GetCertResponse.cert;
 		assert.equal(cert.server, config.serverHost, 'cert server should match server host');
@@ -69,7 +68,6 @@ describe('Admin > Certificate > Get Cert Request', function () {
 
 		// Verify certificate response
 		assert.notExists(res.Fault, 'GetCertRequest should not fault');
-		assert.exists(res.GetCertResponse, 'GetCertResponse should exist');
 		const cert = Array.isArray(res.GetCertResponse.cert)
 			? res.GetCertResponse.cert[0] : res.GetCertResponse.cert;
 		assert.equal(cert.server, config.serverHost, 'cert server should match server host');
@@ -89,7 +87,6 @@ describe('Admin > Certificate > Get Cert Request', function () {
 
 		// Verify certificate response
 		assert.notExists(res.Fault, 'GetCertRequest should not fault');
-		assert.exists(res.GetCertResponse, 'GetCertResponse should exist');
 		const cert = Array.isArray(res.GetCertResponse.cert)
 			? res.GetCertResponse.cert[0] : res.GetCertResponse.cert;
 		assert.equal(cert.server, config.serverHost, 'cert server should match server host');
@@ -108,7 +105,7 @@ describe('Admin > Certificate > Get Cert Request', function () {
 		);
 
 		// Verify fault code
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 	});
 
@@ -121,7 +118,7 @@ describe('Admin > Certificate > Get Cert Request', function () {
 		);
 
 		// Verify fault code
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 	});
 
@@ -132,7 +129,7 @@ describe('Admin > Certificate > Get Cert Request', function () {
 			`<GetCertRequest type="-1111" option="self" server="${serverId}" xmlns="urn:zimbraAdmin">
 			</GetCertRequest>`, adminAuthToken, false
 		);
-		assert.exists(res1.Fault, 'Should return a Fault for negative type');
+		assert.isString(res1.Fault.Detail.Error.Code, 'Should return a Fault for negative type');
 		assert.include(res1.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 
 		// Get certificate with negative server value
@@ -140,7 +137,7 @@ describe('Admin > Certificate > Get Cert Request', function () {
 			`<GetCertRequest type="ldap" option="self" server="-1111" xmlns="urn:zimbraAdmin">
 			</GetCertRequest>`, adminAuthToken, false
 		);
-		assert.exists(res2.Fault, 'Should return a Fault for negative server');
+		assert.isString(res2.Fault.Detail.Error.Code, 'Should return a Fault for negative server');
 		assert.include(res2.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 	});
 
@@ -151,7 +148,7 @@ describe('Admin > Certificate > Get Cert Request', function () {
 			`<GetCertRequest type="aaa" option="self" server="${serverId}" xmlns="urn:zimbraAdmin">
 			</GetCertRequest>`, adminAuthToken, false
 		);
-		assert.exists(res1.Fault, 'Should return a Fault for invalid type');
+		assert.isString(res1.Fault.Detail.Error.Code, 'Should return a Fault for invalid type');
 		assert.include(res1.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 
 		// Get certificate with alphabetic server value
@@ -159,7 +156,7 @@ describe('Admin > Certificate > Get Cert Request', function () {
 			`<GetCertRequest type="ldap" option="self" server="aaaa" xmlns="urn:zimbraAdmin">
 			</GetCertRequest>`, adminAuthToken, false
 		);
-		assert.exists(res2.Fault, 'Should return a Fault for invalid server');
+		assert.isString(res2.Fault.Detail.Error.Code, 'Should return a Fault for invalid server');
 		assert.include(res2.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 	});
 });

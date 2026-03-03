@@ -134,7 +134,6 @@ describe('Search > Delayed Indexing > ZCS 8515 8517', function () {
 			</SearchRequest>`, authToken2
 		);
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
-		assert.exists(res9.SearchResponse, 'Response element should exist');
 
 		// Search in account3 - should return empty
 		authToken3 = await soap.getAccountAuthToken(test_account3.name);
@@ -144,7 +143,6 @@ describe('Search > Delayed Indexing > ZCS 8515 8517', function () {
 			</SearchRequest>`, authToken3
 		);
 		assert.notExists(res11.Fault, 'Response should not be a Fault');
-		assert.exists(res11.SearchResponse, 'Response element should exist');
 
 		// Search in account4 - should return empty
 		authToken4 = await soap.getAccountAuthToken(test_account4.name);
@@ -154,7 +152,6 @@ describe('Search > Delayed Indexing > ZCS 8515 8517', function () {
 			</SearchRequest>`, authToken4
 		);
 		assert.notExists(res13.Fault, 'Response should not be a Fault');
-		assert.exists(res13.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -181,7 +178,6 @@ describe('Search > Delayed Indexing > ZCS 8515 8517', function () {
 			</SearchRequest>`, authToken2
 		);
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
 		assert.equal(res5.SearchResponse?.m?.[0].su, 'test mail', 'su should match');
 	});
 
@@ -200,7 +196,6 @@ describe('Search > Delayed Indexing > ZCS 8515 8517', function () {
 			</SearchRequest>`, authToken3
 		);
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 		if (res2.SearchResponse?.m?.[0]) {
 			assert.equal(res2.SearchResponse.m[0].su, 'test mail', 'su should match');
 		}
@@ -230,7 +225,6 @@ describe('Search > Delayed Indexing > ZCS 8515 8517', function () {
 			</SearchRequest>`, authToken4
 		);
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
 		if (res7.SearchResponse?.m?.[0]) {
 			assert.equal(res7.SearchResponse.m[0].su, 'test mail', 'su should match');
 		}

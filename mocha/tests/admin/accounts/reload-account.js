@@ -90,7 +90,7 @@ describe('Admin > Accounts > Reload Account', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should have a Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Should have a Fault');
 
 		const code = response.Fault.Detail.Error.Code;
 
@@ -110,7 +110,7 @@ describe('Admin > Accounts > Reload Account', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should have a Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Should have a Fault');
 
 		const code = response.Fault.Detail.Error.Code;
 
@@ -130,7 +130,7 @@ describe('Admin > Accounts > Reload Account', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should have a Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Should have a Fault');
 
 		const code = response.Fault.Detail.Error.Code;
 

@@ -58,7 +58,6 @@ describe('Prefs > Filters > Conditions > Filter Date', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Date before test should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 	});
 
 

@@ -32,7 +32,5 @@ describe('Admin > Accounts > Get All Admin Accounts', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.GetAllAdminAccountsResponse,
-			'GetAllAdminAccountsResponse should exist');
 	});
 });

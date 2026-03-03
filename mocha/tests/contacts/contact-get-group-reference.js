@@ -74,6 +74,8 @@ describe('Contacts > Contact Get Group Reference', function () {
 			</GetContactsRequest>`, accountToken
 		);
 		assert.notExists(getRes.Fault, 'GetContacts should not be a Fault');
-		assert.exists(getRes.GetContactsResponse.cn, 'Contact should exist in response');
+		const getCn = Array.isArray(getRes.GetContactsResponse.cn)
+			? getRes.GetContactsResponse.cn[0] : getRes.GetContactsResponse.cn;
+		assert.exists(getCn.id, 'Contact id should exist in response');
 	});
 });

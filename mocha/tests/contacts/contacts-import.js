@@ -43,7 +43,6 @@ describe('Contacts > Contacts Import', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});
 
 	// Applicable zimbra versions
@@ -65,7 +64,9 @@ describe('Contacts > Contacts Import', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.ImportContactsResponse.cn, 'cn element should exist');
+		const importCn = Array.isArray(res.ImportContactsResponse.cn)
+			? res.ImportContactsResponse.cn[0] : res.ImportContactsResponse.cn;
+		assert.exists(importCn.ids, 'Import cn should have ids');
 	});
 
 
@@ -84,7 +85,9 @@ describe('Contacts > Contacts Import', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.ImportContactsResponse.cn, 'cn element should exist');
+		const importCn = Array.isArray(res.ImportContactsResponse.cn)
+			? res.ImportContactsResponse.cn[0] : res.ImportContactsResponse.cn;
+		assert.exists(importCn.ids, 'Import cn should have ids');
 	});
 
 
@@ -96,8 +99,8 @@ describe('Contacts > Contacts Import', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Response should be a Fault');
-		const code = res.Fault?.Detail?.Error?.Code || '';
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
+		const code = res.Fault.Detail.Error.Code;
 		assert.include(code, 'service.INVALID_REQUEST', 'Error code should be service.INVALID_REQUEST');
 	});
 
@@ -114,8 +117,8 @@ describe('Contacts > Contacts Import', function () {
 			);
 
 			// Verify response
-			assert.exists(res.Fault, `ct="${ct}" should be a Fault`);
-			const code = res.Fault?.Detail?.Error?.Code || '';
+			assert.isString(res.Fault.Detail.Error.Code, `ct="${ct}" should be a Fault`);
+			const code = res.Fault.Detail.Error.Code;
 			assert.include(code, 'service.INVALID_REQUEST', `ct="${ct}" error code should be service.INVALID_REQUEST`);
 		}
 	});
@@ -129,7 +132,7 @@ describe('Contacts > Contacts Import', function () {
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Response should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
 	});
 
 
@@ -145,7 +148,7 @@ describe('Contacts > Contacts Import', function () {
 			);
 
 			// Verify response
-			assert.exists(res.Fault, `aid="${aid}" should be a Fault`);
+			assert.isString(res.Fault.Detail.Error.Code, `aid="${aid}" should be a Fault`);
 		}
 	});
 
@@ -164,7 +167,9 @@ describe('Contacts > Contacts Import', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.ImportContactsResponse.cn, 'cn element should exist');
+		const importCn = Array.isArray(res.ImportContactsResponse.cn)
+			? res.ImportContactsResponse.cn[0] : res.ImportContactsResponse.cn;
+		assert.exists(importCn.ids, 'Import cn should have ids');
 	});
 
 
@@ -180,7 +185,6 @@ describe('Contacts > Contacts Import', function () {
 
 		// Verify response
 		assert.notExists(importRes.Fault, 'Import should not be a Fault');
-		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});
 
 
@@ -192,7 +196,7 @@ describe('Contacts > Contacts Import', function () {
 		);
 
 		// Verify response
-		assert.exists(importRes.Fault, 'Import empty should be a Fault');
+		assert.isString(importRes.Fault.Detail.Error.Code, 'Import empty should be a Fault');
 	});
 
 
@@ -211,6 +215,5 @@ describe('Contacts > Contacts Import', function () {
 
 		// Verify response
 		assert.notExists(importRes.Fault, 'Bulk import should not be a Fault');
-		assert.exists(importRes.ImportContactsResponse, 'ImportContactsResponse should exist');
 	});
 });

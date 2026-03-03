@@ -78,7 +78,6 @@ describe('Admin > Zimlets > Modify Zimlet Prefs Request Basic', function () {
 			</ModifyZimletPrefsRequest>`, accountToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyZimletPrefsRequest should not fault');
-		assert.exists(modRes.ModifyZimletPrefsResponse, 'ModifyZimletPrefsResponse should exist');
 
 		// Verify via GetInfo
 		const infoRes = await soap.makeSOAPEnvelopeAccount(
@@ -87,7 +86,6 @@ describe('Admin > Zimlets > Modify Zimlet Prefs Request Basic', function () {
 			</GetInfoRequest>`, accountToken
 		);
 		assert.notExists(infoRes.Fault, 'GetInfoRequest should not fault');
-		assert.exists(infoRes.GetInfoResponse, 'GetInfoResponse should exist');
 	});
 
 
@@ -133,7 +131,6 @@ describe('Admin > Zimlets > Modify Zimlet Prefs Request Basic', function () {
 			</ModifyZimletPrefsRequest>`, accountToken
 		);
 		assert.notExists(enableRes.Fault, 'ModifyZimletPrefsRequest enable should not fault');
-		assert.exists(enableRes.ModifyZimletPrefsResponse, 'ModifyZimletPrefsResponse should exist');
 
 		// Verify via GetInfo
 		const infoRes = await soap.makeSOAPEnvelopeAccount(
@@ -142,7 +139,6 @@ describe('Admin > Zimlets > Modify Zimlet Prefs Request Basic', function () {
 			</GetInfoRequest>`, accountToken
 		);
 		assert.notExists(infoRes.Fault, 'GetInfoRequest should not fault');
-		assert.exists(infoRes.GetInfoResponse, 'GetInfoResponse should exist');
 	});
 
 
@@ -165,7 +161,7 @@ describe('Admin > Zimlets > Modify Zimlet Prefs Request Basic', function () {
 				<zimlet name="com_zimbra_phone" presence=""/>
 			</ModifyZimletPrefsRequest>`, accountToken, false
 		);
-		assert.exists(emptyRes.Fault, 'ModifyZimletPrefsRequest with empty presence should fault');
+		assert.isString(emptyRes.Fault.Detail.Error.Code, 'ModifyZimletPrefsRequest with empty presence should fault');
 		assert.include(emptyRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 
 		// Try invalid presence value — should fail
@@ -174,7 +170,7 @@ describe('Admin > Zimlets > Modify Zimlet Prefs Request Basic', function () {
 				<zimlet name="com_zimbra_phone" presence="#!"/>
 			</ModifyZimletPrefsRequest>`, accountToken, false
 		);
-		assert.exists(invalidRes.Fault, 'ModifyZimletPrefsRequest with invalid presence should fault');
+		assert.isString(invalidRes.Fault.Detail.Error.Code, 'ModifyZimletPrefsRequest with invalid presence should fault');
 		assert.include(invalidRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 	});
 });

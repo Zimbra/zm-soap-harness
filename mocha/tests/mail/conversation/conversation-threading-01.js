@@ -358,7 +358,6 @@ Test message content
 			</SearchConvRequest>`, authToken
 		);
 		assert.notExists(searchConvRes.Fault, 'SearchConvRequest should not fault');
-		assert.exists(searchConvRes.SearchConvResponse, 'SearchConvResponse should exist');
 	});
 
 

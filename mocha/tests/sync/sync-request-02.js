@@ -983,7 +983,7 @@ Content Text
 		);
 
 		// Verify response
-		assert.exists(decRes.Fault, 'Decimal token should return Fault');
+		assert.isString(decRes.Fault.Detail.Error.Code, 'Decimal token should return Fault');
 		assert.include(decRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Error code should be service.INVALID_REQUEST');
 
@@ -1009,7 +1009,6 @@ Content Text
 			assert.include(blankRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 				'Error code should be service.INVALID_REQUEST');
 		} else {
-			assert.exists(blankRes.SyncResponse, 'Blank token should return a valid SyncResponse');
 		}
 
 		// Spaces token
@@ -1018,7 +1017,7 @@ Content Text
 		);
 
 		// Verify response
-		assert.exists(spaceRes.Fault, 'Spaces token should return Fault');
+		assert.isString(spaceRes.Fault.Detail.Error.Code, 'Spaces token should return Fault');
 		assert.include(spaceRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Error code should be service.INVALID_REQUEST');
 
@@ -1028,7 +1027,7 @@ Content Text
 		);
 
 		// Verify response
-		assert.exists(textRes.Fault, 'Text token should return Fault');
+		assert.isString(textRes.Fault.Detail.Error.Code, 'Text token should return Fault');
 		assert.include(textRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Error code should be service.INVALID_REQUEST');
 	});

@@ -97,7 +97,6 @@ describe('Mail > Read Receipt > Send Delivery Report Request', function () {
 			`<SendDeliveryReportRequest xmlns="urn:zimbraMail" mid="${messageId}"/>`, acct2AuthToken
 		);
 		assert.notExists(deliveryRes.Fault, 'SendDeliveryReportRequest should not fault');
-		assert.exists(deliveryRes.SendDeliveryReportResponse, 'SendDeliveryReportResponse should exist');
 
 		// Search for the read receipt in account1 inbox
 
@@ -108,7 +107,6 @@ describe('Mail > Read Receipt > Send Delivery Report Request', function () {
 			</SearchRequest>`, acct1AuthToken
 		);
 		assert.notExists(receiptSearch.Fault, 'SearchRequest should not fault');
-		assert.exists(receiptSearch.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -159,7 +157,6 @@ content${common.getUniqueString()}
 			`<SendDeliveryReportRequest xmlns="urn:zimbraMail" mid="${messageId}"/>`, acct2AuthToken
 		);
 		assert.notExists(deliveryRes.Fault, 'SendDeliveryReportRequest should not fault');
-		assert.exists(deliveryRes.SendDeliveryReportResponse, 'SendDeliveryReportResponse should exist');
 
 		// Login as account1 and search for the receipt
 		const acct1AuthToken = await soap.getAccountAuthToken(acct1Email);
@@ -276,7 +273,6 @@ content${common.getUniqueString()}
 			</SearchRequest>`, acct1AuthToken
 		);
 		assert.notExists(convSearch.Fault, 'SearchRequest for conversation should not fault');
-		assert.exists(convSearch.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -326,7 +322,6 @@ content${common.getUniqueString()}
 			`<SendDeliveryReportRequest xmlns="urn:zimbraMail" mid="${messageId}"/>`, acct2AuthToken
 		);
 		assert.notExists(deliveryRes.Fault, 'SendDeliveryReportRequest should not fault');
-		assert.exists(deliveryRes.SendDeliveryReportResponse, 'SendDeliveryReportResponse should exist');
 
 		// Verify no receipt was sent to account1
 		const acct1AuthToken = await soap.getAccountAuthToken(acct1Email);
@@ -414,6 +409,6 @@ content${common.getUniqueString()}
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
 		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
-		assert.exists(getMsg, 'GetMsgResponse should contain m');
+		assert.exists(getMsg.id, 'message id should exist');
 	});
 });

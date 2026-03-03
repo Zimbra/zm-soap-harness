@@ -70,7 +70,6 @@ describe('Contacts > Contact Group Reference', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Create should not be a Fault');
-		assert.exists(res.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(res.CreateContactResponse.cn)
 			? res.CreateContactResponse.cn[0] : res.CreateContactResponse.cn;
 		assert.exists(cn.id, 'Contact id should exist');
@@ -105,7 +104,6 @@ describe('Contacts > Contact Group Reference', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Create should not be a Fault');
-		assert.exists(res.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(res.CreateContactResponse.cn)
 			? res.CreateContactResponse.cn[0] : res.CreateContactResponse.cn;
 		assert.exists(cn.id, 'Contact group id should exist');
@@ -139,7 +137,6 @@ describe('Contacts > Contact Group Reference', function () {
 
 		// Verify response
 		assert.notExists(autoRes.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(autoRes.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -172,7 +169,6 @@ describe('Contacts > Contact Group Reference', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Create should not be a Fault');
-		assert.exists(res.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(res.CreateContactResponse.cn)
 			? res.CreateContactResponse.cn[0] : res.CreateContactResponse.cn;
 		assert.exists(cn.id, 'Contact group id should exist');

@@ -50,7 +50,7 @@ describe('General > Password > Length Password', function () {
 		);
 
 		// Verify response
-		assert.exists(failEmpty.Fault, 'Empty password should fail');
+		assert.isString(failEmpty.Fault.Detail.Error.Code, 'Empty password should fail');
 
 		// Change password
 		const fail5 = await soap.makeSOAPEnvelopeAccount(
@@ -62,7 +62,7 @@ describe('General > Password > Length Password', function () {
 		);
 
 		// Verify response
-		assert.exists(fail5.Fault, '5-char password should fail with default min 6');
+		assert.isString(fail5.Fault.Detail.Error.Code, '5-char password should fail with default min 6');
 
 		// Change password
 		const success6 = await soap.makeSOAPEnvelopeAccount(
@@ -130,7 +130,7 @@ describe('General > Password > Length Password', function () {
 		);
 
 		// Verify response
-		assert.exists(fail65.Fault, '65-char password should fail with default max 64');
+		assert.isString(fail65.Fault.Detail.Error.Code, '65-char password should fail with default max 64');
 	});
 
 
@@ -279,7 +279,7 @@ describe('General > Password > Length Password', function () {
 		);
 
 		// Verify response
-		assert.exists(fail63.Fault, '63-char password should fail with min 64');
+		assert.isString(fail63.Fault.Detail.Error.Code, '63-char password should fail with min 64');
 	});
 
 
@@ -308,7 +308,7 @@ describe('General > Password > Length Password', function () {
 		);
 
 		// Verify response
-		assert.exists(failEmpty.Fault, 'Empty password should fail with min 1');
+		assert.isString(failEmpty.Fault.Detail.Error.Code, 'Empty password should fail with min 1');
 
 		// Change password
 		const success1 = await soap.makeSOAPEnvelopeAccount(
@@ -349,7 +349,7 @@ describe('General > Password > Length Password', function () {
 		);
 
 		// Verify response
-		assert.exists(failEmpty.Fault, 'Empty password should fail with min 1');
+		assert.isString(failEmpty.Fault.Detail.Error.Code, 'Empty password should fail with min 1');
 
 		// Change password
 		const success1 = await soap.makeSOAPEnvelopeAccount(
@@ -390,7 +390,7 @@ describe('General > Password > Length Password', function () {
 		);
 
 		// Verify response
-		assert.exists(fail5.Fault, '5-char password should fail with min 6');
+		assert.isString(fail5.Fault.Detail.Error.Code, '5-char password should fail with min 6');
 
 		// Change password
 		const success6 = await soap.makeSOAPEnvelopeAccount(

@@ -46,6 +46,5 @@ describe('Admin > LDAP > Rename LDAP Entry Request', function () {
 			</RenameLDAPEntryRequest>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'RenameLDAPEntryRequest should not fault');
-		assert.exists(res.RenameLDAPEntryResponse, 'RenameLDAPEntryResponse should exist');
 	});
 });

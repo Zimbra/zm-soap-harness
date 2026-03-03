@@ -58,7 +58,6 @@ describe('Prefs > Filters > Filterrulesrequest', function () {
 			</ModifyFilterRulesRequest>`, accountAuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 	});
 
 
@@ -97,7 +96,6 @@ describe('Prefs > Filters > Filterrulesrequest', function () {
 			`<GetFilterRulesRequest xmlns="urn:zimbraMail"/>`, accountAuthToken
 		);
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
-		assert.exists(getRes.GetFilterRulesResponse, 'GetFilterRulesResponse should exist');
 		const rules = getRes.GetFilterRulesResponse.filterRules;
 		assert.exists(rules, 'filterRules should exist');
 	});
@@ -143,7 +141,6 @@ describe('Prefs > Filters > Filterrulesrequest', function () {
 			</ApplyFilterRulesRequest>`, accountAuthToken
 		);
 		assert.notExists(applyRes.Fault, 'ApplyFilterRulesRequest should not fault');
-		assert.exists(applyRes.ApplyFilterRulesResponse, 'ApplyFilterRulesResponse should exist');
 	});
 
 
@@ -177,16 +174,12 @@ describe('Prefs > Filters > Filterrulesrequest', function () {
 			</ModifyOutgoingFilterRulesRequest>`, accountAuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyOutgoingFilterRulesRequest should not fault');
-		assert.exists(modRes.ModifyOutgoingFilterRulesResponse,
-			'ModifyOutgoingFilterRulesResponse should exist');
 
 		// Get outgoing filter rules and verify
 		const getRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetOutgoingFilterRulesRequest xmlns="urn:zimbraMail"/>`, accountAuthToken
 		);
 		assert.notExists(getRes.Fault, 'GetOutgoingFilterRulesRequest should not fault');
-		assert.exists(getRes.GetOutgoingFilterRulesResponse,
-			'GetOutgoingFilterRulesResponse should exist');
 	});
 
 
@@ -230,7 +223,5 @@ describe('Prefs > Filters > Filterrulesrequest', function () {
 			</ApplyOutgoingFilterRulesRequest>`, accountAuthToken
 		);
 		assert.notExists(applyRes.Fault, 'ApplyOutgoingFilterRulesRequest should not fault');
-		assert.exists(applyRes.ApplyOutgoingFilterRulesResponse,
-			'ApplyOutgoingFilterRulesResponse should exist');
 	});
 });

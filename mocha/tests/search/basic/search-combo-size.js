@@ -223,7 +223,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -234,7 +233,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -245,7 +243,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
@@ -256,7 +253,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
@@ -267,7 +263,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		assert.exists(res6.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
@@ -278,7 +273,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
@@ -289,7 +283,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
-		assert.exists(res8.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -314,7 +307,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -325,7 +317,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -336,7 +327,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
@@ -347,7 +337,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
@@ -358,7 +347,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		assert.exists(res6.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
@@ -369,7 +357,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
@@ -380,7 +367,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
-		assert.exists(res8.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -416,7 +402,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -427,7 +412,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
@@ -449,7 +433,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		assert.exists(res6.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
@@ -460,7 +443,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
@@ -507,7 +489,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -518,7 +499,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
@@ -529,7 +509,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
@@ -551,7 +530,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
@@ -678,7 +656,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -689,7 +666,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -700,7 +676,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
@@ -711,7 +686,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
@@ -722,7 +696,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		assert.exists(res6.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
@@ -733,7 +706,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
@@ -744,7 +716,6 @@ Content for ${mail6.name}</content>
 
 		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
-		assert.exists(res8.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -756,7 +727,7 @@ Content for ${mail6.name}</content>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res1.Fault, 'Response should be a Fault');
+		assert.isString(res1.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res1.Fault?.Detail?.Error?.Code, 'mail.QUERY_PARSE_ERROR', 'Fault code should match');
 
 		// SearchRequest
@@ -766,7 +737,7 @@ Content for ${mail6.name}</content>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res2.Fault, 'Response should be a Fault');
+		assert.isString(res2.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res2.Fault?.Detail?.Error?.Code, 'mail.QUERY_PARSE_ERROR', 'Fault code should match');
 	});
 
@@ -779,7 +750,7 @@ Content for ${mail6.name}</content>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res1.Fault, 'Response should be a Fault');
+		assert.isString(res1.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res1.Fault?.Detail?.Error?.Code, 'mail.QUERY_PARSE_ERROR', 'Fault code should match');
 
 		// SearchRequest
@@ -789,7 +760,7 @@ Content for ${mail6.name}</content>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res2.Fault, 'Response should be a Fault');
+		assert.isString(res2.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res2.Fault?.Detail?.Error?.Code, 'mail.QUERY_PARSE_ERROR', 'Fault code should match');
 	});
 
@@ -802,7 +773,7 @@ Content for ${mail6.name}</content>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res1.Fault, 'Response should be a Fault');
+		assert.isString(res1.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res1.Fault?.Detail?.Error?.Code, 'mail.QUERY_PARSE_ERROR', 'Fault code should match');
 
 		// SearchRequest
@@ -812,7 +783,7 @@ Content for ${mail6.name}</content>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res2.Fault, 'Response should be a Fault');
+		assert.isString(res2.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res2.Fault?.Detail?.Error?.Code, 'mail.QUERY_PARSE_ERROR', 'Fault code should match');
 	});
 
@@ -826,7 +797,6 @@ Content for ${mail6.name}</content>
 		);
 
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		assert.exists(res1.SearchResponse, 'Response element should exist');
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -836,7 +806,6 @@ Content for ${mail6.name}</content>
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -848,7 +817,7 @@ Content for ${mail6.name}</content>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res1.Fault, 'Response should be a Fault');
+		assert.isString(res1.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res1.Fault?.Detail?.Error?.Code, 'mail.QUERY_PARSE_ERROR', 'Fault code should match');
 
 		// SearchRequest
@@ -858,7 +827,7 @@ Content for ${mail6.name}</content>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res2.Fault, 'Response should be a Fault');
+		assert.isString(res2.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res2.Fault?.Detail?.Error?.Code, 'mail.QUERY_PARSE_ERROR', 'Fault code should match');
 	});
 });

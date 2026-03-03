@@ -126,7 +126,7 @@ describe('Mail > Bugs > Bug 52558', function () {
 				</m>
 			</SaveDraftRequest>`, authToken1, false
 		);
-		assert.exists(blankRes.Fault, 'Blank autoSendTime should return a Fault');
+		assert.isString(blankRes.Fault.Detail.Error.Code, 'Blank autoSendTime should return a Fault');
 		assert.include(
 			blankRes.Fault.Detail.Error.Code, 'service.FAILURE',
 			'Should return service.FAILURE for blank autoSendTime'
@@ -144,7 +144,7 @@ describe('Mail > Bugs > Bug 52558', function () {
 				</m>
 			</SaveDraftRequest>`, authToken1, false
 		);
-		assert.exists(alphaRes.Fault, 'Alphanumeric autoSendTime should return a Fault');
+		assert.isString(alphaRes.Fault.Detail.Error.Code, 'Alphanumeric autoSendTime should return a Fault');
 		assert.include(
 			alphaRes.Fault.Detail.Error.Code, 'service.FAILURE',
 			'Should return service.FAILURE for alphanumeric autoSendTime'

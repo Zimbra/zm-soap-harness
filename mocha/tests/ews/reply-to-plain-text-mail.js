@@ -67,7 +67,7 @@ describe('EWS > Reply To Plain Text Mail', function () {
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		await soap.waitFor(5000);
@@ -251,7 +251,6 @@ describe('EWS > Reply To Plain Text Mail', function () {
 			</SearchRequest>`, account1AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const hit = Array.isArray(searchRes.SearchResponse.c)
 			? searchRes.SearchResponse.c[0] : searchRes.SearchResponse.c;
 		assert.equal(hit.su, replySubject, 'Subject should match reply subject');

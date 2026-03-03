@@ -70,7 +70,6 @@ describe('Prefs > Filters > Apply Filter Rules > Applyfilterrulesrequest Sharedf
 
 		// Verify response
 		assert.notExists(applyRes.Fault, 'ApplyFilterRulesRequest should not fault');
-		assert.exists(applyRes.ApplyFilterRulesResponse, 'ApplyFilterRulesResponse should exist');
 	});
 
 

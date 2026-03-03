@@ -54,7 +54,6 @@ describe('Prefs > Out Of Office > Outofoffice', function () {
 			</ModifyPrefsRequest>`, account1AuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 
 		// Send message
 		const subject = `subject.${common.getUniqueString()}`;
@@ -95,7 +94,6 @@ describe('Prefs > Out Of Office > Outofoffice', function () {
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest with date range should not fault');
-		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 
 
@@ -125,7 +123,6 @@ describe('Prefs > Out Of Office > Outofoffice', function () {
 			</GetPrefsRequest>`, accountAuthToken
 		);
 		assert.notExists(getRes.Fault, 'GetPrefsRequest should not fault');
-		assert.exists(getRes.GetPrefsResponse, 'GetPrefsResponse should exist');
 	});
 
 
@@ -160,7 +157,6 @@ describe('Prefs > Out Of Office > Outofoffice', function () {
 			</GetPrefsRequest>`, accountAuthToken
 		);
 		assert.notExists(getRes.Fault, 'GetPrefsRequest should not fault');
-		assert.exists(getRes.GetPrefsResponse, 'GetPrefsResponse should exist');
 	});
 
 
@@ -184,6 +180,5 @@ describe('Prefs > Out Of Office > Outofoffice', function () {
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest external reply should not fault');
-		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 });

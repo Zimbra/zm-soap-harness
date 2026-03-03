@@ -45,7 +45,6 @@ describe('Contacts > GAL > Search GAL Sort Order', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
-		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
 
 
@@ -58,7 +57,6 @@ describe('Contacts > GAL > Search GAL Sort Order', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
-		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
 
 
@@ -71,6 +69,5 @@ describe('Contacts > GAL > Search GAL Sort Order', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
-		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
 });

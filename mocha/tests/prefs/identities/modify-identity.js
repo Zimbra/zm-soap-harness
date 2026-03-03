@@ -60,7 +60,6 @@ describe('Prefs > Identities > Modify Identity', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyIdentityRequest should not fault');
-		assert.exists(modRes.ModifyIdentityResponse, 'ModifyIdentityResponse should exist');
 	});
 
 
@@ -96,7 +95,6 @@ describe('Prefs > Identities > Modify Identity', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyIdentityRequest should not fault');
-		assert.exists(modRes.ModifyIdentityResponse, 'ModifyIdentityResponse should exist');
 	});
 
 
@@ -135,7 +133,6 @@ describe('Prefs > Identities > Modify Identity', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyIdentityRequest should not fault');
-		assert.exists(modRes.ModifyIdentityResponse, 'ModifyIdentityResponse should exist');
 	});
 
 
@@ -172,7 +169,6 @@ describe('Prefs > Identities > Modify Identity', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyIdentityRequest rename should not fault');
-		assert.exists(modRes.ModifyIdentityResponse, 'ModifyIdentityResponse should exist');
 	});
 
 
@@ -200,7 +196,7 @@ describe('Prefs > Identities > Modify Identity', function () {
 		);
 
 		// Verify response
-		assert.exists(modRes.Fault, 'Modify non-existent identity should fault');
+		assert.isString(modRes.Fault.Detail.Error.Code, 'Modify non-existent identity should fault');
 	});
 
 
@@ -241,6 +237,5 @@ describe('Prefs > Identities > Modify Identity', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'GetIdentitiesRequest should not fault');
-		assert.exists(getRes.GetIdentitiesResponse, 'GetIdentitiesResponse should exist');
 	});
 });

@@ -50,7 +50,6 @@ describe('Admin > Auth > Auth Negative', function () {
 
 		// Verify auth response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(res.AuthResponse.lifetime), /^\d+$/, 'lifetime should be numeric');
 		assert.exists(res.AuthResponse.authToken, 'authToken should exist');
 	});
@@ -66,7 +65,7 @@ describe('Admin > Auth > Auth Negative', function () {
 		);
 
 		// Verify fault code
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 	});
 
@@ -81,7 +80,7 @@ describe('Admin > Auth > Auth Negative', function () {
 		);
 
 		// Verify fault code
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 	});
 
@@ -96,7 +95,7 @@ describe('Admin > Auth > Auth Negative', function () {
 		);
 
 		// Verify fault code
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 	});
 
@@ -111,7 +110,7 @@ describe('Admin > Auth > Auth Negative', function () {
 		);
 
 		// Verify fault code
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 	});
 
@@ -126,7 +125,7 @@ describe('Admin > Auth > Auth Negative', function () {
 		);
 
 		// Verify fault code
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 	});
 
@@ -141,7 +140,7 @@ describe('Admin > Auth > Auth Negative', function () {
 		);
 
 		// Verify fault code
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 	});
 
@@ -156,7 +155,7 @@ describe('Admin > Auth > Auth Negative', function () {
 		);
 
 		// Verify fault code
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 	});
 
@@ -171,7 +170,7 @@ describe('Admin > Auth > Auth Negative', function () {
 		);
 
 		// Verify fault code
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 	});
 
@@ -186,7 +185,7 @@ describe('Admin > Auth > Auth Negative', function () {
 		);
 
 		// Verify fault code
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 	});
 
@@ -201,7 +200,7 @@ describe('Admin > Auth > Auth Negative', function () {
 		);
 
 		// Verify fault code
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 	});
 
@@ -216,7 +215,7 @@ describe('Admin > Auth > Auth Negative', function () {
 		);
 
 		// Verify fault code
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 	});
 
@@ -231,7 +230,7 @@ describe('Admin > Auth > Auth Negative', function () {
 		);
 
 		// Verify fault code
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 	});
 
@@ -246,7 +245,7 @@ describe('Admin > Auth > Auth Negative', function () {
 		);
 
 		// Verify fault code
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 	});
 
@@ -261,7 +260,7 @@ describe('Admin > Auth > Auth Negative', function () {
 		);
 
 		// Verify fault code
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 	});
 
@@ -276,7 +275,7 @@ describe('Admin > Auth > Auth Negative', function () {
 		);
 
 		// Verify fault code
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 	});
 });

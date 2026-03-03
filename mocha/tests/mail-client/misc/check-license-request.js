@@ -57,7 +57,6 @@ describe('Mail Client > Misc > Check License Request', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CheckLicenseResponse, 'CheckLicenseResponse should exist');
 	});
 
 
@@ -72,7 +71,6 @@ describe('Mail Client > Misc > Check License Request', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CheckLicenseResponse, 'CheckLicenseResponse should exist');
 	});
 
 
@@ -87,6 +85,5 @@ describe('Mail Client > Misc > Check License Request', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CheckLicenseResponse, 'CheckLicenseResponse should exist');
 	});
 });

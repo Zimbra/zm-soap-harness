@@ -59,8 +59,6 @@ describe('Admin > Accounts > COS > Account Create', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
-		assert.exists(getRes.GetAccountResponse,
-			'GetAccountResponse should exist');
 		const account = Array.isArray(getRes.GetAccountResponse.account)
 			? getRes.GetAccountResponse.account[0]
 			: getRes.GetAccountResponse.account;

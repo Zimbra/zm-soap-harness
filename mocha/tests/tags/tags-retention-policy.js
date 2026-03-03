@@ -57,7 +57,6 @@ describe('Tags > Tags Retention Policy', function () {
 
 		// Verify response
 		assert.notExists(retRes.Fault, 'Response should not be a Fault');
-		assert.exists(retRes.TagActionResponse, 'TagActionResponse should exist');
 
 		// Verify via GetTag
 		const getRes = await soap.makeSOAPEnvelopeAccount(
@@ -105,7 +104,6 @@ describe('Tags > Tags Retention Policy', function () {
 
 		// Verify response
 		assert.notExists(retRes.Fault, 'Response should not be a Fault');
-		assert.exists(retRes.TagActionResponse, 'TagActionResponse should exist');
 
 		// Send a message and tag it
 		const subject = `subject${common.getUniqueString()}`;

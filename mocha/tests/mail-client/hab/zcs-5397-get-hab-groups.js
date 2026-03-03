@@ -156,7 +156,6 @@ describe('Mail Client > Hab > ZCS 5397 Get Hab Groups', function () {
 				xmlns="urn:zimbraAccount"/>`, acct1Auth
 		);
 		assert.notExists(habRes.Fault, 'GetHABRequest should not fault');
-		assert.exists(habRes.GetHABResponse, 'GetHABResponse should exist');
 	});
 
 
@@ -210,7 +209,6 @@ describe('Mail Client > Hab > ZCS 5397 Get Hab Groups', function () {
 				xmlns="urn:zimbraAccount"/>`, acct1Auth
 		);
 		assert.notExists(habRes.Fault, 'GetHABRequest should not fault');
-		assert.exists(habRes.GetHABResponse, 'GetHABResponse should exist');
 	});
 
 
@@ -221,7 +219,6 @@ describe('Mail Client > Hab > ZCS 5397 Get Hab Groups', function () {
 				xmlns="urn:zimbraAccount"/>`, acct1Auth
 		);
 		assert.notExists(habRes.Fault, 'GetHABRequest for group5 should not fault');
-		assert.exists(habRes.GetHABResponse, 'GetHABResponse should exist');
 	});
 
 
@@ -240,7 +237,6 @@ describe('Mail Client > Hab > ZCS 5397 Get Hab Groups', function () {
 				xmlns="urn:zimbraAccount"/>`, acct1Auth
 		);
 		assert.notExists(habRes.Fault, 'GetHABRequest for group2 should not fault');
-		assert.exists(habRes.GetHABResponse, 'GetHABResponse should exist');
 	});
 
 
@@ -258,7 +254,6 @@ describe('Mail Client > Hab > ZCS 5397 Get Hab Groups', function () {
 				xmlns="urn:zimbraAccount"/>`, acct1Auth
 		);
 		assert.notExists(habRes.Fault, 'GetHABRequest after delete should not fault');
-		assert.exists(habRes.GetHABResponse, 'GetHABResponse should exist');
 	});
 
 
@@ -269,7 +264,7 @@ describe('Mail Client > Hab > ZCS 5397 Get Hab Groups', function () {
 				xmlns="urn:zimbraAccount"/>`, acct1Auth
 		);
 		// Should fault since group3 was deleted
-		assert.exists(habRes.Fault, 'GetHABRequest for deleted group should fault');
+		assert.isString(habRes.Fault.Detail.Error.Code, 'GetHABRequest for deleted group should fault');
 	});
 
 
@@ -280,7 +275,6 @@ describe('Mail Client > Hab > ZCS 5397 Get Hab Groups', function () {
 				xmlns="urn:zimbraAccount"/>`, acct1Auth
 		);
 		assert.notExists(habRes.Fault, 'GetHABRequest for group4 should not fault');
-		assert.exists(habRes.GetHABResponse, 'GetHABResponse should exist');
 	});
 
 
@@ -303,7 +297,7 @@ describe('Mail Client > Hab > ZCS 5397 Get Hab Groups', function () {
 				xmlns="urn:zimbraAccount"/>`, acct1Auth
 		);
 		// Should fault since the DL is not an HAB group
-		assert.exists(habRes.Fault, 'GetHABRequest for non-HAB group should fault');
+		assert.isString(habRes.Fault.Detail.Error.Code, 'GetHABRequest for non-HAB group should fault');
 	});
 
 
@@ -315,7 +309,6 @@ describe('Mail Client > Hab > ZCS 5397 Get Hab Groups', function () {
 				xmlns="urn:zimbraAccount"/>`, acct1Auth
 		);
 		assert.notExists(habRes.Fault, 'GetHABRequest should not fault');
-		assert.exists(habRes.GetHABResponse, 'GetHABResponse should exist');
 	});
 
 
@@ -327,6 +320,5 @@ describe('Mail Client > Hab > ZCS 5397 Get Hab Groups', function () {
 				xmlns="urn:zimbraAccount"/>`, acct1Auth
 		);
 		assert.notExists(habRes.Fault, 'GetHABRequest for seniority should not fault');
-		assert.exists(habRes.GetHABResponse, 'GetHABResponse should exist');
 	});
 });

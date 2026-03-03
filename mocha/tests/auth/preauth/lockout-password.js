@@ -27,7 +27,6 @@ describe('Auth > Preauth > Lockout Password', function () {
 
 		// Verify response
 		assert.notExists(domRes.Fault, 'Response should not be a Fault');
-		assert.exists(domRes.CreateDomainResponse, 'Should create domain');
 
 		// Create account with lockout settings
 		account1Name = 'preauth' + common.getUniqueString() + '@' + domainName;
@@ -45,7 +44,6 @@ describe('Auth > Preauth > Lockout Password', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 	});
 
 	beforeEach(async function () {
@@ -77,7 +75,7 @@ describe('Auth > Preauth > Lockout Password', function () {
 			);
 
 			// Verify response
-			assert.exists(authRes.Fault, 'Should return Fault for invalid preauth attempt ' + i);
+			assert.isString(authRes.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 			assert.include(authRes.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 				'Should return AUTH_FAILED for attempt ' + i);
 
@@ -97,7 +95,7 @@ describe('Auth > Preauth > Lockout Password', function () {
 		);
 
 		// Verify response
-		assert.exists(authRes2.Fault, 'Should return Fault due to lockout');
+		assert.isString(authRes2.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(authRes2.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED due to lockout');
 
@@ -118,7 +116,7 @@ describe('Auth > Preauth > Lockout Password', function () {
 		// but since we're using dummy preauth values, it will AUTH_FAILED
 		// The key assertion is that lockout was released (not ACCOUNT_LOCKED)
 		// Verify response
-		assert.exists(authRes3.Fault, 'Should return Fault (invalid preauth)');
+		assert.isString(authRes3.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(authRes3.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED (not LOCKED) after lockout expires');
 	});

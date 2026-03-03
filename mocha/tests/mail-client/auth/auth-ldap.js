@@ -165,8 +165,8 @@ describe('Mail Client > Auth > Auth LDAP', function () {
 			</AuthRequest>`, null, false
 		);
 		// Verify auth succeeds or fails depending on LDAP config
-		assert.isTrue(!!res.AuthResponse || !!res.Fault,
-			'Should get AuthResponse or Fault');
+		assert.notExists(res.Fault, 'AuthRequest should not fault');
+		assert.exists(res.AuthResponse.authToken, 'authToken should exist');
 	});
 
 
@@ -177,7 +177,7 @@ describe('Mail Client > Auth > Auth LDAP', function () {
 				<password>invalidPassword</password>
 			</AuthRequest>`, null, false
 		);
-		assert.exists(res.Fault, 'Should return Fault for invalid password');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return Fault for invalid password');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Error code should be AUTH_FAILED');
 	});
@@ -190,7 +190,7 @@ describe('Mail Client > Auth > Auth LDAP', function () {
 				<password>${zimbraPassword}</password>
 			</AuthRequest>`, null, false
 		);
-		assert.exists(res.Fault, 'Should return Fault for internal password');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return Fault for internal password');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Error code should be AUTH_FAILED');
 	});
@@ -203,8 +203,8 @@ describe('Mail Client > Auth > Auth LDAP', function () {
 				<password>${config.LDAP.account02.password}</password>
 			</AuthRequest>`, null, false
 		);
-		assert.isTrue(!!res.AuthResponse || !!res.Fault,
-			'Should get AuthResponse or Fault');
+		assert.notExists(res.Fault, 'AuthRequest should not fault');
+		assert.exists(res.AuthResponse.authToken, 'authToken should exist');
 	});
 
 
@@ -215,7 +215,7 @@ describe('Mail Client > Auth > Auth LDAP', function () {
 				<password>invalidPassword</password>
 			</AuthRequest>`, null, false
 		);
-		assert.exists(res.Fault, 'Should return Fault for invalid password');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return Fault for invalid password');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Error code should be AUTH_FAILED');
 	});
@@ -228,8 +228,8 @@ describe('Mail Client > Auth > Auth LDAP', function () {
 				<password>${config.LDAP.account01.password}</password>
 			</AuthRequest>`, null, false
 		);
-		assert.isTrue(!!res.AuthResponse || !!res.Fault,
-			'Should get AuthResponse or Fault');
+		assert.notExists(res.Fault, 'AuthRequest should not fault');
+		assert.exists(res.AuthResponse.authToken, 'authToken should exist');
 	});
 
 
@@ -240,7 +240,7 @@ describe('Mail Client > Auth > Auth LDAP', function () {
 				<password>invalidPassword</password>
 			</AuthRequest>`, null, false
 		);
-		assert.exists(res.Fault, 'Should return Fault for invalid password');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return Fault for invalid password');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Error code should be AUTH_FAILED');
 	});
@@ -253,8 +253,8 @@ describe('Mail Client > Auth > Auth LDAP', function () {
 				<password>${zimbraPassword}</password>
 			</AuthRequest>`, null, false
 		);
-		assert.isTrue(!!res.AuthResponse || !!res.Fault,
-			'Should get AuthResponse or Fault');
+		assert.notExists(res.Fault, 'AuthRequest should not fault');
+		assert.exists(res.AuthResponse.authToken, 'authToken should exist');
 	});
 
 
@@ -265,8 +265,8 @@ describe('Mail Client > Auth > Auth LDAP', function () {
 				<password>${config.LDAP.account02.password}</password>
 			</AuthRequest>`, null, false
 		);
-		assert.isTrue(!!res.AuthResponse || !!res.Fault,
-			'Should get AuthResponse or Fault');
+		assert.notExists(res.Fault, 'AuthRequest should not fault');
+		assert.exists(res.AuthResponse.authToken, 'authToken should exist');
 	});
 
 
@@ -277,7 +277,7 @@ describe('Mail Client > Auth > Auth LDAP', function () {
 				<password>invalidPassword</password>
 			</AuthRequest>`, null, false
 		);
-		assert.exists(res.Fault, 'Should return Fault for invalid password');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return Fault for invalid password');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Error code should be AUTH_FAILED');
 	});
@@ -290,7 +290,7 @@ describe('Mail Client > Auth > Auth LDAP', function () {
 				<password>${zimbraPassword}</password>
 			</AuthRequest>`, null, false
 		);
-		assert.exists(res.Fault, 'Should return Fault for internal password');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return Fault for internal password');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Error code should be AUTH_FAILED');
 	});
@@ -303,7 +303,7 @@ describe('Mail Client > Auth > Auth LDAP', function () {
 				<password>wrong password</password>
 			</AuthRequest>`, null, false
 		);
-		assert.exists(res.Fault, 'Should return Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Error code should be AUTH_FAILED');
 	});

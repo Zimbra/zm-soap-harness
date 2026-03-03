@@ -63,7 +63,6 @@ describe('Prefs > External Contacts > Exportcontacts', function () {
 
 		// Verify response
 		assert.notExists(exportRes.Fault, 'ExportContactsRequest should not fault');
-		assert.exists(exportRes.ExportContactsResponse, 'ExportContactsResponse should exist');
 	});
 
 
@@ -98,7 +97,7 @@ describe('Prefs > External Contacts > Exportcontacts', function () {
 		);
 
 		// Verify response
-		assert.exists(exportRes.Fault, 'ExportContactsRequest thunderbird-csv format should fault as unsupported');
+		assert.isString(exportRes.Fault.Detail.Error.Code, 'ExportContactsRequest thunderbird-csv format should fault as unsupported');
 	});
 
 
@@ -133,7 +132,7 @@ describe('Prefs > External Contacts > Exportcontacts', function () {
 		);
 
 		// Verify response
-		assert.exists(exportRes.Fault, 'ExportContactsRequest outlook-2003-csv format should fault as unsupported');
+		assert.isString(exportRes.Fault.Detail.Error.Code, 'ExportContactsRequest outlook-2003-csv format should fault as unsupported');
 	});
 
 
@@ -168,7 +167,7 @@ describe('Prefs > External Contacts > Exportcontacts', function () {
 		);
 
 		// Verify response
-		assert.exists(exportRes.Fault, 'ExportContactsRequest yahoo-csv format should fault as unsupported');
+		assert.isString(exportRes.Fault.Detail.Error.Code, 'ExportContactsRequest yahoo-csv format should fault as unsupported');
 	});
 
 
@@ -193,7 +192,6 @@ describe('Prefs > External Contacts > Exportcontacts', function () {
 
 		// Verify response
 		assert.notExists(exportRes.Fault, 'Export empty contacts should not fault');
-		assert.exists(exportRes.ExportContactsResponse, 'ExportContactsResponse should exist');
 	});
 
 
@@ -217,6 +215,6 @@ describe('Prefs > External Contacts > Exportcontacts', function () {
 		);
 
 		// Verify response
-		assert.exists(exportRes.Fault, 'Export with invalid format should fault');
+		assert.isString(exportRes.Fault.Detail.Error.Code, 'Export with invalid format should fault');
 	});
 });

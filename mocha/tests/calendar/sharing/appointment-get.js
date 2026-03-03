@@ -135,13 +135,11 @@ describe('Calendar > Sharing > Appointment Get', function () {
 			sharee.token
 		);
 		assert.notExists(sumRes.Fault, 'GetApptSummaries should not fault');
-		if (sumRes.GetApptSummariesResponse.appt) {
-			const appts = Array.isArray(sumRes.GetApptSummariesResponse.appt)
-				? sumRes.GetApptSummariesResponse.appt
-				: [sumRes.GetApptSummariesResponse.appt];
-			const found = appts.find(a => a.name === subject);
-			assert.exists(found, 'Appointment should be found');
-		}
+		const appts = Array.isArray(sumRes.GetApptSummariesResponse.appt)
+			? sumRes.GetApptSummariesResponse.appt
+			: [sumRes.GetApptSummariesResponse.appt];
+		const found = appts.find(a => a.name === subject);
+		assert.exists(found, 'Appointment should be found');
 	});
 
 });

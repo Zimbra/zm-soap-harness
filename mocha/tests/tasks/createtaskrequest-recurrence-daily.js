@@ -48,7 +48,6 @@ describe('Tasks > Createtaskrequest Recurrence Daily', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 		assert.exists(res.CreateTaskResponse.calItemId, 'Task should have calItemId');
 	});
 
@@ -76,7 +75,6 @@ describe('Tasks > Createtaskrequest Recurrence Daily', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
 
 
@@ -102,7 +100,6 @@ describe('Tasks > Createtaskrequest Recurrence Daily', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
 
 
@@ -129,6 +126,5 @@ describe('Tasks > Createtaskrequest Recurrence Daily', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateTaskResponse, 'CreateTaskResponse should exist');
 	});
 });

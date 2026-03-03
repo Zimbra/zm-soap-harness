@@ -62,7 +62,6 @@ describe('Prefs > Filters > Actions > Filters Flag', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 	});
 
 

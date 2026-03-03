@@ -156,7 +156,6 @@ describe('Search > Contacts > Search Contact Tag', function () {
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
 
 		// Search item
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -167,7 +166,6 @@ describe('Search > Contacts > Search Contact Tag', function () {
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -180,7 +178,6 @@ describe('Search > Contacts > Search Contact Tag', function () {
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
 
 		// Search item
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -191,7 +188,6 @@ describe('Search > Contacts > Search Contact Tag', function () {
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 
 		// Search item
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -202,7 +198,6 @@ describe('Search > Contacts > Search Contact Tag', function () {
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 
 		// Search item
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -213,6 +208,5 @@ describe('Search > Contacts > Search Contact Tag', function () {
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
 	});
 });

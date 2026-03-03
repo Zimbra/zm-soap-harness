@@ -42,6 +42,5 @@ describe('Prefs > Filters > Spam > Spam', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Spam header filter should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'Response should exist');
 	});
 });

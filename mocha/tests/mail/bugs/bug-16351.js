@@ -79,7 +79,7 @@ ${toRecipients}${ccRecipients}${bccRecipients}					<su>${subject}</su>
 		assert.notExists(sendRes.Fault, 'SendMsgRequest with many recipients should not fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 });

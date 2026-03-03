@@ -49,6 +49,8 @@ describe('Contacts > Bugs > Bug 69148', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse.cn, 'Contact should be created');
+		const cn = Array.isArray(createRes.CreateContactResponse.cn)
+			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 	});
 });

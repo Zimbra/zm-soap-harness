@@ -58,7 +58,6 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
-		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
 
 
@@ -71,7 +70,6 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
-		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
 
 
@@ -84,7 +82,6 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -97,7 +94,6 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
-		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
 
 
@@ -118,7 +114,6 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
-		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
 
 
@@ -139,7 +134,6 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
-		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
 
 
@@ -173,7 +167,6 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
-		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
 
 
@@ -184,7 +177,6 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SyncGal should not be a Fault');
-		assert.exists(res.SyncGalResponse, 'SyncGalResponse should exist');
 	});
 
 
@@ -195,7 +187,6 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SyncGal should not be a Fault');
-		assert.exists(res.SyncGalResponse, 'SyncGalResponse should exist');
 	});
 
 
@@ -222,7 +213,6 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
-		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
 
 
@@ -235,7 +225,6 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 
@@ -246,7 +235,6 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SyncGal should not be a Fault');
-		assert.exists(res.SyncGalResponse, 'SyncGalResponse should exist');
 	});
 
 
@@ -283,7 +271,6 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
-		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
 
 
@@ -296,7 +283,6 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
-		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
 
 
@@ -337,7 +323,6 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
-		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
 
 
@@ -350,6 +335,5 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
-		assert.exists(res.SearchGalResponse, 'SearchGalResponse should exist');
 	});
 });

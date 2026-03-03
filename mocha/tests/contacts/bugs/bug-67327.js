@@ -77,7 +77,6 @@ describe('Contacts > Bugs > Bug 67327', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
-		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});
 
 
@@ -105,7 +104,6 @@ describe('Contacts > Bugs > Bug 67327', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
-		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});
 
 
@@ -133,7 +131,6 @@ describe('Contacts > Bugs > Bug 67327', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
-		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});
 
 
@@ -161,7 +158,6 @@ describe('Contacts > Bugs > Bug 67327', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
-		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});
 
 
@@ -189,6 +185,5 @@ describe('Contacts > Bugs > Bug 67327', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
-		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});
 });

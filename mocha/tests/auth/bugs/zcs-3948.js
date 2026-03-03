@@ -29,7 +29,6 @@ describe('Auth > Bugs > ZCS 3948', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse, 'Should create account1');
 
 		const acct1 = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
@@ -65,7 +64,6 @@ describe('Auth > Bugs > ZCS 3948', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'Should authenticate account1');
 
 		account1AuthToken = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
@@ -99,7 +97,6 @@ describe('Auth > Bugs > ZCS 3948', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		// Verify auth with correct credentials works
 		// Auth request
@@ -112,7 +109,6 @@ describe('Auth > Bugs > ZCS 3948', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist for valid credentials');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
@@ -129,7 +125,7 @@ describe('Auth > Bugs > ZCS 3948', function () {
 		);
 
 		// Verify response
-		assert.exists(authRes.Fault, 'Should return Fault for incorrect password');
+		assert.isString(authRes.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(authRes.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED for incorrect password');
 	});
@@ -145,7 +141,7 @@ describe('Auth > Bugs > ZCS 3948', function () {
 		);
 
 		// Verify response
-		assert.exists(authRes.Fault, 'Should return Fault for incorrect username');
+		assert.isString(authRes.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(authRes.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED for incorrect username');
 	});

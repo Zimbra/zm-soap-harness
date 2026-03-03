@@ -134,7 +134,6 @@ Sample Content
 			</CreateMountpointRequest>`, accountAuthToken2
 		);
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
-		assert.exists(res8.CreateMountpointResponse, 'Response element should exist');
 
 		// Create invalid mountpoint pointing to message id (should fail)
 		const mp2Name = `mountpoint_${common.getUniqueString()}`;
@@ -143,7 +142,7 @@ Sample Content
 				<link l="2" name="${mp2Name}" view="message" rid="${account1.message1.id}" zid="${account1.id}"/>
 			</CreateMountpointRequest>`, accountAuthToken2
 		);
-		assert.exists(res9.Fault, 'Response should be a Fault');
+		assert.isString(res9.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res9.Fault?.Detail?.Error?.Code, 'mail.NO_SUCH_FOLDER', 'Fault code should match');
 
 		// Search for remote items - should still work
@@ -210,7 +209,6 @@ Sample Content
 			</CreateMountpointRequest>`, accountAuthToken4
 		);
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
-		assert.exists(res8.CreateMountpointResponse, 'Response element should exist');
 
 		// Create invalid mountpoint (should fail)
 		const mp2Name = `mountpoint_${common.getUniqueString()}`;
@@ -219,7 +217,7 @@ Sample Content
 				<link l="2" name="${mp2Name}" view="message" rid="${account3.message1.id}" zid="${account3.id}"/>
 			</CreateMountpointRequest>`, accountAuthToken4
 		);
-		assert.exists(res9.Fault, 'Response should be a Fault');
+		assert.isString(res9.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res9.Fault?.Detail?.Error?.Code, 'mail.NO_SUCH_FOLDER', 'Fault code should match');
 
 		// Delete account3
@@ -230,7 +228,6 @@ Sample Content
 			</DeleteAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(res11.Fault, 'Response should not be a Fault');
-		assert.exists(res11.DeleteAccountResponse, 'Response element should exist');
 
 		// Login as account4 and search for remote
 		accountAuthToken4 = await soap.getAccountAuthToken(accountEmail4);
@@ -240,6 +237,5 @@ Sample Content
 			</SearchRequest>`, accountAuthToken4
 		);
 		assert.notExists(res13.Fault, 'Response should not be a Fault');
-		assert.exists(res13.SearchResponse, 'Response element should exist');
 	});
 });

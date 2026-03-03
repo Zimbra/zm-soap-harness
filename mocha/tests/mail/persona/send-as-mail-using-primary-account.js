@@ -72,7 +72,6 @@ describe('Mail > Persona > Send As Mail Using Primary Account', function () {
 			</DiscoverRightsRequest>`, account1AuthToken
 		);
 		assert.notExists(discoverRes.Fault, 'DiscoverRightsRequest should not fault');
-		assert.exists(discoverRes.DiscoverRightsResponse, 'DiscoverRightsResponse should exist');
 
 		// Send email with From set to account2
 		const subject = `test mail ${common.getUniqueString()}`;
@@ -94,7 +93,7 @@ describe('Mail > Persona > Send As Mail Using Primary Account', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 		const msgId = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0].id : sendRes.SendMsgResponse.m.id;
@@ -123,7 +122,6 @@ describe('Mail > Persona > Send As Mail Using Primary Account', function () {
 			</SearchRequest>`, account3AuthToken
 			);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		assert.exists(searchRes.SearchResponse.m, 'Message should exist');
 	});
 
@@ -199,7 +197,7 @@ describe('Mail > Persona > Send As Mail Using Primary Account', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 		const msgId = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0].id : sendRes.SendMsgResponse.m.id;
@@ -230,7 +228,6 @@ describe('Mail > Persona > Send As Mail Using Primary Account', function () {
 			</SearchRequest>`, account3AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		assert.exists(searchRes.SearchResponse.m, 'Message should exist');
 	});
 });

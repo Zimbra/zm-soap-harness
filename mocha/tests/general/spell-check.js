@@ -47,8 +47,6 @@ describe('General > Spell Check', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CheckSpellingResponse,
-			'CheckSpellingResponse should exist');
 		const misspelled = res.CheckSpellingResponse.misspelled;
 
 		// Verify response
@@ -371,8 +369,6 @@ herzliche grüße
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CheckSpellingResponse,
-			'CheckSpellingResponse should exist');
 	});
 
 

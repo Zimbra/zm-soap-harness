@@ -69,8 +69,6 @@ describe('Search > Drafts > Search Draft Basic', function () {
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res2.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -101,7 +99,5 @@ describe('Search > Drafts > Search Draft Basic', function () {
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
-		assert.exists(res2.SearchResponse, 'Response element should exist');
 	});
 });

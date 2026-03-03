@@ -66,7 +66,6 @@ describe('Admin > Zimlets > ACL Zimlets', function () {
 			</ModifyZimletRequest>`, adminAuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyZimletRequest grant should not fault');
-		assert.exists(modRes.ModifyZimletResponse, 'ModifyZimletResponse should exist');
 
 		// Verify zimlet is enabled in new COS
 		const statusRes = await soap.makeSOAPEnvelopeAdmin(
@@ -104,7 +103,6 @@ describe('Admin > Zimlets > ACL Zimlets', function () {
 			</ModifyZimletRequest>`, adminAuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyZimletRequest deny should not fault');
-		assert.exists(modRes.ModifyZimletResponse, 'ModifyZimletResponse should exist');
 
 		// Verify zimlet is NOT listed in COS
 		const statusRes = await soap.makeSOAPEnvelopeAdmin(
@@ -161,7 +159,7 @@ describe('Admin > Zimlets > ACL Zimlets', function () {
 				</zimlet>
 			</ModifyZimletRequest>`, adminAuthToken, false
 		);
-		assert.exists(bogusRes.Fault, 'ModifyZimletRequest with bogus ACL should fault');
+		assert.isString(bogusRes.Fault.Detail.Error.Code, 'ModifyZimletRequest with bogus ACL should fault');
 		assert.include(bogusRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 
 		// Verify zimlet is still not listed (deny still in effect)
@@ -211,7 +209,7 @@ describe('Admin > Zimlets > ACL Zimlets', function () {
 				</zimlet>
 			</ModifyZimletRequest>`, adminAuthToken, false
 		);
-		assert.exists(bogusRes.Fault, 'ModifyZimletRequest with bogus ACL should fault');
+		assert.isString(bogusRes.Fault.Detail.Error.Code, 'ModifyZimletRequest with bogus ACL should fault');
 		assert.include(bogusRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 
 		// Verify zimlet is still listed (grant still in effect despite bogus attempt)

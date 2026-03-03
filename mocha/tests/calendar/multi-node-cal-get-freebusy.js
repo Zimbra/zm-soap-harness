@@ -94,21 +94,21 @@ describe('Calendar > Multi Node Cal Get Freebusy', function () {
 				s="${start}" e="${end}" uid="${accountA2Id}"/>`, accountA1Token
         );
         assert.notExists(res1.Fault, 'GetFreeBusyRequest for A2 should not fault');
-        assert.exists(res1.GetFreeBusyResponse, 'GetFreeBusyResponse should exist');
+        assert.exists(res1.GetFreeBusyResponse.usr, 'usr element should exist');
 
         const res2 = await soap.makeSOAPEnvelopeAccount(
             `<GetFreeBusyRequest xmlns="urn:zimbraMail"
 				s="${start}" e="${end}" uid="${accountB1Id}"/>`, accountA1Token
         );
         assert.notExists(res2.Fault, 'GetFreeBusyRequest for B1 should not fault');
-        assert.exists(res2.GetFreeBusyResponse, 'GetFreeBusyResponse should exist');
+        assert.exists(res2.GetFreeBusyResponse.usr, 'usr element should exist');
 
         const res3 = await soap.makeSOAPEnvelopeAccount(
             `<GetFreeBusyRequest xmlns="urn:zimbraMail"
 				s="${start}" e="${end}" uid="${accountB2Id}"/>`, accountA1Token
         );
         assert.notExists(res3.Fault, 'GetFreeBusyRequest for B2 should not fault');
-        assert.exists(res3.GetFreeBusyResponse, 'GetFreeBusyResponse should exist');
+        assert.exists(res3.GetFreeBusyResponse.usr, 'usr element should exist');
     });
 
 
@@ -124,18 +124,21 @@ describe('Calendar > Multi Node Cal Get Freebusy', function () {
 				s="${start}" e="${end}" uid="${accountA1Id}"/>`, accountA2Token
         );
         assert.notExists(res1.Fault, 'GetFreeBusyRequest for A1 should not fault');
+        assert.exists(res1.GetFreeBusyResponse.usr, 'usr element should exist');
 
         const res2 = await soap.makeSOAPEnvelopeAccount(
             `<GetFreeBusyRequest xmlns="urn:zimbraMail"
 				s="${start}" e="${end}" uid="${accountB1Id}"/>`, accountA2Token
         );
         assert.notExists(res2.Fault, 'GetFreeBusyRequest for B1 should not fault');
+        assert.exists(res2.GetFreeBusyResponse.usr, 'usr element should exist');
 
         const res3 = await soap.makeSOAPEnvelopeAccount(
             `<GetFreeBusyRequest xmlns="urn:zimbraMail"
 				s="${start}" e="${end}" uid="${accountB2Id}"/>`, accountA2Token
         );
         assert.notExists(res3.Fault, 'GetFreeBusyRequest for B2 should not fault');
+        assert.exists(res3.GetFreeBusyResponse.usr, 'usr element should exist');
     });
 
 
@@ -151,18 +154,21 @@ describe('Calendar > Multi Node Cal Get Freebusy', function () {
 				s="${start}" e="${end}" uid="${accountA1Id}"/>`, accountB1Token
         );
         assert.notExists(res1.Fault, 'GetFreeBusyRequest for A1 should not fault');
+        assert.exists(res1.GetFreeBusyResponse.usr, 'usr element should exist');
 
         const res2 = await soap.makeSOAPEnvelopeAccount(
             `<GetFreeBusyRequest xmlns="urn:zimbraMail"
 				s="${start}" e="${end}" uid="${accountA2Id}"/>`, accountB1Token
         );
         assert.notExists(res2.Fault, 'GetFreeBusyRequest for A2 should not fault');
+        assert.exists(res2.GetFreeBusyResponse.usr, 'usr element should exist');
 
         const res3 = await soap.makeSOAPEnvelopeAccount(
             `<GetFreeBusyRequest xmlns="urn:zimbraMail"
 				s="${start}" e="${end}" uid="${accountB2Id}"/>`, accountB1Token
         );
         assert.notExists(res3.Fault, 'GetFreeBusyRequest for B2 should not fault');
+        assert.exists(res3.GetFreeBusyResponse.usr, 'usr element should exist');
     });
 
 
@@ -178,18 +184,21 @@ describe('Calendar > Multi Node Cal Get Freebusy', function () {
 				s="${start}" e="${end}" uid="${accountA1Id}"/>`, accountB2Token
         );
         assert.notExists(res1.Fault, 'GetFreeBusyRequest for A1 should not fault');
+        assert.exists(res1.GetFreeBusyResponse.usr, 'usr element should exist');
 
         const res2 = await soap.makeSOAPEnvelopeAccount(
             `<GetFreeBusyRequest xmlns="urn:zimbraMail"
 				s="${start}" e="${end}" uid="${accountA2Id}"/>`, accountB2Token
         );
         assert.notExists(res2.Fault, 'GetFreeBusyRequest for A2 should not fault');
+        assert.exists(res2.GetFreeBusyResponse.usr, 'usr element should exist');
 
         const res3 = await soap.makeSOAPEnvelopeAccount(
             `<GetFreeBusyRequest xmlns="urn:zimbraMail"
 				s="${start}" e="${end}" uid="${accountB1Id}"/>`, accountB2Token
         );
         assert.notExists(res3.Fault, 'GetFreeBusyRequest for B1 should not fault');
+        assert.exists(res3.GetFreeBusyResponse.usr, 'usr element should exist');
     });
 
 
@@ -227,7 +236,6 @@ describe('Calendar > Multi Node Cal Get Freebusy', function () {
 				uid="${accountA2Id}"/>`, accountA1Token
         );
         assert.notExists(res.Fault, 'GetFreeBusyRequest should not fault');
-        assert.exists(res.GetFreeBusyResponse, 'GetFreeBusyResponse should exist');
     });
 
 
@@ -265,7 +273,6 @@ describe('Calendar > Multi Node Cal Get Freebusy', function () {
 				uid="${accountA2Id}"/>`, accountA1Token
         );
         assert.notExists(res.Fault, 'GetFreeBusyRequest should not fault');
-        assert.exists(res.GetFreeBusyResponse, 'GetFreeBusyResponse should exist');
     });
 
 
@@ -282,7 +289,6 @@ describe('Calendar > Multi Node Cal Get Freebusy', function () {
 				uid="${nonExist1}"/>`, accountA1Token
         );
         assert.notExists(res1.Fault, 'GetFreeBusyRequest for non-existing should not fault');
-        assert.exists(res1.GetFreeBusyResponse, 'GetFreeBusyResponse should exist');
 
         const res2 = await soap.makeSOAPEnvelopeAccount(
             `<GetFreeBusyRequest xmlns="urn:zimbraMail"
@@ -290,7 +296,6 @@ describe('Calendar > Multi Node Cal Get Freebusy', function () {
 				uid="${nonExist2}"/>`, accountA1Token
         );
         assert.notExists(res2.Fault, 'GetFreeBusyRequest for non-existing should not fault');
-        assert.exists(res2.GetFreeBusyResponse, 'GetFreeBusyResponse should exist');
     });
 
 
@@ -332,14 +337,14 @@ describe('Calendar > Multi Node Cal Get Freebusy', function () {
 			</SearchRequest>`, accountA2Token
         );
         assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-        if (searchRes.SearchResponse && searchRes.SearchResponse.appt) {
-            const appts = Array.isArray(searchRes.SearchResponse.appt)
-                ? searchRes.SearchResponse.appt : [searchRes.SearchResponse.appt];
-            const invId = appts[0].invId;
+        assert.exists(searchRes.SearchResponse.appt, 'Appointment should be found in search results');
+        const appts = Array.isArray(searchRes.SearchResponse.appt)
+            ? searchRes.SearchResponse.appt : [searchRes.SearchResponse.appt];
+        const invId = appts[0].invId;
 
-            // Accept the invitation
-            const acceptRes = await soap.makeSOAPEnvelopeAccount(
-                `<SendInviteReplyRequest xmlns="urn:zimbraMail"
+        // Accept the invitation
+        const acceptRes = await soap.makeSOAPEnvelopeAccount(
+            `<SendInviteReplyRequest xmlns="urn:zimbraMail"
 					id="${invId}" compNum="0" verb="ACCEPT" updateOrganizer="TRUE">
 					<m origid="${invId}" rt="r">
 						<e t="t" a="${accountA1}"/>
@@ -349,9 +354,8 @@ describe('Calendar > Multi Node Cal Get Freebusy', function () {
 						</mp>
 					</m>
 				</SendInviteReplyRequest>`, accountA2Token
-            );
-            assert.notExists(acceptRes.Fault, 'SendInviteReplyRequest ACCEPT should not fault');
-        }
+        );
+        assert.notExists(acceptRes.Fault, 'SendInviteReplyRequest ACCEPT should not fault');
 
         // Verify busy status as accountA1
         accountA1Token = await soap.getAccountAuthToken(accountA1);
@@ -361,6 +365,5 @@ describe('Calendar > Multi Node Cal Get Freebusy', function () {
 				uid="${accountA2Id}"/>`, accountA1Token
         );
         assert.notExists(fbRes.Fault, 'GetFreeBusyRequest should not fault');
-        assert.exists(fbRes.GetFreeBusyResponse, 'GetFreeBusyResponse should exist');
     });
 });

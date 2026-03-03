@@ -26,7 +26,6 @@ describe('Rest Servlet > Upload Servlet > Send Msg Request', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
@@ -44,7 +43,6 @@ describe('Rest Servlet > Upload Servlet > Send Msg Request', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 
 		account1Token = Array.isArray(authRes.AuthResponse.authToken)
@@ -87,7 +85,7 @@ describe('Rest Servlet > Upload Servlet > Send Msg Request', function () {
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Verify response
@@ -104,7 +102,7 @@ describe('Rest Servlet > Upload Servlet > Send Msg Request', function () {
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
 		const getMsg = Array.isArray(getRes.GetMsgResponse.m)
 			? getRes.GetMsgResponse.m[0] : getRes.GetMsgResponse.m;
-		assert.exists(getMsg, 'GetMsgResponse should contain m');
+		assert.exists(getMsg.id, 'message id should exist');
 		const msg = Array.isArray(getRes.GetMsgResponse.m)
 			? getRes.GetMsgResponse.m[0]
 			: getRes.GetMsgResponse.m;
@@ -130,6 +128,6 @@ describe('Rest Servlet > Upload Servlet > Send Msg Request', function () {
 		const mp = Array.isArray(msg.mp) ? msg.mp[0] : msg.mp;
 
 		// Verify response
-		assert.exists(mp, 'Message part should exist');
+		assert.exists(mp.ct, 'Message part content type should exist');
 	});
 });

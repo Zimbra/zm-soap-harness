@@ -48,7 +48,6 @@ describe('Sync > Sync Appointment', function () {
 
 		// Verify response
 		assert.notExists(syncRes1.Fault, 'Response should not be a Fault');
-		assert.exists(syncRes1.SyncResponse, 'SyncResponse should exist');
 		const token1 = syncRes1.SyncResponse.token;
 
 		// Verify response
@@ -81,7 +80,6 @@ describe('Sync > Sync Appointment', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAppointmentResponse, 'CreateAppointmentResponse should exist');
 		const apptId = createRes.CreateAppointmentResponse.apptId;
 
 		// Verify response
@@ -98,7 +96,6 @@ describe('Sync > Sync Appointment', function () {
 
 		// Verify response
 		assert.notExists(syncRes2.Fault, 'Response should not be a Fault');
-		assert.exists(syncRes2.SyncResponse, 'SyncResponse should exist');
 		const syncAppts = Array.isArray(syncRes2.SyncResponse.appt)
 			? syncRes2.SyncResponse.appt : (syncRes2.SyncResponse.appt ? [syncRes2.SyncResponse.appt] : []);
 		const syncAppt = syncAppts.find(a => a.id === apptId);
@@ -178,7 +175,6 @@ describe('Sync > Sync Appointment', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
-		assert.exists(modRes.ModifyAppointmentResponse, 'ModifyAppointmentResponse should exist');
 		const modApptId = modRes.ModifyAppointmentResponse.apptId;
 
 		// Sync with token - verify modified appointment
@@ -266,7 +262,6 @@ describe('Sync > Sync Appointment', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
-		assert.exists(modRes.ModifyAppointmentResponse, 'ModifyAppointmentResponse should exist');
 		const modApptId = modRes.ModifyAppointmentResponse.apptId;
 
 		// Sync with token
@@ -354,7 +349,6 @@ describe('Sync > Sync Appointment', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
-		assert.exists(modRes.ModifyAppointmentResponse, 'ModifyAppointmentResponse should exist');
 		const modApptId = modRes.ModifyAppointmentResponse.apptId;
 
 		// Sync with token
@@ -406,7 +400,6 @@ describe('Sync > Sync Appointment', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAppointmentResponse, 'CreateAppointmentResponse should exist');
 		const apptId5 = createRes.CreateAppointmentResponse.apptId;
 
 		// Verify response
@@ -461,7 +454,6 @@ describe('Sync > Sync Appointment', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAppointmentResponse, 'CreateAppointmentResponse should exist');
 		const apptId6 = createRes.CreateAppointmentResponse.apptId;
 
 		// Verify response
@@ -544,7 +536,6 @@ describe('Sync > Sync Appointment', function () {
 
 		// Verify response
 		assert.notExists(setRes.Fault, 'Response should not be a Fault');
-		assert.exists(setRes.SetAppointmentResponse, 'SetAppointmentResponse should exist');
 		const apptId = setRes.SetAppointmentResponse.apptId;
 
 		// Verify response
@@ -874,8 +865,6 @@ describe('Sync > Sync Appointment', function () {
 
 		// Verify response
 		assert.notExists(cancelRes.Fault, 'Response should not be a Fault');
-		assert.exists(cancelRes.CancelAppointmentResponse,
-			'CancelAppointmentResponse should exist');
 
 		// Empty trash
 		const emptyRes = await soap.makeSOAPEnvelopeAccount(

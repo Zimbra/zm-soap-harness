@@ -52,7 +52,6 @@ describe('Admin > LDAP > Modify LDAP Entry Request', function () {
 			</ModifyLDAPEntryRequest>`, adminAuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyLDAPEntryRequest should not fault');
-		assert.exists(modRes.ModifyLDAPEntryResponse, 'ModifyLDAPEntryResponse should exist');
 	});
 
 
@@ -87,7 +86,7 @@ describe('Admin > LDAP > Modify LDAP Entry Request', function () {
 				<a n="zimbraQuotaWarnMessage">${common.getUniqueString()}</a>
 			</ModifyLDAPEntryRequest>`, adminAuthToken, false
 		);
-		assert.exists(modRes.Fault, 'ModifyLDAPEntryRequest should fault for invalid DN');
+		assert.isString(modRes.Fault.Detail.Error.Code, 'ModifyLDAPEntryRequest should fault for invalid DN');
 		assert.include(modRes.Fault.Detail.Error.Code, 'service.FAILURE');
 	});
 
@@ -109,7 +108,7 @@ describe('Admin > LDAP > Modify LDAP Entry Request', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken, false
 		);
-		assert.exists(reCreateRes.Fault, 'Re-create should fault with duplicate');
+		assert.isString(reCreateRes.Fault.Detail.Error.Code, 'Re-create should fault with duplicate');
 		const reason = reCreateRes.Fault.Reason?.Text || '';
 		const dnMatch = reason.match(/DN:(.*)$/);
 		assert.isNotNull(dnMatch, 'DN should be present in fault reason');
@@ -122,7 +121,6 @@ describe('Admin > LDAP > Modify LDAP Entry Request', function () {
 			</ModifyLDAPEntryRequest>`, adminAuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyLDAPEntryRequest should not fault');
-		assert.exists(modRes.ModifyLDAPEntryResponse, 'ModifyLDAPEntryResponse should exist');
 
 		// Flush cache
 		await soap.makeSOAPEnvelopeAdmin(

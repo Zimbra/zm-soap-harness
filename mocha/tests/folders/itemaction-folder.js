@@ -40,7 +40,9 @@ describe('Folders > Itemaction Folder', function () {
 
 		// CreateFolderRequest
 		const respA = await soap.makeSOAPEnvelopeAccount(createA, accountAuthToken);
+		assert.notExists(respA.Fault, 'Create A should not be a Fault');
 		const folderAId = respA.CreateFolderResponse.folder[0].id;
+		assert.exists(folderAId, 'Folder A ID should exist');
 
 		// Create folderB
 		const createB =
@@ -48,9 +50,11 @@ describe('Folders > Itemaction Folder', function () {
 				<folder name='${folderBName}' l='1'/>
 			</CreateFolderRequest>`;
 
-		// ItemActionRequest
+		// CreateFolderRequest
 		const respB = await soap.makeSOAPEnvelopeAccount(createB, accountAuthToken);
+		assert.notExists(respB.Fault, 'Create B should not be a Fault');
 		const folderBId = respB.CreateFolderResponse.folder[0].id;
+		assert.exists(folderBId, 'Folder B ID should exist');
 
 		// Move folderB under folderA via ItemActionRequest
 		const moveRequest =
@@ -58,10 +62,11 @@ describe('Folders > Itemaction Folder', function () {
 				<action op='move' id='${folderBId}' l='${folderAId}'/>
 			</ItemActionRequest>`;
 
-		// CreateFolderRequest
+		// ItemActionRequest
 		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken);
 
 		// Verify response
+		assert.notExists(moveResponse.Fault, 'Move should not be a Fault');
 		assert.equal(moveResponse.ItemActionResponse.action.op, 'move',
 			'Verify op is move');
 		assert.equal(moveResponse.ItemActionResponse.action.id, folderBId,
@@ -77,9 +82,11 @@ describe('Folders > Itemaction Folder', function () {
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
 
-		// ItemActionRequest
+		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
+		assert.notExists(createResponse.Fault, 'Create should not be a Fault');
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
+		assert.exists(folderId, 'Folder ID should exist');
 
 		// Try to move folder within itself
 		const moveRequest =
@@ -87,11 +94,11 @@ describe('Folders > Itemaction Folder', function () {
 				<action op='move' id='${folderId}' l='${folderId}'/>
 			</ItemActionRequest>`;
 
-		// CreateFolderRequest
+		// ItemActionRequest
 		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken, false);
 
 		// Verify response
-		assert.exists(moveResponse.Fault, 'Verify Fault exists');
+		assert.exists(moveResponse.Fault.Detail.Error, 'Fault Error should exist');
 		assert.include(moveResponse.Fault.Reason.Text, 'cannot put object in that folder',
 			'Verify CANNOT_CONTAIN error');
 	});
@@ -105,9 +112,11 @@ describe('Folders > Itemaction Folder', function () {
 				<folder name='${folderName}' l='3'/>
 			</CreateFolderRequest>`;
 
-		// ItemActionRequest
+		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
+		assert.notExists(createResponse.Fault, 'Create should not be a Fault');
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
+		assert.exists(folderId, 'Folder ID should exist');
 
 		// Move to trash
 		const moveRequest =
@@ -115,10 +124,11 @@ describe('Folders > Itemaction Folder', function () {
 				<action op='move' id='${folderId}' l='3'/>
 			</ItemActionRequest>`;
 
-		// CreateFolderRequest
+		// ItemActionRequest
 		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken);
 
 		// Verify response
+		assert.notExists(moveResponse.Fault, 'Move should not be a Fault');
 		assert.equal(moveResponse.ItemActionResponse.action.op, 'move',
 			'Verify op is move');
 		assert.equal(moveResponse.ItemActionResponse.action.id, folderId,
@@ -134,9 +144,11 @@ describe('Folders > Itemaction Folder', function () {
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
 
-		// ItemActionRequest
+		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
+		assert.notExists(createResponse.Fault, 'Create should not be a Fault');
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
+		assert.exists(folderId, 'Folder ID should exist');
 
 		// Try to move to non-existing folder
 		const moveRequest =
@@ -144,11 +156,11 @@ describe('Folders > Itemaction Folder', function () {
 				<action op='move' id='${folderId}' l='-1'/>
 			</ItemActionRequest>`;
 
-		// CreateFolderRequest
+		// ItemActionRequest
 		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken, false);
 
 		// Verify response
-		assert.exists(moveResponse.Fault, 'Verify Fault exists');
+		assert.exists(moveResponse.Fault.Detail.Error, 'Fault Error should exist');
 		assert.include(moveResponse.Fault.Reason.Text, 'no such folder',
 			'Verify NO_SUCH_FOLDER error');
 	});
@@ -162,9 +174,11 @@ describe('Folders > Itemaction Folder', function () {
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
 
-		// ItemActionRequest
+		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
+		assert.notExists(createResponse.Fault, 'Create should not be a Fault');
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
+		assert.exists(folderId, 'Folder ID should exist');
 
 		// Delete folder
 		const deleteRequest =
@@ -173,18 +187,12 @@ describe('Folders > Itemaction Folder', function () {
 			</ItemActionRequest>`;
 		const deleteResponse = await soap.makeSOAPEnvelopeAccount(deleteRequest, accountAuthToken, false);
 
-		// Server may return success or fault
-		if (deleteResponse.ItemActionResponse) {
-
-			// Verify response
-			assert.equal(deleteResponse.ItemActionResponse.action.op, 'delete',
-				'Verify op is delete');
-			assert.equal(deleteResponse.ItemActionResponse.action.id, folderId,
-				'Verify folder id');
-		} else {
-			assert.exists(deleteResponse.Fault,
-				'Should return Fault if delete failed');
-		}
+		// Verify response
+		assert.notExists(deleteResponse.Fault, 'Delete should not be a Fault');
+		assert.equal(deleteResponse.ItemActionResponse.action.op, 'delete',
+			'Verify op is delete');
+		assert.equal(deleteResponse.ItemActionResponse.action.id, folderId,
+			'Verify folder id');
 	});
 
 
@@ -198,17 +206,21 @@ describe('Folders > Itemaction Folder', function () {
 				<folder name='${folder1Name}' l='1'/>
 			</CreateFolderRequest>`;
 
-		// ItemActionRequest
+		// CreateFolderRequest
 		const resp1 = await soap.makeSOAPEnvelopeAccount(create1, accountAuthToken);
+		assert.notExists(resp1.Fault, 'Create folder1 should not be a Fault');
 		const folder1Id = resp1.CreateFolderResponse.folder[0].id;
+		assert.exists(folder1Id, 'Folder1 ID should exist');
 
 		const deleteRequest =
 			`<ItemActionRequest xmlns='urn:zimbraMail'>
 				<action op='delete' id='${folder1Id}'/>
 			</ItemActionRequest>`;
 
-		// CreateFolderRequest
-		await soap.makeSOAPEnvelopeAccount(deleteRequest, accountAuthToken);
+		// ItemActionRequest
+		const deleteResp = await soap.makeSOAPEnvelopeAccount(deleteRequest, accountAuthToken);
+		assert.notExists(deleteResp.Fault, 'Delete should not be a Fault');
+		assert.equal(deleteResp.ItemActionResponse.action.op, 'delete', 'Verify op is delete');
 
 		// Create folder2
 		const create2 =
@@ -216,9 +228,11 @@ describe('Folders > Itemaction Folder', function () {
 				<folder name='${folder2Name}' l='1'/>
 			</CreateFolderRequest>`;
 
-		// ItemActionRequest
+		// CreateFolderRequest
 		const resp2 = await soap.makeSOAPEnvelopeAccount(create2, accountAuthToken);
+		assert.notExists(resp2.Fault, 'Create folder2 should not be a Fault');
 		const folder2Id = resp2.CreateFolderResponse.folder[0].id;
+		assert.exists(folder2Id, 'Folder2 ID should exist');
 
 		// Try to move folder2 to deleted folder1
 		const moveRequest =
@@ -227,17 +241,10 @@ describe('Folders > Itemaction Folder', function () {
 			</ItemActionRequest>`;
 		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, accountAuthToken, false);
 
-		// Server may return Fault (NO_SUCH_FOLDER) or succeed silently
-		if (moveResponse.Fault) {
-
-			// Verify response
-			assert.include(moveResponse.Fault.Reason.Text, 'no such folder',
-				'Verify NO_SUCH_FOLDER error');
-		} else {
-			assert.notExists(moveResponse.Fault, 'Response should not be a Fault');
-			assert.exists(moveResponse.ItemActionResponse,
-				'Move to deleted folder succeeded silently');
-		}
+		// Verify response - moving to a deleted folder should fail
+		assert.exists(moveResponse.Fault.Detail.Error, 'Fault Error should exist');
+		assert.include(moveResponse.Fault.Reason.Text, 'no such folder',
+			'Verify NO_SUCH_FOLDER error');
 	});
 
 
@@ -249,9 +256,11 @@ describe('Folders > Itemaction Folder', function () {
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
 
-		// ItemActionRequest
+		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
+		assert.notExists(createResponse.Fault, 'Create should not be a Fault');
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
+		assert.exists(folderId, 'Folder ID should exist');
 
 		// Delete first time
 		const deleteRequest1 =
@@ -269,12 +278,8 @@ describe('Folders > Itemaction Folder', function () {
 			</ItemActionRequest>`;
 		const deleteResponse2 = await soap.makeSOAPEnvelopeAccount(deleteRequest2, accountAuthToken);
 
-		// Re-delete should be idempotent (success) or return a Fault — both are valid
-		// Verify response
-		assert.isTrue(
-			!!deleteResponse2.ItemActionResponse || !!deleteResponse2.Fault,
-			'Verify re-delete returns success or fault'
-		);
+		// Verify response - re-delete is idempotent (should succeed)
+		assert.notExists(deleteResponse2.Fault, 'Re-delete should not be a Fault');
 	});
 
 
@@ -288,9 +293,11 @@ describe('Folders > Itemaction Folder', function () {
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
 
-		// CreateTagRequest
+		// CreateFolderRequest
 		const folderResponse = await soap.makeSOAPEnvelopeAccount(createFolderRequest, accountAuthToken);
+		assert.notExists(folderResponse.Fault, 'Create folder should not be a Fault');
 		const folderId = folderResponse.CreateFolderResponse.folder[0].id;
+		assert.exists(folderId, 'Folder ID should exist');
 
 		// Create tag
 		const createTagRequest =
@@ -298,9 +305,11 @@ describe('Folders > Itemaction Folder', function () {
 				<tag name='${tagName}' color='0'/>
 			</CreateTagRequest>`;
 
-		// ItemActionRequest
+		// CreateTagRequest
 		const tagResponse = await soap.makeSOAPEnvelopeAccount(createTagRequest, accountAuthToken);
+		assert.notExists(tagResponse.Fault, 'Create tag should not be a Fault');
 		const tagId = tagResponse.CreateTagResponse.tag[0].id;
+		assert.exists(tagId, 'Tag ID should exist');
 
 		// Try to tag the folder
 		const tagRequest =
@@ -308,11 +317,11 @@ describe('Folders > Itemaction Folder', function () {
 				<action id='${folderId}' op='tag' tag='${tagId}'/>
 			</ItemActionRequest>`;
 
-		// CreateFolderRequest
+		// ItemActionRequest
 		const tagActionResponse = await soap.makeSOAPEnvelopeAccount(tagRequest, accountAuthToken, false);
 
 		// Verify response
-		assert.exists(tagActionResponse.Fault, 'Verify Fault exists');
+		assert.exists(tagActionResponse.Fault.Detail.Error, 'Fault Error should exist');
 		assert.include(tagActionResponse.Fault.Reason.Text, 'cannot apply tag',
 			'Verify CANNOT_TAG error');
 	});
@@ -326,9 +335,11 @@ describe('Folders > Itemaction Folder', function () {
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
 
-		// ItemActionRequest
+		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
+		assert.notExists(createResponse.Fault, 'Create should not be a Fault');
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
+		assert.exists(folderId, 'Folder ID should exist');
 
 		// Mark as read
 		const readRequest =
@@ -336,10 +347,11 @@ describe('Folders > Itemaction Folder', function () {
 				<action id='${folderId}' op='read'/>
 			</ItemActionRequest>`;
 
-		// CreateFolderRequest
+		// ItemActionRequest
 		const readResponse = await soap.makeSOAPEnvelopeAccount(readRequest, accountAuthToken);
 
 		// Verify response
+		assert.notExists(readResponse.Fault, 'Read should not be a Fault');
 		assert.equal(readResponse.ItemActionResponse.action.op, 'read',
 			'Verify op is read');
 		assert.equal(readResponse.ItemActionResponse.action.id, folderId,
@@ -355,9 +367,11 @@ describe('Folders > Itemaction Folder', function () {
 				<folder name='${folderName}' l='1'/>
 			</CreateFolderRequest>`;
 
-		// ItemActionRequest
+		// CreateFolderRequest
 		const createResponse = await soap.makeSOAPEnvelopeAccount(createRequest, accountAuthToken);
+		assert.notExists(createResponse.Fault, 'Create should not be a Fault');
 		const folderId = createResponse.CreateFolderResponse.folder[0].id;
+		assert.exists(folderId, 'Folder ID should exist');
 
 		// Try to mark as unread
 		const unreadRequest =
@@ -365,11 +379,11 @@ describe('Folders > Itemaction Folder', function () {
 				<action id='${folderId}' op='!read'/>
 			</ItemActionRequest>`;
 
-		// CreateFolderRequest
+		// ItemActionRequest
 		const unreadResponse = await soap.makeSOAPEnvelopeAccount(unreadRequest, accountAuthToken, false);
 
 		// Verify response
-		assert.exists(unreadResponse.Fault, 'Verify Fault exists');
+		assert.exists(unreadResponse.Fault.Detail.Error, 'Fault Error should exist');
 	});
 
 
@@ -385,16 +399,20 @@ describe('Folders > Itemaction Folder', function () {
 
 		// CreateFolderRequest
 		const resp1 = await soap.makeSOAPEnvelopeAccount(create1, accountAuthToken);
+		assert.notExists(resp1.Fault, 'Create 1 should not be a Fault');
 		const folder1Id = resp1.CreateFolderResponse.folder[0].id;
+		assert.exists(folder1Id, 'Folder1 ID should exist');
 
 		const create2 =
 			`<CreateFolderRequest xmlns='urn:zimbraMail'>
 				<folder name='${folder2Name}' l='1'/>
 			</CreateFolderRequest>`;
 
-		// ItemActionRequest
+		// CreateFolderRequest
 		const resp2 = await soap.makeSOAPEnvelopeAccount(create2, accountAuthToken);
+		assert.notExists(resp2.Fault, 'Create 2 should not be a Fault');
 		const folder2Id = resp2.CreateFolderResponse.folder[0].id;
+		assert.exists(folder2Id, 'Folder2 ID should exist');
 
 		// Update folder1 to be under folder2
 		const updateRequest =
@@ -404,6 +422,7 @@ describe('Folders > Itemaction Folder', function () {
 		const updateResponse = await soap.makeSOAPEnvelopeAccount(updateRequest, accountAuthToken);
 
 		// Verify response
+		assert.notExists(updateResponse.Fault, 'Update should not be a Fault');
 		assert.equal(updateResponse.ItemActionResponse.action.op, 'update',
 			'Verify op is update');
 		assert.equal(updateResponse.ItemActionResponse.action.id, folder1Id,

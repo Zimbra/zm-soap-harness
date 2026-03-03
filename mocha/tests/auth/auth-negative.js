@@ -28,7 +28,11 @@ describe('Auth > Auth Negative', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse, 'Should create test account');
+		const acct = Array.isArray(createRes.CreateAccountResponse.account)
+			? createRes.CreateAccountResponse.account[0]
+			: createRes.CreateAccountResponse.account;
+		assert.exists(acct.id, 'Account ID should exist');
+		assert.isString(acct.id, 'Account ID should be a string');
 	});
 
 	beforeEach(async function () {
@@ -55,7 +59,7 @@ describe('Auth > Auth Negative', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should return Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
 	});
@@ -71,7 +75,7 @@ describe('Auth > Auth Negative', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should return Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
 	});
@@ -87,7 +91,7 @@ describe('Auth > Auth Negative', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should return Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
 	});
@@ -103,7 +107,7 @@ describe('Auth > Auth Negative', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should return Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
 	});
@@ -119,7 +123,7 @@ describe('Auth > Auth Negative', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should return Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
 	});
@@ -135,7 +139,7 @@ describe('Auth > Auth Negative', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should return Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
 	});
@@ -151,7 +155,7 @@ describe('Auth > Auth Negative', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should return Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
 	});
@@ -167,7 +171,7 @@ describe('Auth > Auth Negative', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should return Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
 	});
@@ -183,7 +187,7 @@ describe('Auth > Auth Negative', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should return Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
 	});
@@ -199,7 +203,7 @@ describe('Auth > Auth Negative', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should return Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
 	});
@@ -215,7 +219,7 @@ describe('Auth > Auth Negative', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should return Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
 	});
@@ -231,7 +235,7 @@ describe('Auth > Auth Negative', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should return Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
 	});
@@ -247,7 +251,7 @@ describe('Auth > Auth Negative', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should return Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
 	});
@@ -263,7 +267,7 @@ describe('Auth > Auth Negative', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should return Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED');
 	});

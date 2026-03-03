@@ -200,7 +200,7 @@ describe('Mail > Conversation > Conversation Action', function () {
 				<action id="${convId}" op="tag" tag="${tagId}"/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'mail.NO_SUCH_TAG',
 			'Should be mail.NO_SUCH_TAG');
 	});
@@ -228,7 +228,7 @@ describe('Mail > Conversation > Conversation Action', function () {
 				<action id="${convId}" op="!tag" tag="${tagId}"/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'mail.NO_SUCH_TAG',
 			'Should be mail.NO_SUCH_TAG');
 	});
@@ -290,7 +290,7 @@ describe('Mail > Conversation > Conversation Action', function () {
 				<action id="${convId}" op="move" l="${folderId}"/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'mail.NO_SUCH_FOLDER',
 			'Should be mail.NO_SUCH_FOLDER');
 	});
@@ -301,7 +301,7 @@ describe('Mail > Conversation > Conversation Action', function () {
 			`<ConvActionRequest xmlns="urn:zimbraMail">
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -313,7 +313,7 @@ describe('Mail > Conversation > Conversation Action', function () {
 				<action op="read"/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -325,7 +325,7 @@ describe('Mail > Conversation > Conversation Action', function () {
 				<action id="${convId}"/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -337,7 +337,7 @@ describe('Mail > Conversation > Conversation Action', function () {
 				<action id="         ${convId}" op="read"/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -349,7 +349,7 @@ describe('Mail > Conversation > Conversation Action', function () {
 				<action id="${convId}         " op="read"/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -361,7 +361,7 @@ describe('Mail > Conversation > Conversation Action', function () {
 				<action id="                    " op="read"/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -373,7 +373,7 @@ describe('Mail > Conversation > Conversation Action', function () {
 				<action id="" op="read"/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -385,7 +385,7 @@ describe('Mail > Conversation > Conversation Action', function () {
 				<action id="some text" op="read"/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -397,7 +397,7 @@ describe('Mail > Conversation > Conversation Action', function () {
 				<action id="${convId}" op=""/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -409,7 +409,7 @@ describe('Mail > Conversation > Conversation Action', function () {
 				<action id="${convId}" op="           "/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -421,7 +421,7 @@ describe('Mail > Conversation > Conversation Action', function () {
 				<action id="${convId}" op="//\\\\'^%"/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -433,7 +433,7 @@ describe('Mail > Conversation > Conversation Action', function () {
 				<action id="${convId}" op="some text"/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -445,7 +445,7 @@ describe('Mail > Conversation > Conversation Action', function () {
 				<action id="${convId}" op="       read"/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});
@@ -457,7 +457,7 @@ describe('Mail > Conversation > Conversation Action', function () {
 				<action id="${convId}" op="read    "/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 	});

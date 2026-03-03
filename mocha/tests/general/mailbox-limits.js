@@ -135,7 +135,7 @@ do it
 		);
 
 		// Verify response
-		assert.exists(addRes.Fault, 'Should return Fault for quota exceeded');
+		assert.isString(addRes.Fault.Detail.Error.Code, 'Should return Fault for quota exceeded');
 		assert.include(addRes.Fault.Detail.Error.Code, 'mail.QUOTA_EXCEEDED',
 			'Error code should be mail.QUOTA_EXCEEDED');
 
@@ -153,7 +153,7 @@ do it
 		);
 
 		// Verify response
-		assert.exists(draftRes.Fault, 'SaveDraft should fail with quota exceeded');
+		assert.isString(draftRes.Fault.Detail.Error.Code, 'SaveDraft should fail with quota exceeded');
 		assert.include(draftRes.Fault.Detail.Error.Code, 'mail.QUOTA_EXCEEDED',
 			'Draft save should return QUOTA_EXCEEDED');
 	});
@@ -213,7 +213,7 @@ Some content to use up quota
 		);
 
 		// Verify response
-		assert.exists(sendRes.Fault, 'Should return Fault for quota exceeded');
+		assert.isString(sendRes.Fault.Detail.Error.Code, 'Should return Fault for quota exceeded');
 		assert.include(sendRes.Fault.Detail.Error.Code, 'mail.QUOTA_EXCEEDED',
 			'Error code should be mail.QUOTA_EXCEEDED');
 	});
@@ -263,7 +263,7 @@ do it
 		assert.notExists(addRes.Fault, 'AddMsgRequest should not fault');
 		const addedMsg = Array.isArray(addRes.AddMsgResponse.m)
 			? addRes.AddMsgResponse.m[0] : addRes.AddMsgResponse.m;
-		assert.exists(addedMsg, 'AddMsgResponse should contain m');
+		assert.exists(addedMsg.id, 'added msg id should exist');
 	});
 
 
@@ -313,7 +313,7 @@ do it
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 	});
 
@@ -370,7 +370,7 @@ do it
 		);
 
 		// Verify response
-		assert.exists(addRes.Fault, 'Should return Fault for quota exceeded');
+		assert.isString(addRes.Fault.Detail.Error.Code, 'Should return Fault for quota exceeded');
 		assert.include(addRes.Fault.Detail.Error.Code, 'mail.QUOTA_EXCEEDED',
 			'Error code should be mail.QUOTA_EXCEEDED');
 	});
@@ -420,7 +420,7 @@ do it
 		assert.notExists(addRes.Fault, 'AddMsgRequest should not fault');
 		const addedMsg = Array.isArray(addRes.AddMsgResponse.m)
 			? addRes.AddMsgResponse.m[0] : addRes.AddMsgResponse.m;
-		assert.exists(addedMsg, 'AddMsgResponse should contain m');
+		assert.exists(addedMsg.id, 'added msg id should exist');
 	});
 
 
@@ -488,7 +488,7 @@ This message should fail because quota is now exceeded
 		);
 
 		// Verify response
-		assert.exists(addOver.Fault, 'Should return Fault for quota exceeded');
+		assert.isString(addOver.Fault.Detail.Error.Code, 'Should return Fault for quota exceeded');
 	});
 
 
@@ -552,7 +552,7 @@ Some content to use up quota
 		);
 
 		// Verify response
-		assert.exists(sendRes.Fault, 'Should return Fault for quota exceeded');
+		assert.isString(sendRes.Fault.Detail.Error.Code, 'Should return Fault for quota exceeded');
 	});
 
 
@@ -614,7 +614,7 @@ Some content to use up quota
 		);
 
 		// Verify response
-		assert.exists(sendFail.Fault, 'Should fail - quota exceeded');
+		assert.isString(sendFail.Fault.Detail.Error.Code, 'Should fail - quota exceeded');
 
 		// Perform message action
 		await soap.makeSOAPEnvelopeAccount(
@@ -705,7 +705,7 @@ This should fail
 		);
 
 		// Verify response
-		assert.exists(addFail.Fault, 'Should fail - quota exceeded');
+		assert.isString(addFail.Fault.Detail.Error.Code, 'Should fail - quota exceeded');
 
 		// Perform message action
 		await soap.makeSOAPEnvelopeAccount(
@@ -791,6 +791,5 @@ Some content
 
 		// Verify response
 		assert.notExists(contactRes.Fault, 'CreateContactRequest should succeed even over quota');
-		assert.exists(contactRes.CreateContactResponse, 'CreateContactResponse should exist');
 	});
 });

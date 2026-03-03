@@ -271,7 +271,6 @@ const m = Array.isArray(searchMsgRes.SearchResponse.m)
 			</SearchConvRequest>`, acct2AuthToken
 		);
 		assert.notExists(res.Fault, 'SearchConvRequest should not fault');
-		assert.exists(res.SearchConvResponse, 'SearchConvResponse should exist');
 	});
 
 
@@ -290,7 +289,6 @@ const m = Array.isArray(searchMsgRes.SearchResponse.m)
 			</SearchConvRequest>`, acct2AuthToken
 		);
 		assert.notExists(res.Fault, 'SearchConvRequest should not fault');
-		assert.exists(res.SearchConvResponse, 'SearchConvResponse should exist');
 	});
 
 
@@ -301,7 +299,7 @@ const m = Array.isArray(searchMsgRes.SearchResponse.m)
 				<query>subject:(message01)</query>
 			</SearchConvRequest>`, acct2AuthToken, false
 		);
-		assert.exists(res1.Fault, 'Should return a Fault for blank fetch');
+		assert.isString(res1.Fault.Detail.Error.Code, 'Should return a Fault for blank fetch');
 		assert.include(res1.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 
@@ -311,7 +309,7 @@ const m = Array.isArray(searchMsgRes.SearchResponse.m)
 				<query>subject:(message01)</query>
 			</SearchConvRequest>`, acct2AuthToken, false
 		);
-		assert.exists(res2.Fault, 'Should return a Fault for text fetch');
+		assert.isString(res2.Fault.Detail.Error.Code, 'Should return a Fault for text fetch');
 		assert.include(res2.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 
@@ -321,7 +319,7 @@ const m = Array.isArray(searchMsgRes.SearchResponse.m)
 				<query>subject:(message01)</query>
 			</SearchConvRequest>`, acct2AuthToken, false
 		);
-		assert.exists(res3.Fault, 'Should return a Fault for spaces fetch');
+		assert.isString(res3.Fault.Detail.Error.Code, 'Should return a Fault for spaces fetch');
 		assert.include(res3.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 
@@ -331,7 +329,7 @@ const m = Array.isArray(searchMsgRes.SearchResponse.m)
 				<query>subject:(message01)</query>
 			</SearchConvRequest>`, acct2AuthToken, false
 		);
-		assert.exists(res4.Fault, 'Should return a Fault for decimal fetch');
+		assert.isString(res4.Fault.Detail.Error.Code, 'Should return a Fault for decimal fetch');
 		assert.include(res4.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 
@@ -385,7 +383,6 @@ const m = Array.isArray(searchMsgRes.SearchResponse.m)
 			assert.include(res1.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 				'Should be service.INVALID_REQUEST');
 		} else {
-			assert.exists(res1.SearchConvResponse, 'SearchConvResponse should exist');
 		}
 
 		// Long positive integer read
@@ -398,7 +395,6 @@ const m = Array.isArray(searchMsgRes.SearchResponse.m)
 			assert.include(res2.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 				'Should be service.INVALID_REQUEST');
 		} else {
-			assert.exists(res2.SearchConvResponse, 'SearchConvResponse should exist');
 		}
 
 		// Negative integer read
@@ -411,7 +407,6 @@ const m = Array.isArray(searchMsgRes.SearchResponse.m)
 			assert.include(res3.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 				'Should be service.INVALID_REQUEST');
 		} else {
-			assert.exists(res3.SearchConvResponse, 'SearchConvResponse should exist');
 		}
 
 		// Leading space read (" 1")
@@ -424,7 +419,6 @@ const m = Array.isArray(searchMsgRes.SearchResponse.m)
 			assert.include(res4.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 				'Should be service.INVALID_REQUEST');
 		} else {
-			assert.exists(res4.SearchConvResponse, 'SearchConvResponse should exist');
 		}
 
 		// Trailing space read ("1 ")
@@ -437,7 +431,6 @@ const m = Array.isArray(searchMsgRes.SearchResponse.m)
 			assert.include(res5.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 				'Should be service.INVALID_REQUEST');
 		} else {
-			assert.exists(res5.SearchConvResponse, 'SearchConvResponse should exist');
 		}
 
 		// Decimal read ("1.0")
@@ -450,7 +443,6 @@ const m = Array.isArray(searchMsgRes.SearchResponse.m)
 			assert.include(res6.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 				'Should be service.INVALID_REQUEST');
 		} else {
-			assert.exists(res6.SearchConvResponse, 'SearchConvResponse should exist');
 		}
 
 		// Special character read
@@ -463,7 +455,6 @@ const m = Array.isArray(searchMsgRes.SearchResponse.m)
 			assert.include(res7.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 				'Should be service.INVALID_REQUEST');
 		} else {
-			assert.exists(res7.SearchConvResponse, 'SearchConvResponse should exist');
 		}
 	});
 });

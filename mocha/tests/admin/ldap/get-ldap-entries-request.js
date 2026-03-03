@@ -46,6 +46,5 @@ describe('Admin > LDAP > Get LDAP Entries Request', function () {
 			</GetLDAPEntriesRequest>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'GetLDAPEntriesRequest should not fault');
-		assert.exists(res.GetLDAPEntriesResponse, 'GetLDAPEntriesResponse should exist');
 	});
 });

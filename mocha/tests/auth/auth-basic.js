@@ -27,11 +27,11 @@ describe('Auth > Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse, 'Should create account1');
-
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
+		assert.exists(acct.id, 'Account ID should exist');
+		assert.isString(acct.id, 'Account ID should be a string');
 		account1Id = acct.id;
 	});
 
@@ -60,11 +60,7 @@ describe('Auth > Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.AuthResponse, 'AuthResponse should exist');
-
 		const lifetime = response.AuthResponse.lifetime;
-
-		// Verify response
 		assert.exists(lifetime, 'lifetime should exist');
 		assert.match(String(lifetime._content || lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -83,11 +79,7 @@ describe('Auth > Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.AuthResponse, 'AuthResponse should exist');
-
 		const lifetime = response.AuthResponse.lifetime;
-
-		// Verify response
 		assert.exists(lifetime, 'lifetime should exist');
 		assert.match(String(lifetime._content || lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -107,7 +99,6 @@ describe('Auth > Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
@@ -124,7 +115,7 @@ describe('Auth > Auth Basic', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should return Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(response.Fault.Detail.Error.Code, 'service.PERM_DENIED',
 			'Should return PERM_DENIED');
 	});
@@ -156,8 +147,11 @@ describe('Auth > Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse,
-			'CreateAccountResponse should exist');
+		const createdAcct = Array.isArray(createRes.CreateAccountResponse.account)
+			? createRes.CreateAccountResponse.account[0]
+			: createRes.CreateAccountResponse.account;
+		assert.exists(createdAcct.id, 'Account ID should exist');
+		assert.isString(createdAcct.id, 'Account ID should be a string');
 
 		// Auth by name without domain
 		// Auth request
@@ -170,7 +164,6 @@ describe('Auth > Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
@@ -199,11 +192,7 @@ describe('Auth > Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.AuthResponse, 'AuthResponse should exist');
-
 		const lifetime = response.AuthResponse.lifetime;
-
-		// Verify response
 		assert.exists(lifetime, 'lifetime should exist');
 		assert.match(String(lifetime._content || lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -225,7 +214,6 @@ describe('Auth > Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
@@ -242,11 +230,7 @@ describe('Auth > Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.AuthResponse, 'AuthResponse should exist');
-
 		const lifetime = response.AuthResponse.lifetime;
-
-		// Verify response
 		assert.exists(lifetime, 'lifetime should exist');
 		assert.match(String(lifetime._content || lifetime), /^\d+$/,
 			'lifetime should be numeric');

@@ -59,7 +59,6 @@ describe('Admin > GAL > Add Gal Sync Data Source Request', function () {
 			</AddGalSyncDataSourceRequest>`, adminAuthToken
 		);
 		assert.notExists(addRes.Fault, 'AddGalSyncDataSourceRequest should not fault');
-		assert.exists(addRes.AddGalSyncDataSourceResponse, 'AddGalSyncDataSourceResponse should exist');
 		const addAcct = Array.isArray(addRes.AddGalSyncDataSourceResponse.account)
 			? addRes.AddGalSyncDataSourceResponse.account[0] : addRes.AddGalSyncDataSourceResponse.account;
 		assert.equal(addAcct.id, galAccountId, 'Account ID should match');
@@ -157,7 +156,7 @@ describe('Admin > GAL > Add Gal Sync Data Source Request', function () {
 				<account by="name">${nxAccountEmail}</account>
 			</AddGalSyncDataSourceRequest>`, adminAuthToken, false
 		);
-		assert.exists(addRes.Fault, 'AddGalSyncDataSourceRequest should fault for non-existing account');
+		assert.isString(addRes.Fault.Detail.Error.Code, 'AddGalSyncDataSourceRequest should fault for non-existing account');
 		assert.include(addRes.Fault.Detail.Error.Code, 'account.NO_SUCH_ACCOUNT');
 	});
 
@@ -172,7 +171,7 @@ describe('Admin > GAL > Add Gal Sync Data Source Request', function () {
 				<account by="name">${nxAccountEmail}</account>
 			</AddGalSyncDataSourceRequest>`, adminAuthToken, false
 		);
-		assert.exists(addRes.Fault, 'AddGalSyncDataSourceRequest should fault for non-existing domain');
+		assert.isString(addRes.Fault.Detail.Error.Code, 'AddGalSyncDataSourceRequest should fault for non-existing domain');
 		assert.include(addRes.Fault.Detail.Error.Code, 'account.NO_SUCH_DOMAIN');
 	});
 

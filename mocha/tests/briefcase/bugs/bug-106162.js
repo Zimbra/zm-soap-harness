@@ -25,7 +25,6 @@ describe('Briefcase > Bugs > Bug 106162', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
 		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
@@ -37,7 +36,7 @@ describe('Briefcase > Bugs > Bug 106162', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes.AuthResponse.authToken, 'AuthResponse should exist');
 
 		account1Token = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
@@ -72,8 +71,9 @@ describe('Briefcase > Bugs > Bug 106162', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateSignatureResponse,
-			'CreateSignatureResponse should exist');
+		const sig = Array.isArray(createRes.CreateSignatureResponse.signature)
+			? createRes.CreateSignatureResponse.signature[0] : createRes.CreateSignatureResponse.signature;
+		assert.exists(sig.id, 'Signature ID should exist');
 
 		// Try to create same name with different case
 		const createRes2 = await soap.makeSOAPEnvelopeAccount(
@@ -85,9 +85,8 @@ describe('Briefcase > Bugs > Bug 106162', function () {
 		);
 
 		// Verify response
-		assert.exists(createRes2.Fault,
-			'Should return Fault for case-insensitive duplicate');
-		assert.exists(createRes2.Fault.Detail.Error.Code, 'Error code should exist');
+		assert.isString(createRes2.Fault.Detail.Error.Code,
+			'Fault error Code should be a string for case-insensitive duplicate');
 	});
 
 
@@ -106,8 +105,9 @@ describe('Briefcase > Bugs > Bug 106162', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateSignatureResponse,
-			'CreateSignatureResponse should exist');
+		const sig = Array.isArray(createRes.CreateSignatureResponse.signature)
+			? createRes.CreateSignatureResponse.signature[0] : createRes.CreateSignatureResponse.signature;
+		assert.exists(sig.id, 'Signature ID should exist');
 
 		// Verify via GetSignaturesRequest
 		const getRes = await soap.makeSOAPEnvelopeAccount(
@@ -116,7 +116,8 @@ describe('Briefcase > Bugs > Bug 106162', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
-		assert.exists(getRes.GetSignaturesResponse, 'GetSignaturesResponse should exist');
+		const sigs = getRes.GetSignaturesResponse.signature;
+		assert.exists(sigs, 'Signatures should exist');
 	});
 
 
@@ -134,8 +135,9 @@ describe('Briefcase > Bugs > Bug 106162', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateSignatureResponse,
-			'CreateSignatureResponse should exist');
+		const sig = Array.isArray(createRes.CreateSignatureResponse.signature)
+			? createRes.CreateSignatureResponse.signature[0] : createRes.CreateSignatureResponse.signature;
+		assert.exists(sig.id, 'Signature ID should exist');
 
 		// GetSignaturesRequest
 		const getRes = await soap.makeSOAPEnvelopeAccount(
@@ -144,7 +146,8 @@ describe('Briefcase > Bugs > Bug 106162', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
-		assert.exists(getRes.GetSignaturesResponse, 'GetSignaturesResponse should exist');
+		const sigs = getRes.GetSignaturesResponse.signature;
+		assert.exists(sigs, 'Signatures should exist');
 	});
 
 
@@ -163,8 +166,9 @@ describe('Briefcase > Bugs > Bug 106162', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateSignatureResponse,
-			'CreateSignatureResponse should exist');
+		const sig = Array.isArray(createRes.CreateSignatureResponse.signature)
+			? createRes.CreateSignatureResponse.signature[0] : createRes.CreateSignatureResponse.signature;
+		assert.exists(sig.id, 'Signature ID should exist');
 
 		// GetSignaturesRequest
 		const getRes = await soap.makeSOAPEnvelopeAccount(
@@ -173,6 +177,7 @@ describe('Briefcase > Bugs > Bug 106162', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
-		assert.exists(getRes.GetSignaturesResponse, 'GetSignaturesResponse should exist');
+		const sigs = getRes.GetSignaturesResponse.signature;
+		assert.exists(sigs, 'Signatures should exist');
 	});
 });

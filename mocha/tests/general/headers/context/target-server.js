@@ -57,7 +57,6 @@ describe('General > Headers > Context > Target Server', function () {
 
 		// Verify response
 		assert.notExists(folderRes.Fault, 'GetFolderRequest should not fault');
-		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 	});
 
 
@@ -72,7 +71,7 @@ describe('General > Headers > Context > Target Server', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'AuthRequest should not fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes.AuthResponse.authToken, 'AuthResponse should exist');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 	});
 });

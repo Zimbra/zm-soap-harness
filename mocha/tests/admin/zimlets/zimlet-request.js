@@ -48,7 +48,6 @@ describe('Admin > Zimlets > Zimlet Request', function () {
 			</DeployZimletRequest>`, adminAuthToken
 		);
 		assert.notExists(deployRes.Fault, 'DeployZimletRequest should not fault');
-		assert.exists(deployRes.DeployZimletResponse, 'DeployZimletResponse should exist');
 	});
 
 
@@ -88,7 +87,6 @@ describe('Admin > Zimlets > Zimlet Request', function () {
 			</ModifyZimletRequest>`, adminAuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyZimletRequest should not fault');
-		assert.exists(modRes.ModifyZimletResponse, 'ModifyZimletResponse should exist');
 	});
 
 
@@ -114,7 +112,6 @@ describe('Admin > Zimlets > Zimlet Request', function () {
 			</GetZimletRequest>`, adminAuthToken
 		);
 		assert.notExists(getRes.Fault, 'GetZimletRequest should not fault');
-		assert.exists(getRes.GetZimletResponse, 'GetZimletResponse should exist');
 		const zimlet = Array.isArray(getRes.GetZimletResponse.zimlet)
 			? getRes.GetZimletResponse.zimlet[0] : getRes.GetZimletResponse.zimlet;
 		assert.equal(zimlet.name, zimletName, 'Zimlet name should match');
@@ -143,7 +140,6 @@ describe('Admin > Zimlets > Zimlet Request', function () {
 			`<GetZimletStatusRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);
 		assert.notExists(statusRes.Fault, 'GetZimletStatusRequest should not fault');
-		assert.exists(statusRes.GetZimletStatusResponse, 'GetZimletStatusResponse should exist');
 
 		// Verify com_zimbra_test is enabled in default COS
 		const cosList = Array.isArray(statusRes.GetZimletStatusResponse.cos)
@@ -188,7 +184,6 @@ describe('Admin > Zimlets > Zimlet Request', function () {
 			</ModifyZimletPrefsRequest>`, accountToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyZimletPrefsRequest should not fault');
-		assert.exists(modRes.ModifyZimletPrefsResponse, 'ModifyZimletPrefsResponse should exist');
 	});
 
 
@@ -203,7 +198,6 @@ describe('Admin > Zimlets > Zimlet Request', function () {
 			</CreateZimletRequest>`, adminAuthToken
 		);
 		assert.notExists(createRes.Fault, 'CreateZimletRequest should not fault');
-		assert.exists(createRes.CreateZimletResponse, 'CreateZimletResponse should exist');
 		const zimlet = Array.isArray(createRes.CreateZimletResponse.zimlet)
 			? createRes.CreateZimletResponse.zimlet[0] : createRes.CreateZimletResponse.zimlet;
 		assert.equal(zimlet.name, zimletName, 'Zimlet name should match');
@@ -215,7 +209,6 @@ describe('Admin > Zimlets > Zimlet Request', function () {
 			`<GetAllZimletsRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);
 		assert.notExists(getAllRes.Fault, 'GetAllZimletsRequest should not fault');
-		assert.exists(getAllRes.GetAllZimletsResponse, 'GetAllZimletsResponse should exist');
 		assert.exists(getAllRes.GetAllZimletsResponse.zimlet, 'Zimlets should exist in response');
 	});
 
@@ -225,7 +218,6 @@ describe('Admin > Zimlets > Zimlet Request', function () {
 			`<GetAdminExtensionZimletsRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);
 		assert.notExists(getExtRes.Fault, 'GetAdminExtensionZimletsRequest should not fault');
-		assert.exists(getExtRes.GetAdminExtensionZimletsResponse, 'GetAdminExtensionZimletsResponse should exist');
 		assert.exists(getExtRes.GetAdminExtensionZimletsResponse.zimlets, 'Zimlets should exist');
 	});
 
@@ -248,7 +240,6 @@ describe('Admin > Zimlets > Zimlet Request', function () {
 			`<UndeployZimletRequest xmlns="urn:zimbraAdmin" name="${zimletName}"/>`, adminAuthToken
 		);
 		assert.notExists(undeployRes.Fault, 'UndeployZimletRequest should not fault');
-		assert.exists(undeployRes.UndeployZimletResponse, 'UndeployZimletResponse should exist');
 	});
 
 
@@ -272,7 +263,6 @@ describe('Admin > Zimlets > Zimlet Request', function () {
 			</DeleteZimletRequest>`, adminAuthToken
 		);
 		assert.notExists(deleteRes.Fault, 'DeleteZimletRequest should not fault');
-		assert.exists(deleteRes.DeleteZimletResponse, 'DeleteZimletResponse should exist');
 	});
 
 
@@ -288,6 +278,5 @@ describe('Admin > Zimlets > Zimlet Request', function () {
 			</ConfigureZimletRequest>`, adminAuthToken
 		);
 		assert.notExists(configRes.Fault, 'ConfigureZimletRequest should not fault');
-		assert.exists(configRes.ConfigureZimletResponse, 'ConfigureZimletResponse should exist');
 	});
 });

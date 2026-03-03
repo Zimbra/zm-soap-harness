@@ -78,7 +78,9 @@ describe('Contacts > Contact Modify Group Ref', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
-		assert.exists(modRes.ModifyContactResponse.cn, 'Modified contact should exist');
+		const modCn = Array.isArray(modRes.ModifyContactResponse.cn)
+			? modRes.ModifyContactResponse.cn[0] : modRes.ModifyContactResponse.cn;
+		assert.exists(modCn.id, 'Modified contact id should exist');
 	});
 
 
@@ -107,7 +109,9 @@ describe('Contacts > Contact Modify Group Ref', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
-		assert.exists(modRes.ModifyContactResponse.cn, 'Modified contact should exist');
+		const modCn = Array.isArray(modRes.ModifyContactResponse.cn)
+			? modRes.ModifyContactResponse.cn[0] : modRes.ModifyContactResponse.cn;
+		assert.exists(modCn.id, 'Modified contact id should exist');
 	});
 
 
@@ -122,8 +126,8 @@ describe('Contacts > Contact Modify Group Ref', function () {
 		);
 
 		// Verify response
-		assert.exists(modRes.Fault, 'Replace with op should be a Fault');
-		const code = modRes.Fault?.Detail?.Error?.Code || '';
+		assert.isString(modRes.Fault.Detail.Error.Code, 'Replace with op should be a Fault');
+		const code = modRes.Fault.Detail.Error.Code;
 		assert.include(code, 'service.INVALID_REQUEST', 'Error code should be service.INVALID_REQUEST');
 	});
 });

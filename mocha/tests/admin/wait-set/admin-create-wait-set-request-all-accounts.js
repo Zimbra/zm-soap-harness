@@ -48,7 +48,6 @@ describe('Admin > Wait Set > Admin Create Wait Set Request All Accounts', functi
 			</AdminCreateWaitSetRequest>`, adminAuthToken
 		);
 		assert.notExists(wsRes.Fault, 'AdminCreateWaitSetRequest should not fault');
-		assert.exists(wsRes.AdminCreateWaitSetResponse, 'AdminCreateWaitSetResponse should exist');
 		const waitSetId = wsRes.AdminCreateWaitSetResponse.waitSet;
 		const waitSetSeq = wsRes.AdminCreateWaitSetResponse.seq;
 		assert.exists(waitSetId, 'waitSet ID should exist');
@@ -78,7 +77,6 @@ describe('Admin > Wait Set > Admin Create Wait Set Request All Accounts', functi
 			</AdminWaitSetRequest>`, adminAuthToken
 		);
 		assert.notExists(waitRes.Fault, 'AdminWaitSetRequest should not fault');
-		assert.exists(waitRes.AdminWaitSetResponse, 'AdminWaitSetResponse should exist');
 	});
 
 
@@ -89,7 +87,6 @@ describe('Admin > Wait Set > Admin Create Wait Set Request All Accounts', functi
 			</AdminCreateWaitSetRequest>`, adminAuthToken
 		);
 		assert.notExists(wsRes.Fault, 'AdminCreateWaitSetRequest should not fault');
-		assert.exists(wsRes.AdminCreateWaitSetResponse, 'AdminCreateWaitSetResponse should exist');
 		const waitSetId = wsRes.AdminCreateWaitSetResponse.waitSet;
 		const waitSetSeq = wsRes.AdminCreateWaitSetResponse.seq;
 		assert.exists(waitSetId, 'waitSet ID should exist');
@@ -132,7 +129,6 @@ describe('Admin > Wait Set > Admin Create Wait Set Request All Accounts', functi
 			</AdminWaitSetRequest>`, adminAuthToken
 		);
 		assert.notExists(waitRes.Fault, 'AdminWaitSetRequest should not fault');
-		assert.exists(waitRes.AdminWaitSetResponse, 'AdminWaitSetResponse should exist');
 
 		// Verify the new account triggered the waitset by looking up the returned account
 		if (waitRes.AdminWaitSetResponse.a) {

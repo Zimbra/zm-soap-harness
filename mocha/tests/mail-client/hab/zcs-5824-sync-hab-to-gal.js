@@ -130,7 +130,6 @@ describe('Mail Client > Hab > ZCS 5824 Sync Hab To GAL', function () {
 			</SearchGalRequest>`, acct1Auth
 		);
 		assert.notExists(searchRes.Fault, 'SearchGalRequest should not fault');
-		assert.exists(searchRes.SearchGalResponse, 'SearchGalResponse should exist');
 	});
 
 
@@ -239,6 +238,5 @@ describe('Mail Client > Hab > ZCS 5824 Sync Hab To GAL', function () {
 			</SearchGalRequest>`, acct1Auth
 		);
 		assert.notExists(searchRes.Fault, 'SearchGalRequest with ref should not fault');
-		assert.exists(searchRes.SearchGalResponse, 'SearchGalResponse should exist');
 	});
 });

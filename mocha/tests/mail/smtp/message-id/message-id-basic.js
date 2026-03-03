@@ -42,7 +42,7 @@ describe('Mail > SMTP > Message ID > Message ID Basic', function () {
 		const authToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Inject message via injectMime (simulates SMTP inject)
-		const filePath = path.resolve('data/email43/email43a.txt');
+		const filePath = path.join(config.projectRoot, 'mocha/data/email43/email43a.txt');
 		await soap.injectMime(authToken, filePath);
 
 		// Search for the injected message
@@ -78,7 +78,7 @@ describe('Mail > SMTP > Message ID > Message ID Basic', function () {
 		const authToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Inject message with message ID via injectMime
-		const filePath = path.resolve('data/email43/email43b.txt');
+		const filePath = path.join(config.projectRoot, 'mocha/data/email43/email43b.txt');
 		await soap.injectMime(authToken, filePath);
 
 		// Search for the injected message

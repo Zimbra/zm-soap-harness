@@ -229,7 +229,6 @@ describe('Mail Client > Hab > ZCS 5709 Get Distribution List Members', function 
 			</GetDistributionListMembersRequest>`, acct1Auth
 		);
 		assert.notExists(res.Fault, 'GetDistributionListMembersRequest should not fault');
-		assert.exists(res.GetDistributionListMembersResponse, 'Response should exist');
 		const groupMembers = res.GetDistributionListMembersResponse?.groupMembers;
 		const members = Array.isArray(groupMembers?.groupMember)
 			? groupMembers.groupMember : [groupMembers?.groupMember].filter(Boolean);
@@ -248,7 +247,6 @@ describe('Mail Client > Hab > ZCS 5709 Get Distribution List Members', function 
 			</GetDistributionListMembersRequest>`, acct1Auth
 		);
 		assert.notExists(res.Fault, 'GetDistributionListMembersRequest should not fault');
-		assert.exists(res.GetDistributionListMembersResponse, 'Response should exist');
 		const total = res.GetDistributionListMembersResponse?.total;
 		assert.equal(String(total), '0', 'Root group should have total 0 individual members');
 	});
@@ -263,7 +261,6 @@ describe('Mail Client > Hab > ZCS 5709 Get Distribution List Members', function 
 			</GetDistributionListMembersRequest>`, acct1Auth
 		);
 		assert.notExists(res.Fault, 'GetDistributionListMembersRequest should not fault');
-		assert.exists(res.GetDistributionListMembersResponse, 'Response should exist');
 		const total = res.GetDistributionListMembersResponse?.total;
 		assert.equal(String(total), '0', 'Group6 should have total 0 members');
 	});
@@ -278,7 +275,6 @@ describe('Mail Client > Hab > ZCS 5709 Get Distribution List Members', function 
 			</GetDistributionListMembersRequest>`, acct1Auth
 		);
 		assert.notExists(res.Fault, 'GetDistributionListMembersRequest should not fault');
-		assert.exists(res.GetDistributionListMembersResponse, 'Response should exist');
 		const groupMembers = res.GetDistributionListMembersResponse?.groupMembers;
 		const members = Array.isArray(groupMembers?.groupMember)
 			? groupMembers.groupMember : [groupMembers?.groupMember].filter(Boolean);
@@ -300,7 +296,6 @@ describe('Mail Client > Hab > ZCS 5709 Get Distribution List Members', function 
 			</GetDistributionListMembersRequest>`, acct1Auth
 		);
 		assert.notExists(res.Fault, 'GetDistributionListMembersRequest should not fault');
-		assert.exists(res.GetDistributionListMembersResponse, 'Response should exist');
 		const groupMembers = res.GetDistributionListMembersResponse?.groupMembers;
 		const members = Array.isArray(groupMembers?.groupMember)
 			? groupMembers.groupMember : [groupMembers?.groupMember].filter(Boolean);
@@ -320,7 +315,6 @@ describe('Mail Client > Hab > ZCS 5709 Get Distribution List Members', function 
 			</GetDistributionListMembersRequest>`, acct1Auth
 		);
 		assert.notExists(res.Fault, 'GetDistributionListMembersRequest should not fault');
-		assert.exists(res.GetDistributionListMembersResponse, 'Response should exist');
 		const groupMembers = res.GetDistributionListMembersResponse?.groupMembers;
 		const members = Array.isArray(groupMembers?.groupMember)
 			? groupMembers.groupMember : [groupMembers?.groupMember].filter(Boolean);
@@ -346,7 +340,6 @@ describe('Mail Client > Hab > ZCS 5709 Get Distribution List Members', function 
 			</GetDistributionListMembersRequest>`, acct1Auth
 		);
 		assert.notExists(res.Fault, 'GetDistributionListMembersRequest should not fault');
-		assert.exists(res.GetDistributionListMembersResponse, 'Response should exist');
 		const groupMembers = res.GetDistributionListMembersResponse?.groupMembers;
 		const members = Array.isArray(groupMembers?.groupMember)
 			? groupMembers.groupMember : [groupMembers?.groupMember].filter(Boolean);

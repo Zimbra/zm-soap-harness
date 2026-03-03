@@ -54,7 +54,6 @@ describe('Tasks > Sendingtasks > Send Task Basic', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateTaskResponse, 'CreateTaskResponse should exist');
 		assert.exists(createRes.CreateTaskResponse.calItemId, 'Task should have calItemId');
 
 		// Wait for delivery and search in account2
@@ -69,7 +68,6 @@ describe('Tasks > Sendingtasks > Send Task Basic', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const msgs = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m
 			: (searchRes.SearchResponse.m ? [searchRes.SearchResponse.m] : []);

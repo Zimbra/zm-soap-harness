@@ -61,7 +61,6 @@ describe('Admin > Purge Messages > Purge Messages', function () {
 			</PurgeMessagesRequest>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'PurgeMessagesRequest should not fault');
-		assert.exists(res.PurgeMessagesResponse, 'PurgeMessagesResponse should exist');
 		const mbox = Array.isArray(res.PurgeMessagesResponse.mbox)
 			? res.PurgeMessagesResponse.mbox[0] : res.PurgeMessagesResponse.mbox;
 		assert.equal(mbox.mbxid, account1MbxId, 'Returned mbxid should match');
@@ -75,7 +74,6 @@ describe('Admin > Purge Messages > Purge Messages', function () {
 			</PurgeMessagesRequest>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'PurgeMessagesRequest should not fault');
-		assert.exists(res.PurgeMessagesResponse, 'PurgeMessagesResponse should exist');
 	});
 
 
@@ -86,7 +84,6 @@ describe('Admin > Purge Messages > Purge Messages', function () {
 			</PurgeMessagesRequest>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'PurgeMessagesRequest should not fault');
-		assert.exists(res.PurgeMessagesResponse, 'PurgeMessagesResponse should exist');
 	});
 
 
@@ -96,7 +93,7 @@ describe('Admin > Purge Messages > Purge Messages', function () {
 				<mbox id=""/>
 			</PurgeMessagesRequest>`, adminAuthToken, null, false
 		);
-		assert.exists(res.Fault, 'PurgeMessagesRequest should fault for blank id');
+		assert.isString(res.Fault.Detail.Error.Code, 'PurgeMessagesRequest should fault for blank id');
 		assert.include(res.Fault.Detail.Error.Code, 'account.NO_SUCH_ACCOUNT');
 	});
 
@@ -107,7 +104,7 @@ describe('Admin > Purge Messages > Purge Messages', function () {
 				<mbox id="some text abcdss"/>
 			</PurgeMessagesRequest>`, adminAuthToken, null, false
 		);
-		assert.exists(res.Fault, 'PurgeMessagesRequest should fault for invalid id');
+		assert.isString(res.Fault.Detail.Error.Code, 'PurgeMessagesRequest should fault for invalid id');
 		assert.include(res.Fault.Detail.Error.Code, 'account.NO_SUCH_ACCOUNT');
 	});
 
@@ -118,7 +115,7 @@ describe('Admin > Purge Messages > Purge Messages', function () {
 				<mbox id=":'&lt;//\\"/>
 			</PurgeMessagesRequest>`, adminAuthToken, null, false
 		);
-		assert.exists(res.Fault, 'PurgeMessagesRequest should fault for special char id');
+		assert.isString(res.Fault.Detail.Error.Code, 'PurgeMessagesRequest should fault for special char id');
 		assert.include(res.Fault.Detail.Error.Code, 'account.NO_SUCH_ACCOUNT');
 	});
 
@@ -149,7 +146,7 @@ describe('Admin > Purge Messages > Purge Messages', function () {
 				<mbox id="${tempId}"/>
 			</PurgeMessagesRequest>`, adminAuthToken, null, false
 		);
-		assert.exists(purgeRes.Fault, 'PurgeMessagesRequest should fault for deleted account');
+		assert.isString(purgeRes.Fault.Detail.Error.Code, 'PurgeMessagesRequest should fault for deleted account');
 		assert.include(purgeRes.Fault.Detail.Error.Code, 'account.NO_SUCH_ACCOUNT');
 	});
 
@@ -160,7 +157,7 @@ describe('Admin > Purge Messages > Purge Messages', function () {
 				<mbox/>
 			</PurgeMessagesRequest>`, adminAuthToken, null, false
 		);
-		assert.exists(res.Fault, 'PurgeMessagesRequest should fault for missing id');
+		assert.isString(res.Fault.Detail.Error.Code, 'PurgeMessagesRequest should fault for missing id');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 	});
 
@@ -220,7 +217,7 @@ simple text string in the body</content>
 				<mbox id="${tempMbxId}"/>
 			</PurgeMessagesRequest>`, adminAuthToken, null, false
 		);
-		assert.exists(purgeRes.Fault, 'PurgeMessagesRequest should fault for deleted account');
+		assert.isString(purgeRes.Fault.Detail.Error.Code, 'PurgeMessagesRequest should fault for deleted account');
 		assert.include(purgeRes.Fault.Detail.Error.Code, 'account.NO_SUCH_ACCOUNT');
 	});
 });

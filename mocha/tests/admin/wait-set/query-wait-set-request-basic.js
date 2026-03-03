@@ -73,7 +73,6 @@ describe('Admin > Wait Set > Query Wait Set Request Basic', function () {
 			`<QueryWaitSetRequest xmlns="urn:zimbraAdmin" waitSet="${waitSetId}"/>`, adminAuthToken
 		);
 		assert.notExists(queryRes.Fault, 'QueryWaitSetRequest should not fault');
-		assert.exists(queryRes.QueryWaitSetResponse, 'QueryWaitSetResponse should exist');
 
 		// Verify waitset ID matches
 		const ws = Array.isArray(queryRes.QueryWaitSetResponse.waitSet)
@@ -95,7 +94,6 @@ describe('Admin > Wait Set > Query Wait Set Request Basic', function () {
 			</AdminWaitSetRequest>`, adminAuthToken
 		);
 		assert.notExists(removeRes.Fault, 'AdminWaitSetRequest remove should not fault');
-		assert.exists(removeRes.AdminWaitSetResponse, 'AdminWaitSetResponse should exist');
 
 		// Query again — account2 should no longer be in sessions
 		const queryRes2 = await soap.makeSOAPEnvelopeAdmin(
@@ -119,7 +117,7 @@ describe('Admin > Wait Set > Query Wait Set Request Basic', function () {
 		const queryRes = await soap.makeSOAPEnvelopeAdmin(
 			`<QueryWaitSetRequest xmlns="urn:zimbraAdmin" waitSet="#"/>`, adminAuthToken, false
 		);
-		assert.exists(queryRes.Fault, 'QueryWaitSetRequest should fault for invalid ID');
+		assert.isString(queryRes.Fault.Detail.Error.Code, 'QueryWaitSetRequest should fault for invalid ID');
 		assert.include(queryRes.Fault.Detail.Error.Code, 'admin.NO_SUCH_WAITSET');
 	});
 });

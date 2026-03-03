@@ -50,8 +50,11 @@ describe('Auth > Auth Request Sphchar', function () {
 
 			// Verify response
 			assert.notExists(createRes.Fault, 'Response should not be a Fault');
-			assert.exists(createRes.CreateAccountResponse,
-				'Should create account: ' + acctName);
+			const acct = Array.isArray(createRes.CreateAccountResponse.account)
+				? createRes.CreateAccountResponse.account[0]
+				: createRes.CreateAccountResponse.account;
+			assert.exists(acct.id, 'Account ID should exist for: ' + acctName);
+			assert.isString(acct.id, 'Account ID should be a string for: ' + acctName);
 		}
 
 		// Auth each account
@@ -67,14 +70,12 @@ describe('Auth > Auth Request Sphchar', function () {
 
 			// Verify response
 			assert.notExists(authRes.Fault, 'Response should not be a Fault');
-			assert.exists(authRes.AuthResponse,
-				'AuthResponse should exist for: ' + acctName);
 			const lifetime = authRes.AuthResponse.lifetime;
-
-			// Verify response
 			assert.exists(lifetime, 'lifetime should exist for: ' + acctName);
 			assert.match(String(lifetime._content || lifetime),
 				/^\d+$/, 'lifetime should be numeric for: ' + acctName);
+			assert.exists(authRes.AuthResponse.authToken,
+				'authToken should exist for: ' + acctName);
 		}
 	});
 
@@ -93,7 +94,11 @@ describe('Auth > Auth Request Sphchar', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse, 'Should create account');
+		const createdAcct = Array.isArray(createRes.CreateAccountResponse.account)
+			? createRes.CreateAccountResponse.account[0]
+			: createRes.CreateAccountResponse.account;
+		assert.exists(createdAcct.id, 'Account ID should exist');
+		assert.isString(createdAcct.id, 'Account ID should be a string');
 
 		// Auth with lowercase version
 		// Auth request
@@ -106,7 +111,6 @@ describe('Auth > Auth Request Sphchar', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist for lowercase login');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');

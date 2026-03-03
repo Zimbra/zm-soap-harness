@@ -39,10 +39,11 @@ describe('Folders > Searchfolder Create', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CreateSearchFolderResponse, 'Verify response exists');
-		assert.equal(response.CreateSearchFolderResponse.search[0].name, searchName,
+		const search = response.CreateSearchFolderResponse.search[0];
+		assert.exists(search.id, 'Search folder ID should exist');
+		assert.equal(search.name, searchName,
 			'Verify search folder name');
-		assert.equal(response.CreateSearchFolderResponse.search[0].query, 'in:inbox',
+		assert.equal(search.query, 'in:inbox',
 			'Verify search query');
 	});
 
@@ -60,7 +61,7 @@ describe('Folders > Searchfolder Create', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CreateSearchFolderResponse, 'Verify response exists');
+		assert.exists(response.CreateSearchFolderResponse.search[0].id, 'Search folder ID should exist');
 		assert.equal(response.CreateSearchFolderResponse.search[0].query, 'in:inbox',
 			'Verify search query');
 	});
@@ -79,7 +80,7 @@ describe('Folders > Searchfolder Create', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CreateSearchFolderResponse, 'Verify response exists');
+		assert.exists(response.CreateSearchFolderResponse.search[0].id, 'Search folder ID should exist');
 		assert.equal(response.CreateSearchFolderResponse.search[0].query, 'in:contacts',
 			'Verify search query');
 	});
@@ -98,7 +99,7 @@ describe('Folders > Searchfolder Create', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CreateSearchFolderResponse, 'Verify response exists');
+		assert.exists(response.CreateSearchFolderResponse.search[0].id, 'Search folder ID should exist');
 		assert.equal(response.CreateSearchFolderResponse.search[0].query, 'in:contacts',
 			'Verify search query');
 	});
@@ -117,7 +118,7 @@ describe('Folders > Searchfolder Create', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CreateSearchFolderResponse, 'Verify response exists');
+		assert.exists(response.CreateSearchFolderResponse.search[0].id, 'Search folder ID should exist');
 		assert.equal(response.CreateSearchFolderResponse.search[0].query, 'in:sent',
 			'Verify search query');
 	});
@@ -136,7 +137,7 @@ describe('Folders > Searchfolder Create', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CreateSearchFolderResponse, 'Verify response exists');
+		assert.exists(response.CreateSearchFolderResponse.search[0].id, 'Search folder ID should exist');
 		assert.equal(response.CreateSearchFolderResponse.search[0].query, 'in:sent',
 			'Verify search query');
 	});
@@ -155,7 +156,7 @@ describe('Folders > Searchfolder Create', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CreateSearchFolderResponse, 'Verify response exists');
+		assert.exists(response.CreateSearchFolderResponse.search[0].id, 'Search folder ID should exist');
 		assert.equal(response.CreateSearchFolderResponse.search[0].query, 'in:trash',
 			'Verify search query');
 	});
@@ -174,7 +175,7 @@ describe('Folders > Searchfolder Create', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CreateSearchFolderResponse, 'Verify response exists');
+		assert.exists(response.CreateSearchFolderResponse.search[0].id, 'Search folder ID should exist');
 		assert.equal(response.CreateSearchFolderResponse.search[0].query, 'in:trash',
 			'Verify search query');
 	});
@@ -190,7 +191,9 @@ describe('Folders > Searchfolder Create', function () {
 			</CreateSearchFolderRequest>`;
 
 		// CreateSearchFolderRequest
-		await soap.makeSOAPEnvelopeAccount(request1, accountAuthToken);
+		const response1 = await soap.makeSOAPEnvelopeAccount(request1, accountAuthToken);
+		assert.notExists(response1.Fault, 'First create should not be a Fault');
+		assert.exists(response1.CreateSearchFolderResponse.search[0].id, 'First search folder ID should exist');
 
 		// Create duplicate
 		const request2 =
@@ -202,7 +205,7 @@ describe('Folders > Searchfolder Create', function () {
 		const response2 = await soap.makeSOAPEnvelopeAccount(request2, accountAuthToken, false);
 
 		// Verify response
-		assert.exists(response2.Fault, 'Verify Fault exists');
+		assert.exists(response2.Fault.Detail.Error, 'Fault Error should exist');
 		assert.include(response2.Fault.Reason.Text, 'already exists',
 			'Verify ALREADY_EXISTS error');
 	});
@@ -218,7 +221,7 @@ describe('Folders > Searchfolder Create', function () {
 		const response = await soap.makeSOAPEnvelopeAccount(request, accountAuthToken, false);
 
 		// Verify response
-		assert.exists(response.Fault, 'Verify Fault exists');
+		assert.exists(response.Fault.Detail.Error, 'Fault Error should exist');
 		assert.include(response.Fault.Reason.Text, 'invalid name',
 			'Verify INVALID_NAME error');
 	});
@@ -237,7 +240,7 @@ describe('Folders > Searchfolder Create', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CreateSearchFolderResponse, 'Verify response exists');
+		assert.exists(response.CreateSearchFolderResponse.search[0].id, 'Search folder ID should exist');
 		assert.equal(response.CreateSearchFolderResponse.search[0].query, 'in:trash',
 			'Verify search query');
 	});
@@ -253,7 +256,7 @@ describe('Folders > Searchfolder Create', function () {
 		const response = await soap.makeSOAPEnvelopeAccount(request, accountAuthToken, false);
 
 		// Verify response
-		assert.exists(response.Fault, 'Verify Fault exists');
+		assert.exists(response.Fault.Detail.Error, 'Fault Error should exist');
 		assert.include(response.Fault.Reason.Text, 'invalid name',
 			'Verify INVALID_NAME error');
 	});
@@ -269,7 +272,7 @@ describe('Folders > Searchfolder Create', function () {
 		const response = await soap.makeSOAPEnvelopeAccount(request, accountAuthToken, false);
 
 		// Verify response
-		assert.exists(response.Fault, 'Verify Fault exists');
+		assert.exists(response.Fault.Detail.Error, 'Fault Error should exist');
 		assert.include(response.Fault.Reason.Text, 'invalid name',
 			'Verify INVALID_NAME error');
 	});
@@ -289,7 +292,7 @@ describe('Folders > Searchfolder Create', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CreateSearchFolderResponse, 'Verify response exists');
+		assert.exists(response.CreateSearchFolderResponse.search[0].id, 'Search folder ID should exist');
 	});
 
 
@@ -306,7 +309,7 @@ describe('Folders > Searchfolder Create', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CreateSearchFolderResponse, 'Verify response exists');
+		assert.exists(response.CreateSearchFolderResponse.search[0].id, 'Search folder ID should exist');
 		assert.equal(response.CreateSearchFolderResponse.search[0].l, '2',
 			'Verify search folder is in Inbox (l=2)');
 	});
@@ -325,7 +328,7 @@ describe('Folders > Searchfolder Create', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CreateSearchFolderResponse, 'Verify response exists');
+		assert.exists(response.CreateSearchFolderResponse.search[0].id, 'Search folder ID should exist');
 		assert.equal(response.CreateSearchFolderResponse.search[0].l, '5',
 			'Verify search folder is in Sent (l=5)');
 	});
@@ -344,7 +347,7 @@ describe('Folders > Searchfolder Create', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CreateSearchFolderResponse, 'Verify response exists');
+		assert.exists(response.CreateSearchFolderResponse.search[0].id, 'Search folder ID should exist');
 		assert.equal(response.CreateSearchFolderResponse.search[0].l, '7',
 			'Verify search folder is in Contacts (l=7)');
 	});
@@ -360,7 +363,9 @@ describe('Folders > Searchfolder Create', function () {
 			</CreateSearchFolderRequest>`;
 
 		// CreateSearchFolderRequest
-		await soap.makeSOAPEnvelopeAccount(request1, accountAuthToken);
+		const response1 = await soap.makeSOAPEnvelopeAccount(request1, accountAuthToken);
+		assert.notExists(response1.Fault, 'First create should not be a Fault');
+		assert.exists(response1.CreateSearchFolderResponse.search[0].id, 'First search folder ID should exist');
 
 		// Create duplicate in conversation view
 		const request2 =
@@ -370,7 +375,7 @@ describe('Folders > Searchfolder Create', function () {
 		const response2 = await soap.makeSOAPEnvelopeAccount(request2, accountAuthToken, false);
 
 		// Verify response
-		assert.exists(response2.Fault, 'Verify Fault exists');
+		assert.exists(response2.Fault.Detail.Error, 'Fault Error should exist');
 		assert.include(response2.Fault.Reason.Text, 'already exists',
 			'Verify ALREADY_EXISTS error');
 	});

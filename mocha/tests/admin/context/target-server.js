@@ -67,8 +67,6 @@ describe('Admin > Context > Target Server', function () {
 
 		// Verify response contains the account
 		assert.notExists(quotaRes.Fault, 'GetQuotaUsageRequest should not fault');
-		assert.exists(quotaRes.GetQuotaUsageResponse,
-			'GetQuotaUsageResponse should exist');
 		const accounts = Array.isArray(quotaRes.GetQuotaUsageResponse.account)
 			? quotaRes.GetQuotaUsageResponse.account
 			: [quotaRes.GetQuotaUsageResponse.account];

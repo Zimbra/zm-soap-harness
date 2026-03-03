@@ -53,7 +53,7 @@ describe('General > Password > Locked Password', function () {
 		);
 
 		// Verify response
-		assert.exists(changeRes.Fault, 'Should return Fault for locked password');
+		assert.isString(changeRes.Fault.Detail.Error.Code, 'Should return Fault for locked password');
 		assert.include(changeRes.Fault.Detail.Error.Code, 'account.PASSWORD_LOCKED',
 			'Error code should be account.PASSWORD_LOCKED');
 	});

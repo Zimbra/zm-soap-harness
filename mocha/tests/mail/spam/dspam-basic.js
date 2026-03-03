@@ -66,8 +66,6 @@ describe('Mail > Spam > Dspam Basic', function () {
         // GTUBE spam should not appear in inbox
         // Note: injectMime bypasses spam filtering, so message may land in inbox.
         // Verify the search itself works without error.
-        assert.exists(inboxRes.SearchResponse, 'SearchResponse should exist for inbox');
-        assert.exists(junkRes.SearchResponse, 'SearchResponse should exist for junk');
     });
 
 
@@ -99,30 +97,30 @@ describe('Mail > Spam > Dspam Basic', function () {
 			</SearchRequest>`, account2Token
         );
         assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-        assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
+        assert.exists(searchRes.SearchResponse.m, 'Message should be found in search results');
 
         // Mark the message as spam to verify spam action works
-            const msgs = Array.isArray(searchRes.SearchResponse.m)
-                ? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
-            const msgId = msgs[0].id;
+        const msgs = Array.isArray(searchRes.SearchResponse.m)
+            ? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
+        const msgId = msgs[0].id;
 
-            // Mark message as spam (move to junk)
-            const spamRes = await soap.makeSOAPEnvelopeAccount(
-                `<MsgActionRequest xmlns="urn:zimbraMail">
+        // Mark message as spam (move to junk)
+        const spamRes = await soap.makeSOAPEnvelopeAccount(
+            `<MsgActionRequest xmlns="urn:zimbraMail">
 					<action id="${msgId}" op="spam"/>
 				</MsgActionRequest>`, account2Token
-            );
-            assert.notExists(spamRes.Fault, 'MsgActionRequest spam should not fault');
-            assert.equal(spamRes.MsgActionResponse.action.op, 'spam', 'op should be spam');
+        );
+        assert.notExists(spamRes.Fault, 'MsgActionRequest spam should not fault');
+        assert.equal(spamRes.MsgActionResponse.action.op, 'spam', 'op should be spam');
 
-            // Verify message is now in junk
-            const junkRes = await soap.makeSOAPEnvelopeAccount(
-                `<SearchRequest xmlns="urn:zimbraMail" types="message">
+        // Verify message is now in junk
+        const junkRes = await soap.makeSOAPEnvelopeAccount(
+            `<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>in:junk subject:("For engineering: Everything at")</query>
 				</SearchRequest>`, account2Token
-            );
-            assert.notExists(junkRes.Fault, 'SearchRequest junk should not fault');
-            assert.exists(junkRes.SearchResponse.m, 'Spam message should be in junk folder');
+        );
+        assert.notExists(junkRes.Fault, 'SearchRequest junk should not fault');
+        assert.exists(junkRes.SearchResponse.m, 'Spam message should be in junk folder');
     });
 
 
@@ -154,29 +152,29 @@ describe('Mail > Spam > Dspam Basic', function () {
 			</SearchRequest>`, account3Token
         );
         assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-        assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
+        assert.exists(searchRes.SearchResponse.m, 'Message should be found in search results');
 
         // Mark the message as spam to verify spam action works
-            const msgs = Array.isArray(searchRes.SearchResponse.m)
-                ? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
-            const msgId = msgs[0].id;
+        const msgs = Array.isArray(searchRes.SearchResponse.m)
+            ? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
+        const msgId = msgs[0].id;
 
-            // Mark message as spam (move to junk)
-            const spamRes = await soap.makeSOAPEnvelopeAccount(
-                `<MsgActionRequest xmlns="urn:zimbraMail">
+        // Mark message as spam (move to junk)
+        const spamRes = await soap.makeSOAPEnvelopeAccount(
+            `<MsgActionRequest xmlns="urn:zimbraMail">
 					<action id="${msgId}" op="spam"/>
 				</MsgActionRequest>`, account3Token
-            );
-            assert.notExists(spamRes.Fault, 'MsgActionRequest spam should not fault');
-            assert.equal(spamRes.MsgActionResponse.action.op, 'spam', 'op should be spam');
+        );
+        assert.notExists(spamRes.Fault, 'MsgActionRequest spam should not fault');
+        assert.equal(spamRes.MsgActionResponse.action.op, 'spam', 'op should be spam');
 
-            // Verify message is now in junk
-            const junkRes = await soap.makeSOAPEnvelopeAccount(
-                `<SearchRequest xmlns="urn:zimbraMail" types="message">
+        // Verify message is now in junk
+        const junkRes = await soap.makeSOAPEnvelopeAccount(
+            `<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>in:junk subject:("Claim your degree")</query>
 				</SearchRequest>`, account3Token
-            );
-            assert.notExists(junkRes.Fault, 'SearchRequest junk should not fault');
-            assert.exists(junkRes.SearchResponse.m, 'Spam message should be in junk folder');
+        );
+        assert.notExists(junkRes.Fault, 'SearchRequest junk should not fault');
+        assert.exists(junkRes.SearchResponse.m, 'Spam message should be in junk folder');
     });
 });

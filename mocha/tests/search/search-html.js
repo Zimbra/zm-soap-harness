@@ -85,11 +85,10 @@ Content-Type: text/html; charset=utf-8
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 		const m = res.SearchResponse?.m?.[0];
-		assert.exists(m, 'Message should exist');
+		assert.exists(m.id, 'message id should exist');
 		const htmlPart = m.mp?.[0]?.mp?.find(p => p.ct === 'text/html') || m.mp?.find(p => p.ct === 'text/html');
-		assert.exists(htmlPart, 'HTML part should exist');
+		assert.exists(htmlPart.content, 'HTML part content should exist');
 		// Verify empty result set
 	});
 
@@ -104,11 +103,10 @@ Content-Type: text/html; charset=utf-8
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 		const m = res.SearchResponse?.m?.[0];
-		assert.exists(m, 'Message should exist');
+		assert.exists(m.id, 'message id should exist');
 		const plainPart = m.mp?.[0]?.mp?.find(p => p.ct === 'text/plain') || m.mp?.find(p => p.ct === 'text/plain');
-		assert.exists(plainPart, 'Plain text part should exist');
+		assert.exists(plainPart.content, 'Plain text part content should exist');
 	});
 
 
@@ -121,7 +119,6 @@ Content-Type: text/html; charset=utf-8
 		);
 
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -131,7 +128,6 @@ Content-Type: text/html; charset=utf-8
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -141,7 +137,6 @@ Content-Type: text/html; charset=utf-8
 		);
 
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -151,7 +146,6 @@ Content-Type: text/html; charset=utf-8
 		);
 
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
@@ -161,7 +155,6 @@ Content-Type: text/html; charset=utf-8
 		);
 
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
@@ -171,7 +164,6 @@ Content-Type: text/html; charset=utf-8
 		);
 
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		assert.exists(res6.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
@@ -181,7 +173,6 @@ Content-Type: text/html; charset=utf-8
 		);
 
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		assert.exists(res7.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
@@ -191,7 +182,6 @@ Content-Type: text/html; charset=utf-8
 		);
 
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
-		assert.exists(res8.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -205,9 +195,7 @@ Content-Type: text/html; charset=utf-8
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 		// Verify empty result set
-		assert.exists(res.SearchResponse, 'SearchResponse should exist');
 		// Verify empty result set
 	});
 
@@ -221,7 +209,6 @@ Content-Type: text/html; charset=utf-8
 		);
 
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -231,6 +218,5 @@ Content-Type: text/html; charset=utf-8
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 	});
 });

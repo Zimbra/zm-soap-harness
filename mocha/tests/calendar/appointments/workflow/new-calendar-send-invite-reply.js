@@ -79,12 +79,12 @@ describe('Calendar > Appointments > Workflow > New Calendar Send Invite Reply', 
 		const subject = `Subj${common.getUniqueString()}`;
 
 		// Create meeting
-		await createMeeting(
+		const appt = await createMeeting(
 			org.token, org.email, inv.email, subject
 		);
 
 		// Verify response
-		assert.ok(true, 'New meeting created');
+		assert.exists(appt.invId, 'Meeting invId should exist');
 	});
 
 
@@ -95,12 +95,12 @@ describe('Calendar > Appointments > Workflow > New Calendar Send Invite Reply', 
 		const subject = `Subj${common.getUniqueString()}`;
 
 		// Create meeting
-		await createMeeting(
+		const appt = await createMeeting(
 			org.token, org.email, inv.email, subject
 		);
 
 		// Verify response
-		assert.ok(true, 'New meeting for decline');
+		assert.exists(appt.invId, 'Meeting invId should exist');
 	});
 
 
@@ -111,12 +111,12 @@ describe('Calendar > Appointments > Workflow > New Calendar Send Invite Reply', 
 		const subject = `Subj${common.getUniqueString()}`;
 
 		// Create meeting
-		await createMeeting(
+		const appt = await createMeeting(
 			org.token, org.email, inv.email, subject
 		);
 
 		// Verify response
-		assert.ok(true, 'New meeting for tentative');
+		assert.exists(appt.invId, 'Meeting invId should exist');
 	});
 
 
@@ -289,7 +289,7 @@ describe('Calendar > Appointments > Workflow > New Calendar Send Invite Reply', 
 		const subject = `Subj${common.getUniqueString()}`;
 
 		// Create meeting
-		await createMeeting(
+		const appt = await createMeeting(
 			org.token, org.email, inv.email, subject
 		);
 		const now = Date.now();
@@ -409,7 +409,7 @@ describe('Calendar > Appointments > Workflow > New Calendar Send Invite Reply', 
 		);
 
 		// Cancel appointment
-		await soap.makeSOAPEnvelopeAccount(
+		const cancelRes = await soap.makeSOAPEnvelopeAccount(
 			`<CancelAppointmentRequest xmlns="urn:zimbraMail"
 				id="${appt.invId}" comp="0">
 				<m>
@@ -421,6 +421,7 @@ describe('Calendar > Appointments > Workflow > New Calendar Send Invite Reply', 
 				</m>
 			</CancelAppointmentRequest>`, org.token
 		);
+		assert.notExists(cancelRes.Fault, 'Cancel should not fault');
 
 		// Verify appointment still gettable
 		const getRes = await soap.makeSOAPEnvelopeAccount(

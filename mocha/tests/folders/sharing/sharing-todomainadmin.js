@@ -116,8 +116,6 @@ describe('Folders > Sharing > Sharing Todomainadmin', function () {
 		const addMsgRes = await soap.makeSOAPEnvelopeAccount(addMsgRequest, adminAuthUser);
 
 		// Verify response
-		assert.exists(addMsgRes.Fault,
-			'Domain Admin using User Auth should be denied write access on Read-Only share');
 		assert.include(addMsgRes.Fault.Detail.Error.Code, 'PERM_DENIED',
 			'Should return PERM_DENIED');
 	});
@@ -172,8 +170,6 @@ describe('Folders > Sharing > Sharing Todomainadmin', function () {
 		const addMsgRes = await soap.makeSOAPEnvelopeAccount(addMsgRequest2, adminAuthAdmin);
 
 		// Verify response
-		assert.exists(addMsgRes.Fault,
-			'Domain Admin using Admin Auth should be denied write access on Read-Only share (per XML expectation)');
 		assert.include(addMsgRes.Fault.Detail.Error.Code, 'PERM_DENIED',
 			'Should return PERM_DENIED');
 	});

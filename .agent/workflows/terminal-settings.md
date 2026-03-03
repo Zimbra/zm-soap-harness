@@ -4,11 +4,21 @@ description: Terminal settings - always use Git Bash, never PowerShell
 
 # Terminal Settings
 
-## Shell Preference
-- **ALWAYS** use Git Bash (bash) for all terminal commands
-- **NEVER** use PowerShell
-- If commands hang or fail to execute, ask the user to run them manually in their Git Bash terminal
+## Shell
+- Always use Git Bash
+- Never use PowerShell
 
-## Running Scripts
-- All `.agent/scripts/*.cjs` and `.agent/scripts/*.mjs` scripts should be run via `node` in Git Bash
-- For long-running test suites (`node mocha-run.js`), prefer asking the user to run in their terminal
+## Paths
+- **ALWAYS use full absolute paths** in all terminal commands (e.g., `c:/git/zm-soap-harness/mocha/tests/...`)
+- **NEVER use relative paths** — the CWD may not be what you expect
+- When running `node -c`, `npx mocha`, or any other command, use the full path to the file
+- The Cwd for run_command should be `c:\git\zm-soap-harness` (project root), NOT a subdirectory
+
+## Examples
+```bash
+# CORRECT - full absolute paths
+node -c c:/git/zm-soap-harness/mocha/tests/folders/folder-action.js
+
+# WRONG - relative paths that break when CWD is unexpected
+node -c mocha/tests/folders/folder-action.js
+```

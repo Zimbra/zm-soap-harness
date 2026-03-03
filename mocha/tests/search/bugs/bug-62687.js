@@ -73,7 +73,7 @@ This is a junk message for testing</content>
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 		const msgAction = Array.isArray(res2.MsgActionResponse.action)
 			? res2.MsgActionResponse.action[0] : res2.MsgActionResponse.action;
-		assert.exists(msgAction, 'MsgActionResponse should contain action');
+		assert.equal(msgAction.op, 'move', 'op should be move');
 
 		// Search for the junk message subject - should now be findable
 		const res3 = await soap.makeSOAPEnvelopeAccount(

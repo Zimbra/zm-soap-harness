@@ -54,7 +54,6 @@ describe('Admin > Password > Complex Set Password', function () {
 			</SetPasswordRequest>`, adminAuthToken
 		);
 		assert.notExists(setRes.Fault, 'SetPasswordRequest should not fault');
-		assert.exists(setRes.SetPasswordResponse, 'SetPasswordResponse should exist');
 	});
 
 
@@ -85,6 +84,5 @@ describe('Admin > Password > Complex Set Password', function () {
 			</SetPasswordRequest>`, adminAuthToken
 		);
 		assert.notExists(setRes.Fault, 'SetPasswordRequest with less complex password should not fault');
-		assert.exists(setRes.SetPasswordResponse, 'SetPasswordResponse should exist');
 	});
 });

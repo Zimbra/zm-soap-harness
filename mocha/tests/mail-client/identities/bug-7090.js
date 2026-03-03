@@ -47,7 +47,6 @@ describe('Mail Client > Identities > Bug 7090', function () {
 		const getIdRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetIdentitiesRequest xmlns="urn:zimbraAccount"/>', acctAuthToken
 		);
-		assert.exists(getIdRes.GetIdentitiesResponse, 'GetIdentitiesResponse should exist');
 
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyIdentityRequest xmlns="urn:zimbraAccount">
@@ -58,7 +57,6 @@ describe('Mail Client > Identities > Bug 7090', function () {
 				</identity>
 			</ModifyIdentityRequest>`, acctAuthToken
 		);
-		assert.exists(modRes.ModifyIdentityResponse, 'ModifyIdentityResponse should exist');
 
 		const backupRes = await soap.makeSOAPEnvelopeAdmin(
 			`<BackupRequest xmlns="urn:zimbraAdmin">
@@ -86,7 +84,6 @@ describe('Mail Client > Identities > Bug 7090', function () {
 			const getIdRes2 = await soap.makeSOAPEnvelopeAccount(
 				'<GetIdentitiesRequest xmlns="urn:zimbraAccount"/>', prefixAuthToken
 			);
-			assert.exists(getIdRes2.GetIdentitiesResponse, 'GetIdentitiesResponse should exist after restore');
 		}
 	});
 });

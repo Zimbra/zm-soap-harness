@@ -28,7 +28,6 @@ describe('Admin > Accounts > Bug 39720', function () {
 
 		// Verify response
 		assert.notExists(r1.Fault, 'Response should not be a Fault');
-		assert.exists(r1.CreateAccountResponse, 'delegatedAdmin account creation failed');
 
 		delegatedAdminId = Array.isArray(r1.CreateAccountResponse.account) ? r1.CreateAccountResponse.account[0].id : r1.CreateAccountResponse.account.id;
 
@@ -43,7 +42,6 @@ describe('Admin > Accounts > Bug 39720', function () {
 
 		// Verify response
 		assert.notExists(r2.Fault, 'Response should not be a Fault');
-		assert.exists(r2.CreateAccountResponse, 'adminAcct account creation failed');
 
 		adminAcctId = Array.isArray(r2.CreateAccountResponse.account) ? r2.CreateAccountResponse.account[0].id : r2.CreateAccountResponse.account.id;
 
@@ -57,7 +55,6 @@ describe('Admin > Accounts > Bug 39720', function () {
 
 		// Verify response
 		assert.notExists(r3.Fault, 'Response should not be a Fault');
-		assert.exists(r3.CreateAccountResponse, 'regularAcct account creation failed');
 
 		regularAcctId = Array.isArray(r3.CreateAccountResponse.account) ? r3.CreateAccountResponse.account[0].id : r3.CreateAccountResponse.account.id;
 	});
@@ -88,7 +85,7 @@ describe('Admin > Accounts > Bug 39720', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should have a Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 	});
 
@@ -105,7 +102,7 @@ describe('Admin > Accounts > Bug 39720', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should have a Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 	});
 
@@ -122,7 +119,7 @@ describe('Admin > Accounts > Bug 39720', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should have a Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Should have a Fault');
 		assert.include(response.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 	});
 });

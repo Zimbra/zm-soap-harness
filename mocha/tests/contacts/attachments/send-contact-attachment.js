@@ -61,7 +61,6 @@ describe('Contacts > Attachments > Send Contact Attachment', function () {
 			</CreateContactRequest>`, account2Token
 		);
 		assert.notExists(createRes.Fault, 'Create contact should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 

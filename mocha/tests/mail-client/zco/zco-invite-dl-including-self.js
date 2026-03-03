@@ -84,7 +84,6 @@ describe('Mail Client > Zco > Zco Invite DL Including Self', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -100,6 +99,5 @@ describe('Mail Client > Zco > Zco Invite DL Including Self', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 });

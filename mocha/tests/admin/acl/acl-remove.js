@@ -132,7 +132,7 @@ simple text string in the body</content>
 				<m id="${account1Id}:${message1Id}"/>
 			</GetMsgRequest>`, token2, false
 		);
-		assert.exists(getMsg.Fault, 'GetMsgRequest should fault for removed ACL member');
+		assert.isString(getMsg.Fault.Detail.Error.Code, 'GetMsgRequest should fault for removed ACL member');
 		assert.include(getMsg.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 	});
 
@@ -172,7 +172,7 @@ simple text string in the body</content>
 				<m id="${account1Id}:${message1Id}"/>
 			</GetMsgRequest>`, token3b, false
 		);
-		assert.exists(getMsgAfter.Fault, 'GetMsgRequest should fault for removed ACL member');
+		assert.isString(getMsgAfter.Fault.Detail.Error.Code, 'GetMsgRequest should fault for removed ACL member');
 		assert.include(getMsgAfter.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 	});
 });

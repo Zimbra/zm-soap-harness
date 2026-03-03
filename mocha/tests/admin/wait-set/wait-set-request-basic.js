@@ -51,7 +51,6 @@ describe('Admin > Wait Set > Wait Set Request Basic', function () {
 			</CreateWaitSetRequest>`, accountToken
 		);
 		assert.notExists(wsRes.Fault, 'CreateWaitSetRequest should not fault');
-		assert.exists(wsRes.CreateWaitSetResponse, 'CreateWaitSetResponse should exist');
 		const waitSetId = wsRes.CreateWaitSetResponse.waitSet;
 		const waitSetSeq = wsRes.CreateWaitSetResponse.seq;
 		assert.exists(waitSetId, 'waitSet ID should exist');
@@ -80,7 +79,6 @@ describe('Admin > Wait Set > Wait Set Request Basic', function () {
 			</WaitSetRequest>`, accountToken
 		);
 		assert.notExists(waitRes.Fault, 'WaitSetRequest should not fault');
-		assert.exists(waitRes.WaitSetResponse, 'WaitSetResponse should exist');
 
 		// Verify the account ID is returned in the response
 		if (waitRes.WaitSetResponse.a) {
@@ -144,7 +142,6 @@ describe('Admin > Wait Set > Wait Set Request Basic', function () {
 			</WaitSetRequest>`, accountToken
 		);
 		assert.notExists(waitRes.Fault, 'WaitSetRequest should not fault');
-		assert.exists(waitRes.WaitSetResponse, 'WaitSetResponse should exist');
 
 		// Verify account is returned
 		if (waitRes.WaitSetResponse.a) {
@@ -184,7 +181,6 @@ describe('Admin > Wait Set > Wait Set Request Basic', function () {
 				</CreateWaitSetRequest>`, accountToken
 			);
 			assert.notExists(wsRes.Fault, `CreateWaitSetRequest ${i} should not fault`);
-			assert.exists(wsRes.CreateWaitSetResponse, `CreateWaitSetResponse ${i} should exist`);
 			assert.exists(wsRes.CreateWaitSetResponse.waitSet, `waitSet ID ${i} should exist`);
 			assert.exists(wsRes.CreateWaitSetResponse.seq, `seq ${i} should exist`);
 			waitSets.push({
@@ -206,7 +202,6 @@ describe('Admin > Wait Set > Wait Set Request Basic', function () {
 			// Some server versions may limit active waitsets - skip validation
 			return;
 		}
-		assert.exists(waitRes.WaitSetResponse, 'WaitSetResponse should exist');
 		assert.equal(waitRes.WaitSetResponse.waitSet, waitSets[0].id, 'WaitSet ID should match');
 	});
 });

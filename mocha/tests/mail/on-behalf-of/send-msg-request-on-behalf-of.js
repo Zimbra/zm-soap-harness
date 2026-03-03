@@ -119,7 +119,7 @@ describe('Mail > On Behalf Of > Send Msg Request On Behalf Of', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Login as account4 and verify the sent copy (may take time for on-behalf-of delivery)
@@ -137,7 +137,6 @@ describe('Mail > On Behalf Of > Send Msg Request On Behalf Of', function () {
 
 		// Sent copy may not appear in account4's mailbox on all server configurations
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		if (!searchRes.SearchResponse.m) {
 			// Verify the message at least exists in recipient's (account5) inbox
 			const account5AuthToken = await soap.getAccountAuthToken(account5Email);
@@ -218,7 +217,7 @@ describe('Mail > On Behalf Of > Send Msg Request On Behalf Of', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Login as account4 and verify
@@ -233,7 +232,6 @@ describe('Mail > On Behalf Of > Send Msg Request On Behalf Of', function () {
 
 		// Verify message received
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		assert.exists(searchRes.SearchResponse.m, 'Message should exist');
 		const msgs = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
@@ -330,7 +328,7 @@ describe('Mail > On Behalf Of > Send Msg Request On Behalf Of', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Login as account4 and verify (may take time for on-behalf-of delivery)
@@ -347,7 +345,6 @@ describe('Mail > On Behalf Of > Send Msg Request On Behalf Of', function () {
 
 		// Verify message received
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		assert.exists(searchRes.SearchResponse.m, 'Message should exist');
 		const msgs = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];

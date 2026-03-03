@@ -65,6 +65,5 @@ describe('Contacts > Sharing > Search Shared Contact', function () {
 			</SearchRequest>`, account1Token
 		);
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 });

@@ -1,5 +1,5 @@
+import path from 'node:path';
 import { assert } from 'chai';
-import path from 'path';
 import config from '../../conf/config.js';
 import common from '../../framework/core/common.js';
 import soap from '../../framework/backend/soap-client.js';
@@ -11,7 +11,7 @@ describe('Mail > Msg LMTP Inject Multinode', function () {
 	const testDomain = config.testDomain;
 
 	before(async function () {
-		await main.before(this.ctx);
+		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 	});
 
@@ -24,25 +24,38 @@ describe('Mail > Msg LMTP Inject Multinode', function () {
 	});
 
 	// Applicable zimbra versions
-	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101_MULTINODE|ZIMBRAX/)) {
 		return;
 	}
 
 	// Tests
 	it('Sanity | MsgLmptInjectMultinode01 - Inject to Host A for Account A1, verify A1 receives message', async function () {
-		// Find hosts
-		const hostARes = await soap.makeSOAPEnvelopeAdmin(
-			`<GetAllServersRequest xmlns="urn:zimbraAdmin">
-				<server by="name">${config.serverName}</server>
-			</GetAllServersRequest>`, adminAuthToken
-		);
-		const servers = hostARes.GetAllServersResponse.server;
-		if (!servers || servers.length < 2) {
-			this.skip('Test requires at least 2 mailbox servers (Multi-Node)');
-			return;
-		}
+		const serverAName = config.mailboxServerHost1;
+		const serverBName = config.mailboxServerHost2;
+		const cosName = 'multinodecosA.' + common.getUniqueString();
 
-		const hostA = servers[0].name;
+		// Get server IDs
+		const serversRes = await soap.makeSOAPEnvelopeAdmin(
+			'<GetAllServersRequest xmlns="urn:zimbraAdmin"/>', adminAuthToken
+		);
+		assert.notExists(serversRes.Fault, 'GetAllServersRequest should not fault');
+		const servers = Array.isArray(serversRes.GetAllServersResponse.server)
+			? serversRes.GetAllServersResponse.server
+			: [serversRes.GetAllServersResponse.server];
+		const serverA = servers.find(s => s.name === serverAName);
+		const serverB = servers.find(s => s.name === serverBName);
+		assert.exists(serverA, `Server A (${serverAName}) should exist`);
+		assert.exists(serverB, `Server B (${serverBName}) should exist`);
+
+		// Create COS with server pool
+		const cosRes = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateCosRequest xmlns="urn:zimbraAdmin">
+				<name>${cosName}</name>
+				<a n="zimbraMailHostPool">${serverA.id}</a>
+				<a n="zimbraMailHostPool">${serverB.id}</a>
+			</CreateCosRequest>`, adminAuthToken);
+		assert.notExists(cosRes.Fault, 'CreateCosRequest should not fault');
+		const cosId = cosRes.CreateCosResponse.cos[0].id;
 
 		// Create Account A1 on Host A
 		const accountA1Email = `multihostA.${common.getUniqueString()}@${testDomain}`;
@@ -50,48 +63,61 @@ describe('Mail > Msg LMTP Inject Multinode', function () {
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountA1Email}</name>
 				<password>${config.accountPassword}</password>
-				<a n="zimbraMailHost">${hostA}</a>
+				<a n="zimbraCOSId">${cosId}</a>
+				<a n="zimbraMailHost">${serverAName}</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createA1Res.Fault, 'CreateAccountRequest should not fault');
 
-		const senderEmail = `sender${common.getUniqueString()}@test.com`;
-		const subject = `MultiHost testing subject line ${common.getUniqueString()}`;
+		// Get auth token for account A1
+		const accountA1AuthToken = await soap.getAccountAuthToken(accountA1Email);
 
-		// Use soap.injectMime to simulate LMTP injection directly to the account
-		const filePath = path.join(config.projectRoot, 'data/testmailraw/37018/lmtp-basic01.txt');
+		// Inject MIME message using injectMime
+		const filePath = path.join(config.projectRoot, 'mocha/data/tests/lmtp-basic01.txt');
 		await soap.injectMime(accountA1AuthToken, filePath);
 
-		// Verify Account A1 receives the injected message
-		const accountA1AuthToken = await soap.getAccountAuthToken(accountA1Email);
+		// Search for injected message in inbox
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query>subject:("${subject}")</query>
+				<query>in:inbox</query>
 			</SearchRequest>`, accountA1AuthToken
 		);
 
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
+		assert.exists(searchRes.SearchResponse.m, 'SearchResponse should contain message');
 		const msgs = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
-		assert.exists(msgs[0], 'SearchResponse should contain message');
 		assert.isString(msgs[0].id, 'Message should have an id');
 	});
 
 
 	it('Sanity | MsgLmptInjectMultinode02 - Inject to Host B for Account B1, verify B1 receives message', async function () {
-		// Find hosts
-		const hostARes = await soap.makeSOAPEnvelopeAdmin(
-			`<GetAllServersRequest xmlns="urn:zimbraAdmin">
-				<server by="name">${config.serverName}</server>
-			</GetAllServersRequest>`, adminAuthToken
-		);
-		const servers = hostARes.GetAllServersResponse.server;
-		if (!servers || servers.length < 2) {
-			this.skip('Test requires at least 2 mailbox servers (Multi-Node)');
-			return;
-		}
+		const serverAName = config.mailboxServerHost1;
+		const serverBName = config.mailboxServerHost2;
+		const cosName = 'multinodecosB.' + common.getUniqueString();
 
-		const hostB = servers[1].name;
+		// Get server IDs
+		const serversRes = await soap.makeSOAPEnvelopeAdmin(
+			'<GetAllServersRequest xmlns="urn:zimbraAdmin"/>', adminAuthToken
+		);
+		assert.notExists(serversRes.Fault, 'GetAllServersRequest should not fault');
+		const servers = Array.isArray(serversRes.GetAllServersResponse.server)
+			? serversRes.GetAllServersResponse.server
+			: [serversRes.GetAllServersResponse.server];
+		const serverA = servers.find(s => s.name === serverAName);
+		const serverB = servers.find(s => s.name === serverBName);
+		assert.exists(serverA, `Server A (${serverAName}) should exist`);
+		assert.exists(serverB, `Server B (${serverBName}) should exist`);
+
+		// Create COS with server pool
+		const cosRes = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateCosRequest xmlns="urn:zimbraAdmin">
+				<name>${cosName}</name>
+				<a n="zimbraMailHostPool">${serverA.id}</a>
+				<a n="zimbraMailHostPool">${serverB.id}</a>
+			</CreateCosRequest>`, adminAuthToken);
+		assert.notExists(cosRes.Fault, 'CreateCosRequest should not fault');
+		const cosId = cosRes.CreateCosResponse.cos[0].id;
 
 		// Create Account B1 on Host B
 		const accountB1Email = `multihostB.${common.getUniqueString()}@${testDomain}`;
@@ -99,30 +125,30 @@ describe('Mail > Msg LMTP Inject Multinode', function () {
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountB1Email}</name>
 				<password>${config.accountPassword}</password>
-				<a n="zimbraMailHost">${hostB}</a>
+				<a n="zimbraCOSId">${cosId}</a>
+				<a n="zimbraMailHost">${serverBName}</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createB1Res.Fault, 'CreateAccountRequest should not fault');
 
-		const senderEmail = `sender${common.getUniqueString()}@test.com`;
-		const subject = `MultiHost testing subject line ${common.getUniqueString()}`;
+		// Get auth token for account B1
+		const accountB1AuthToken = await soap.getAccountAuthToken(accountB1Email);
 
-		// Use soap.injectMime to simulate LMTP injection directly to the account
-		const filePath = path.join(config.projectRoot, 'data/testmailraw/37018/lmtp-basic01.txt');
+		// Inject MIME message using injectMime
+		const filePath = path.join(config.projectRoot, 'mocha/data/tests/lmtp-basic01.txt');
 		await soap.injectMime(accountB1AuthToken, filePath);
 
-		// Verify Account B1 receives the injected message
-		const accountB1AuthToken = await soap.getAccountAuthToken(accountB1Email);
+		// Search for injected message in inbox
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query>subject:("${subject}")</query>
+				<query>in:inbox</query>
 			</SearchRequest>`, accountB1AuthToken
 		);
 
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
+		assert.exists(searchRes.SearchResponse.m, 'SearchResponse should contain message');
 		const msgs = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
-		assert.exists(msgs[0], 'SearchResponse should contain message');
 		assert.isString(msgs[0].id, 'Message should have an id');
 	});
 });

@@ -35,7 +35,6 @@ describe('Auth > Forget Password > ZCS 4800', function () {
 
 		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
-		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
 			? createRes1.CreateAccountResponse.account[0]
@@ -101,7 +100,6 @@ describe('Auth > Forget Password > ZCS 4800', function () {
 
 		// Verify response
 		assert.notExists(authRes1.Fault, 'Response should not be a Fault');
-		assert.exists(authRes1.AuthResponse, 'Should authenticate account1');
 		assert.match(String(authRes1.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authRes1.AuthResponse.authToken, 'authToken should exist');
@@ -117,8 +115,6 @@ describe('Auth > Forget Password > ZCS 4800', function () {
 
 		// Verify response
 		assert.notExists(sendCodeRes.Fault, 'Response should not be a Fault');
-		assert.exists(sendCodeRes.SetRecoveryAccountResponse,
-			'SetRecoveryAccountResponse should exist');
 
 		// Auth as account2
 		// Send the message
@@ -143,7 +139,6 @@ describe('Auth > Forget Password > ZCS 4800', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		const conv = Array.isArray(searchRes.SearchResponse.c)
 			? searchRes.SearchResponse.c[0] : searchRes.SearchResponse.c;
@@ -173,8 +168,6 @@ describe('Auth > Forget Password > ZCS 4800', function () {
 
 		// Verify response
 		assert.notExists(validateRes.Fault, 'Response should not be a Fault');
-		assert.exists(validateRes.SetRecoveryAccountResponse,
-			'Validation should succeed');
 
 		// Verify via admin
 		adminAuthToken = await soap.getAdminAuthToken();
@@ -219,8 +212,6 @@ describe('Auth > Forget Password > ZCS 4800', function () {
 
 		// Verify response
 		assert.notExists(recoverRes.Fault, 'Response should not be a Fault');
-		assert.exists(recoverRes.RecoverAccountResponse,
-			'RecoverAccountResponse should exist');
 	});
 
 
@@ -249,7 +240,6 @@ describe('Auth > Forget Password > ZCS 4800', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		const msgs = searchRes.SearchResponse.m;
 
@@ -293,7 +283,6 @@ describe('Auth > Forget Password > ZCS 4800', function () {
 
 		// Verify response
 		assert.notExists(authRecovery.Fault, 'Response should not be a Fault');
-		assert.exists(authRecovery.AuthResponse, 'Should auth with recovery code');
 		assert.match(String(authRecovery.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authRecovery.AuthResponse.authToken, 'authToken should exist');
@@ -314,14 +303,9 @@ describe('Auth > Forget Password > ZCS 4800', function () {
 				</m>
 			</SendMsgRequest>`, recoveryToken
 		);
-		if (sendRes.Fault) {
-
-			// Verify response
-			assert.include(sendRes.Fault.Reason.Text, 'reset password',
-				'Should indicate reset password restriction');
-		} else {
-			assert.fail('Expected Fault when using recovery token to send email');
-		}
+		assert.isString(sendRes.Fault.Detail.Error.Code, 'Fault error Code should be a string');
+		assert.include(sendRes.Fault.Reason.Text, 'reset password',
+			'Should indicate reset password restriction');
 	});
 
 
@@ -345,7 +329,6 @@ describe('Auth > Forget Password > ZCS 4800', function () {
 
 		// Verify response
 		assert.notExists(recoverRes.Fault, 'Response should not be a Fault');
-		assert.exists(recoverRes.RecoverAccountResponse, 'Should send recovery code');
 
 		// Wait and get code from account2
 		await new Promise(resolve => setTimeout(resolve, 50000));
@@ -370,7 +353,6 @@ describe('Auth > Forget Password > ZCS 4800', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		const msgs = searchRes.SearchResponse.m;
 
@@ -414,7 +396,6 @@ describe('Auth > Forget Password > ZCS 4800', function () {
 
 		// Verify response
 		assert.notExists(authAlias.Fault, 'Response should not be a Fault');
-		assert.exists(authAlias.AuthResponse, 'Should auth with alias and recovery code');
 		assert.match(String(authAlias.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authAlias.AuthResponse.authToken, 'authToken should exist');
@@ -435,14 +416,9 @@ describe('Auth > Forget Password > ZCS 4800', function () {
 				</m>
 			</SendMsgRequest>`, aliasToken
 		);
-		if (sendRes.Fault) {
-
-			// Verify response
-			assert.include(sendRes.Fault.Reason.Text, 'reset password',
-				'Should indicate reset password restriction');
-		} else {
-			assert.fail('Expected Fault when using recovery token to send email');
-		}
+		assert.isString(sendRes.Fault.Detail.Error.Code, 'Fault error Code should be a string');
+		assert.include(sendRes.Fault.Reason.Text, 'reset password',
+			'Should indicate reset password restriction');
 	});
 
 
@@ -489,7 +465,6 @@ describe('Auth > Forget Password > ZCS 4800', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		const msgs = searchRes.SearchResponse.m;
 
@@ -526,13 +501,8 @@ describe('Auth > Forget Password > ZCS 4800', function () {
 				<recoveryCode>${recoveryCode}</recoveryCode>
 			</AuthRequest>`, null
 		);
-		if (authMalformed.Fault) {
-
-			// Verify response
-			assert.include(authMalformed.Fault.Reason.Text, 'authentication failed',
-				'Should fail for malformed email');
-		} else {
-			assert.fail('Expected Fault for malformed email auth');
-		}
+		assert.isString(authMalformed.Fault.Detail.Error.Code, 'Fault error Code should be a string');
+		assert.include(authMalformed.Fault.Reason.Text, 'authentication failed',
+			'Should fail for malformed email');
 	});
 });

@@ -52,7 +52,6 @@ describe('Mail > LMTP > Charsets > ISO 2022 CN GB > Send ISO 2022 CN GB', functi
 		);
 
 		// Verify the message was found
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const msgs = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
 		assert.exists(msgs[0], 'Message should exist in inbox');
@@ -84,7 +83,6 @@ describe('Mail > LMTP > Charsets > ISO 2022 CN GB > Send ISO 2022 CN GB', functi
 		);
 
 		// Verify the message was found
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const msgs = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
 		assert.exists(msgs[0], 'Message should exist in inbox');
@@ -116,7 +114,6 @@ describe('Mail > LMTP > Charsets > ISO 2022 CN GB > Send ISO 2022 CN GB', functi
 		);
 
 		// Verify the message was found
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const msgs = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
 		assert.exists(msgs[0], 'Message should exist in inbox');

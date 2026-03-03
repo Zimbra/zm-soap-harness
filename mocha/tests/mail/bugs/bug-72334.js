@@ -139,7 +139,6 @@ describe('Mail > Bugs > Bug 72334', function () {
 			`<GetFilterRulesRequest xmlns="urn:zimbraMail"/>`, account2AuthToken
 		);
 		assert.notExists(filterRes.Fault, 'GetFilterRulesRequest should not fault');
-		assert.exists(filterRes.GetFilterRulesResponse, 'Response should exist');
 	});
 
 

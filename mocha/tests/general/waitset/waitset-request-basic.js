@@ -103,7 +103,6 @@ describe('General > Waitset > Waitset Request Basic', function () {
 
 		// Verify response
 		assert.notExists(waitRes.Fault, 'WaitSetRequest should not fault');
-		assert.exists(waitRes.WaitSetResponse, 'WaitSetResponse should exist');
 	});
 
 
@@ -251,6 +250,6 @@ describe('General > Waitset > Waitset Request Basic', function () {
 		);
 
 		// Verify response
-		assert.exists(evictRes.Fault, 'WaitSet1 should be evicted after exceeding limit');
+		assert.isString(evictRes.Fault.Detail.Error.Code, 'WaitSet1 should be evicted after exceeding limit');
 	});
 });

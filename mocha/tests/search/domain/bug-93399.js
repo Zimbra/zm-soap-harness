@@ -42,12 +42,6 @@ describe('Search > Domain > Bug 93399', function () {
 			`<BrowseRequest regex=".*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*822" browseBy="domains" xmlns="urn:zimbraMail"/>`, accountAuthToken
 		);
 
-		if (res.Fault) {
-
-			// Verify response
-			assert.exists(res.Fault, 'Response should be a Fault');
-		} else {
-			assert.exists(res.BrowseResponse, 'BrowseResponse should exist');
-		}
+		assert.notExists(res.Fault, 'BrowseRequest should not fault');
 	});
 });

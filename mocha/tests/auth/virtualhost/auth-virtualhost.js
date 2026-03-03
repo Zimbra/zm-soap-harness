@@ -42,8 +42,6 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
-		assert.exists(createRes1.CreateAccountResponse,
-			'Should create account on default domain');
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
 			? createRes1.CreateAccountResponse.account[0]
 			: createRes1.CreateAccountResponse.account;
@@ -90,7 +88,6 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 			// Verify response
 			assert.notExists(response.Fault, 'Response should not be a Fault');
-			assert.exists(response.AuthResponse, 'AuthResponse should exist');
 			assert.exists(response.AuthResponse.lifetime, 'lifetime should exist');
 			assert.exists(response.AuthResponse.authToken, 'authToken should exist');
 		});
@@ -107,14 +104,9 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 					<virtualHost>${virtualHost}</virtualHost>
 				</AuthRequest>`, null, true, testAccountServer
 			);
-			if (response.Fault) {
-
-				// Verify response
-				assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
-					'Should fail with AUTH_FAILED');
-			} else {
-				assert.fail('Expected Fault for wrong password');
-			}
+			assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
+			assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
+				'Should fail with AUTH_FAILED');
 		});
 
 
@@ -131,7 +123,6 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 			// Verify response
 			assert.notExists(response.Fault, 'Response should not be a Fault');
-			assert.exists(response.AuthResponse, 'AuthResponse should exist');
 			assert.exists(response.AuthResponse.lifetime, 'lifetime should exist');
 			assert.exists(response.AuthResponse.authToken, 'authToken should exist');
 		});
@@ -153,7 +144,6 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 			// Verify response
 			assert.notExists(domainRes.Fault, 'Response should not be a Fault');
-			assert.exists(domainRes.CreateDomainResponse, 'Should create domain');
 
 			const domainId = Array.isArray(domainRes.CreateDomainResponse.domain)
 				? domainRes.CreateDomainResponse.domain[0].id
@@ -169,7 +159,6 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 			// Verify response
 			assert.notExists(createRes.Fault, 'Response should not be a Fault');
-			assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
 			const acct = Array.isArray(createRes.CreateAccountResponse.account)
 				? createRes.CreateAccountResponse.account[0]
@@ -189,7 +178,6 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 			// Verify response
 			assert.notExists(authRes.Fault, 'Response should not be a Fault');
-			assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 			assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 				'lifetime should be numeric');
 			assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
@@ -207,8 +195,6 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 			// Verify response
 			assert.notExists(infoRes.Fault, 'Response should not be a Fault');
-			assert.exists(infoRes.GetAccountInfoResponse,
-				'GetAccountInfoResponse should exist');
 
 			// Cleanup virtual host
 			await soap.makeSOAPEnvelopeAdmin(
@@ -264,7 +250,6 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 			// Verify response
 			assert.notExists(modRes.Fault, 'Response should not be a Fault');
-			assert.exists(modRes.ModifyDomainResponse, 'ModifyDomainResponse should exist');
 			const domain = Array.isArray(modRes.ModifyDomainResponse.domain)
 				? modRes.ModifyDomainResponse.domain[0]
 				: modRes.ModifyDomainResponse.domain;
@@ -284,7 +269,6 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 			// Verify response
 			assert.notExists(authRes1.Fault, 'Response should not be a Fault');
-			assert.exists(authRes1.AuthResponse, 'Should auth with virtualHost01');
 			assert.match(String(authRes1.AuthResponse.lifetime), /^\d+$/,
 				'lifetime should be numeric');
 			assert.exists(authRes1.AuthResponse.authToken, 'authToken should exist');
@@ -301,7 +285,6 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 			// Verify response
 			assert.notExists(authRes2.Fault, 'Response should not be a Fault');
-			assert.exists(authRes2.AuthResponse, 'Should auth with virtualHost02');
 			assert.match(String(authRes2.AuthResponse.lifetime), /^\d+$/,
 				'lifetime should be numeric');
 			assert.exists(authRes2.AuthResponse.authToken, 'authToken should exist');
@@ -318,7 +301,6 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 			// Verify response
 			assert.notExists(authRes3.Fault, 'Response should not be a Fault');
-			assert.exists(authRes3.AuthResponse, 'Should auth with virtualHost03');
 			assert.match(String(authRes3.AuthResponse.lifetime), /^\d+$/,
 				'lifetime should be numeric');
 			assert.exists(authRes3.AuthResponse.authToken, 'authToken should exist');
@@ -356,7 +338,6 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 			// Verify response
 			assert.notExists(domRes.Fault, 'Response should not be a Fault');
-			assert.exists(domRes.CreateDomainResponse, 'Should create domain2');
 			const domain2Id = Array.isArray(domRes.CreateDomainResponse.domain)
 				? domRes.CreateDomainResponse.domain[0].id
 				: domRes.CreateDomainResponse.domain.id;
@@ -371,7 +352,6 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 			// Verify response
 			assert.notExists(createRes.Fault, 'Response should not be a Fault');
-			assert.exists(createRes.CreateAccountResponse, 'Should create account');
 			const acct = Array.isArray(createRes.CreateAccountResponse.account)
 				? createRes.CreateAccountResponse.account[0]
 				: createRes.CreateAccountResponse.account;
@@ -388,7 +368,6 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 			// Verify response
 			assert.notExists(modRes1.Fault, 'Response should not be a Fault');
-			assert.exists(modRes1.ModifyDomainResponse, 'Should modify domain');
 			let domain = Array.isArray(modRes1.ModifyDomainResponse.domain)
 				? modRes1.ModifyDomainResponse.domain[0]
 				: modRes1.ModifyDomainResponse.domain;
@@ -408,7 +387,6 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 			// Verify response
 			assert.notExists(authRes1.Fault, 'Response should not be a Fault');
-			assert.exists(authRes1.AuthResponse, 'Should auth with virtualHost02');
 			assert.match(String(authRes1.AuthResponse.lifetime), /^\d+$/,
 				'lifetime should be numeric');
 
@@ -426,7 +404,6 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 			// Verify response
 			assert.notExists(infoRes1.Fault, 'Response should not be a Fault');
-			assert.exists(infoRes1.GetAccountInfoResponse, 'GetAccountInfoResponse should exist');
 
 			// Replace virtualHost02 with virtualHost03
 			adminAuthToken = await soap.getAdminAuthToken();
@@ -454,7 +431,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 			);
 
 			// Verify response
-			assert.exists(authRes2.Fault, 'Should fail auth with removed virtualHost02');
+			assert.isString(authRes2.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 			assert.include(authRes2.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 				'Should return AUTH_FAILED for virtualHost02');
 
@@ -468,7 +445,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 			);
 
 			// Verify response
-			assert.exists(authRes3.Fault, 'Should fail auth without virtualHost');
+			assert.isString(authRes3.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 			assert.include(authRes3.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 				'Should return AUTH_FAILED without virtualHost');
 
@@ -484,7 +461,6 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 			// Verify response
 			assert.notExists(authRes4.Fault, 'Response should not be a Fault');
-			assert.exists(authRes4.AuthResponse, 'Should auth with virtualHost03');
 			assert.match(String(authRes4.AuthResponse.lifetime), /^\d+$/,
 				'lifetime should be numeric');
 
@@ -502,7 +478,6 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 			// Verify response
 			assert.notExists(infoRes2.Fault, 'Response should not be a Fault');
-			assert.exists(infoRes2.GetAccountInfoResponse, 'GetAccountInfoResponse should exist');
 
 			// Remove all virtual hosts
 			adminAuthToken = await soap.getAdminAuthToken();
@@ -517,7 +492,6 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 			// Verify response
 			assert.notExists(modRes3.Fault, 'Response should not be a Fault');
-			assert.exists(modRes3.ModifyDomainResponse, 'Should remove virtual hosts');
 			domain = Array.isArray(modRes3.ModifyDomainResponse.domain)
 				? modRes3.ModifyDomainResponse.domain[0]
 				: modRes3.ModifyDomainResponse.domain;
@@ -538,7 +512,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 			);
 
 			// Verify response
-			assert.exists(authRes5.Fault, 'Should fail auth with virtualHost02 after removal');
+			assert.isString(authRes5.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 			assert.include(authRes5.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 				'Should return AUTH_FAILED');
 
@@ -552,7 +526,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 			);
 
 			// Verify response
-			assert.exists(authRes6.Fault, 'Should fail auth without virtualHost after removal');
+			assert.isString(authRes6.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 			assert.include(authRes6.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 				'Should return AUTH_FAILED');
 
@@ -567,7 +541,7 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 			);
 
 			// Verify response
-			assert.exists(authRes7.Fault, 'Should fail auth with virtualHost03 after removal');
+			assert.isString(authRes7.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 			assert.include(authRes7.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 				'Should return AUTH_FAILED');
 
@@ -582,7 +556,6 @@ describe('Auth > Virtualhost > Auth Virtualhost', function () {
 
 			// Verify response
 			assert.notExists(authRes8.Fault, 'Response should not be a Fault');
-			assert.exists(authRes8.AuthResponse, 'Should auth with full domain name');
 			assert.match(String(authRes8.AuthResponse.lifetime), /^\d+$/,
 				'lifetime should be numeric');
 		});

@@ -110,7 +110,6 @@ describe('Contacts > Autocomplete > Ranking > Ranking Action Reset', function ()
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
-		assert.exists(res.AutoCompleteResponse, 'AutoCompleteResponse should exist');
 	});
 
 

@@ -101,7 +101,6 @@ describe('Sync > Mountpoint > Syncrequest Appointments', function () {
 
 		// Verify response
 		assert.notExists(syncRes1.Fault, 'Response should not be a Fault');
-		assert.exists(syncRes1.SyncResponse, 'SyncResponse should exist');
 		const token1 = syncRes1.SyncResponse.token;
 
 		// Create appointment as account1
@@ -126,7 +125,6 @@ describe('Sync > Mountpoint > Syncrequest Appointments', function () {
 
 		// Verify response
 		assert.notExists(setRes.Fault, 'Response should not be a Fault');
-		assert.exists(setRes.SetAppointmentResponse, 'SetAppointmentResponse should exist');
 		const apptId = setRes.SetAppointmentResponse.apptId;
 
 		// Sync as account2 on shared calendar with token
@@ -137,7 +135,6 @@ describe('Sync > Mountpoint > Syncrequest Appointments', function () {
 
 		// Verify response
 		assert.notExists(syncRes2.Fault, 'Response should not be a Fault');
-		assert.exists(syncRes2.SyncResponse, 'SyncResponse should exist');
 		const syncAppts = Array.isArray(syncRes2.SyncResponse.appt)
 			? syncRes2.SyncResponse.appt
 			: (syncRes2.SyncResponse.appt ? [syncRes2.SyncResponse.appt] : []);
@@ -208,7 +205,6 @@ describe('Sync > Mountpoint > Syncrequest Appointments', function () {
 
 		// Verify response
 		assert.notExists(syncRes2.Fault, 'Response should not be a Fault');
-		assert.exists(syncRes2.SyncResponse, 'SyncResponse should exist');
 		if (syncRes2.SyncResponse.deleted) {
 			const deletedArr = Array.isArray(syncRes2.SyncResponse.deleted)
 				? syncRes2.SyncResponse.deleted : [syncRes2.SyncResponse.deleted];

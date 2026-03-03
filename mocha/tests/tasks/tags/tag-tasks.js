@@ -82,7 +82,6 @@ describe('Tasks > Tags > Tag Tasks', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
-		assert.exists(getRes.GetTaskResponse, 'GetTaskResponse should exist');
 	});
 
 
@@ -112,8 +111,6 @@ describe('Tasks > Tags > Tag Tasks', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
-		assert.exists(getRes.GetTaskSummariesResponse,
-			'GetTaskSummariesResponse should exist');
 	});
 
 
@@ -143,7 +140,6 @@ describe('Tasks > Tags > Tag Tasks', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
 

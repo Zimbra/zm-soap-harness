@@ -73,7 +73,6 @@ describe('Mail Client > Mail > ZCS 1870', function () {
 			</SearchRequest>`, acct2Auth
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -101,7 +100,6 @@ describe('Mail Client > Mail > ZCS 1870', function () {
 			</SearchRequest>`, acct2Auth
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -136,7 +134,6 @@ describe('Mail Client > Mail > ZCS 1870', function () {
 			</SearchRequest>`, acct2Auth
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
 

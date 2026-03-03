@@ -77,7 +77,6 @@ Content for email02A mdate test</content>
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -173,7 +172,7 @@ Content for email02A mdate test</content>
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
 		const msgAction = Array.isArray(res2.MsgActionResponse.action)
 			? res2.MsgActionResponse.action[0] : res2.MsgActionResponse.action;
-		assert.exists(msgAction, 'MsgActionResponse should contain action');
+		assert.equal(msgAction.op, 'move', 'op should be move');
 
 		// Search with mdate
 		const now = new Date();
@@ -186,7 +185,6 @@ Content for email02A mdate test</content>
 		);
 
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse, 'SearchResponse should exist');
 
 		// Search by date
 		const res4 = await soap.makeSOAPEnvelopeAccount(

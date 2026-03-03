@@ -72,7 +72,7 @@ describe('EWS > Sync Mail Properties', function () {
 		assert.notExists(sendRes.Fault, 'Response should not be a Fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		await soap.waitFor(5000);
@@ -91,7 +91,6 @@ describe('EWS > Sync Mail Properties', function () {
 			</SearchRequest>`, account1AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const searchMsgs = searchRes.SearchResponse?.m;
 		const firstMsg = Array.isArray(searchMsgs) ? searchMsgs[0] : searchMsgs;
 		assert.exists(firstMsg, 'Should find message in inbox');
@@ -124,7 +123,6 @@ describe('EWS > Sync Mail Properties', function () {
 			account1Email, account1Password
 		);
 		const getFolderBody = ews.getBody(getFolderRes);
-		assert.exists(getFolderBody.GetFolderResponse, 'GetFolderResponse should exist');
 		const getFolderMsg = getFolderBody.GetFolderResponse.ResponseMessages.GetFolderResponseMessage;
 		const folderMsg = Array.isArray(getFolderMsg) ? getFolderMsg[0] : getFolderMsg;
 		assert.equal(folderMsg.$.ResponseClass, 'Success', 'GetFolder should succeed');
@@ -151,7 +149,6 @@ describe('EWS > Sync Mail Properties', function () {
 			account1Email, account1Password
 		);
 		const syncBody = ews.getBody(syncRes);
-		assert.exists(syncBody.SyncFolderItemsResponse, 'SyncFolderItemsResponse should exist');
 		const syncMsg = syncBody.SyncFolderItemsResponse.ResponseMessages.SyncFolderItemsResponseMessage;
 		const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
 		assert.equal(syncMessage.$.ResponseClass, 'Success', 'SyncFolderItems should succeed');
@@ -185,7 +182,6 @@ describe('EWS > Sync Mail Properties', function () {
 			account1Email, account1Password
 		);
 		const getItemBody = ews.getBody(getItemRes);
-		assert.exists(getItemBody.GetItemResponse, 'GetItemResponse should exist');
 		const getItemMsg = getItemBody.GetItemResponse.ResponseMessages.GetItemResponseMessage;
 		const itemMsg = Array.isArray(getItemMsg) ? getItemMsg[0] : getItemMsg;
 		assert.equal(itemMsg.$.ResponseClass, 'Success', 'GetItem should succeed');
@@ -313,7 +309,6 @@ describe('EWS > Sync Mail Properties', function () {
 			account1Email, account1Password
 		);
 		const updateBody = ews.getBody(updateRes);
-		assert.exists(updateBody.UpdateItemResponse, 'UpdateItemResponse should exist');
 		const updateMsg = updateBody.UpdateItemResponse.ResponseMessages.UpdateItemResponseMessage;
 		const updateMessage = Array.isArray(updateMsg) ? updateMsg[0] : updateMsg;
 		assert.equal(updateMessage.$.ResponseClass, 'Success', 'UpdateItem should succeed');
@@ -360,7 +355,6 @@ describe('EWS > Sync Mail Properties', function () {
 			</SearchRequest>`, account1AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const messages = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
 		const matchedMsg = messages.find(m => m && m.id === messageId);
@@ -390,7 +384,6 @@ describe('EWS > Sync Mail Properties', function () {
 			account1Email, account1Password
 		);
 		const updateBody = ews.getBody(updateRes);
-		assert.exists(updateBody.UpdateItemResponse, 'UpdateItemResponse should exist');
 		const updateMsg = updateBody.UpdateItemResponse.ResponseMessages.UpdateItemResponseMessage;
 		const updateMessage = Array.isArray(updateMsg) ? updateMsg[0] : updateMsg;
 		assert.equal(updateMessage.$.ResponseClass, 'Success', 'UpdateItem should succeed');
@@ -437,7 +430,6 @@ describe('EWS > Sync Mail Properties', function () {
 			</SearchRequest>`, account1AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const messages = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
 		const matchedMsg = messages.find(m => m && m.id === messageId);
@@ -587,7 +579,6 @@ describe('EWS > Sync Mail Properties', function () {
 			account1Email, account1Password
 		);
 		const updateBody = ews.getBody(updateRes);
-		assert.exists(updateBody.UpdateItemResponse, 'UpdateItemResponse should exist');
 		const updateMsg = updateBody.UpdateItemResponse.ResponseMessages.UpdateItemResponseMessage;
 		const updateMessage = Array.isArray(updateMsg) ? updateMsg[0] : updateMsg;
 		assert.equal(updateMessage.$.ResponseClass, 'Success', 'UpdateItem should succeed');
@@ -634,7 +625,6 @@ describe('EWS > Sync Mail Properties', function () {
 			</SearchRequest>`, account1AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const messages = searchRes.SearchResponse?.m;
 		assert.notExists(messages, 'No flagged messages should be found');
 	});
@@ -666,7 +656,7 @@ describe('EWS > Sync Mail Properties', function () {
 		assert.notExists(createTagRes.Fault, 'CreateTagRequest should not be a Fault');
 		const createdTag = Array.isArray(createTagRes.CreateTagResponse.tag)
 			? createTagRes.CreateTagResponse.tag[0] : createTagRes.CreateTagResponse.tag;
-		assert.exists(createdTag, 'CreateTagResponse should contain tag');
+		assert.exists(createdTag.id, 'tag id should exist');
 		const tagId = createTagRes.CreateTagResponse.tag[0].id;
 		assert.equal(
 			createTagRes.CreateTagResponse.tag[0].color, tagColor, 'Tag color should match'
@@ -791,7 +781,6 @@ describe('EWS > Sync Mail Properties', function () {
 			account1Email, account1Password
 		);
 		const updateBody = ews.getBody(updateRes);
-		assert.exists(updateBody.UpdateItemResponse, 'UpdateItemResponse should exist');
 		const updateMsg = updateBody.UpdateItemResponse.ResponseMessages.UpdateItemResponseMessage;
 		const updateMessage = Array.isArray(updateMsg) ? updateMsg[0] : updateMsg;
 		assert.equal(updateMessage.$.ResponseClass, 'Success', 'UpdateItem should succeed');
@@ -838,7 +827,6 @@ describe('EWS > Sync Mail Properties', function () {
 			</SearchRequest>`, account1AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const messages = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
 		const matchedMsg = messages.find(m => m && m.id === messageId);
@@ -853,7 +841,7 @@ describe('EWS > Sync Mail Properties', function () {
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not be a Fault');
 		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
-		assert.exists(getMsg, 'GetMsgResponse should contain m');
+		assert.exists(getMsg.id, 'message id should exist');
 		const msg = getMsgRes.GetMsgResponse.m[0];
 		assert.notExists(msg.tn, 'Message should have no tag names (tn)');
 	});

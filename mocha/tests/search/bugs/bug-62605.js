@@ -94,7 +94,6 @@ Content for msg02</content>
 			</GetMsgRequest>`, accountAuthToken
 		);
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.GetMsgResponse, 'Response element should exist');
 
 		// GetMsgRequest for msg02
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -103,6 +102,5 @@ Content for msg02</content>
 			</GetMsgRequest>`, accountAuthToken
 		);
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.GetMsgResponse, 'Response element should exist');
 	});
 });

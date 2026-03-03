@@ -92,7 +92,7 @@ describe('Mail > Persona > Send On Behalf Of Mail Using Primary Account', functi
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 		const msgId = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0].id : sendRes.SendMsgResponse.m.id;
@@ -125,7 +125,6 @@ describe('Mail > Persona > Send On Behalf Of Mail Using Primary Account', functi
 				</SearchRequest>`, account3AuthToken
 			);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		assert.exists(searchRes.SearchResponse.m, 'Message should exist');
 	});
 
@@ -196,7 +195,7 @@ describe('Mail > Persona > Send On Behalf Of Mail Using Primary Account', functi
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 		const msgId = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0].id : sendRes.SendMsgResponse.m.id;
@@ -230,7 +229,6 @@ describe('Mail > Persona > Send On Behalf Of Mail Using Primary Account', functi
 				</SearchRequest>`, account3AuthToken
 			);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		assert.exists(searchRes.SearchResponse.m, 'Message should exist');
 	});
 });

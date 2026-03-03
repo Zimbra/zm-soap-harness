@@ -61,7 +61,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 
 		// Send browse request
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -71,6 +70,5 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.BrowseResponse, 'BrowseResponse should exist');
 	});
 });

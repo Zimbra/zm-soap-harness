@@ -84,7 +84,7 @@ describe('Calendar > Free Busy > Get Working Hours Request', function () {
 				s="" e="${now + 36000000}"
 				id="${acct1.id}"/>`, acct1.token
         );
-        assert.exists(res.Fault, 'Should fault for blank s');
+        assert.isString(res.Fault.Detail.Error.Code, 'Should fault for blank s');
     });
 
 
@@ -95,7 +95,7 @@ describe('Calendar > Free Busy > Get Working Hours Request', function () {
 				s="${now}" e=""
 				id="${acct1.id}"/>`, acct1.token
         );
-        assert.exists(res.Fault, 'Should fault for blank e');
+        assert.isString(res.Fault.Detail.Error.Code, 'Should fault for blank e');
     });
 
 
@@ -106,7 +106,7 @@ describe('Calendar > Free Busy > Get Working Hours Request', function () {
 				s="-111111" e="${now + 36000000}"
 				id="${acct1.id}"/>`, acct1.token
         );
-        assert.exists(res.Fault, 'Should fault for negative s');
+        assert.isString(res.Fault.Detail.Error.Code, 'Should fault for negative s');
     });
 
 
@@ -117,7 +117,7 @@ describe('Calendar > Free Busy > Get Working Hours Request', function () {
 				s="${now}" e="-11111"
 				id="${acct1.id}"/>`, acct1.token
         );
-        assert.exists(res.Fault, 'Should fault for negative e');
+        assert.isString(res.Fault.Detail.Error.Code, 'Should fault for negative e');
     });
 
 
@@ -127,7 +127,7 @@ describe('Calendar > Free Busy > Get Working Hours Request', function () {
 				s="aaaa" e="bbbb"
 				id="${acct1.id}"/>`, acct1.token
         );
-        assert.exists(res.Fault, 'Should fault for text s/e');
+        assert.isString(res.Fault.Detail.Error.Code, 'Should fault for text s/e');
     });
 
 

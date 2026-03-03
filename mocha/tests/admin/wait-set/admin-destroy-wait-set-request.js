@@ -47,7 +47,6 @@ describe('Admin > Wait Set > Admin Destroy Wait Set Request', function () {
 			</AdminCreateWaitSetRequest>`, adminAuthToken
 		);
 		assert.notExists(wsRes.Fault, 'AdminCreateWaitSetRequest should not fault');
-		assert.exists(wsRes.AdminCreateWaitSetResponse, 'AdminCreateWaitSetResponse should exist');
 		const waitSetId = wsRes.AdminCreateWaitSetResponse.waitSet;
 		const waitSetSeq = wsRes.AdminCreateWaitSetResponse.seq;
 		assert.exists(waitSetId, 'waitSet ID should exist');
@@ -65,7 +64,7 @@ describe('Admin > Wait Set > Admin Destroy Wait Set Request', function () {
 			`<AdminWaitSetRequest xmlns="urn:zimbraAdmin" waitSet="${waitSetId}" seq="${waitSetSeq}" defTypes="all">
 			</AdminWaitSetRequest>`, adminAuthToken, false
 		);
-		assert.exists(waitRes.Fault, 'AdminWaitSetRequest should fault for destroyed waitset');
+		assert.isString(waitRes.Fault.Detail.Error.Code, 'AdminWaitSetRequest should fault for destroyed waitset');
 		assert.include(waitRes.Fault.Detail.Error.Code, 'admin.NO_SUCH_WAITSET');
 	});
 

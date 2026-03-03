@@ -29,7 +29,6 @@ describe('Auth > Bugs > Bug 95102', function () {
 
 		// Verify response
 		assert.notExists(domainRes.Fault, 'Response should not be a Fault');
-		assert.exists(domainRes.CreateDomainResponse, 'Should create domain');
 
 		// Create account with maintenance status
 		accountName = 'preauth' + common.getUniqueString() + '@' + domainName;
@@ -45,7 +44,6 @@ describe('Auth > Bugs > Bug 95102', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
@@ -77,13 +75,8 @@ describe('Auth > Bugs > Bug 95102', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, true, accountServer
 		);
-		if (response.Fault) {
-
-			// Verify response
-			assert.include(response.Fault.Detail.Error.Code, 'account.MAINTENANCE_MODE',
-				'Should return MAINTENANCE_MODE error');
-		} else {
-			assert.fail('Expected Fault for account in maintenance mode');
-		}
+		assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
+		assert.include(response.Fault.Detail.Error.Code, 'account.MAINTENANCE_MODE',
+			'Should return MAINTENANCE_MODE error');
 	});
 });

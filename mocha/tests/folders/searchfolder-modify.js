@@ -30,6 +30,7 @@ describe('Folders > Searchfolder Modify', function () {
 				<search name='${name}' query='${query}'${typesAttr} sortBy='dateDesc' l='1'/>
 			</CreateSearchFolderRequest>`;
 		const response = await soap.makeSOAPEnvelopeAccount(request, accountAuthToken);
+		assert.notExists(response.Fault, 'Create search folder should not be a Fault');
 
 		return {
 			id: response.CreateSearchFolderResponse.search[0].id,
@@ -54,7 +55,8 @@ describe('Folders > Searchfolder Modify', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.ModifySearchFolderResponse, 'Verify response exists');
+		assert.equal(response.ModifySearchFolderResponse.search[0].id, sf.id,
+			'Verify search folder id matches');
 		assert.equal(response.ModifySearchFolderResponse.search[0].query, 'in:contacts',
 			'Verify query is modified to in:contacts');
 		assert.equal(response.ModifySearchFolderResponse.search[0].name, sf.name,
@@ -75,7 +77,8 @@ describe('Folders > Searchfolder Modify', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.ModifySearchFolderResponse, 'Verify response exists');
+		assert.equal(response.ModifySearchFolderResponse.search[0].id, sf.id,
+			'Verify search folder id matches');
 		assert.equal(response.ModifySearchFolderResponse.search[0].query, 'in:contacts',
 			'Verify query is modified');
 	});
@@ -94,7 +97,8 @@ describe('Folders > Searchfolder Modify', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.ModifySearchFolderResponse, 'Verify response exists');
+		assert.equal(response.ModifySearchFolderResponse.search[0].id, sf.id,
+			'Verify search folder id matches');
 		assert.equal(response.ModifySearchFolderResponse.search[0].query, 'in:inbox',
 			'Verify query is modified');
 	});
@@ -113,7 +117,8 @@ describe('Folders > Searchfolder Modify', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.ModifySearchFolderResponse, 'Verify response exists');
+		assert.equal(response.ModifySearchFolderResponse.search[0].id, sf.id,
+			'Verify search folder id matches');
 		assert.equal(response.ModifySearchFolderResponse.search[0].query, 'in:inbox',
 			'Verify query is modified');
 	});
@@ -132,7 +137,8 @@ describe('Folders > Searchfolder Modify', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.ModifySearchFolderResponse, 'Verify response exists');
+		assert.equal(response.ModifySearchFolderResponse.search[0].id, sf.id,
+			'Verify search folder id matches');
 		assert.equal(response.ModifySearchFolderResponse.search[0].query, 'in:trash',
 			'Verify query is modified');
 	});
@@ -151,7 +157,8 @@ describe('Folders > Searchfolder Modify', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.ModifySearchFolderResponse, 'Verify response exists');
+		assert.equal(response.ModifySearchFolderResponse.search[0].id, sf.id,
+			'Verify search folder id matches');
 		assert.equal(response.ModifySearchFolderResponse.search[0].query, 'in:trash',
 			'Verify query is modified');
 	});
@@ -170,7 +177,8 @@ describe('Folders > Searchfolder Modify', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.ModifySearchFolderResponse, 'Verify response exists');
+		assert.equal(response.ModifySearchFolderResponse.search[0].id, sf.id,
+			'Verify search folder id matches');
 		assert.equal(response.ModifySearchFolderResponse.search[0].query, 'is:anywhere not in:trash',
 			'Verify query is modified');
 	});
@@ -187,7 +195,8 @@ describe('Folders > Searchfolder Modify', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.ModifySearchFolderResponse, 'Verify response exists');
+		assert.equal(response.ModifySearchFolderResponse.search[0].id, sf.id,
+			'Verify search folder id matches');
 		assert.equal(response.ModifySearchFolderResponse.search[0].query, 'in:junk',
 			'Verify query is modified');
 	});

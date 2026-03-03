@@ -27,7 +27,11 @@ describe('Auth > Auth Basic Multinode', function () {
 
 		// Verify response
 		assert.notExists(createResA.Fault, 'Response should not be a Fault');
-		assert.exists(createResA.CreateAccountResponse, 'Should create accountA1');
+		const acctA = Array.isArray(createResA.CreateAccountResponse.account)
+			? createResA.CreateAccountResponse.account[0]
+			: createResA.CreateAccountResponse.account;
+		assert.exists(acctA.id, 'AccountA ID should exist');
+		assert.isString(acctA.id, 'AccountA ID should be a string');
 
 		// Create second account (simulating multihostB)
 		accountB1Name = 'multihost.' + common.getUniqueString() + '@' + config.testDomain;
@@ -42,7 +46,11 @@ describe('Auth > Auth Basic Multinode', function () {
 
 		// Verify response
 		assert.notExists(createResB.Fault, 'Response should not be a Fault');
-		assert.exists(createResB.CreateAccountResponse, 'Should create accountB1');
+		const acctB = Array.isArray(createResB.CreateAccountResponse.account)
+			? createResB.CreateAccountResponse.account[0]
+			: createResB.CreateAccountResponse.account;
+		assert.exists(acctB.id, 'AccountB ID should exist');
+		assert.isString(acctB.id, 'AccountB ID should be a string');
 	});
 
 	beforeEach(async function () {
@@ -70,11 +78,7 @@ describe('Auth > Auth Basic Multinode', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.AuthResponse, 'AuthResponse should exist');
-
 		const lifetime = response.AuthResponse.lifetime;
-
-		// Verify response
 		assert.exists(lifetime, 'lifetime should exist');
 		assert.match(String(lifetime._content || lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -95,7 +99,9 @@ describe('Auth > Auth Basic Multinode', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.AuthResponse, 'AuthResponse should exist');
+		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(response.AuthResponse.authToken, 'authToken should exist');
 	});
 
 
@@ -110,7 +116,9 @@ describe('Auth > Auth Basic Multinode', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.AuthResponse, 'AuthResponse should exist');
+		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
+			'lifetime should be numeric');
+		assert.exists(response.AuthResponse.authToken, 'authToken should exist');
 	});
 
 
@@ -125,11 +133,7 @@ describe('Auth > Auth Basic Multinode', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.AuthResponse, 'AuthResponse should exist');
-
 		const lifetime = response.AuthResponse.lifetime;
-
-		// Verify response
 		assert.exists(lifetime, 'lifetime should exist');
 		assert.match(String(lifetime._content || lifetime), /^\d+$/,
 			'lifetime should be numeric');

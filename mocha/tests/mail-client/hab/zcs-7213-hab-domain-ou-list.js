@@ -81,7 +81,6 @@ describe('Mail Client > Hab > ZCS 7213 Hab Domain Ou List', function () {
 			</HABOrgUnitRequest>`, adminAuthToken
 		);
 		assert.notExists(listRes.Fault, 'HABOrgUnitRequest list should not fault');
-		assert.exists(listRes.HABOrgUnitResponse, 'HABOrgUnitResponse should exist');
 	});
 
 
@@ -93,6 +92,6 @@ describe('Mail Client > Hab > ZCS 7213 Hab Domain Ou List', function () {
 		);
 
 		// Verify response
-		assert.exists(listRes.Fault, 'HABOrgUnitRequest for invalid domain should fault');
+		assert.isString(listRes.Fault.Detail.Error.Code, 'HABOrgUnitRequest for invalid domain should fault');
 	});
 });

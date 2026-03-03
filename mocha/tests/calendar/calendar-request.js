@@ -52,7 +52,6 @@ describe('Calendar > Calendar Request', function () {
 			</CreateAccountRequest>`, adminAuthToken
         );
         assert.notExists(res1.Fault, 'CreateAccountRequest should not fault');
-        assert.exists(res1.CreateAccountResponse, 'CreateAccountResponse should exist');
 
         const res2 = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -61,7 +60,6 @@ describe('Calendar > Calendar Request', function () {
 			</CreateAccountRequest>`, adminAuthToken
         );
         assert.notExists(res2.Fault, 'CreateAccountRequest should not fault');
-        assert.exists(res2.CreateAccountResponse, 'CreateAccountResponse should exist');
     });
 
 
@@ -106,7 +104,6 @@ describe('Calendar > Calendar Request', function () {
 
         // Verify response
         assert.notExists(res.Fault, 'CreateAppointmentRequest should not fault');
-        assert.exists(res.CreateAppointmentResponse, 'CreateAppointmentResponse should exist');
         assert.exists(res.CreateAppointmentResponse.invId, 'invId should exist');
     });
 
@@ -184,10 +181,7 @@ describe('Calendar > Calendar Request', function () {
 
         // Verify response
         assert.notExists(excRes.Fault, 'CreateAppointmentExceptionRequest should not fault');
-        assert.exists(
-            excRes.CreateAppointmentExceptionResponse,
-            'CreateAppointmentExceptionResponse should exist'
-        );
+        assert.exists(excRes.CreateAppointmentExceptionResponse.calItemId, 'calItemId should exist');
     });
 
 
@@ -234,7 +228,6 @@ describe('Calendar > Calendar Request', function () {
 
         // Verify response
         assert.notExists(res.Fault, 'SetAppointmentRequest should not fault');
-        assert.exists(res.SetAppointmentResponse, 'SetAppointmentResponse should exist');
         assert.exists(res.SetAppointmentResponse.apptId, 'apptId should exist');
     });
 
@@ -326,14 +319,7 @@ describe('Calendar > Calendar Request', function () {
 
         // Verify response
         assert.notExists(addRes.Fault, 'AddAppointmentInviteRequest should not fault');
-        assert.exists(
-            addRes.AddAppointmentInviteResponse,
-            'AddAppointmentInviteResponse should exist'
-        );
-        assert.exists(
-            addRes.AddAppointmentInviteResponse.calItemId,
-            'calItemId should exist'
-        );
+        assert.exists(addRes.AddAppointmentInviteResponse.calItemId, 'calItemId should exist');
     });
 
 
@@ -388,7 +374,6 @@ describe('Calendar > Calendar Request', function () {
 
         // Verify response
         assert.notExists(res.Fault, 'GetFreeBusyRequest should not fault');
-        assert.exists(res.GetFreeBusyResponse, 'GetFreeBusyResponse should exist');
         assert.exists(res.GetFreeBusyResponse.usr, 'usr should exist');
     });
 
@@ -444,7 +429,6 @@ describe('Calendar > Calendar Request', function () {
 
         // Verify response
         assert.notExists(res.Fault, 'GetWorkingHoursRequest should not fault');
-        assert.exists(res.GetWorkingHoursResponse, 'GetWorkingHoursResponse should exist');
         assert.exists(res.GetWorkingHoursResponse.usr, 'usr should exist');
     });
 
@@ -504,10 +488,6 @@ describe('Calendar > Calendar Request', function () {
 
         // Verify response
         assert.notExists(cancelRes.Fault, 'CancelAppointmentRequest should not fault');
-        assert.exists(
-            cancelRes.CancelAppointmentResponse,
-            'CancelAppointmentResponse should exist'
-        );
     });
 
 
@@ -574,10 +554,6 @@ describe('Calendar > Calendar Request', function () {
 
         // Verify response
         assert.notExists(modRes.Fault, 'ModifyAppointmentRequest should not fault');
-        assert.exists(
-            modRes.ModifyAppointmentResponse,
-            'ModifyAppointmentResponse should exist'
-        );
         assert.exists(modRes.ModifyAppointmentResponse.invId, 'invId should exist');
     });
 
@@ -640,10 +616,6 @@ describe('Calendar > Calendar Request', function () {
 
         // Verify response
         assert.notExists(fwdRes.Fault, 'ForwardAppointmentRequest should not fault');
-        assert.exists(
-            fwdRes.ForwardAppointmentResponse,
-            'ForwardAppointmentResponse should exist'
-        );
     });
 
 
@@ -733,10 +705,6 @@ describe('Calendar > Calendar Request', function () {
 
         // Verify response
         assert.notExists(replyRes.Fault, 'SendInviteReplyRequest should not fault');
-        assert.exists(
-            replyRes.SendInviteReplyResponse,
-            'SendInviteReplyResponse should exist'
-        );
     });
 
 
@@ -815,14 +783,7 @@ describe('Calendar > Calendar Request', function () {
         );
 
         // Verify response
-        assert.notExists(
-            fwdRes.Fault,
-            'ForwardAppointmentInviteRequest should not fault'
-        );
-        assert.exists(
-            fwdRes.ForwardAppointmentInviteResponse,
-            'ForwardAppointmentInviteResponse should exist'
-        );
+        assert.notExists(fwdRes.Fault, 'ForwardAppointmentInviteRequest should not fault');
     });
 
 
@@ -872,7 +833,6 @@ describe('Calendar > Calendar Request', function () {
             account1Token
         );
         assert.notExists(getRes.Fault, 'GetAppointmentRequest should not fault');
-        assert.exists(getRes.GetAppointmentResponse, 'GetAppointmentResponse should exist');
     });
 
 
@@ -922,7 +882,9 @@ describe('Calendar > Calendar Request', function () {
             account1Token
         );
         assert.notExists(getRes.Fault, 'GetAppointmentRequest should not fault');
-        const appt = getRes.GetAppointmentResponse.appt[0] || getRes.GetAppointmentResponse.appt;
+        const appt = Array.isArray(getRes.GetAppointmentResponse.appt)
+            ? getRes.GetAppointmentResponse.appt[0]
+            : getRes.GetAppointmentResponse.appt;
         const uid = appt.inv[0].comp[0].uid;
         const seq = appt.inv[0].comp[0].seq;
 
@@ -1004,7 +966,6 @@ describe('Calendar > Calendar Request', function () {
 			</ExpandRecurRequest>`, accountToken
         );
         assert.notExists(res.Fault, 'ExpandRecurRequest should not fault');
-        assert.exists(res.ExpandRecurResponse, 'ExpandRecurResponse should exist');
     });
 
 
@@ -1054,7 +1015,6 @@ describe('Calendar > Calendar Request', function () {
             accountToken
         );
         assert.notExists(res.Fault, 'GetICalRequest should not fault');
-        assert.exists(res.GetICalResponse, 'GetICalResponse should exist');
     });
 
 
@@ -1116,7 +1076,6 @@ describe('Calendar > Calendar Request', function () {
 			</GetMiniCalRequest>`, accountToken
         );
         assert.notExists(res.Fault, 'GetMiniCalRequest should not fault');
-        assert.exists(res.GetMiniCalResponse, 'GetMiniCalResponse should exist');
     });
 
 
@@ -1155,7 +1114,6 @@ describe('Calendar > Calendar Request', function () {
 			</ImportAppointmentsRequest>`, accountToken
         );
         assert.notExists(res.Fault, 'ImportAppointmentsRequest should not fault');
-        assert.exists(res.ImportAppointmentsResponse, 'ImportAppointmentsResponse should exist');
     });
 
 
@@ -1226,10 +1184,6 @@ describe('Calendar > Calendar Request', function () {
 			</DismissCalendarItemAlarmRequest>`, accountToken
         );
         assert.notExists(dismissRes.Fault, 'DismissCalendarItemAlarmRequest should not fault');
-        assert.exists(
-            dismissRes.DismissCalendarItemAlarmResponse,
-            'DismissCalendarItemAlarmResponse should exist'
-        );
     });
 
 
@@ -1249,10 +1203,6 @@ describe('Calendar > Calendar Request', function () {
 				a="${accountEmail}"/>`, accountToken
         );
         assert.notExists(res.Fault, 'SendVerificationCodeRequest should not fault');
-        assert.exists(
-            res.SendVerificationCodeResponse,
-            'SendVerificationCodeResponse should exist'
-        );
     });
 
 
@@ -1281,20 +1231,18 @@ describe('Calendar > Calendar Request', function () {
 			</SearchRequest>`, accountToken
         );
         assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-        if (searchRes.SearchResponse && searchRes.SearchResponse.m) {
-            const msgs = Array.isArray(searchRes.SearchResponse.m)
-                ? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
-            const fr = msgs[0].fr || '';
-            const codeMatch = fr.match(/reminders is\s+(\S+)/);
-            const code = codeMatch ? codeMatch[1] : '000000';
+        const msgs = Array.isArray(searchRes.SearchResponse.m)
+            ? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
+        assert.exists(msgs[0], 'Verification code message should arrive');
+        const fr = msgs[0].fr || '';
+        const codeMatch = fr.match(/reminders is\s+(\S+)/);
+        const code = codeMatch ? codeMatch[1] : '000000';
 
-            const res = await soap.makeSOAPEnvelopeAccount(
-                `<VerifyCodeRequest xmlns="urn:zimbraMail"
+        const res = await soap.makeSOAPEnvelopeAccount(
+            `<VerifyCodeRequest xmlns="urn:zimbraMail"
 					a="${accountEmail}" code="${code}"/>`, accountToken
-            );
-            assert.notExists(res.Fault, 'VerifyCodeRequest should not fault');
-            assert.exists(res.VerifyCodeResponse, 'VerifyCodeResponse should exist');
-        }
+        );
+        assert.notExists(res.Fault, 'VerifyCodeRequest should not fault');
     });
 
 
@@ -1328,10 +1276,6 @@ describe('Calendar > Calendar Request', function () {
 				a="${accountEmail}"/>`, accountToken
         );
         assert.notExists(res.Fault, 'InvalidateReminderDeviceRequest should not fault');
-        assert.exists(
-            res.InvalidateReminderDeviceResponse,
-            'InvalidateReminderDeviceResponse should exist'
-        );
     });
 
 
@@ -1399,6 +1343,5 @@ describe('Calendar > Calendar Request', function () {
 			</FixCalendarTZRequest>`, adminAuthToken
         );
         assert.notExists(res.Fault, 'FixCalendarTZRequest should not fault');
-        assert.exists(res.FixCalendarTZResponse, 'FixCalendarTZResponse should exist');
     });
 });

@@ -43,7 +43,9 @@ describe('Calendar > Meeting Request > Cancel Meeting Request Basic', function (
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(res.Fault, 'CreateAccountRequest should not fault');
 		const id = res.CreateAccountResponse.account[0].id;
+		assert.exists(id, 'Account ID should exist');
 		const token = await soap.getAccountAuthToken(email);
 		return { email, id, token };
 	}
@@ -72,7 +74,11 @@ describe('Calendar > Meeting Request > Cancel Meeting Request Basic', function (
 				</m>
 			</CreateAppointmentRequest>`, orgToken
 		);
-		return res.CreateAppointmentResponse;
+		assert.notExists(res.Fault, 'CreateAppointmentRequest should not fault');
+		const appt = res.CreateAppointmentResponse;
+		assert.exists(appt.invId, 'Appointment invId should exist');
+		assert.exists(appt.calItemId, 'Appointment calItemId should exist');
+		return appt;
 	}
 	it('Smoke | Cancel meeting request basic', async () => {
 		const org = await makeAcct('org');
@@ -97,10 +103,7 @@ describe('Calendar > Meeting Request > Cancel Meeting Request Basic', function (
 		);
 
 		// Verify response
-		assert.notExists(
-			cancelRes.Fault,
-			'Cancel should not fault'
-		);
+		assert.notExists(cancelRes.Fault, 'CancelAppointmentRequest should not fault');
 	});
 
 });

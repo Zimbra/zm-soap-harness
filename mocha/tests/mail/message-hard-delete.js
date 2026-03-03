@@ -71,7 +71,6 @@ Test content for ${subject}
 		const action = Array.isArray(deleteRes.ItemActionResponse.action)
 			? deleteRes.ItemActionResponse.action[0]
 			: deleteRes.ItemActionResponse.action;
-		assert.exists(action, 'ItemActionResponse should contain action');
 		assert.equal(action.op, 'delete', 'Op should be delete');
 		assert.equal(action.id, msgId, 'Action id should match message id');
 

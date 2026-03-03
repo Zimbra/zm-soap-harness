@@ -73,7 +73,7 @@ describe('Admin > Accounts > Foreign Principal > Account Modify', function () {
 		);
 
 		// Verify response
-		assert.exists(getOld.Fault, 'Old FP should no longer work');
+		assert.isString(getOld.Fault.Detail.Error.Code, 'Old FP should no longer work');
 
 		// New FP should succeed
 		await common.sleep(2000);
@@ -135,8 +135,6 @@ describe('Admin > Accounts > Foreign Principal > Account Modify', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
-		assert.exists(getRes.GetAccountResponse,
-			'Should be able to get account after FP modify');
 		const acct = Array.isArray(getRes.GetAccountResponse.account)
 			? getRes.GetAccountResponse.account[0]
 			: getRes.GetAccountResponse.account;
@@ -190,7 +188,6 @@ describe('Admin > Accounts > Foreign Principal > Account Modify', function () {
 
 		// Verify response
 		assert.notExists(get1.Fault, 'Response should not be a Fault');
-		assert.exists(get1.GetAccountResponse, `Should find account by first FP: ${fp1}`);
 
 		const acct1 = Array.isArray(get1.GetAccountResponse.account) ? get1.GetAccountResponse.account[0] : get1.GetAccountResponse.account;
 
@@ -206,8 +203,6 @@ describe('Admin > Accounts > Foreign Principal > Account Modify', function () {
 
 		// Verify response
 		assert.notExists(get2.Fault, 'Response should not be a Fault');
-		assert.exists(get2.GetAccountResponse,
-			`Should find account by second FP: ${fp2}`);
 		const acct2 = Array.isArray(get2.GetAccountResponse.account) ? get2.GetAccountResponse.account[0] : get2.GetAccountResponse.account;
 
 		// Verify response

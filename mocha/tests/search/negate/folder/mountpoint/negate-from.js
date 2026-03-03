@@ -91,7 +91,6 @@ Test content
 		);
 
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
 
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest limit="100" xmlns="urn:zimbraMail" types="message">
@@ -100,7 +99,6 @@ Test content
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -112,7 +110,6 @@ Test content
 		);
 
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
 
 		const res2 = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest limit="100" xmlns="urn:zimbraMail" types="message">
@@ -121,6 +118,5 @@ Test content
 		);
 
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 	});
 });

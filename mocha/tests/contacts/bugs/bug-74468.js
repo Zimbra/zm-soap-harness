@@ -49,7 +49,6 @@ describe('Contacts > Bugs > Bug 74468', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
@@ -62,6 +61,5 @@ describe('Contacts > Bugs > Bug 74468', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'Get should not be a Fault');
-		assert.exists(getRes.GetContactsResponse, 'GetContactsResponse should exist');
 	});
 });

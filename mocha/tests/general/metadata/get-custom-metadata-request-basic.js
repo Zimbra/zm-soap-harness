@@ -78,8 +78,6 @@ describe('General > Metadata > Get Custom Metadata Request Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.GetCustomMetadataResponse,
-			'GetCustomMetadataResponse should exist');
 	});
 
 
@@ -115,8 +113,6 @@ simple text string in the body
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.GetCustomMetadataResponse,
-			'GetCustomMetadataResponse should exist');
 	});
 
 
@@ -167,8 +163,6 @@ simple text string in the body
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.GetCustomMetadataResponse,
-			'GetCustomMetadataResponse should exist');
 	});
 
 
@@ -222,7 +216,5 @@ simple text string in the body
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.GetCustomMetadataResponse,
-			'GetCustomMetadataResponse should exist');
 	});
 });

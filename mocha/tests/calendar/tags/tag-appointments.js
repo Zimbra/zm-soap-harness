@@ -95,7 +95,7 @@ describe('Calendar > Tags > Tag Appointments', function () {
         const appt = Array.isArray(res.GetAppointmentResponse.appt)
             ? res.GetAppointmentResponse.appt[0]
             : res.GetAppointmentResponse.appt;
-        assert.ok(appt.t || appt.tn, 'Tag should be present on appointment');
+        assert.exists(appt.tn, 'Tag name should be present on appointment');
     });
 
 
@@ -113,7 +113,7 @@ describe('Calendar > Tags > Tag Appointments', function () {
             : [res.GetApptSummariesResponse.appt];
         const found = appts.find(a => a.name === ctx.subject);
         assert.exists(found, 'Appointment should be found');
-        assert.ok(found.t || found.tn, 'Tag should be present');
+        assert.exists(found.tn, 'Tag name should be present');
     });
 
 
@@ -154,15 +154,13 @@ describe('Calendar > Tags > Tag Appointments', function () {
 			</SearchRequest>`, ctx.token
         );
         assert.notExists(res.Fault, 'SearchRequest should not fault');
-        if (res.SearchResponse.appt) {
-            const appts = Array.isArray(res.SearchResponse.appt)
-                ? res.SearchResponse.appt
-                : [res.SearchResponse.appt];
-            const found = appts.find(a => a.name === ctx.subject);
-            assert.notExists(
-                found,
-                'Appointment should not be found after untag'
-            );
-        }
+        const appts = res.SearchResponse.appt
+            ? (Array.isArray(res.SearchResponse.appt) ? res.SearchResponse.appt : [res.SearchResponse.appt])
+            : [];
+        const found = appts.find(a => a.name === ctx.subject);
+        assert.notExists(
+            found,
+            'Appointment should not be found after untag'
+        );
     });
 });

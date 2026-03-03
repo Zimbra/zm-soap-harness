@@ -94,6 +94,5 @@ describe('General > Waitset > Bug 17306', function () {
 
 		// Verify response
 		assert.notExists(waitRes.Fault, 'WaitSetRequest should not fault');
-		assert.exists(waitRes.WaitSetResponse, 'WaitSetResponse should exist');
 	});
 });

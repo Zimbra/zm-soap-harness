@@ -86,7 +86,6 @@ Test message for bounce
 			</BounceMsgRequest>`, authToken1
 		);
 		assert.notExists(bounceRes.Fault, 'BounceMsgRequest should not fault');
-		assert.exists(bounceRes.BounceMsgResponse, 'BounceMsgResponse should exist');
 
 		// Login to account2 and verify message received
 		const authToken2 = await soap.getAccountAuthToken(account2Email);

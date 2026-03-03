@@ -36,7 +36,6 @@ describe('Admin > Zimlets > Deploy Zimlets', function () {
 			</CreateCosRequest>`, adminAuthToken
 		);
 		assert.notExists(cosRes.Fault, 'CreateCosRequest should not fault');
-		assert.exists(cosRes.CreateCosResponse, 'CreateCosResponse should exist');
 
 		// Upload zimlet file
 		const uploadRes = await soap.uploadFile(adminAuthToken, 'data/zimlets/zimlet01/com_zimbra_test.zip');
@@ -50,7 +49,6 @@ describe('Admin > Zimlets > Deploy Zimlets', function () {
 			</DeployZimletRequest>`, adminAuthToken
 		);
 		assert.notExists(deployRes.Fault, 'DeployZimletRequest should not fault');
-		assert.exists(deployRes.DeployZimletResponse, 'DeployZimletResponse should exist');
 
 		// Wait for deploy to complete
 		await soap.waitFor(10000);

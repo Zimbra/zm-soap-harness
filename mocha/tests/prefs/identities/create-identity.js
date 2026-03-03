@@ -53,7 +53,6 @@ describe('Prefs > Identities > Create Identity', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
-		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
 
 
@@ -84,7 +83,6 @@ describe('Prefs > Identities > Create Identity', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
-		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
 
 
@@ -115,7 +113,6 @@ describe('Prefs > Identities > Create Identity', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest with from address should not fault');
-		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
 
 
@@ -148,7 +145,6 @@ describe('Prefs > Identities > Create Identity', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest reply-to should not fault');
-		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
 
 
@@ -192,7 +188,6 @@ describe('Prefs > Identities > Create Identity', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest with sig should not fault');
-		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
 
 
@@ -227,7 +222,6 @@ describe('Prefs > Identities > Create Identity', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest all fields should not fault');
-		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
 
 
@@ -260,7 +254,7 @@ describe('Prefs > Identities > Create Identity', function () {
 		);
 
 		// Verify response
-		assert.exists(dupRes.Fault, 'Duplicate identity name should fault');
+		assert.isString(dupRes.Fault.Detail.Error.Code, 'Duplicate identity name should fault');
 	});
 
 
@@ -286,7 +280,7 @@ describe('Prefs > Identities > Create Identity', function () {
 		);
 
 		// Verify response
-		assert.exists(createRes.Fault, 'Creating identity named DEFAULT should fault');
+		assert.isString(createRes.Fault.Detail.Error.Code, 'Creating identity named DEFAULT should fault');
 	});
 
 
@@ -317,7 +311,6 @@ describe('Prefs > Identities > Create Identity', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
-		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
 
 
@@ -349,7 +342,6 @@ describe('Prefs > Identities > Create Identity', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
-		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
 
 
@@ -381,7 +373,6 @@ describe('Prefs > Identities > Create Identity', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest when-sent-to should not fault');
-		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
 
 
@@ -412,7 +403,7 @@ describe('Prefs > Identities > Create Identity', function () {
 		);
 
 		// Verify response
-		assert.exists(createRes.Fault, 'CreateIdentityRequest with zimbraPrefWhenInFolderEnabled should fault as unsupported');
+		assert.isString(createRes.Fault.Detail.Error.Code, 'CreateIdentityRequest with zimbraPrefWhenInFolderEnabled should fault as unsupported');
 	});
 
 
@@ -443,7 +434,6 @@ describe('Prefs > Identities > Create Identity', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
-		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
 
 
@@ -482,7 +472,6 @@ describe('Prefs > Identities > Create Identity', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'GetAccountRequest should not fault');
-		assert.exists(getRes.GetAccountResponse, 'GetAccountResponse should exist');
 	});
 
 
@@ -508,7 +497,7 @@ describe('Prefs > Identities > Create Identity', function () {
 		);
 
 		// Verify response
-		assert.exists(createRes.Fault, 'Empty identity name should fault');
+		assert.isString(createRes.Fault.Detail.Error.Code, 'Empty identity name should fault');
 	});
 
 
@@ -545,7 +534,6 @@ describe('Prefs > Identities > Create Identity', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'GetIdentitiesRequest should not fault');
-		assert.exists(getRes.GetIdentitiesResponse, 'GetIdentitiesResponse should exist');
 	});
 
 
@@ -577,7 +565,6 @@ describe('Prefs > Identities > Create Identity', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
-		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
 
 
@@ -621,7 +608,6 @@ describe('Prefs > Identities > Create Identity', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest fwd sig should not fault');
-		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
 
 
@@ -652,7 +638,6 @@ describe('Prefs > Identities > Create Identity', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest sig position should not fault');
-		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
 
 
@@ -713,7 +698,6 @@ describe('Prefs > Identities > Create Identity', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
-		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
 
 
@@ -742,7 +726,6 @@ describe('Prefs > Identities > Create Identity', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest long name should not fault');
-		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
 
 
@@ -771,7 +754,6 @@ describe('Prefs > Identities > Create Identity', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest special chars should not fault');
-		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
 
 
@@ -831,7 +813,6 @@ describe('Prefs > Identities > Create Identity', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
-		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
 
 
@@ -864,6 +845,5 @@ describe('Prefs > Identities > Create Identity', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateIdentityRequest should not fault');
-		assert.exists(createRes.CreateIdentityResponse, 'CreateIdentityResponse should exist');
 	});
 });

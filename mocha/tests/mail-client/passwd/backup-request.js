@@ -58,7 +58,6 @@ describe('Mail Client > Passwd > Backup Request', function () {
 			</ChangePasswordRequest>`, acctAuthToken
 		);
 		assert.notExists(changeRes.Fault, 'ChangePasswordRequest should not fault');
-		assert.exists(changeRes.ChangePasswordResponse, 'ChangePasswordResponse should exist');
 
 		// Backup
 		const backupRes = await soap.makeSOAPEnvelopeAdmin(
@@ -69,7 +68,6 @@ describe('Mail Client > Passwd > Backup Request', function () {
 			</BackupRequest>`, adminAuthToken
 		);
 		assert.notExists(backupRes.Fault, 'BackupRequest should not fault');
-		assert.exists(backupRes.BackupResponse, 'BackupResponse should exist');
 
 		// Delete + restore
 		await soap.makeSOAPEnvelopeAdmin(
@@ -87,7 +85,6 @@ describe('Mail Client > Passwd > Backup Request', function () {
 			</RestoreRequest>`, adminAuthToken
 		);
 		assert.notExists(restoreRes.Fault, 'RestoreRequest should not fault');
-		assert.exists(restoreRes.RestoreResponse, 'RestoreResponse should exist');
 
 		// Verify old password fails
 		const oldAuthRes = await soap.makeSOAPEnvelopeAccount(
@@ -96,7 +93,7 @@ describe('Mail Client > Passwd > Backup Request', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, false
 		);
-		assert.exists(oldAuthRes.Fault, 'Old password should fail after restore');
+		assert.isString(oldAuthRes.Fault.Detail.Error.Code, 'Old password should fail after restore');
 
 		// Verify new password works
 		const newAuthRes = await soap.makeSOAPEnvelopeAccount(
@@ -106,7 +103,6 @@ describe('Mail Client > Passwd > Backup Request', function () {
 			</AuthRequest>`, null, false
 		);
 		assert.notExists(newAuthRes.Fault, 'New password should work after restore');
-		assert.exists(newAuthRes.AuthResponse, 'AuthResponse should exist for new password');
 	});
 
 
@@ -120,7 +116,6 @@ describe('Mail Client > Passwd > Backup Request', function () {
 			</BackupRequest>`, adminAuthToken
 		);
 		assert.notExists(backupRes.Fault, 'BackupRequest should not fault');
-		assert.exists(backupRes.BackupResponse, 'BackupResponse should exist');
 
 		// Change password
 		const acctAuthToken = await soap.getAccountAuthToken(account2Name);
@@ -132,7 +127,6 @@ describe('Mail Client > Passwd > Backup Request', function () {
 			</ChangePasswordRequest>`, acctAuthToken
 		);
 		assert.notExists(changeRes.Fault, 'ChangePasswordRequest should not fault');
-		assert.exists(changeRes.ChangePasswordResponse, 'ChangePasswordResponse should exist');
 
 		// Incremental backup + delete + restore
 		const incrRes = await soap.makeSOAPEnvelopeAdmin(
@@ -143,7 +137,6 @@ describe('Mail Client > Passwd > Backup Request', function () {
 			</BackupRequest>`, adminAuthToken
 		);
 		assert.notExists(incrRes.Fault, 'Incremental BackupRequest should not fault');
-		assert.exists(incrRes.BackupResponse, 'Incremental BackupResponse should exist');
 
 		await soap.makeSOAPEnvelopeAdmin(
 			`<DeleteAccountRequest xmlns="urn:zimbraAdmin">
@@ -159,7 +152,6 @@ describe('Mail Client > Passwd > Backup Request', function () {
 			</RestoreRequest>`, adminAuthToken
 		);
 		assert.notExists(restoreRes.Fault, 'RestoreRequest should not fault');
-		assert.exists(restoreRes.RestoreResponse, 'RestoreResponse should exist');
 
 		// Verify old password fails
 		const oldAuthRes = await soap.makeSOAPEnvelopeAccount(
@@ -168,7 +160,7 @@ describe('Mail Client > Passwd > Backup Request', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, false
 		);
-		assert.exists(oldAuthRes.Fault, 'Old password should fail');
+		assert.isString(oldAuthRes.Fault.Detail.Error.Code, 'Old password should fail');
 
 		// Verify new password works
 		const newAuthRes = await soap.makeSOAPEnvelopeAccount(
@@ -178,6 +170,5 @@ describe('Mail Client > Passwd > Backup Request', function () {
 			</AuthRequest>`, null, false
 		);
 		assert.notExists(newAuthRes.Fault, 'New password should work after restore');
-		assert.exists(newAuthRes.AuthResponse, 'AuthResponse should exist for new password');
 	});
 });

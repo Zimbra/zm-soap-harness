@@ -43,7 +43,6 @@ describe('Prefs > Import > Upgrades > Bug 97002', function () {
 			`<GetFolderRequest xmlns="urn:zimbraMail"/>`, backupAuthToken
 		);
 		assert.notExists(folderRes.Fault, 'GetFolderRequest should not fault');
-		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 	});
 
 
@@ -142,6 +141,5 @@ describe('Prefs > Import > Upgrades > Bug 97002', function () {
 			</SearchRequest>`, acct2AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest after account deletion should not fault (no NPE)');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 });

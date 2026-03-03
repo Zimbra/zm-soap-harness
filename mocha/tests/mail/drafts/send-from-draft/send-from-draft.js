@@ -163,7 +163,7 @@ describe('Mail > Drafts > Send From Draft > Send From Draft', function () {
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
 		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
-		assert.exists(getMsg, 'GetMsgResponse should contain m');
+		assert.exists(getMsg.id, 'message id should exist');
 	});
 
 
@@ -186,7 +186,7 @@ describe('Mail > Drafts > Send From Draft > Send From Draft', function () {
 		);
 
 		// Verify it gives error
-		assert.exists(sendRes.Fault, 'Should return a Fault');
+		assert.isString(sendRes.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(sendRes.Fault.Detail.Error.Code,
 			'mail.NO_SUCH_MSG', 'Error code should be mail.NO_SUCH_MSG');
 	});
@@ -228,7 +228,7 @@ describe('Mail > Drafts > Send From Draft > Send From Draft', function () {
 		);
 
 		// Verify send failure
-		assert.exists(sendRes.Fault, 'Should return a Fault');
+		assert.isString(sendRes.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(sendRes.Fault.Detail.Error.Code,
 			'mail.SEND_FAILURE', 'Error code should be mail.SEND_FAILURE');
 	});

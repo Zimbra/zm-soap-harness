@@ -1062,7 +1062,7 @@ describe('Calendar > Appointments > Exceptions > Appointment Exception Create', 
 		);
 
 		// Verify response
-		assert.exists(res.Fault, 'Should fault on non-recursive appt');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should fault on non-recursive appt');
 		assert.match(res.Fault.Detail.Error.Code, /^service.INVALID_REQUEST/, 'Correct fault code');
 	});
 });

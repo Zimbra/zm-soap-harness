@@ -70,7 +70,7 @@ describe('Mail > Bugs > Bug 60053', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 		const sentMsgId = (Array.isArray(sendRes.SendMsgResponse.m) ? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m).id;
 

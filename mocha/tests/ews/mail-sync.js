@@ -99,7 +99,6 @@ describe('EWS > Mail Sync', function () {
 			account1Email, account1Password
 		);
 		const getFolderBody = ews.getBody(getFolderRes);
-		assert.exists(getFolderBody.GetFolderResponse, 'GetFolderResponse should exist');
 		const getFolderMsg = getFolderBody.GetFolderResponse.ResponseMessages.GetFolderResponseMessage;
 		const folderMsg = Array.isArray(getFolderMsg) ? getFolderMsg[0] : getFolderMsg;
 		assert.equal(folderMsg.$.ResponseClass, 'Success', 'GetFolder should succeed');
@@ -122,7 +121,6 @@ describe('EWS > Mail Sync', function () {
 			account1Email, account1Password
 		);
 		const syncBody = ews.getBody(syncRes);
-		assert.exists(syncBody.SyncFolderItemsResponse, 'SyncFolderItemsResponse should exist');
 		const syncMsg = syncBody.SyncFolderItemsResponse.ResponseMessages.SyncFolderItemsResponseMessage;
 		const syncMessage = Array.isArray(syncMsg) ? syncMsg[0] : syncMsg;
 		assert.exists(syncMessage.SyncState, 'SyncState should exist');
@@ -163,7 +161,6 @@ describe('EWS > Mail Sync', function () {
 			account1Email, account1Password
 		);
 		const getItemBody = ews.getBody(getItemRes);
-		assert.exists(getItemBody.GetItemResponse, 'GetItemResponse should exist');
 
 		// Step 4: Send another mail and perform delta sync
 		const accountAuthToken = await soap.getAccountAuthToken(account1Email, account1Password);
@@ -228,7 +225,6 @@ describe('EWS > Mail Sync', function () {
 			account1Email, account1Password
 		);
 		const getNewItemBody = ews.getBody(getNewItemRes);
-		assert.exists(getNewItemBody.GetItemResponse, 'GetItemResponse should exist');
 		const getItemMsg = getNewItemBody.GetItemResponse.ResponseMessages.GetItemResponseMessage;
 		const newItemMsg = Array.isArray(getItemMsg) ? getItemMsg[0] : getItemMsg;
 		assert.equal(newItemMsg.$.ResponseClass, 'Success', 'GetItem should succeed');

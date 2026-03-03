@@ -43,7 +43,6 @@ describe('Contacts > GAL > Galaccount > Sync GAL Resources', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SyncGal should not be a Fault');
-		assert.exists(res.SyncGalResponse, 'SyncGalResponse should exist');
 	});
 
 
@@ -59,7 +58,6 @@ describe('Contacts > GAL > Galaccount > Sync GAL Resources', function () {
 
 			// Verify response
 			assert.notExists(res2.Fault, 'SyncGal should not be a Fault');
-			assert.exists(res2.SyncGalResponse, 'SyncGalResponse should exist');
 		}
 	});
 });

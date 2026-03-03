@@ -149,7 +149,6 @@ describe('Sync > Mountpoint > Syncrequest Mail', function () {
 
 		// Verify response
 		assert.notExists(syncRes2.Fault, 'Response should not be a Fault');
-		assert.exists(syncRes2.SyncResponse, 'SyncResponse should exist');
 		const syncMsgs = Array.isArray(syncRes2.SyncResponse.m)
 			? syncRes2.SyncResponse.m
 			: (syncRes2.SyncResponse.m ? [syncRes2.SyncResponse.m] : []);

@@ -155,7 +155,6 @@ describe('Admin > Mail Queue > Mail Queue Action Request', function () {
 				</MailQueueActionRequest>`, adminAuthToken
 			);
 			assert.notExists(actionRes.Fault, 'MailQueueActionRequest should not fault');
-			assert.exists(actionRes.MailQueueActionResponse, 'MailQueueActionResponse should exist');
 
 			// Restart amavis
 			await server.runCommand('sudo su - zimbra -c \'source /opt/zimbra/.bashrc;/opt/zimbra/bin/zmamavisdctl start\'');

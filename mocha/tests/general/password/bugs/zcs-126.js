@@ -177,7 +177,7 @@ describe('General > Password > Bugs > ZCS 126', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Should login after lockout expires');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes.AuthResponse.authToken, 'AuthResponse should exist');
 
 		// Get account
 		const getRes = await soap.makeSOAPEnvelopeAdmin(

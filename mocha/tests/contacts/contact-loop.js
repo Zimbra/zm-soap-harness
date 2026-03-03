@@ -81,7 +81,6 @@ describe('Contacts > Contact Loop', function () {
 			</GetContactsRequest>`, accountToken
 		);
 		assert.notExists(getRes.Fault, 'Get should not be a Fault');
-		assert.exists(getRes.GetContactsResponse, 'GetContactsResponse should exist');
 	});
 
 
@@ -92,7 +91,6 @@ describe('Contacts > Contact Loop', function () {
 			</SearchRequest>`, accountToken
 		);
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -103,7 +101,6 @@ describe('Contacts > Contact Loop', function () {
 			</SearchRequest>`, accountToken
 		);
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
 

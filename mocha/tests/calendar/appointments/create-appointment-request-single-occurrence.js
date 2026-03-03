@@ -5,47 +5,47 @@ import soap from '../../../framework/backend/soap-client.js';
 import { main } from '../../../pages/main.js';
 
 describe('Calendar > Appointments > Create Appointment Request Single Occurrence', function () {
-    this.timeout(120 * 1000);
-    let adminAuthToken;
-    const testDomain = config.testDomain;
-    const pad = (n) => String(n).padStart(2, '0');
+	this.timeout(120 * 1000);
+	let adminAuthToken;
+	const testDomain = config.testDomain;
+	const pad = (n) => String(n).padStart(2, '0');
 
-    function icalTimeFromEpoch(epochMs) {
-        const d = new Date(epochMs);
-        return `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
-    }
+	function icalTimeFromEpoch(epochMs) {
+		const d = new Date(epochMs);
+		return `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
+	}
 
-    before(async function () {
-        await main.before(this);
-        adminAuthToken = await soap.getAdminAuthToken();
-    });
+	before(async function () {
+		await main.before(this);
+		adminAuthToken = await soap.getAdminAuthToken();
+	});
 
-    beforeEach(async function () {
-        await main.beforeEach(this);
-    });
+	beforeEach(async function () {
+		await main.beforeEach(this);
+	});
 
-    afterEach(async function () {
-        await main.afterEach(this);
-    });
+	afterEach(async function () {
+		await main.afterEach(this);
+	});
 
-    if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
-        return;
-    }
+	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
+		return;
+	}
 
-    it('Smoke | Create an appointment with valid values', async () => {
-        const accountEmail = `test${common.getUniqueString()}@${testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
-            `<CreateAccountRequest xmlns="urn:zimbraAdmin">
+	it('Smoke | Create an appointment with valid values', async () => {
+		const accountEmail = `test${common.getUniqueString()}@${testDomain}`;
+		await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
-        );
-        const accountToken = await soap.getAccountAuthToken(accountEmail);
-        const subject = `Subject of meeting${common.getUniqueString()}`;
-        const epoch = 1196510400000;
+		);
+		const accountToken = await soap.getAccountAuthToken(accountEmail);
+		const subject = `Subject of meeting${common.getUniqueString()}`;
+		const epoch = 1196510400000;
 
-        const createRes = await soap.makeSOAPEnvelopeAccount(
-            `<CreateAppointmentRequest xmlns="urn:zimbraMail">
+		const createRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
 					<inv>
 						<comp method="REQUEST" type="event" fb="B" transp="O"
@@ -61,28 +61,28 @@ describe('Calendar > Appointments > Create Appointment Request Single Occurrence
 					<su>${subject}</su>
 				</m>
 			</CreateAppointmentRequest>`, accountToken
-        );
-        assert.notExists(createRes.Fault, 'Should not fault');
-        assert.exists(createRes.CreateAppointmentResponse.invId, 'invId exists');
-    });
+		);
+		assert.notExists(createRes.Fault, 'Should not fault');
+		assert.exists(createRes.CreateAppointmentResponse.invId, 'invId exists');
+	});
 
 
-    it('Sanity | Create an appointment with timezone PST', async () => {
-        const accountEmail = `test${common.getUniqueString()}@${testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
-            `<CreateAccountRequest xmlns="urn:zimbraAdmin">
+	it('Sanity | Create an appointment with timezone PST', async () => {
+		const accountEmail = `test${common.getUniqueString()}@${testDomain}`;
+		await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
-        );
-        const accountToken = await soap.getAccountAuthToken(accountEmail);
-        const subject = `Subject of meeting${common.getUniqueString()}`;
-        const epoch = 1514808000000;
-        const pstEpoch = epoch - 8 * 3600000;
-        const tz = '(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana';
+		);
+		const accountToken = await soap.getAccountAuthToken(accountEmail);
+		const subject = `Subject of meeting${common.getUniqueString()}`;
+		const epoch = 1514808000000;
+		const pstEpoch = epoch - 8 * 3600000;
+		const tz = '(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana';
 
-        const createRes = await soap.makeSOAPEnvelopeAccount(
-            `<CreateAppointmentRequest xmlns="urn:zimbraMail">
+		const createRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
 					<inv>
 						<comp method="REQUEST" type="event" fb="B" transp="O"
@@ -99,26 +99,26 @@ describe('Calendar > Appointments > Create Appointment Request Single Occurrence
 					<su>${subject}</su>
 				</m>
 			</CreateAppointmentRequest>`, accountToken
-        );
-        assert.notExists(createRes.Fault, 'Should not fault');
-        assert.exists(createRes.CreateAppointmentResponse.invId, 'invId exists');
-    });
+		);
+		assert.notExists(createRes.Fault, 'Should not fault');
+		assert.exists(createRes.CreateAppointmentResponse.invId, 'invId exists');
+	});
 
 
-    it('Sanity | Search appointment by subject', async () => {
-        const accountEmail = `test${common.getUniqueString()}@${testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
-            `<CreateAccountRequest xmlns="urn:zimbraAdmin">
+	it('Sanity | Search appointment by subject', async () => {
+		const accountEmail = `test${common.getUniqueString()}@${testDomain}`;
+		await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
-        );
-        const accountToken = await soap.getAccountAuthToken(accountEmail);
-        const subject = `UniqueSubj${common.getUniqueString()}`;
-        const epoch = 1514808000000;
+		);
+		const accountToken = await soap.getAccountAuthToken(accountEmail);
+		const subject = `UniqueSubj${common.getUniqueString()}`;
+		const epoch = 1514808000000;
 
-        await soap.makeSOAPEnvelopeAccount(
-            `<CreateAppointmentRequest xmlns="urn:zimbraMail">
+		await soap.makeSOAPEnvelopeAccount(
+			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
 					<inv>
 						<comp method="REQUEST" type="event" fb="B" transp="O"
@@ -134,35 +134,37 @@ describe('Calendar > Appointments > Create Appointment Request Single Occurrence
 					<su>${subject}</su>
 				</m>
 			</CreateAppointmentRequest>`, accountToken
-        );
+		);
 
-        const searchRes = await soap.makeSOAPEnvelopeAccount(
-            `<SearchRequest xmlns="urn:zimbraMail" types="appointment"
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="appointment"
 				calExpandInstStart="${epoch - 86400000}"
 				calExpandInstEnd="${epoch + 86400000}">
 				<query>subject:(${subject})</query>
 			</SearchRequest>`, accountToken
-        );
-        assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-        assert.exists(searchRes.SearchResponse.appt, 'Appointment found');
-    });
+		);
+		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
+		const appts = Array.isArray(searchRes.SearchResponse.appt)
+			? searchRes.SearchResponse.appt : [searchRes.SearchResponse.appt];
+		assert.exists(appts[0].name, 'Appointment name should exist');
+	});
 
 
-    it('Sanity | Verify free/busy for single appointment', async () => {
-        const accountEmail = `test${common.getUniqueString()}@${testDomain}`;
-        const accRes = await soap.makeSOAPEnvelopeAdmin(
-            `<CreateAccountRequest xmlns="urn:zimbraAdmin">
+	it('Sanity | Verify free/busy for single appointment', async () => {
+		const accountEmail = `test${common.getUniqueString()}@${testDomain}`;
+		const accRes = await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
-        );
-        const accountId = accRes.CreateAccountResponse.account[0].id;
-        const accountToken = await soap.getAccountAuthToken(accountEmail);
-        const subject = `Subject${common.getUniqueString()}`;
-        const epoch = 1514808000000;
+		);
+		const accountId = accRes.CreateAccountResponse.account[0].id;
+		const accountToken = await soap.getAccountAuthToken(accountEmail);
+		const subject = `Subject${common.getUniqueString()}`;
+		const epoch = 1514808000000;
 
-        await soap.makeSOAPEnvelopeAccount(
-            `<CreateAppointmentRequest xmlns="urn:zimbraMail">
+		await soap.makeSOAPEnvelopeAccount(
+			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
 					<inv>
 						<comp method="REQUEST" type="event" fb="B" transp="O"
@@ -178,41 +180,41 @@ describe('Calendar > Appointments > Create Appointment Request Single Occurrence
 					<su>${subject}</su>
 				</m>
 			</CreateAppointmentRequest>`, accountToken
-        );
+		);
 
-        const fbRes = await soap.makeSOAPEnvelopeAccount(
-            `<GetFreeBusyRequest xmlns="urn:zimbraMail"
+		const fbRes = await soap.makeSOAPEnvelopeAccount(
+			`<GetFreeBusyRequest xmlns="urn:zimbraMail"
 				s="${epoch - 86400000}" e="${epoch + 86400000}"
 				uid="${accountId}"/>`, accountToken
-        );
-        assert.notExists(fbRes.Fault, 'GetFreeBusyRequest should not fault');
-        const usr = fbRes.GetFreeBusyResponse.usr[0]
-            || fbRes.GetFreeBusyResponse.usr;
-        assert.exists(usr.b, 'Should have busy slot');
-    });
+		);
+		assert.notExists(fbRes.Fault, 'GetFreeBusyRequest should not fault');
+		const usr = fbRes.GetFreeBusyResponse.usr[0]
+			|| fbRes.GetFreeBusyResponse.usr;
+		assert.exists(usr.b, 'Should have busy slot');
+	});
 
 
-    it('Sanity | Create appointment with attendee', async () => {
-        const accountEmail = `test${common.getUniqueString()}@${testDomain}`;
-        const attendeeEmail = `att${common.getUniqueString()}@${testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
-            `<CreateAccountRequest xmlns="urn:zimbraAdmin">
+	it('Sanity | Create appointment with attendee', async () => {
+		const accountEmail = `test${common.getUniqueString()}@${testDomain}`;
+		const attendeeEmail = `att${common.getUniqueString()}@${testDomain}`;
+		await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
-        );
-        await soap.makeSOAPEnvelopeAdmin(
-            `<CreateAccountRequest xmlns="urn:zimbraAdmin">
+		);
+		await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${attendeeEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
-        );
-        const accountToken = await soap.getAccountAuthToken(accountEmail);
-        const subject = `Subject${common.getUniqueString()}`;
-        const epoch = 1514808000000;
+		);
+		const accountToken = await soap.getAccountAuthToken(accountEmail);
+		const subject = `Subject${common.getUniqueString()}`;
+		const epoch = 1514808000000;
 
-        const createRes = await soap.makeSOAPEnvelopeAccount(
-            `<CreateAppointmentRequest xmlns="urn:zimbraMail">
+		const createRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
 					<inv>
 						<comp method="REQUEST" type="event" fb="B" transp="O"
@@ -231,26 +233,26 @@ describe('Calendar > Appointments > Create Appointment Request Single Occurrence
 					<su>${subject}</su>
 				</m>
 			</CreateAppointmentRequest>`, accountToken
-        );
-        assert.notExists(createRes.Fault, 'Should not fault');
-        assert.exists(createRes.CreateAppointmentResponse.invId, 'invId exists');
-    });
+		);
+		assert.notExists(createRes.Fault, 'Should not fault');
+		assert.exists(createRes.CreateAppointmentResponse.invId, 'invId exists');
+	});
 
 
-    it('Functional | Create an appointment on 29 feb of the leap year', async () => {
-        const accountEmail = `test${common.getUniqueString()}@${testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
-            `<CreateAccountRequest xmlns="urn:zimbraAdmin">
+	it('Functional | Create an appointment on 29 feb of the leap year', async () => {
+		const accountEmail = `test${common.getUniqueString()}@${testDomain}`;
+		await soap.makeSOAPEnvelopeAdmin(
+			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
-        );
-        const accountToken = await soap.getAccountAuthToken(accountEmail);
-        const subject = `Subject${common.getUniqueString()}`;
-        const leapEpoch = 1709208000000;
+		);
+		const accountToken = await soap.getAccountAuthToken(accountEmail);
+		const subject = `Subject${common.getUniqueString()}`;
+		const leapEpoch = 1709208000000;
 
-        const createRes = await soap.makeSOAPEnvelopeAccount(
-            `<CreateAppointmentRequest xmlns="urn:zimbraMail">
+		const createRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateAppointmentRequest xmlns="urn:zimbraMail">
 				<m>
 					<inv>
 						<comp method="REQUEST" type="event" fb="B" transp="O"
@@ -266,8 +268,8 @@ describe('Calendar > Appointments > Create Appointment Request Single Occurrence
 					<su>${subject}</su>
 				</m>
 			</CreateAppointmentRequest>`, accountToken
-        );
-        assert.notExists(createRes.Fault, 'Should not fault');
-        assert.exists(createRes.CreateAppointmentResponse.invId, 'invId exists');
-    });
+		);
+		assert.notExists(createRes.Fault, 'Should not fault');
+		assert.exists(createRes.CreateAppointmentResponse.invId, 'invId exists');
+	});
 });

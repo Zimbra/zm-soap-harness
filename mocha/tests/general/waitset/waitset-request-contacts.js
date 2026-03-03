@@ -103,7 +103,6 @@ describe('General > Waitset > Waitset Request Contacts', function () {
 
 		// Verify response
 		assert.notExists(waitRes.Fault, 'WaitSetRequest should not fault');
-		assert.exists(waitRes.WaitSetResponse, 'WaitSetResponse should exist');
 	});
 
 

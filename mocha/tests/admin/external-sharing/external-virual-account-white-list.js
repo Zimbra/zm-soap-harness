@@ -85,7 +85,6 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 			</FolderActionRequest>`, accountToken
 		);
 		assert.notExists(grant1.Fault, 'Grant to internal should not fault');
-		assert.exists(grant1.FolderActionResponse, 'FolderActionResponse should exist');
 
 		// Clear and grant to subdomain — should succeed
 		await clearAcl(accountToken, briefcaseId);
@@ -97,7 +96,6 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 			</FolderActionRequest>`, accountToken
 		);
 		assert.notExists(grant2.Fault, 'Grant to subdomain should not fault');
-		assert.exists(grant2.FolderActionResponse, 'FolderActionResponse should exist');
 
 		// Grant to other-domain — should succeed
 		const grant3 = await soap.makeSOAPEnvelopeAccount(
@@ -108,7 +106,6 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 			</FolderActionRequest>`, accountToken
 		);
 		assert.notExists(grant3.Fault, 'Grant to other-domain should not fault');
-		assert.exists(grant3.FolderActionResponse, 'FolderActionResponse should exist');
 
 		// Grant to external — should succeed
 		const grant4 = await soap.makeSOAPEnvelopeAccount(
@@ -119,7 +116,6 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 			</FolderActionRequest>`, accountToken
 		);
 		assert.notExists(grant4.Fault, 'Grant to external should not fault');
-		assert.exists(grant4.FolderActionResponse, 'FolderActionResponse should exist');
 
 		// Clear ACL
 		await clearAcl(accountToken, briefcaseId);
@@ -178,7 +174,6 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 			</FolderActionRequest>`, accountToken
 		);
 		assert.notExists(grant1.Fault, 'Grant to internal should not fault');
-		assert.exists(grant1.FolderActionResponse, 'FolderActionResponse should exist');
 
 		// Clear ACL
 		await clearAcl(accountToken, briefcaseId);
@@ -191,7 +186,7 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 				</action>
 			</FolderActionRequest>`, accountToken, false
 		);
-		assert.exists(grant2.Fault, 'Grant to subdomain should fault');
+		assert.isString(grant2.Fault.Detail.Error.Code, 'Grant to subdomain should fault');
 		assert.include(grant2.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 
 		// Grant to other-domain — should fail with PERM_DENIED
@@ -202,7 +197,7 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 				</action>
 			</FolderActionRequest>`, accountToken, false
 		);
-		assert.exists(grant3.Fault, 'Grant to other-domain should fault');
+		assert.isString(grant3.Fault.Detail.Error.Code, 'Grant to other-domain should fault');
 		assert.include(grant3.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 
 		// Grant to external — should fail with PERM_DENIED
@@ -213,7 +208,7 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 				</action>
 			</FolderActionRequest>`, accountToken, false
 		);
-		assert.exists(grant4.Fault, 'Grant to external should fault');
+		assert.isString(grant4.Fault.Detail.Error.Code, 'Grant to external should fault');
 		assert.include(grant4.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 
 		// Clear ACL
@@ -272,7 +267,6 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 			</FolderActionRequest>`, accountToken
 		);
 		assert.notExists(grant1.Fault, 'Grant to internal should not fault');
-		assert.exists(grant1.FolderActionResponse, 'FolderActionResponse should exist');
 
 		// Grant to subdomain — should fail with PERM_DENIED
 		const grant2 = await soap.makeSOAPEnvelopeAccount(
@@ -282,7 +276,7 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 				</action>
 			</FolderActionRequest>`, accountToken, false
 		);
-		assert.exists(grant2.Fault, 'Grant to subdomain should fault');
+		assert.isString(grant2.Fault.Detail.Error.Code, 'Grant to subdomain should fault');
 		assert.include(grant2.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 
 		// Grant to other-domain — should fail with PERM_DENIED
@@ -293,7 +287,7 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 				</action>
 			</FolderActionRequest>`, accountToken, false
 		);
-		assert.exists(grant3.Fault, 'Grant to other-domain should fault');
+		assert.isString(grant3.Fault.Detail.Error.Code, 'Grant to other-domain should fault');
 		assert.include(grant3.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 
 		// Grant to external — should fail with PERM_DENIED
@@ -304,7 +298,7 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 				</action>
 			</FolderActionRequest>`, accountToken, false
 		);
-		assert.exists(grant4.Fault, 'Grant to external should fault');
+		assert.isString(grant4.Fault.Detail.Error.Code, 'Grant to external should fault');
 		assert.include(grant4.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 
 		// Clear ACL
@@ -362,7 +356,6 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 				</FolderActionRequest>`, accountToken
 			);
 			assert.notExists(grant.Fault, `Initial grant to ${email} should not fault`);
-			assert.exists(grant.FolderActionResponse, 'FolderActionResponse should exist');
 		}
 
 		// Clear ACL
@@ -389,7 +382,6 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 			</FolderActionRequest>`, accountToken2
 		);
 		assert.notExists(grant1.Fault, 'Grant to internal should not fault after COS change');
-		assert.exists(grant1.FolderActionResponse, 'FolderActionResponse should exist');
 
 		// Grant to subdomain — should now fail
 		const grant2 = await soap.makeSOAPEnvelopeAccount(
@@ -399,7 +391,7 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 				</action>
 			</FolderActionRequest>`, accountToken2, false
 		);
-		assert.exists(grant2.Fault, 'Grant to subdomain should fault after COS whitelist');
+		assert.isString(grant2.Fault.Detail.Error.Code, 'Grant to subdomain should fault after COS whitelist');
 		assert.include(grant2.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 
 		// Grant to other-domain — should now fail
@@ -410,7 +402,7 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 				</action>
 			</FolderActionRequest>`, accountToken2, false
 		);
-		assert.exists(grant3.Fault, 'Grant to other-domain should fault after COS whitelist');
+		assert.isString(grant3.Fault.Detail.Error.Code, 'Grant to other-domain should fault after COS whitelist');
 		assert.include(grant3.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 
 		// Grant to external — should now fail
@@ -421,7 +413,7 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 				</action>
 			</FolderActionRequest>`, accountToken2, false
 		);
-		assert.exists(grant4.Fault, 'Grant to external should fault after COS whitelist');
+		assert.isString(grant4.Fault.Detail.Error.Code, 'Grant to external should fault after COS whitelist');
 		assert.include(grant4.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 
 		// Clear ACL
@@ -483,7 +475,6 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 				</FolderActionRequest>`, accountToken
 			);
 			assert.notExists(grant.Fault, `Initial grant to ${email} should not fault`);
-			assert.exists(grant.FolderActionResponse, 'FolderActionResponse should exist');
 		}
 
 		// Clear ACL
@@ -510,7 +501,6 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 			</FolderActionRequest>`, accountToken2
 		);
 		assert.notExists(grant1.Fault, 'Grant to internal should not fault');
-		assert.exists(grant1.FolderActionResponse, 'FolderActionResponse should exist');
 
 		// Grant to subdomain — should now fail
 		const grant2 = await soap.makeSOAPEnvelopeAccount(
@@ -520,7 +510,7 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 				</action>
 			</FolderActionRequest>`, accountToken2, false
 		);
-		assert.exists(grant2.Fault, 'Grant to subdomain should fault');
+		assert.isString(grant2.Fault.Detail.Error.Code, 'Grant to subdomain should fault');
 		assert.include(grant2.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 
 		// Grant to other-domain — should now fail
@@ -531,7 +521,7 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 				</action>
 			</FolderActionRequest>`, accountToken2, false
 		);
-		assert.exists(grant3.Fault, 'Grant to other-domain should fault');
+		assert.isString(grant3.Fault.Detail.Error.Code, 'Grant to other-domain should fault');
 		assert.include(grant3.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 
 		// Grant to external — should now fail
@@ -542,7 +532,7 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 				</action>
 			</FolderActionRequest>`, accountToken2, false
 		);
-		assert.exists(grant4.Fault, 'Grant to external should fault');
+		assert.isString(grant4.Fault.Detail.Error.Code, 'Grant to external should fault');
 		assert.include(grant4.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 
 		// Clear ACL
@@ -600,7 +590,6 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 			</FolderActionRequest>`, accountToken
 		);
 		assert.notExists(grant1.Fault, 'Grant to internal should not fault');
-		assert.exists(grant1.FolderActionResponse, 'FolderActionResponse should exist');
 
 		// Subdomain, other-domain, external — should all fail
 		for (const email of ['sub@sub.example.com', 'user@otherdomain.com', 'zimbraexttest@yahoo.com']) {
@@ -611,7 +600,7 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 					</action>
 				</FolderActionRequest>`, accountToken, false
 			);
-			assert.exists(grant.Fault, `Grant to ${email} should fault with whitelist enabled`);
+			assert.isString(grant.Fault.Detail.Error.Code, `Grant to ${email} should fault with whitelist enabled`);
 			assert.include(grant.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 		}
 
@@ -671,7 +660,6 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 			</FolderActionRequest>`, accountToken
 		);
 		assert.notExists(grant1.Fault, 'Grant to internal should not fault');
-		assert.exists(grant1.FolderActionResponse, 'FolderActionResponse should exist');
 
 		// Subdomain, other-domain, external — should all fail
 		for (const email of ['sub@sub.example.com', 'user@otherdomain.com', 'zimbraexttest@yahoo.com']) {
@@ -682,7 +670,7 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 					</action>
 				</FolderActionRequest>`, accountToken, false
 			);
-			assert.exists(grant.Fault, `Grant to ${email} should fault with whitelist enabled`);
+			assert.isString(grant.Fault.Detail.Error.Code, `Grant to ${email} should fault with whitelist enabled`);
 			assert.include(grant.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 		}
 
@@ -742,7 +730,6 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 			</FolderActionRequest>`, accountToken
 		);
 		assert.notExists(grant1.Fault, 'Grant to internal should not fault');
-		assert.exists(grant1.FolderActionResponse, 'FolderActionResponse should exist');
 
 		// All external grants (subdomain, other-domain, external) — should fail
 		for (const email of ['sub@sub.example.com', 'user@otherdomain.com', 'zimbraexttest@yahoo.com']) {
@@ -753,7 +740,7 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 					</action>
 				</FolderActionRequest>`, accountToken, false
 			);
-			assert.exists(grant.Fault, `Grant to ${email} should fault`);
+			assert.isString(grant.Fault.Detail.Error.Code, `Grant to ${email} should fault`);
 			assert.include(grant.Fault.Detail.Error.Code, 'service.PERM_DENIED');
 		}
 

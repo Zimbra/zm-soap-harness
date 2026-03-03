@@ -53,7 +53,7 @@ describe('Mail > Bugs > Bug 97806', function () {
 				</m>
 			</SendMsgRequest>`, authToken, false
 		);
-		assert.exists(res.Fault, 'SendMsgRequest should fault for multi-byte addresses');
+		assert.isString(res.Fault.Detail.Error.Code, 'SendMsgRequest should fault for multi-byte addresses');
 		assert.include(res.Fault.Detail.Error.Code, 'mail.SEND_ABORTED_ADDRESS_FAILURE', 'Should be SEND_ABORTED_ADDRESS_FAILURE');
 	});
 });

@@ -176,7 +176,6 @@ describe('EWS > Tag Untag', function () {
 			account1Email, account1Password
 		);
 		const updateBody = ews.getBody(updateRes);
-		assert.exists(updateBody.UpdateItemResponse, 'UpdateItemResponse should exist');
 
 		// Re-sync and verify on ZWC
 		await ews.makeEWSRequest(
@@ -343,7 +342,6 @@ describe('EWS > Tag Untag', function () {
 			account1Email, account1Password
 		);
 		const getFolderBody = ews.getBody(getFolderRes);
-		assert.exists(getFolderBody.GetFolderResponse, 'GetFolderResponse should exist');
 		const inboxId = getFolderBody.GetFolderResponse
 			.ResponseMessages.GetFolderResponseMessage;
 		const folderMsg = Array.isArray(inboxId) ? inboxId[0] : inboxId;

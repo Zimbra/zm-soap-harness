@@ -36,7 +36,6 @@ describe('Auth > Forget Password > Set Recovery Email', function () {
 
 		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
-		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
 			? createRes1.CreateAccountResponse.account[0]
@@ -127,7 +126,6 @@ describe('Auth > Forget Password > Set Recovery Email', function () {
 
 		// Verify response
 		assert.notExists(sendCodeRes.Fault, 'Response should not be a Fault');
-		assert.exists(sendCodeRes.SetRecoveryAccountResponse, 'Should send code');
 
 		// Auth as account2
 		// Send the message
@@ -152,7 +150,6 @@ describe('Auth > Forget Password > Set Recovery Email', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		const conv = Array.isArray(searchRes.SearchResponse.c)
 			? searchRes.SearchResponse.c[0] : searchRes.SearchResponse.c;
@@ -207,8 +204,6 @@ describe('Auth > Forget Password > Set Recovery Email', function () {
 
 		// Verify response
 		assert.notExists(validateRes.Fault, 'Response should not be a Fault');
-		assert.exists(validateRes.SetRecoveryAccountResponse,
-			'Validation should succeed');
 
 		// Verify status is verified
 		adminAuthToken = await soap.getAdminAuthToken();
@@ -254,7 +249,6 @@ describe('Auth > Forget Password > Set Recovery Email', function () {
 
 		// Verify response
 		assert.notExists(resetRes.Fault, 'Response should not be a Fault');
-		assert.exists(resetRes.SetRecoveryAccountResponse, 'Reset should succeed');
 
 		// Verify recovery address and status are removed
 		adminAuthToken = await soap.getAdminAuthToken();
@@ -314,7 +308,6 @@ describe('Auth > Forget Password > Set Recovery Email', function () {
 
 		// Verify response
 		assert.notExists(resendRes.Fault, 'Response should not be a Fault');
-		assert.exists(resendRes.SetRecoveryAccountResponse, 'Resend should succeed');
 
 		// Verify status is still pending
 		adminAuthToken = await soap.getAdminAuthToken();
@@ -357,16 +350,11 @@ describe('Auth > Forget Password > Set Recovery Email', function () {
 		const sendCodeRes = await soap.makeSOAPEnvelopeAccount(
 			`<SetRecoveryAccountRequest op="sendCode" recoveryAccount="${account4Name}" channel="email" xmlns="urn:zimbraMail" />`, acct4Token
 		);
-		if (sendCodeRes.Fault) {
-
-			// Verify response
-			assert.include(sendCodeRes.Fault.Reason.Text, 'Recovery address should not be same as primary/alias email address',
-				'Should indicate recovery same as primary error');
-			assert.include(sendCodeRes.Fault.Detail.Error.Code, 'service.RECOVERY_EMAIL_SAME_AS_PRIMARY_OR_ALIAS',
-				'Error code should match');
-		} else {
-			assert.fail('Expected Fault for setting recovery as own email');
-		}
+		assert.isString(sendCodeRes.Fault.Detail.Error.Code, 'Fault error Code should be a string');
+		assert.include(sendCodeRes.Fault.Reason.Text, 'Recovery address should not be same as primary/alias email address',
+			'Should indicate recovery same as primary error');
+		assert.include(sendCodeRes.Fault.Detail.Error.Code, 'service.RECOVERY_EMAIL_SAME_AS_PRIMARY_OR_ALIAS',
+			'Error code should match');
 
 		// Verify no recovery address is set
 		adminAuthToken = await soap.getAdminAuthToken();

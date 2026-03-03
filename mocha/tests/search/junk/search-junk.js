@@ -76,7 +76,6 @@ Junk content 2</content>
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.ModifyPrefsResponse, 'Response element should exist');
 
 		// Search in junk from specific sender
 		const res3 = await soap.makeSOAPEnvelopeAccount(

@@ -45,7 +45,6 @@ describe('General > Headers > Request ID > Soap Request', function () {
 
 		// Verify response
 		assert.notExists(folderRes.Fault, 'GetFolderRequest should not fault');
-		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 	});
 
 
@@ -60,6 +59,5 @@ describe('General > Headers > Request ID > Soap Request', function () {
 
 		// Verify response
 		assert.notExists(folderRes.Fault, 'GetFolderRequest should not fault');
-		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 	});
 });

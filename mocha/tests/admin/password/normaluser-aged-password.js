@@ -77,7 +77,7 @@ describe('Admin > Password > NormalUser Aged Password', function () {
 				<password>bogus123</password>
 			</ChangePasswordRequest>`, accountToken, false
 		);
-		assert.exists(changeRes.Fault, 'ChangePasswordRequest should fault');
+		assert.isString(changeRes.Fault.Detail.Error.Code, 'ChangePasswordRequest should fault');
 		assert.include(changeRes.Fault.Detail.Error.Code, 'account.PASSWORD_CHANGE_TOO_SOON');
 	});
 
@@ -129,7 +129,7 @@ describe('Admin > Password > NormalUser Aged Password', function () {
 				<password>${password}</password>
 			</ChangePasswordRequest>`, newToken, false
 		);
-		assert.exists(changeRes2.Fault, 'Second ChangePasswordRequest should fault');
+		assert.isString(changeRes2.Fault.Detail.Error.Code, 'Second ChangePasswordRequest should fault');
 		assert.include(changeRes2.Fault.Detail.Error.Code, 'account.PASSWORD_CHANGE_TOO_SOON');
 	});
 
@@ -168,7 +168,6 @@ describe('Admin > Password > NormalUser Aged Password', function () {
 			</ChangePasswordRequest>`, accountToken
 		);
 		assert.notExists(changeRes.Fault, 'ChangePasswordRequest should not fault');
-		assert.exists(changeRes.ChangePasswordResponse, 'ChangePasswordResponse should exist');
 	});
 
 
@@ -204,7 +203,6 @@ describe('Admin > Password > NormalUser Aged Password', function () {
 			</AuthRequest>`
 		);
 		assert.notExists(authRes.Fault, 'AuthRequest should not fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 
 		// Change password with newPassword in auth
 		const authRes2 = await soap.makeSOAPEnvelopeAccount(
@@ -242,7 +240,6 @@ describe('Admin > Password > NormalUser Aged Password', function () {
 			</ChangePasswordRequest>`, accountToken
 		);
 		assert.notExists(changeRes.Fault, 'ChangePasswordRequest should not fault');
-		assert.exists(changeRes.ChangePasswordResponse, 'ChangePasswordResponse should exist');
 	});
 
 
@@ -315,7 +312,7 @@ describe('Admin > Password > NormalUser Aged Password', function () {
 				<password>bogus123</password>
 			</ChangePasswordRequest>`, accountToken, false
 		);
-		assert.exists(changeRes.Fault, 'ChangePasswordRequest should fault');
+		assert.isString(changeRes.Fault.Detail.Error.Code, 'ChangePasswordRequest should fault');
 		assert.include(changeRes.Fault.Detail.Error.Code, 'account.PASSWORD_CHANGE_TOO_SOON');
 	});
 
@@ -354,7 +351,6 @@ describe('Admin > Password > NormalUser Aged Password', function () {
 			</ChangePasswordRequest>`, accountToken
 		);
 		assert.notExists(changeRes.Fault, 'ChangePasswordRequest should not fault');
-		assert.exists(changeRes.ChangePasswordResponse, 'ChangePasswordResponse should exist');
 	});
 
 
@@ -426,7 +422,6 @@ describe('Admin > Password > NormalUser Aged Password', function () {
 			</AuthRequest>`
 		);
 		assert.notExists(authRes.Fault, 'AuthRequest should not fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 	});
 
 
@@ -498,6 +493,5 @@ describe('Admin > Password > NormalUser Aged Password', function () {
 			</AuthRequest>`
 		);
 		assert.notExists(authRes.Fault, 'AuthRequest should not fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 	});
 });

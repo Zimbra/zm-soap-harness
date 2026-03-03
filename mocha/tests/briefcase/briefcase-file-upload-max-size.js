@@ -26,7 +26,6 @@ describe('Briefcase > Briefcase File Upload Max Size', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
@@ -43,7 +42,6 @@ describe('Briefcase > Briefcase File Upload Max Size', function () {
 
 		// Verify response
 		assert.notExists(serverRes.Fault, 'Response should not be a Fault');
-		assert.exists(serverRes.GetServerResponse, 'GetServerResponse should exist');
 
 		Array.isArray(serverRes.GetServerResponse.server)
 			? serverRes.GetServerResponse.server[0] : serverRes.GetServerResponse.server;
@@ -59,7 +57,7 @@ describe('Briefcase > Briefcase File Upload Max Size', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes.AuthResponse.authToken, 'AuthResponse should exist');
 
 		account1Token = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
@@ -72,7 +70,6 @@ describe('Briefcase > Briefcase File Upload Max Size', function () {
 
 		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
-		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 
 		const root = Array.isArray(folderRes.GetFolderResponse.folder)
 			? folderRes.GetFolderResponse.folder[0] : folderRes.GetFolderResponse.folder;
@@ -114,8 +111,9 @@ describe('Briefcase > Briefcase File Upload Max Size', function () {
 
 			// Verify response
 			assert.notExists(saveRes.Fault, 'Response should not be a Fault');
-			assert.exists(saveRes.SaveDocumentResponse,
-				`SaveDocumentResponse should exist for ${fileType}`);
+			const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
+				? saveRes.SaveDocumentResponse.doc[0] : saveRes.SaveDocumentResponse.doc;
+			assert.exists(doc.id, `doc id should exist for ${fileType}`);
 		}
 	});
 });

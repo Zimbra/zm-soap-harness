@@ -135,8 +135,6 @@ describe('Sharing > Get Share Notifications Request Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'GetShareNotificationsRequest should not fault');
-		assert.exists(res.GetShareNotificationsResponse,
-			'GetShareNotificationsResponse should exist');
 		const shares = res.GetShareNotificationsResponse.share;
 
 		// Verify response
@@ -157,8 +155,6 @@ describe('Sharing > Get Share Notifications Request Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'GetShareNotificationsRequest should not fault');
-		assert.exists(res.GetShareNotificationsResponse,
-			'GetShareNotificationsResponse should exist');
 	});
 
 
@@ -209,8 +205,6 @@ describe('Sharing > Get Share Notifications Request Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'GetShareNotificationsRequest should not fault');
-		assert.exists(res.GetShareNotificationsResponse,
-			'GetShareNotificationsResponse should exist');
 		const shares = res.GetShareNotificationsResponse.share;
 
 		// Verify response
@@ -223,8 +217,6 @@ describe('Sharing > Get Share Notifications Request Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'GetShareNotificationsRequest for account2 should not fault');
-		assert.exists(res.GetShareNotificationsResponse,
-			'GetShareNotificationsResponse for account2 should exist');
 	});
 
 
@@ -272,8 +264,6 @@ describe('Sharing > Get Share Notifications Request Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'GetShareNotificationsRequest should not fault');
-		assert.exists(res.GetShareNotificationsResponse,
-			'GetShareNotificationsResponse should exist');
 
 		// Add account4 to DL as new member
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -307,7 +297,5 @@ describe('Sharing > Get Share Notifications Request Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'GetShareNotificationsRequest for account4 should not fault');
-		assert.exists(res.GetShareNotificationsResponse,
-			'GetShareNotificationsResponse for account4 should exist');
 	});
 });

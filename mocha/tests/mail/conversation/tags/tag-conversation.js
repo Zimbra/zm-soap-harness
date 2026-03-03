@@ -256,7 +256,7 @@ describe('Mail > Conversation > Tags > Tag Conversation', function () {
 				<action id="${convId}" op="tag" tag="             ${tagId}"/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res1.Fault, 'Should fault for leading spaces');
+		assert.isString(res1.Fault.Detail.Error.Code, 'Should fault for leading spaces');
 		assert.include(res1.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 
@@ -266,7 +266,7 @@ describe('Mail > Conversation > Tags > Tag Conversation', function () {
 				<action id="${convId}" op="tag" tag="//\\\\'^%"/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res2.Fault, 'Should fault for special characters');
+		assert.isString(res2.Fault.Detail.Error.Code, 'Should fault for special characters');
 		assert.include(res2.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 
@@ -276,7 +276,7 @@ describe('Mail > Conversation > Tags > Tag Conversation', function () {
 				<action id="${convId}" op="tag" tag=""/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res3.Fault, 'Should fault for blank tag id');
+		assert.isString(res3.Fault.Detail.Error.Code, 'Should fault for blank tag id');
 		assert.include(res3.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 
@@ -286,7 +286,7 @@ describe('Mail > Conversation > Tags > Tag Conversation', function () {
 				<action id="${convId}" op="tag" tag="some text"/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res4.Fault, 'Should fault for text tag id');
+		assert.isString(res4.Fault.Detail.Error.Code, 'Should fault for text tag id');
 		assert.include(res4.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 
@@ -296,7 +296,7 @@ describe('Mail > Conversation > Tags > Tag Conversation', function () {
 				<action id="${convId}" op="tag" tag="10.10"/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res5.Fault, 'Should fault for decimal tag id');
+		assert.isString(res5.Fault.Detail.Error.Code, 'Should fault for decimal tag id');
 		assert.include(res5.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 
@@ -306,7 +306,7 @@ describe('Mail > Conversation > Tags > Tag Conversation', function () {
 				<action id="${convId}" op="tag" tag="0099"/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res6.Fault, 'Should fault for non-existing tag id');
+		assert.isString(res6.Fault.Detail.Error.Code, 'Should fault for non-existing tag id');
 		assert.include(res6.Fault.Detail.Error.Code, 'mail.NO_SUCH_TAG',
 			'Should be mail.NO_SUCH_TAG');
 
@@ -316,7 +316,7 @@ describe('Mail > Conversation > Tags > Tag Conversation', function () {
 				<action id="${convId}" op="tag" tag="-50"/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res7.Fault, 'Should fault for negative tag id');
+		assert.isString(res7.Fault.Detail.Error.Code, 'Should fault for negative tag id');
 		assert.include(res7.Fault.Detail.Error.Code, 'mail.NO_SUCH_TAG',
 			'Should be mail.NO_SUCH_TAG');
 	});
@@ -329,7 +329,7 @@ describe('Mail > Conversation > Tags > Tag Conversation', function () {
 				<action id="${convId}" op="tag" tag="        ${tagId}"/>
 			</ItemActionRequest>`, authToken, false
 		);
-		assert.exists(res1.Fault, 'Should fault for leading spaces');
+		assert.isString(res1.Fault.Detail.Error.Code, 'Should fault for leading spaces');
 		assert.include(res1.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 
@@ -339,7 +339,7 @@ describe('Mail > Conversation > Tags > Tag Conversation', function () {
 				<action id="${convId}" op="tag" tag="//\\\\'^%"/>
 			</ItemActionRequest>`, authToken, false
 		);
-		assert.exists(res2.Fault, 'Should fault for special characters');
+		assert.isString(res2.Fault.Detail.Error.Code, 'Should fault for special characters');
 		assert.include(res2.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 
@@ -349,7 +349,7 @@ describe('Mail > Conversation > Tags > Tag Conversation', function () {
 				<action id="${convId}" op="tag" tag=""/>
 			</ItemActionRequest>`, authToken, false
 		);
-		assert.exists(res3.Fault, 'Should fault for blank tag id');
+		assert.isString(res3.Fault.Detail.Error.Code, 'Should fault for blank tag id');
 		assert.include(res3.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 
@@ -359,7 +359,7 @@ describe('Mail > Conversation > Tags > Tag Conversation', function () {
 				<action id="${convId}" op="tag" tag="some text"/>
 			</ItemActionRequest>`, authToken, false
 		);
-		assert.exists(res4.Fault, 'Should fault for text tag id');
+		assert.isString(res4.Fault.Detail.Error.Code, 'Should fault for text tag id');
 		assert.include(res4.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 
@@ -369,7 +369,7 @@ describe('Mail > Conversation > Tags > Tag Conversation', function () {
 				<action id="${convId}" op="tag" tag="10.10"/>
 			</ItemActionRequest>`, authToken, false
 		);
-		assert.exists(res5.Fault, 'Should fault for decimal tag id');
+		assert.isString(res5.Fault.Detail.Error.Code, 'Should fault for decimal tag id');
 		assert.include(res5.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should be service.INVALID_REQUEST');
 
@@ -379,7 +379,7 @@ describe('Mail > Conversation > Tags > Tag Conversation', function () {
 				<action id="${convId}" op="tag" tag="0099"/>
 			</ItemActionRequest>`, authToken, false
 		);
-		assert.exists(res6.Fault, 'Should fault for non-existing tag id');
+		assert.isString(res6.Fault.Detail.Error.Code, 'Should fault for non-existing tag id');
 		assert.include(res6.Fault.Detail.Error.Code, 'mail.NO_SUCH_TAG',
 			'Should be mail.NO_SUCH_TAG');
 
@@ -389,7 +389,7 @@ describe('Mail > Conversation > Tags > Tag Conversation', function () {
 				<action id="${convId}" op="tag" tag="-50"/>
 			</ItemActionRequest>`, authToken, false
 		);
-		assert.exists(res7.Fault, 'Should fault for negative tag id');
+		assert.isString(res7.Fault.Detail.Error.Code, 'Should fault for negative tag id');
 		assert.include(res7.Fault.Detail.Error.Code, 'mail.NO_SUCH_TAG',
 			'Should be mail.NO_SUCH_TAG');
 	});

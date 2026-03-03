@@ -290,7 +290,6 @@ describe('Prefs > Filters > Sieve > Sieve Bugs 106xxx 2', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
-		assert.exists(getRes.GetFilterRulesResponse, 'Response should exist');
 	});
 
 

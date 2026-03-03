@@ -47,7 +47,6 @@ describe('General > Get Info Request', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.GetInfoResponse, 'GetInfoResponse should exist');
 		const cos = Array.isArray(res.GetInfoResponse.cos)
 			? res.GetInfoResponse.cos[0] : res.GetInfoResponse.cos;
 

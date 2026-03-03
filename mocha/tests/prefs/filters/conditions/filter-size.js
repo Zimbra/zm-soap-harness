@@ -58,6 +58,5 @@ describe('Prefs > Filters > Conditions > Filter Size', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Size over test should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 	});
 });

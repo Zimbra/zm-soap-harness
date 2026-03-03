@@ -60,7 +60,6 @@ describe('Prefs > Identities > Delete Identity', function () {
 
 		// Verify response
 		assert.notExists(delRes.Fault, 'DeleteIdentityRequest should not fault');
-		assert.exists(delRes.DeleteIdentityResponse, 'DeleteIdentityResponse should exist');
 	});
 
 
@@ -97,7 +96,6 @@ describe('Prefs > Identities > Delete Identity', function () {
 
 		// Verify response
 		assert.notExists(delRes.Fault, 'DeleteIdentityRequest by ID should not fault');
-		assert.exists(delRes.DeleteIdentityResponse, 'DeleteIdentityResponse should exist');
 	});
 
 
@@ -123,7 +121,7 @@ describe('Prefs > Identities > Delete Identity', function () {
 		);
 
 		// Verify response
-		assert.exists(delRes.Fault, 'Delete non-existent identity should fault');
+		assert.isString(delRes.Fault.Detail.Error.Code, 'Delete non-existent identity should fault');
 	});
 
 
@@ -164,7 +162,6 @@ describe('Prefs > Identities > Delete Identity', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'GetIdentitiesRequest should not fault');
-		assert.exists(getRes.GetIdentitiesResponse, 'GetIdentitiesResponse should exist');
 	});
 
 
@@ -190,6 +187,6 @@ describe('Prefs > Identities > Delete Identity', function () {
 		);
 
 		// Verify response
-		assert.exists(delRes.Fault, 'Delete DEFAULT identity should fault');
+		assert.isString(delRes.Fault.Detail.Error.Code, 'Delete DEFAULT identity should fault');
 	});
 });

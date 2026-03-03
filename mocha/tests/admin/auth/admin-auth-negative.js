@@ -62,7 +62,6 @@ describe('Admin > Auth > Admin Auth Negative', function () {
 
 		// Verify auth response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.AuthResponse, 'AuthResponse should exist');
 		assert.exists(res.AuthResponse.lifetime, 'lifetime should exist');
 		assert.exists(res.AuthResponse.authToken, 'authToken should exist');
 	});
@@ -78,7 +77,7 @@ describe('Admin > Auth > Admin Auth Negative', function () {
 		);
 
 		// Verify fault code
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 	});
 
@@ -91,7 +90,7 @@ describe('Admin > Auth > Admin Auth Negative', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, false
 		);
-		assert.exists(res1.Fault, 'Should return a Fault for parenthesis domain');
+		assert.isString(res1.Fault.Detail.Error.Code, 'Should return a Fault for parenthesis domain');
 		assert.include(res1.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 
 		// Login with a domain with a left parenthesis
@@ -101,7 +100,7 @@ describe('Admin > Auth > Admin Auth Negative', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, false
 		);
-		assert.exists(res2.Fault, 'Should return a Fault for left parenthesis');
+		assert.isString(res2.Fault.Detail.Error.Code, 'Should return a Fault for left parenthesis');
 		assert.include(res2.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 
 		// Login with a domain with a right parenthesis
@@ -111,7 +110,7 @@ describe('Admin > Auth > Admin Auth Negative', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, false
 		);
-		assert.exists(res3.Fault, 'Should return a Fault for right parenthesis');
+		assert.isString(res3.Fault.Detail.Error.Code, 'Should return a Fault for right parenthesis');
 		assert.include(res3.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 
 		// Login with a domain with a pipe
@@ -121,7 +120,7 @@ describe('Admin > Auth > Admin Auth Negative', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, false
 		);
-		assert.exists(res4.Fault, 'Should return a Fault for pipe');
+		assert.isString(res4.Fault.Detail.Error.Code, 'Should return a Fault for pipe');
 		assert.include(res4.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 
 		// Login with a domain with an ampersand
@@ -131,7 +130,7 @@ describe('Admin > Auth > Admin Auth Negative', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, false
 		);
-		assert.exists(res5.Fault, 'Should return a Fault for ampersand');
+		assert.isString(res5.Fault.Detail.Error.Code, 'Should return a Fault for ampersand');
 		assert.include(res5.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 
 		// Login with a domain with a semicolon
@@ -141,7 +140,7 @@ describe('Admin > Auth > Admin Auth Negative', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, false
 		);
-		assert.exists(res6.Fault, 'Should return a Fault for semicolon');
+		assert.isString(res6.Fault.Detail.Error.Code, 'Should return a Fault for semicolon');
 		assert.include(res6.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 
 		// Login with a domain with a equals sign
@@ -151,7 +150,7 @@ describe('Admin > Auth > Admin Auth Negative', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, false
 		);
-		assert.exists(res7.Fault, 'Should return a Fault for equals sign');
+		assert.isString(res7.Fault.Detail.Error.Code, 'Should return a Fault for equals sign');
 		assert.include(res7.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 
 		// Login with a domain with two @ signs
@@ -161,7 +160,7 @@ describe('Admin > Auth > Admin Auth Negative', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null, false
 		);
-		assert.exists(res8.Fault, 'Should return a Fault for double at signs');
+		assert.isString(res8.Fault.Detail.Error.Code, 'Should return a Fault for double at signs');
 		assert.include(res8.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 	});
 
@@ -176,7 +175,7 @@ describe('Admin > Auth > Admin Auth Negative', function () {
 		);
 
 		// Verify fault code
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 	});
 
@@ -191,7 +190,7 @@ describe('Admin > Auth > Admin Auth Negative', function () {
 		);
 
 		// Verify fault code
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 	});
 
@@ -206,7 +205,7 @@ describe('Admin > Auth > Admin Auth Negative', function () {
 		);
 
 		// Verify fault code
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 	});
 
@@ -221,7 +220,7 @@ describe('Admin > Auth > Admin Auth Negative', function () {
 		);
 
 		// Verify fault code
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 	});
 
@@ -234,7 +233,7 @@ describe('Admin > Auth > Admin Auth Negative', function () {
 				<password>tes(t123</password>
 			</AuthRequest>`, null, false
 		);
-		assert.exists(res1.Fault, 'Should return a Fault for left parenthesis');
+		assert.isString(res1.Fault.Detail.Error.Code, 'Should return a Fault for left parenthesis');
 		assert.include(res1.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 
 		// Login with a password with a right parenthesis
@@ -244,7 +243,7 @@ describe('Admin > Auth > Admin Auth Negative', function () {
 				<password>tes)t123</password>
 			</AuthRequest>`, null, false
 		);
-		assert.exists(res2.Fault, 'Should return a Fault for right parenthesis');
+		assert.isString(res2.Fault.Detail.Error.Code, 'Should return a Fault for right parenthesis');
 		assert.include(res2.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 
 		// Login with a password with a pipe
@@ -254,7 +253,7 @@ describe('Admin > Auth > Admin Auth Negative', function () {
 				<password>test|123</password>
 			</AuthRequest>`, null, false
 		);
-		assert.exists(res3.Fault, 'Should return a Fault for pipe');
+		assert.isString(res3.Fault.Detail.Error.Code, 'Should return a Fault for pipe');
 		assert.include(res3.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 
 		// Login with a password with a ampersand
@@ -264,7 +263,7 @@ describe('Admin > Auth > Admin Auth Negative', function () {
 				<password>test&amp;123</password>
 			</AuthRequest>`, null, false
 		);
-		assert.exists(res4.Fault, 'Should return a Fault for ampersand');
+		assert.isString(res4.Fault.Detail.Error.Code, 'Should return a Fault for ampersand');
 		assert.include(res4.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 
 		// Login with a password with a semi-colon
@@ -274,7 +273,7 @@ describe('Admin > Auth > Admin Auth Negative', function () {
 				<password>tes;t123</password>
 			</AuthRequest>`, null, false
 		);
-		assert.exists(res5.Fault, 'Should return a Fault for semicolon');
+		assert.isString(res5.Fault.Detail.Error.Code, 'Should return a Fault for semicolon');
 		assert.include(res5.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 
 		// Login with a password with a equals sign
@@ -284,7 +283,7 @@ describe('Admin > Auth > Admin Auth Negative', function () {
 				<password>test=123</password>
 			</AuthRequest>`, null, false
 		);
-		assert.exists(res6.Fault, 'Should return a Fault for equals sign');
+		assert.isString(res6.Fault.Detail.Error.Code, 'Should return a Fault for equals sign');
 		assert.include(res6.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 	});
 
@@ -299,7 +298,7 @@ describe('Admin > Auth > Admin Auth Negative', function () {
 		);
 
 		// Verify permission denied
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'account.AUTH_FAILED');
 	});
 });

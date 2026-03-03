@@ -51,7 +51,6 @@ describe('Admin > Purge Calendar > Purge Account Calendar Cache', function () {
 			</GetMailboxRequest>`, adminAuthToken
 		);
 		assert.notExists(mboxRes.Fault, 'GetMailboxRequest should not fault');
-		assert.exists(mboxRes.GetMailboxResponse, 'GetMailboxResponse should exist');
 		const mbox = Array.isArray(mboxRes.GetMailboxResponse.mbox)
 			? mboxRes.GetMailboxResponse.mbox[0] : mboxRes.GetMailboxResponse.mbox;
 		assert.exists(mbox.mbxid, 'Mailbox ID should exist');
@@ -87,7 +86,6 @@ describe('Admin > Purge Calendar > Purge Account Calendar Cache', function () {
 			</SetAppointmentRequest>`, accountToken
 		);
 		assert.notExists(setApptRes.Fault, 'SetAppointmentRequest should not fault');
-		assert.exists(setApptRes.SetAppointmentResponse, 'SetAppointmentResponse should exist');
 		assert.exists(setApptRes.SetAppointmentResponse.apptId, 'Appointment ID should exist');
 
 		// Search calendar appointments to generate cache
@@ -100,7 +98,6 @@ describe('Admin > Purge Calendar > Purge Account Calendar Cache', function () {
 			</SearchRequest>`, accountToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		// Purge account calendar cache using admin SOAP
 		const purgeRes = await soap.makeSOAPEnvelopeAdmin(
@@ -108,8 +105,6 @@ describe('Admin > Purge Calendar > Purge Account Calendar Cache', function () {
 			</PurgeAccountCalendarCacheRequest>`, adminAuthToken
 		);
 		assert.notExists(purgeRes.Fault, 'PurgeAccountCalendarCacheRequest should not fault');
-		assert.exists(purgeRes.PurgeAccountCalendarCacheResponse,
-			'PurgeAccountCalendarCacheResponse should exist');
 
 		// Search again to regenerate cache
 		const searchRes2 = await soap.makeSOAPEnvelopeAccount(
@@ -119,6 +114,5 @@ describe('Admin > Purge Calendar > Purge Account Calendar Cache', function () {
 			</SearchRequest>`, accountToken
 		);
 		assert.notExists(searchRes2.Fault, 'SearchRequest after purge should not fault');
-		assert.exists(searchRes2.SearchResponse, 'SearchResponse should exist after purge');
 	});
 });

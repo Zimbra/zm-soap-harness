@@ -65,7 +65,6 @@ describe('Mail Client > Mail > Bug65079', function () {
 			</SearchRequest>`, acct1Auth
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		// Get message details
 		const msgs = Array.isArray(searchRes.SearchResponse?.m)
@@ -80,7 +79,7 @@ describe('Mail Client > Mail > Bug65079', function () {
 			assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
 			const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
 				? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
-			assert.exists(getMsg, 'GetMsgResponse should contain m');
+			assert.exists(getMsg.id, 'message id should exist');
 		}
 	});
 });

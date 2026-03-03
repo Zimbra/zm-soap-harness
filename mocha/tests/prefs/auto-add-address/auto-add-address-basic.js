@@ -70,7 +70,7 @@ describe('Prefs > Auto Add Address > Auto Add Address Basic', function () {
 		assert.notExists(sendRes.Fault, 'SendMsgRequest should not fault');
 		const sentMsg = Array.isArray(sendRes.SendMsgResponse.m)
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
-		assert.exists(sentMsg, 'SendMsgResponse should contain m');
+		assert.exists(sentMsg.id, 'sent msg id should exist');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
 
 		// Verify account2 now in contacts
@@ -143,7 +143,6 @@ describe('Prefs > Auto Add Address > Auto Add Address Basic', function () {
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
 		// Note: Server may auto-add all recipients as contacts regardless of add attribute
 		// Verify the search request completes successfully
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 
 

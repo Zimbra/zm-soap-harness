@@ -54,10 +54,11 @@ describe('Folders > Folder Nested Loop', function () {
 
 		const getInfoRequest = '<GetInfoRequest xmlns=\'urn:zimbraAccount\'/>';
 
-		// CreateFolderRequest
+		// GetInfoRequest
 		const getInfo = await soap.makeSOAPEnvelopeAccount(getInfoRequest, auth);
 
 		// Verify response
+		assert.notExists(getInfo.Fault, 'Response should not be a Fault');
 		assert.exists(getInfo.GetInfoResponse.name,
 			'Verify GetInfo should return success');
 	});
@@ -70,13 +71,15 @@ describe('Folders > Folder Nested Loop', function () {
 				<folder name='${folderName}' l='${rootId}'/>
 			</CreateFolderRequest>`;
 
-		// GetFolderRequest
+		// CreateFolderRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(createFolderRequest, auth);
 
+		assert.notExists(createRes.Fault, 'Response should not be a Fault');
 		folderId = createRes.CreateFolderResponse.folder[0].id;
 
 		// Verify response
 		assert.exists(folderId, 'Verify folder created');
+		assert.isString(folderId, 'Verify folder id is a string');
 	});
 
 
@@ -84,12 +87,13 @@ describe('Folders > Folder Nested Loop', function () {
 		const getFolderRequest =
 			`<GetFolderRequest xmlns='urn:zimbraMail' id='${rootId}'/>`;
 
-		// CreateFolderRequest
+		// GetFolderRequest
 		const getFolder = await soap.makeSOAPEnvelopeAccount(getFolderRequest, auth);
 
 		// Verify response
-		assert.exists(getFolder.GetFolderResponse.folder,
-			'Verify GetFolderResponse returns folder');
+		assert.notExists(getFolder.Fault, 'Response should not be a Fault');
+		assert.exists(getFolder.GetFolderResponse.folder[0].id,
+			'Verify GetFolderResponse returns folder with id');
 	});
 
 
@@ -101,7 +105,9 @@ describe('Folders > Folder Nested Loop', function () {
 			</CreateFolderRequest>`;
 
 		// CreateFolderRequest
-		await soap.makeSOAPEnvelopeAccount(createRequest1, auth);
+		const createRes1 = await soap.makeSOAPEnvelopeAccount(createRequest1, auth);
+		assert.notExists(createRes1.Fault, 'First create should not be a Fault');
+		assert.exists(createRes1.CreateFolderResponse.folder[0].id, 'First folder ID should exist');
 
 		// Try creating duplicate
 		const createRequest2 =
@@ -113,7 +119,7 @@ describe('Folders > Folder Nested Loop', function () {
 		const dupResp = await soap.makeSOAPEnvelopeAccount(createRequest2, auth);
 
 		// Verify response
-		assert.exists(dupResp.Fault, 'Verify Fault for duplicate folder');
+		assert.exists(dupResp.Fault.Detail.Error, 'Fault Error should exist');
 		assert.include(dupResp.Fault.Reason.Text, 'already exists',
 			'Verify ALREADY_EXISTS error');
 	});
@@ -126,9 +132,11 @@ describe('Folders > Folder Nested Loop', function () {
 				<folder name='${folderName}' l='${rootId}'/>
 			</CreateFolderRequest>`;
 
-		// FolderActionRequest
+		// CreateFolderRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(createRequest, auth);
+		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const id = createRes.CreateFolderResponse.folder[0].id;
+		assert.exists(id, 'Folder ID should exist');
 
 		const newName = `RenamedNested${common.getUniqueString()}`;
 		const renameRequest =
@@ -136,10 +144,13 @@ describe('Folders > Folder Nested Loop', function () {
 				<action op='rename' id='${id}' name='${newName}'/>
 			</FolderActionRequest>`;
 
-		// CreateFolderRequest
+		// FolderActionRequest
 		const renameResponse = await soap.makeSOAPEnvelopeAccount(renameRequest, auth);
 
 		// Verify response
+		assert.notExists(renameResponse.Fault, 'Rename should not be a Fault');
+		assert.equal(renameResponse.FolderActionResponse.action.id, id,
+			'Verify folder id in response');
 		assert.equal(renameResponse.FolderActionResponse.action.op, 'rename',
 			'Verify op is rename');
 	});
@@ -154,7 +165,9 @@ describe('Folders > Folder Nested Loop', function () {
 
 		// CreateFolderRequest
 		const createRes1 = await soap.makeSOAPEnvelopeAccount(createRequest1, auth);
+		assert.notExists(createRes1.Fault, 'Parent create should not be a Fault');
 		const parentId = createRes1.CreateFolderResponse.folder[0].id;
+		assert.exists(parentId, 'Parent folder ID should exist');
 
 		const folderName2 = `MoveChild${common.getUniqueString()}`;
 		const createRequest2 =
@@ -162,19 +175,24 @@ describe('Folders > Folder Nested Loop', function () {
 				<folder name='${folderName2}' l='${rootId}'/>
 			</CreateFolderRequest>`;
 
-		// FolderActionRequest
+		// CreateFolderRequest
 		const createRes2 = await soap.makeSOAPEnvelopeAccount(createRequest2, auth);
+		assert.notExists(createRes2.Fault, 'Child create should not be a Fault');
 		const childId = createRes2.CreateFolderResponse.folder[0].id;
+		assert.exists(childId, 'Child folder ID should exist');
 
 		const moveRequest =
 			`<FolderActionRequest xmlns='urn:zimbraMail'>
 				<action op='move' id='${childId}' l='${parentId}'/>
 			</FolderActionRequest>`;
 
-		// CreateFolderRequest
+		// FolderActionRequest
 		const moveResponse = await soap.makeSOAPEnvelopeAccount(moveRequest, auth);
 
 		// Verify response
+		assert.notExists(moveResponse.Fault, 'Move should not be a Fault');
+		assert.equal(moveResponse.FolderActionResponse.action.id, childId,
+			'Verify folder id in response');
 		assert.equal(moveResponse.FolderActionResponse.action.op, 'move',
 			'Verify op is move');
 	});
@@ -187,9 +205,11 @@ describe('Folders > Folder Nested Loop', function () {
 				<folder name='${folderName}' l='${rootId}'/>
 			</CreateFolderRequest>`;
 
-		// AddMsgRequest
+		// CreateFolderRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(createRequest, auth);
+		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const id = createRes.CreateFolderResponse.folder[0].id;
+		assert.exists(id, 'Folder ID should exist');
 
 		// Add a message
 		const addMsgRequest =
@@ -200,8 +220,9 @@ describe('Folders > Folder Nested Loop', function () {
 				</m>
 			</AddMsgRequest>`;
 
-		// FolderActionRequest
-		await soap.makeSOAPEnvelopeAccount(addMsgRequest, auth);
+		// AddMsgRequest
+		const addMsgRes = await soap.makeSOAPEnvelopeAccount(addMsgRequest, auth);
+		assert.notExists(addMsgRes.Fault, 'AddMsg should not be a Fault');
 
 		// Empty the folder
 		const emptyRequest =
@@ -209,10 +230,13 @@ describe('Folders > Folder Nested Loop', function () {
 				<action op='empty' id='${id}'/>
 			</FolderActionRequest>`;
 
-		// SearchRequest
+		// FolderActionRequest
 		const emptyResponse = await soap.makeSOAPEnvelopeAccount(emptyRequest, auth);
 
 		// Verify response
+		assert.notExists(emptyResponse.Fault, 'Empty should not be a Fault');
+		assert.equal(emptyResponse.FolderActionResponse.action.id, id,
+			'Verify folder id in response');
 		assert.equal(emptyResponse.FolderActionResponse.action.op, 'empty',
 			'Verify op is empty');
 
@@ -222,10 +246,11 @@ describe('Folders > Folder Nested Loop', function () {
 				<query>in:"${folderName}"</query>
 			</SearchRequest>`;
 
-		// CreateFolderRequest
+		// SearchRequest
 		const searchResponse = await soap.makeSOAPEnvelopeAccount(searchRequest, auth);
 
 		// Verify response
+		assert.notExists(searchResponse.Fault, 'Search should not be a Fault');
 		assert.notExists(searchResponse.SearchResponse.m,
 			'Verify messages are gone after empty');
 	});
@@ -240,7 +265,9 @@ describe('Folders > Folder Nested Loop', function () {
 
 		// CreateFolderRequest
 		const parentRes = await soap.makeSOAPEnvelopeAccount(createParentRequest, auth);
+		assert.notExists(parentRes.Fault, 'Parent create should not be a Fault');
 		const parentId = parentRes.CreateFolderResponse.folder[0].id;
+		assert.exists(parentId, 'Parent folder ID should exist');
 
 		const subName = `EmptySub${common.getUniqueString()}`;
 		const createSubRequest =
@@ -248,8 +275,10 @@ describe('Folders > Folder Nested Loop', function () {
 				<folder name='${subName}' l='${parentId}'/>
 			</CreateFolderRequest>`;
 
-		// FolderActionRequest
-		await soap.makeSOAPEnvelopeAccount(createSubRequest, auth);
+		// CreateFolderRequest
+		const subRes = await soap.makeSOAPEnvelopeAccount(createSubRequest, auth);
+		assert.notExists(subRes.Fault, 'Sub create should not be a Fault');
+		assert.exists(subRes.CreateFolderResponse.folder[0].id, 'Sub folder ID should exist');
 
 		// Empty parent
 		const emptyRequest =
@@ -257,10 +286,13 @@ describe('Folders > Folder Nested Loop', function () {
 				<action op='empty' id='${parentId}'/>
 			</FolderActionRequest>`;
 
-		// CreateFolderRequest
+		// FolderActionRequest
 		const emptyResponse = await soap.makeSOAPEnvelopeAccount(emptyRequest, auth);
 
 		// Verify response
+		assert.notExists(emptyResponse.Fault, 'Empty should not be a Fault');
+		assert.equal(emptyResponse.FolderActionResponse.action.id, parentId,
+			'Verify folder id in response');
 		assert.equal(emptyResponse.FolderActionResponse.action.op, 'empty',
 			'Verify op is empty');
 	});
@@ -273,9 +305,11 @@ describe('Folders > Folder Nested Loop', function () {
 				<folder name='${folderName}' l='${rootId}'/>
 			</CreateFolderRequest>`;
 
-		// FolderActionRequest
+		// CreateFolderRequest
 		const createRes = await soap.makeSOAPEnvelopeAccount(createRequest, auth);
+		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const id = createRes.CreateFolderResponse.folder[0].id;
+		assert.exists(id, 'Folder ID should exist');
 
 		const deleteRequest =
 			`<FolderActionRequest xmlns='urn:zimbraMail'>
@@ -284,6 +318,9 @@ describe('Folders > Folder Nested Loop', function () {
 		const deleteResponse = await soap.makeSOAPEnvelopeAccount(deleteRequest, auth);
 
 		// Verify response
+		assert.notExists(deleteResponse.Fault, 'Delete should not be a Fault');
+		assert.equal(deleteResponse.FolderActionResponse.action.id, id,
+			'Verify folder id in response');
 		assert.equal(deleteResponse.FolderActionResponse.action.op, 'delete',
 			'Verify op is delete');
 	});

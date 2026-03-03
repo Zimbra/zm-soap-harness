@@ -299,7 +299,6 @@ describe('EWS > Calendar Item ZCS 1783', function () {
 			account1Email, account1Password
 		);
 		const deleteBody = ews.getBody(deleteRes);
-		assert.exists(deleteBody.DeleteItemResponse, 'DeleteItemResponse should exist');
 		const syncRes3 = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>

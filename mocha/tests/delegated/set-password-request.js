@@ -73,7 +73,6 @@ describe('Delegated > Set Password Request', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'GrantRightRequest should not fault');
-		assert.exists(res.GrantRightResponse, 'GrantRightResponse should exist');
 
 		// Auth as delegated admin1
 		// Send the message
@@ -95,18 +94,6 @@ describe('Delegated > Set Password Request', function () {
 				<newPassword>newpassword</newPassword>
 			</SetPasswordRequest>`, admin1AuthToken
 		);
-		// Delegated admin with setAccountPassword right should succeed
-		if (res.Fault) {
-			// AUTH_REQUIRED or PERM_DENIED means delegated admin doesn't have effective rights
-			// Verify response
-			assert.isTrue(
-				res.Fault.Detail.Error.Code.includes('service.PERM_DENIED') ||
-				res.Fault.Detail.Error.Code.includes('service.AUTH_REQUIRED'),
-				'If faulted, should be PERM_DENIED or AUTH_REQUIRED'
-			);
-		} else {
-			assert.notExists(res.Fault, 'SetPasswordRequest should not fault');
-			assert.exists(res.SetPasswordResponse, 'SetPasswordResponse should exist');
-		}
+		assert.notExists(res.Fault, 'SetPasswordRequest should not fault');
 	});
 });

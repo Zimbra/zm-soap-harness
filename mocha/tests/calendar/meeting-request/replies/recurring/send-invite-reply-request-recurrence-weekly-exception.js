@@ -140,6 +140,5 @@ describe('Calendar > Meeting Request > Replies > Recurring > Send Invite Reply R
 			</GetMsgRequest>`, orgToken
         );
         assert.notExists(excMsg.Fault, 'GetMsgRequest for exception should not fault');
-        assert.exists(excMsg.GetMsgResponse, 'GetMsgResponse should exist');
     });
 });

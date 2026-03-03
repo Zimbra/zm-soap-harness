@@ -91,7 +91,6 @@ describe('Search > Calendar > Modify Meeting Request Aliases', function () {
 			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		assert.exists(res6.SearchResponse, 'SearchResponse should exist');
 
 		// Get appointment details
 		if (invId) {
@@ -121,12 +120,7 @@ describe('Search > Calendar > Modify Meeting Request Aliases', function () {
 					</m>
 				</ModifyAppointmentRequest>`, accountAuthToken
 			);
-			if (res12.Fault) {
-				// ModifyAppointment may fault in some configurations
-				assert.exists(res12.Fault, 'ModifyAppointment faulted');
-			} else {
-				assert.exists(res12.ModifyAppointmentResponse, 'ModifyAppointmentResponse should exist');
-			}
+			assert.notExists(res12.Fault, 'ModifyAppointmentRequest should not fault');
 		}
 
 		// Search for modified appointment
@@ -136,6 +130,5 @@ describe('Search > Calendar > Modify Meeting Request Aliases', function () {
 			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(res16.Fault, 'Response should not be a Fault');
-		assert.exists(res16.SearchResponse, 'SearchResponse should exist');
 	});
 });

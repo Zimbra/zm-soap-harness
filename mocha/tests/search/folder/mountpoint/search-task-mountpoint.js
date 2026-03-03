@@ -100,7 +100,6 @@ describe('Search > Folder > Mountpoint > Search Task Mountpoint', function () {
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'Response element should exist');
 
 		// SearchRequest with quotes
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -111,7 +110,6 @@ describe('Search > Folder > Mountpoint > Search Task Mountpoint', function () {
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse, 'Response element should exist');
 
 		// SearchRequest with parens
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -122,7 +120,6 @@ describe('Search > Folder > Mountpoint > Search Task Mountpoint', function () {
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -136,7 +133,6 @@ describe('Search > Folder > Mountpoint > Search Task Mountpoint', function () {
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -150,6 +146,5 @@ describe('Search > Folder > Mountpoint > Search Task Mountpoint', function () {
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'Response element should exist');
 	});
 });

@@ -113,6 +113,8 @@ describe('Calendar > Appointments > Create Appointment Request Single Occurrence
 			</SearchRequest>`, accountToken
         );
         assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-        assert.exists(searchRes.SearchResponse.appt, 'All-day appt found');
+        const appts = Array.isArray(searchRes.SearchResponse.appt)
+            ? searchRes.SearchResponse.appt : [searchRes.SearchResponse.appt];
+        assert.exists(appts[0].name, 'All-day appt name should exist');
     });
 });

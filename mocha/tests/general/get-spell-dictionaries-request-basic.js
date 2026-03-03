@@ -47,8 +47,6 @@ describe('General > Get Spell Dictionaries Request Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.GetSpellDictionariesResponse,
-			'GetSpellDictionariesResponse should exist');
 		const dictionaries = Array.isArray(res.GetSpellDictionariesResponse.dictionary)
 			? res.GetSpellDictionariesResponse.dictionary
 			: [res.GetSpellDictionariesResponse.dictionary];

@@ -82,7 +82,7 @@ describe('Mail > Bugs > Bug 28623', function () {
 		assert.notExists(getRes1.Fault, 'GetMsgRequest for msg1 should not fault');
 		const getMsg = Array.isArray(getRes1.GetMsgResponse.m)
 			? getRes1.GetMsgResponse.m[0] : getRes1.GetMsgResponse.m;
-		assert.exists(getMsg, 'GetMsgResponse should contain m');
+		assert.exists(getMsg.id, 'message id should exist');
 
 		// Search and verify second message (happy)
 		const searchRes2 = await soap.makeSOAPEnvelopeAccount(

@@ -47,7 +47,6 @@ describe('Contacts > Contact Item Action', function () {
 			</CreateContactRequest>`, accountToken
 		);
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 
@@ -91,7 +90,7 @@ describe('Contacts > Contact Item Action', function () {
 			</ItemActionRequest>`, accountToken
 		);
 		assert.notExists(del2Res.Fault, 'Second delete should not be a Fault');
-		assert.exists(del2Res.ItemActionResponse.action, 'Action should exist');
+		assert.equal(del2Res.ItemActionResponse.action.op, 'delete', 'Verify op is delete');
 	});
 
 
@@ -151,7 +150,7 @@ describe('Contacts > Contact Item Action', function () {
 				<action op="move" id="${cn.id}" l="-1"/>
 			</ItemActionRequest>`, accountToken, false
 		);
-		assert.exists(moveRes.Fault, 'Move to non-existing folder should be a Fault');
+		assert.isString(moveRes.Fault.Detail.Error.Code, 'Move to non-existing folder should be a Fault');
 	});
 
 

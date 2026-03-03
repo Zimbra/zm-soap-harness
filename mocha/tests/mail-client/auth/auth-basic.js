@@ -68,7 +68,7 @@ describe('Mail Client > Auth > Auth Basic', function () {
 		);
 
 		// Verify response
-		assert.isTrue(!!res.AuthResponse || !!res.Fault,
-			'Should get AuthResponse or Fault');
+		assert.notExists(res.Fault, 'AuthRequest should not fault');
+		assert.exists(res.AuthResponse.authToken, 'authToken should exist');
 	});
 });

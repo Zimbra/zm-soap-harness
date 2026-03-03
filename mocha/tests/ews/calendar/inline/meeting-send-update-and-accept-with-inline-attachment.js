@@ -276,7 +276,6 @@ describe('EWS > Calendar > Inline > Meeting Send Update And Accept With Inline A
 
 		// Verify response
 		assert.notExists(acceptRes.Fault, 'SendInviteReply should not fault');
-		assert.exists(acceptRes.SendInviteReplyResponse, 'SendInviteReplyResponse should exist');
 		await common.delay(8000);
 
 		// Authenticate account

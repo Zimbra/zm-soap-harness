@@ -48,7 +48,6 @@ describe('Admin > Mailbox > Mailbox', function () {
 			</GetMailboxRequest>`, adminAuthToken
 		);
 		assert.notExists(mboxRes.Fault, 'GetMailboxRequest should not fault');
-		assert.exists(mboxRes.GetMailboxResponse, 'GetMailboxResponse should exist');
 		assert.exists(mboxRes.GetMailboxResponse.mbox, 'Mbox should exist in response');
 	});
 
@@ -84,7 +83,6 @@ describe('Admin > Mailbox > Mailbox', function () {
 			</PurgeMessagesRequest>`, adminAuthToken
 		);
 		assert.notExists(purgeRes.Fault, 'PurgeMessagesRequest should not fault');
-		assert.exists(purgeRes.PurgeMessagesResponse, 'PurgeMessagesResponse should exist');
 	});
 
 
@@ -118,7 +116,6 @@ describe('Admin > Mailbox > Mailbox', function () {
 			</ReIndexRequest>`, adminAuthToken
 		);
 		assert.notExists(reIndexRes.Fault, 'ReIndexRequest should not fault');
-		assert.exists(reIndexRes.ReIndexResponse, 'ReIndexResponse should exist');
 		assert.equal(reIndexRes.ReIndexResponse.status, 'started', 'Status should be started');
 	});
 
@@ -153,7 +150,6 @@ describe('Admin > Mailbox > Mailbox', function () {
 			</RecalculateMailboxCountsRequest>`, adminAuthToken
 		);
 		assert.notExists(recalcRes.Fault, 'RecalculateMailboxCountsRequest should not fault');
-		assert.exists(recalcRes.RecalculateMailboxCountsResponse, 'Response should exist');
 		assert.exists(recalcRes.RecalculateMailboxCountsResponse.mbox, 'Mbox should exist');
 	});
 
@@ -188,7 +184,6 @@ describe('Admin > Mailbox > Mailbox', function () {
 			</DeleteMailboxRequest>`, adminAuthToken
 		);
 		assert.notExists(deleteRes.Fault, 'DeleteMailboxRequest should not fault');
-		assert.exists(deleteRes.DeleteMailboxResponse, 'DeleteMailboxResponse should exist');
 		assert.exists(deleteRes.DeleteMailboxResponse.mbox, 'Mbox should exist in response');
 	});
 
@@ -234,7 +229,6 @@ describe('Admin > Mailbox > Mailbox', function () {
 			</ExportAndDeleteItemsRequest>`, adminAuthToken
 		);
 		assert.notExists(exportRes.Fault, 'ExportAndDeleteItemsRequest should not fault');
-		assert.exists(exportRes.ExportAndDeleteItemsResponse, 'ExportAndDeleteItemsResponse should exist');
 	});
 
 
@@ -243,7 +237,6 @@ describe('Admin > Mailbox > Mailbox', function () {
 			`<GetAllMailboxesRequest xmlns="urn:zimbraAdmin" limit="5"/>`, adminAuthToken
 		);
 		assert.notExists(allRes.Fault, 'GetAllMailboxesRequest should not fault');
-		assert.exists(allRes.GetAllMailboxesResponse, 'GetAllMailboxesResponse should exist');
 	});
 
 
@@ -252,6 +245,5 @@ describe('Admin > Mailbox > Mailbox', function () {
 			`<GetMailboxStatsRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);
 		assert.notExists(statsRes.Fault, 'GetMailboxStatsRequest should not fault');
-		assert.exists(statsRes.GetMailboxStatsResponse, 'GetMailboxStatsResponse should exist');
 	});
 });

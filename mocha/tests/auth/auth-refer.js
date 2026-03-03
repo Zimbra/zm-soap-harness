@@ -26,7 +26,11 @@ describe('Auth > Auth Refer', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse, 'Should create test account');
+		const acct = Array.isArray(createRes.CreateAccountResponse.account)
+			? createRes.CreateAccountResponse.account[0]
+			: createRes.CreateAccountResponse.account;
+		assert.exists(acct.id, 'Account ID should exist');
+		assert.isString(acct.id, 'Account ID should be a string');
 	});
 
 	beforeEach(async function () {
@@ -54,7 +58,6 @@ describe('Auth > Auth Refer', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(response.AuthResponse.authToken, 'authToken should exist');

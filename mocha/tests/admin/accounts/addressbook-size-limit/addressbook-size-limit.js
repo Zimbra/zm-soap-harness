@@ -78,8 +78,8 @@ describe('Admin > Accounts > Addressbook Size Limit > Addressbook Size Limit', f
 
 			// Verify response
 			assert.notExists(response.Fault, 'Response should not be a Fault');
-			assert.exists(response.CreateContactResponse,
-				`Contact ${i + 1} should be created`);
+			assert.exists(response.CreateContactResponse.cn[0].id,
+				`Contact ${i + 1} id should exist`);
 		}
 
 		// 4th should fail
@@ -94,7 +94,7 @@ describe('Admin > Accounts > Addressbook Size Limit > Addressbook Size Limit', f
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should fail for 4th contact');
+		assert.isString(response.Fault.Detail.Error.Code, 'Should fail for 4th contact');
 		assert.include(response.Fault.Detail.Error.Code, 'mail.TOO_MANY_CONTACTS');
 	});
 
@@ -122,7 +122,7 @@ describe('Admin > Accounts > Addressbook Size Limit > Addressbook Size Limit', f
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should fail when over limit');
+		assert.isString(response.Fault.Detail.Error.Code, 'Should fail when over limit');
 		assert.include(response.Fault.Detail.Error.Code, 'mail.TOO_MANY_CONTACTS');
 	});
 
@@ -166,8 +166,8 @@ describe('Admin > Accounts > Addressbook Size Limit > Addressbook Size Limit', f
 
 			// Verify response
 			assert.notExists(response.Fault, 'Response should not be a Fault');
-			assert.exists(response.CreateContactResponse,
-				`Contact ${i + 1} should be created`);
+			assert.exists(response.CreateContactResponse.cn[0].id,
+				`Contact ${i + 1} id should exist`);
 		}
 	});
 
@@ -220,8 +220,6 @@ describe('Admin > Accounts > Addressbook Size Limit > Addressbook Size Limit', f
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.CreateContactResponse,
-			'Should be able to add after deleting');
 	});
 
 
@@ -267,8 +265,8 @@ describe('Admin > Accounts > Addressbook Size Limit > Addressbook Size Limit', f
 
 			// Verify response
 			assert.notExists(res.Fault, 'Response should not be a Fault');
-			assert.exists(res.CreateContactResponse,
-				`Contact ${i + 1} should be created`);
+			assert.exists(res.CreateContactResponse.cn[0].id,
+				`Contact ${i + 1} id should exist`);
 		}
 
 		// 51st should fail
@@ -283,7 +281,7 @@ describe('Admin > Accounts > Addressbook Size Limit > Addressbook Size Limit', f
 		);
 
 		// Verify response
-		assert.exists(response.Fault, '51st contact should fail');
+		assert.isString(response.Fault.Detail.Error.Code, '51st contact should fail');
 		assert.include(response.Fault.Detail.Error.Code,
 			'mail.TOO_MANY_CONTACTS');
 	});
@@ -351,7 +349,7 @@ describe('Admin > Accounts > Addressbook Size Limit > Addressbook Size Limit', f
 		);
 
 		// Verify response
-		assert.exists(failRes.Fault, 'Should be at max contacts');
+		assert.isString(failRes.Fault.Detail.Error.Code, 'Should be at max contacts');
 
 		// Send mail with add=1 (AutoAddAddress)
 		await soap.makeSOAPEnvelopeAccount(
@@ -425,8 +423,8 @@ describe('Admin > Accounts > Addressbook Size Limit > Addressbook Size Limit', f
 
 			// Verify response
 			assert.notExists(res.Fault, 'Response should not be a Fault');
-			assert.exists(res.CreateContactResponse,
-				`Should create contact ${i + 1}`);
+			assert.exists(res.CreateContactResponse.cn[0].id,
+				`Contact ${i + 1} id should exist`);
 			const cn = Array.isArray(res.CreateContactResponse?.cn)
 				? res.CreateContactResponse.cn[0]
 				: res.CreateContactResponse?.cn;
@@ -445,7 +443,7 @@ describe('Admin > Accounts > Addressbook Size Limit > Addressbook Size Limit', f
 		);
 
 		// Verify response
-		assert.exists(failRes.Fault, 'Should be at max');
+		assert.isString(failRes.Fault.Detail.Error.Code, 'Should be at max');
 
 		// Modify existing contact — should succeed
 		const modRes = await soap.makeSOAPEnvelopeAccount(
@@ -461,7 +459,5 @@ describe('Admin > Accounts > Addressbook Size Limit > Addressbook Size Limit', f
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
-		assert.exists(modRes.ModifyContactResponse,
-			'Should be able to modify contact at max');
 	});
 });

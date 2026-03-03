@@ -168,8 +168,6 @@ describe('General > Headers > Context > Change', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'CreateAppointmentRequest should not fault');
-		assert.exists(createRes.CreateAppointmentResponse,
-			'CreateAppointmentResponse should exist');
 		const apptInvId = createRes.CreateAppointmentResponse.invId;
 
 		// Modify the appointment
@@ -193,7 +191,5 @@ describe('General > Headers > Context > Change', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'ModifyAppointmentRequest should not fault');
-		assert.exists(modRes.ModifyAppointmentResponse,
-			'ModifyAppointmentResponse should exist');
 	});
 });

@@ -87,8 +87,8 @@ describe('Mail Client > Auth > Change Password LDAP', function () {
 		);
 
 		// Verify response
-		assert.isTrue(!!res.AuthResponse || !!res.Fault,
-			'Should get AuthResponse or Fault');
+		assert.notExists(res.Fault, 'AuthRequest should not fault');
+		assert.exists(res.AuthResponse.authToken, 'authToken should exist');
 	});
 
 
@@ -101,7 +101,7 @@ describe('Mail Client > Auth > Change Password LDAP', function () {
 		);
 
 		// Verify response
-		assert.isTrue(!!res.AuthResponse || !!res.Fault,
-			'Should get AuthResponse or Fault');
+		assert.notExists(res.Fault, 'AuthRequest should not fault');
+		assert.exists(res.AuthResponse.authToken, 'authToken should exist');
 	});
 });

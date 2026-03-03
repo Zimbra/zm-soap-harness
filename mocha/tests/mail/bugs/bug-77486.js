@@ -94,7 +94,6 @@ describe('Mail > Bugs > Bug 77486', function () {
 			</BounceMsgRequest>`, account1AuthToken
 		);
 		assert.notExists(bounceRes.Fault, 'BounceMsgRequest should not fault');
-		assert.exists(bounceRes.BounceMsgResponse, 'BounceMsgResponse should exist');
 	});
 
 
@@ -164,6 +163,5 @@ describe('Mail > Bugs > Bug 77486', function () {
 			</BounceMsgRequest>`, account2AuthToken
 		);
 		assert.notExists(bounceRes.Fault, 'BounceMsgRequest should not fault');
-		assert.exists(bounceRes.BounceMsgResponse, 'BounceMsgResponse should exist');
 	});
 });

@@ -33,7 +33,6 @@ describe('Admin > Zimlets > Ootb Zimlets', function () {
 			`<GetZimletStatusRequest xmlns="urn:zimbraAdmin"/>`, adminAuthToken
 		);
 		assert.notExists(statusRes.Fault, 'GetZimletStatusRequest should not fault');
-		assert.exists(statusRes.GetZimletStatusResponse, 'GetZimletStatusResponse should exist');
 
 		// Verify default enabled zimlets exist
 		const zimlets = statusRes.GetZimletStatusResponse.zimlets;

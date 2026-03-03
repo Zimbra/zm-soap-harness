@@ -68,8 +68,6 @@ describe('General > Metadata > Modify Mailbox Metadata Request Basic', function 
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
-		assert.exists(modRes.ModifyMailboxMetadataResponse,
-			'ModifyMailboxMetadataResponse should exist');
 
 		// Get mailbox metadata
 		const getRes = await soap.makeSOAPEnvelopeAccount(

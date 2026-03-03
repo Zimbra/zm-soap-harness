@@ -360,7 +360,6 @@ describe('EWS > Resolve Names ZCS 407', function () {
 
 		// Verify response
 		assert.notExists(modifyRes.Fault, 'Response should not be a Fault');
-		assert.exists(modifyRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 		const resolveRes = await ews.makeEWSRequest(
 			`<m:ResolveNames
 				xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"
@@ -465,8 +464,6 @@ describe('EWS > Resolve Names ZCS 407', function () {
 
 		// Verify response
 		assert.notExists(deleteRes.Fault, 'Response should not be a Fault');
-		assert.exists(deleteRes.ContactActionResponse,
-			'ContactActionResponse should exist');
 		const resolveRes = await ews.makeEWSRequest(
 			`<m:ResolveNames
 				xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages"

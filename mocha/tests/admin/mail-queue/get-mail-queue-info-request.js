@@ -61,7 +61,6 @@ describe('Admin > Mail Queue > Get Mail Queue Info Request', function () {
 			</GetMailQueueInfoRequest>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'GetMailQueueInfoRequest should not fault');
-		assert.exists(res.GetMailQueueInfoResponse, 'GetMailQueueInfoResponse should exist');
 		const server = Array.isArray(res.GetMailQueueInfoResponse.server)
 			? res.GetMailQueueInfoResponse.server[0] : res.GetMailQueueInfoResponse.server;
 		assert.equal(server.name, mtaServer, 'Server name should match MTA server');

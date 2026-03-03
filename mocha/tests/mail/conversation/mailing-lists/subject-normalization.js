@@ -265,16 +265,15 @@ ${content}
 		await new Promise(resolve => setTimeout(resolve, 2000));
 
 		let searchRes;
-		let retries = 3;
+		let retries = 5;
 		while (retries > 0) {
 			searchRes = await soap.makeSOAPEnvelopeAccount(
 				`<SearchRequest xmlns="urn:zimbraMail" sortBy="subjAsc" types="message">
 					<query>content:(${content})</query>
 				</SearchRequest>`, authToken
 			);
-const m = Array.isArray(searchRes.SearchResponse.m)
-				? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
-			if (m.length >= 4) break;
+			const m = searchRes.SearchResponse?.m;
+			if (m && Array.isArray(m) && m.length >= 4) break;
 			retries--;
 			await new Promise(resolve => setTimeout(resolve, 2000));
 		}

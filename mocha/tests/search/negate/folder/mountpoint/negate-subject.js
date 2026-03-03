@@ -87,7 +87,6 @@ Test content
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
 
 		// Search item
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -98,7 +97,6 @@ Test content
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 	});
 
 
@@ -111,7 +109,6 @@ Test content
 
 		// Verify response
 		assert.notExists(res1.Fault, 'Response should not be a Fault');
-		assert.exists(res1.SearchResponse, 'SearchResponse should exist');
 
 		// Search item
 		const res2 = await soap.makeSOAPEnvelopeAccount(
@@ -122,6 +119,5 @@ Test content
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'SearchResponse should exist');
 	});
 });

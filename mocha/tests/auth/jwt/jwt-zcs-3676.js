@@ -32,11 +32,11 @@ describe('Auth > Jwt > Jwt ZCS 3676', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse, 'Should create account1');
-
 		const acct1 = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
+		assert.exists(acct1.id, 'Account ID should exist');
+		assert.isString(acct1.id, 'Account ID should be a string');
 		account1Id = acct1.id;
 		const host1 = acct1.a.find(a => a.n === 'zimbraMailHost');
 		account1Server = host1 ? host1._content : config.server;
@@ -67,11 +67,9 @@ describe('Auth > Jwt > Jwt ZCS 3676', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(response.AuthResponse.authToken, 'authToken should exist');
-		assert.exists(response.AuthResponse.authToken, 'Auth token should exist');
 	});
 
 
@@ -86,11 +84,10 @@ describe('Auth > Jwt > Jwt ZCS 3676', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.exists(response.AuthResponse.lifetime, 'lifetime should exist');
 		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
-		assert.exists(response.AuthResponse.authToken, 'Auth token should exist');
+		assert.exists(response.AuthResponse.authToken, 'authToken should exist');
 	});
 
 
@@ -105,11 +102,10 @@ describe('Auth > Jwt > Jwt ZCS 3676', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.exists(response.AuthResponse.lifetime, 'lifetime should exist');
 		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
-		assert.exists(response.AuthResponse.authToken, 'Auth token should exist');
+		assert.exists(response.AuthResponse.authToken, 'authToken should exist');
 	});
 
 
@@ -124,11 +120,9 @@ describe('Auth > Jwt > Jwt ZCS 3676', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(response.AuthResponse.authToken, 'authToken should exist');
-		assert.exists(response.AuthResponse.authToken, 'Auth token should exist');
 	});
 
 
@@ -143,11 +137,9 @@ describe('Auth > Jwt > Jwt ZCS 3676', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(response.AuthResponse.authToken, 'authToken should exist');
-		assert.exists(response.AuthResponse.authToken, 'Auth token should exist');
 	});
 
 
@@ -161,19 +153,11 @@ describe('Auth > Jwt > Jwt ZCS 3676', function () {
 				<preauth timestamp="${timestamp}" expires="0">dummypreauthkey</preauth>
 			</AuthRequest>`, null, true, account1Server
 		);
-		if (response.Fault) {
-
-			// Verify response
-			assert.match(response.Fault.Detail.Error.Code,
-				/account\.AUTH_FAILED|service\.INVALID_REQUEST/,
-				'Should return AUTH_FAILED or INVALID_REQUEST');
-		} else {
-			assert.notExists(response.Fault, 'Response should not be a Fault');
-			assert.exists(response.AuthResponse, 'AuthResponse should exist');
-			assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
-				'lifetime should be numeric');
-			assert.exists(response.AuthResponse.authToken, 'authToken should exist');
-		}
+		// Preauth with dummy key should fail
+		assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
+		assert.match(response.Fault.Detail.Error.Code,
+			/account\.AUTH_FAILED|service\.INVALID_REQUEST/,
+			'Should return AUTH_FAILED or INVALID_REQUEST');
 	});
 
 
@@ -187,14 +171,10 @@ describe('Auth > Jwt > Jwt ZCS 3676', function () {
 				<password>${config.accountPassword}</password>
 			</AuthRequest>`, null
 		);
-		if (response.Fault) {
-
-			// Verify response
-			assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
-				'Should return AUTH_FAILED');
-		} else {
-			assert.fail('Expected Fault for invalid user');
-		}
+		// Verify response
+		assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
+		assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
+			'Should return AUTH_FAILED');
 	});
 
 
@@ -210,7 +190,6 @@ describe('Auth > Jwt > Jwt ZCS 3676', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(authRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
@@ -226,18 +205,7 @@ describe('Auth > Jwt > Jwt ZCS 3676', function () {
 				<authToken>${authToken}</authToken>
 			</AuthRequest>`, null, true, account1Server
 		);
-		// Generation of JWT from auth token is not supported - response should not contain authToken
-		if (jwtRes.AuthResponse) {
-			// If it returns a response, the authToken field should be empty
-			const token = jwtRes.AuthResponse.authToken;
-			if (token) {
-				const tokenValue = typeof token === 'string' ? token
-					: (Array.isArray(token) ? token[0]._content || token[0] : token._content || '');
-
-				// Verify response
-				assert.equal(tokenValue, '', 'JWT token from auth token should be empty');
-			}
-		}
-		// If it returns a Fault, that's also acceptable
+		// Generation of JWT from auth token is not supported — should fault
+		assert.isString(jwtRes.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 	});
 });

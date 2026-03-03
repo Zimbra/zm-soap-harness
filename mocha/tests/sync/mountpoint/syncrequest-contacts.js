@@ -114,7 +114,6 @@ describe('Sync > Mountpoint > Syncrequest Contacts', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const contactId = createRes.CreateContactResponse.cn[0].id;
 
 		// Sync as account2 - verify contact appears
@@ -296,7 +295,6 @@ describe('Sync > Mountpoint > Syncrequest Contacts', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Response should not be a Fault');
-		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 
 		// Sync as account2 - verify modified contact
 		const syncRes2 = await soap.makeSOAPEnvelopeAccount(

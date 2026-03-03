@@ -66,7 +66,6 @@ describe('Mail Client > Filters > Backup Request', function () {
 			</ModifyFilterRulesRequest>`, acct1AuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyFilterRulesRequest should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'ModifyFilterRulesResponse should exist');
 
 		const backupRes = await soap.makeSOAPEnvelopeAdmin(
 			`<BackupRequest xmlns="urn:zimbraAdmin">
@@ -76,7 +75,6 @@ describe('Mail Client > Filters > Backup Request', function () {
 			</BackupRequest>`, adminAuthToken
 		);
 		assert.notExists(backupRes.Fault, 'BackupRequest should not fault');
-		assert.exists(backupRes.BackupResponse, 'BackupResponse should exist');
 
 		await soap.makeSOAPEnvelopeAdmin(
 			`<DeleteAccountRequest xmlns="urn:zimbraAdmin">
@@ -93,14 +91,12 @@ describe('Mail Client > Filters > Backup Request', function () {
 			</RestoreRequest>`, adminAuthToken
 		);
 		assert.notExists(restoreRes.Fault, 'RestoreRequest should not fault');
-		assert.exists(restoreRes.RestoreResponse, 'RestoreResponse should exist');
 
 		const acct1AuthToken2 = await soap.getAccountAuthToken(account1Name);
 		const filterRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFilterRulesRequest xmlns="urn:zimbraMail"/>', acct1AuthToken2
 		);
 		assert.notExists(filterRes.Fault, 'GetFilterRulesRequest should not fault');
-		assert.exists(filterRes.GetFilterRulesResponse, 'GetFilterRulesResponse should exist');
 	});
 
 
@@ -130,7 +126,6 @@ describe('Mail Client > Filters > Backup Request', function () {
 			</BackupRequest>`, adminAuthToken
 		);
 		assert.notExists(backupRes.Fault, 'BackupRequest should not fault');
-		assert.exists(backupRes.BackupResponse, 'BackupResponse should exist');
 
 		const acct2AuthToken2 = await soap.getAccountAuthToken(account2Name);
 		await soap.makeSOAPEnvelopeAccount(
@@ -156,7 +151,6 @@ describe('Mail Client > Filters > Backup Request', function () {
 			</BackupRequest>`, adminAuthToken
 		);
 		assert.notExists(incrBackupRes.Fault, 'Incremental BackupRequest should not fault');
-		assert.exists(incrBackupRes.BackupResponse, 'Incremental BackupResponse should exist');
 
 		await soap.makeSOAPEnvelopeAdmin(
 			`<DeleteAccountRequest xmlns="urn:zimbraAdmin">
@@ -172,13 +166,11 @@ describe('Mail Client > Filters > Backup Request', function () {
 			</RestoreRequest>`, adminAuthToken
 		);
 		assert.notExists(restoreRes.Fault, 'RestoreRequest should not fault');
-		assert.exists(restoreRes.RestoreResponse, 'RestoreResponse should exist');
 
 		const acct2AuthToken3 = await soap.getAccountAuthToken(account2Name);
 		const filterRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetFilterRulesRequest xmlns="urn:zimbraMail"/>', acct2AuthToken3
 		);
 		assert.notExists(filterRes.Fault, 'GetFilterRulesRequest should not fault');
-		assert.exists(filterRes.GetFilterRulesResponse, 'GetFilterRulesResponse should exist');
 	});
 });

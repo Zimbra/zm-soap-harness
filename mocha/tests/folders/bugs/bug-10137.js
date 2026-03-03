@@ -77,17 +77,7 @@ describe('Folders > Bugs > Bug 10137', function () {
 				<folder l='${folderId}'/>
 			</GetFolderRequest>`;
 		const resp = await soap.makeSOAPEnvelopeAccount(getSpecificRequest, accountAuthToken, false);
-		// Should either have a Fault (folder not found) or GetFolderResponse without the original folder
-		if (resp.Fault) {
-
-			// Verify response
-			assert.exists(resp.Fault, 'Folder should have been deleted');
-		} else {
-			// Server returned a response - verify the folder is not in its original location
-			assert.notExists(resp.Fault, 'Response should not be a Fault');
-			assert.exists(resp.GetFolderResponse,
-				'GetFolderResponse returned - folder emptied from trash');
-		}
+		// Verify response - folder should have been deleted after emptying trash
+		assert.exists(resp.Fault.Detail.Error, 'Fault Error should exist');
 	});
-
 });

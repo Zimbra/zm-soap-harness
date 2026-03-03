@@ -42,8 +42,6 @@ describe('Admin > Accounts > Count Account Request', function () {
 
 		// Verify response
 		assert.notExists(cosRes.Fault, 'Response should not be a Fault');
-		assert.exists(cosRes.CreateCosResponse,
-			'CreateCosResponse should exist');
 		const cosId = cosRes.CreateCosResponse.cos[0].id;
 
 		// Create account 1 with COS
@@ -56,8 +54,6 @@ describe('Admin > Accounts > Count Account Request', function () {
 
 		// Verify response
 		assert.notExists(acct1Res.Fault, 'Response should not be a Fault');
-		assert.exists(acct1Res.CreateAccountResponse,
-			'Should create account 1');
 
 		// Create account 2 with COS
 		const acct2Res = await soap.makeSOAPEnvelopeAdmin(
@@ -69,8 +65,6 @@ describe('Admin > Accounts > Count Account Request', function () {
 
 		// Verify response
 		assert.notExists(acct2Res.Fault, 'Response should not be a Fault');
-		assert.exists(acct2Res.CreateAccountResponse,
-			'Should create account 2');
 
 		// Count accounts
 		const countRes = await soap.makeSOAPEnvelopeAdmin(
@@ -80,8 +74,6 @@ describe('Admin > Accounts > Count Account Request', function () {
 
 		// Verify response
 		assert.notExists(countRes.Fault, 'Response should not be a Fault');
-		assert.exists(countRes.CountAccountResponse,
-			'CountAccountResponse should exist');
 		const cosEntries = Array.isArray(countRes.CountAccountResponse.cos)
 			? countRes.CountAccountResponse.cos
 			: [countRes.CountAccountResponse.cos];

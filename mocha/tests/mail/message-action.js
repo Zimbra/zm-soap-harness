@@ -67,7 +67,6 @@ Content of the message
 
 		// Verify the response
 		assert.notExists(res.Fault, 'PingRequest should not fault');
-		assert.exists(res.PingResponse, 'PingResponse should exist');
 	});
 
 
@@ -247,7 +246,7 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'mail.NO_SUCH_TAG', 'Should be NO_SUCH_TAG');
 	});
 
@@ -315,8 +314,8 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
-		assert.exists(res.Fault.Detail.Error.Code, 'Should have error code');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 	});
 
 
@@ -381,7 +380,7 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 	});
 
@@ -405,7 +404,7 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 	});
 
@@ -422,7 +421,7 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 	});
 
@@ -446,7 +445,7 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 	});
 
@@ -470,7 +469,7 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 	});
 
@@ -494,7 +493,7 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 	});
 
@@ -518,7 +517,7 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 	});
 
@@ -535,7 +534,7 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 	});
 
@@ -552,7 +551,7 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 	});
 
@@ -569,7 +568,7 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 	});
 
@@ -586,7 +585,7 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 	});
 
@@ -603,7 +602,7 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 	});
 
@@ -620,7 +619,7 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 	});
 
@@ -637,7 +636,7 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 	});
 
@@ -654,7 +653,7 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 	});
 
@@ -671,7 +670,7 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 	});
 
@@ -688,7 +687,7 @@ Content of the message
 		);
 
 		// Verify fault response
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Should be INVALID_REQUEST');
 	});
 
@@ -706,14 +705,13 @@ Content of the message
 		assert.notExists(deleteRes.Fault, 'MsgActionRequest should not fault');
 		const msgAction = Array.isArray(deleteRes.MsgActionResponse.action)
 			? deleteRes.MsgActionResponse.action[0] : deleteRes.MsgActionResponse.action;
-		assert.exists(msgAction, 'MsgActionResponse should contain action');
+		assert.equal(msgAction.op, 'delete', 'op should be delete');
 
 		// SyncRequest
 		const syncRes = await soap.makeSOAPEnvelopeAccount(
 			`<SyncRequest xmlns="urn:zimbraMail"/>`, authToken
 		);
 		assert.notExists(syncRes.Fault, 'SyncRequest should not fault');
-		assert.exists(syncRes.SyncResponse, 'SyncResponse should exist');
 
 		// Delete again after sync - should not NPE
 		const deleteRes2 = await soap.makeSOAPEnvelopeAccount(

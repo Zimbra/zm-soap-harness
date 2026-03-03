@@ -2538,6 +2538,6 @@ describe('Admin > Accounts > Create Account 07', function () {
 			</CreateAccountRequest>`, adminAuth);
 
 		// Verify response
-		assert.exists(res.Fault, 'Should not be able to create account in alias domain');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should not be able to create account in alias domain');
 	});
 });

@@ -26,7 +26,11 @@ describe('Auth > ZCS 4904 End All Session', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse, 'Should create account1');
+		const acct = Array.isArray(createRes.CreateAccountResponse.account)
+			? createRes.CreateAccountResponse.account[0]
+			: createRes.CreateAccountResponse.account;
+		assert.exists(acct.id, 'Account ID should exist');
+		assert.isString(acct.id, 'Account ID should be a string');
 	});
 
 	beforeEach(async function () {
@@ -55,7 +59,6 @@ describe('Auth > ZCS 4904 End All Session', function () {
 
 		// Verify response
 		assert.notExists(authRes1.Fault, 'Response should not be a Fault');
-		assert.exists(authRes1.AuthResponse, 'First AuthResponse should exist');
 		assert.match(String(authRes1.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authRes1.AuthResponse.authToken, 'authToken should exist');
@@ -71,7 +74,6 @@ describe('Auth > ZCS 4904 End All Session', function () {
 
 		// Verify response
 		assert.notExists(authRes2.Fault, 'Response should not be a Fault');
-		assert.exists(authRes2.AuthResponse, 'Second AuthResponse should exist');
 		assert.match(String(authRes2.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authRes2.AuthResponse.authToken, 'authToken should exist');
@@ -87,7 +89,6 @@ describe('Auth > ZCS 4904 End All Session', function () {
 
 		// Verify response
 		assert.notExists(authRes3.Fault, 'Response should not be a Fault');
-		assert.exists(authRes3.AuthResponse, 'Third AuthResponse should exist');
 		assert.match(String(authRes3.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authRes3.AuthResponse.authToken, 'authToken should exist');
@@ -107,7 +108,6 @@ describe('Auth > ZCS 4904 End All Session', function () {
 
 		// Verify response
 		assert.notExists(verifyRes.Fault, 'Response should not be a Fault');
-		assert.exists(verifyRes.AuthResponse, 'Token3 should still be valid for re-auth');
 		assert.match(String(verifyRes.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(verifyRes.AuthResponse.authToken, 'authToken should exist');
@@ -126,7 +126,6 @@ describe('Auth > ZCS 4904 End All Session', function () {
 
 		// Verify response
 		assert.notExists(authRes1.Fault, 'Response should not be a Fault');
-		assert.exists(authRes1.AuthResponse, 'First AuthResponse should exist');
 		assert.match(String(authRes1.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authRes1.AuthResponse.authToken, 'authToken should exist');
@@ -147,7 +146,6 @@ describe('Auth > ZCS 4904 End All Session', function () {
 
 		// Verify response
 		assert.notExists(authRes2.Fault, 'Response should not be a Fault');
-		assert.exists(authRes2.AuthResponse, 'Second AuthResponse should exist');
 		assert.match(String(authRes2.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(authRes2.AuthResponse.authToken, 'authToken should exist');
@@ -164,34 +162,25 @@ describe('Auth > ZCS 4904 End All Session', function () {
 
 		// Verify response
 		assert.notExists(endRes.Fault, 'Response should not be a Fault');
-		assert.exists(endRes.EndSessionResponse, 'EndSessionResponse should exist');
 
-		// Verify token1 is invalidated
-		// Send the message
+		// Verify token1 is invalidated - use GetInfoRequest which requires a valid session
 		const verifyRes = await soap.makeSOAPEnvelopeAccount(
-			`<AuthRequest xmlns="urn:zimbraAccount" persistAuthTokenCookie="false">
-				<authToken>${token1}</authToken>
-			</AuthRequest>`, null
+			'<GetInfoRequest xmlns="urn:zimbraAccount"/>', token1, false
 		);
-		if (verifyRes.Fault) {
 
-			// Verify response
-			assert.include(verifyRes.Fault.Detail.Error.Code, 'service.AUTH_EXPIRED',
-				'Token1 should be expired after EndSession');
-		}
+		assert.exists(verifyRes.Fault, 'Token1 should produce a Fault after EndSession');
+		assert.isString(verifyRes.Fault?.Detail?.Error?.Code, 'Fault error Code should be a string');
+		assert.include(verifyRes.Fault.Detail.Error.Code, 'service.AUTH_EXPIRED',
+			'Token1 should be expired after EndSession');
 
 		// Verify token2 is also invalidated
-		// Send the message
 		const verifyRes2 = await soap.makeSOAPEnvelopeAccount(
-			`<AuthRequest xmlns="urn:zimbraAccount" persistAuthTokenCookie="false">
-				<authToken>${token2}</authToken>
-			</AuthRequest>`, null
+			'<GetInfoRequest xmlns="urn:zimbraAccount"/>', token2, false
 		);
-		if (verifyRes2.Fault) {
 
-			// Verify response
-			assert.include(verifyRes2.Fault.Detail.Error.Code, 'service.AUTH_EXPIRED',
-				'Token2 should be expired after EndSession');
-		}
+		assert.exists(verifyRes2.Fault, 'Token2 should produce a Fault after EndSession');
+		assert.isString(verifyRes2.Fault?.Detail?.Error?.Code, 'Fault error Code should be a string');
+		assert.include(verifyRes2.Fault.Detail.Error.Code, 'service.AUTH_EXPIRED',
+			'Token2 should be expired after EndSession');
 	});
 });

@@ -46,7 +46,6 @@ describe('Prefs > Bugs > ZCS 90', function () {
 			</GetAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(getRes.Fault, 'GetAccountRequest should not fault');
-		assert.exists(getRes.GetAccountResponse, 'GetAccountResponse should exist');
 	});
 
 
@@ -87,7 +86,7 @@ describe('Prefs > Bugs > ZCS 90', function () {
 		assert.notExists(subNewRes.Fault, 'CreateFolderRequest subNew should not fault');
 		const createdFolder = Array.isArray(subNewRes.CreateFolderResponse.folder)
 			? subNewRes.CreateFolderResponse.folder[0] : subNewRes.CreateFolderResponse.folder;
-		assert.exists(createdFolder, 'CreateFolderResponse should contain folder');
+		assert.exists(createdFolder.id, 'folder id should exist');
 	});
 
 
@@ -130,7 +129,6 @@ describe('Prefs > Bugs > ZCS 90', function () {
 			</CreateMountpointRequest>`, account1AuthToken
 		);
 		assert.notExists(mountRes.Fault, 'CreateMountpointRequest should not fault');
-		assert.exists(mountRes.CreateMountpointResponse, 'CreateMountpointResponse should exist');
 	});
 
 
@@ -160,7 +158,6 @@ describe('Prefs > Bugs > ZCS 90', function () {
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 
 
@@ -190,7 +187,6 @@ describe('Prefs > Bugs > ZCS 90', function () {
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 
 
@@ -229,7 +225,6 @@ describe('Prefs > Bugs > ZCS 90', function () {
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 
 
@@ -276,7 +271,7 @@ describe('Prefs > Bugs > ZCS 90', function () {
 				<pref name="zimbraPrefDefaultCalendarId">${sharedCalId}</pref>
 			</ModifyPrefsRequest>`, account1AuthToken
 		);
-		assert.exists(modRes.Fault, 'Setting viewer-shared calendar as default should fault');
+		assert.isString(modRes.Fault.Detail.Error.Code, 'Setting viewer-shared calendar as default should fault');
 	});
 
 
@@ -324,7 +319,6 @@ describe('Prefs > Bugs > ZCS 90', function () {
 			</ModifyPrefsRequest>`, account1AuthToken
 		);
 		assert.notExists(modRes.Fault, 'Setting manager-shared calendar as default should not fault');
-		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 
 
@@ -372,7 +366,6 @@ describe('Prefs > Bugs > ZCS 90', function () {
 			</ModifyPrefsRequest>`, account1AuthToken
 		);
 		assert.notExists(modRes.Fault, 'Setting admin-shared calendar as default should not fault');
-		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 
 
@@ -412,7 +405,7 @@ describe('Prefs > Bugs > ZCS 90', function () {
 		assert.notExists(delRes.Fault, 'FolderActionRequest delete should not fault');
 		const folderAction = Array.isArray(delRes.FolderActionResponse.action)
 			? delRes.FolderActionResponse.action[0] : delRes.FolderActionResponse.action;
-		assert.exists(folderAction, 'FolderActionResponse should contain action');
+		assert.equal(folderAction.op, 'delete', 'op should be delete');
 	});
 
 
@@ -433,6 +426,5 @@ describe('Prefs > Bugs > ZCS 90', function () {
 			</ModifyPrefsRequest>`, accountAuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 });

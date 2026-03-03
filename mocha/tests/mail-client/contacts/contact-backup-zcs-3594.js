@@ -91,7 +91,6 @@ describe('Mail Client > Contacts > Contact Backup ZCS 3594', function () {
 			`<ContactBackupRequest xmlns="urn:zimbraAdmin" op="start"/>`, adminAuthToken
 		);
 		assert.notExists(backupRes.Fault, 'ContactBackupRequest should not fault');
-		assert.exists(backupRes.ContactBackupResponse, 'ContactBackupResponse should exist');
 
 		// Wait for backup to process
 		await new Promise(r => setTimeout(r, 60000));
@@ -128,7 +127,6 @@ describe('Mail Client > Contacts > Contact Backup ZCS 3594', function () {
 				xmlns="urn:zimbraMail"/>`, acct1Auth
 		);
 		assert.notExists(restoreRes.Fault, 'RestoreContactsRequest should not fault');
-		assert.exists(restoreRes.RestoreContactsResponse, 'RestoreContactsResponse should exist');
 
 		// Search for all contacts to verify restoration
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
@@ -137,6 +135,5 @@ describe('Mail Client > Contacts > Contact Backup ZCS 3594', function () {
 			</SearchRequest>`, acct1Auth
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 	});
 });

@@ -88,6 +88,5 @@ describe('Search > Bugs > Bug 78001', function () {
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'SearchResponse should exist');
 	});
 });

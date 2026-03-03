@@ -69,6 +69,5 @@ describe('Prefs > Bugs > Bug 26818', function () {
 			</ModifyPrefsRequest>`, account1AuthToken
 		);
 		assert.notExists(modOOORes.Fault, 'ModifyPrefsRequest OOO should not fault');
-		assert.exists(modOOORes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 });

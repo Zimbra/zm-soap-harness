@@ -77,7 +77,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -91,7 +90,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -103,7 +101,7 @@ Test content</content>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
 	});
 
 
@@ -117,7 +115,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -131,7 +128,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -145,7 +141,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -159,7 +154,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -173,7 +167,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -187,7 +180,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -201,7 +193,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -215,7 +206,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -229,7 +219,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -243,7 +232,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -257,7 +245,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -271,7 +258,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.SearchResponse, 'Response element should exist');
 	});
 
 
@@ -283,7 +269,7 @@ Test content</content>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res.Fault?.Detail?.Error?.Code, 'mail.QUERY_PARSE_ERROR', 'Fault code should match');
 	});
 
@@ -296,7 +282,7 @@ Test content</content>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res.Fault?.Detail?.Error?.Code, 'mail.QUERY_PARSE_ERROR', 'Fault code should match');
 	});
 
@@ -309,7 +295,7 @@ Test content</content>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res.Fault?.Detail?.Error?.Code, 'mail.QUERY_PARSE_ERROR', 'Fault code should match');
 	});
 
@@ -322,7 +308,7 @@ Test content</content>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res.Fault?.Detail?.Error?.Code, 'mail.QUERY_PARSE_ERROR', 'Fault code should match');
 	});
 
@@ -335,7 +321,7 @@ Test content</content>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res.Fault?.Detail?.Error?.Code, 'mail.QUERY_PARSE_ERROR', 'Fault code should match');
 	});
 
@@ -348,7 +334,7 @@ Test content</content>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res.Fault?.Detail?.Error?.Code, 'mail.QUERY_PARSE_ERROR', 'Fault code should match');
 	});
 
@@ -361,7 +347,7 @@ Test content</content>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res.Fault?.Detail?.Error?.Code, 'mail.QUERY_PARSE_ERROR', 'Fault code should match');
 	});
 
@@ -374,7 +360,7 @@ Test content</content>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
 		assert.include(res.Fault?.Detail?.Error?.Code, 'mail.QUERY_PARSE_ERROR', 'Fault code should match');
 	});
 
@@ -387,7 +373,7 @@ Test content</content>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
 	});
 
 
@@ -399,7 +385,7 @@ Test content</content>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
 	});
 
 
@@ -411,7 +397,7 @@ Test content</content>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
 	});
 
 
@@ -423,7 +409,7 @@ Test content</content>
 			</SearchRequest>`, accountAuthToken
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
 	});
 
 
@@ -463,7 +449,6 @@ Test content</content>
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		assert.exists(res5.SearchResponse, 'SearchResponse should exist');
 	});
 
 

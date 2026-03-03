@@ -25,7 +25,6 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse, 'Should create account');
 
 		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
@@ -37,7 +36,7 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 
 		// Verify response
 		assert.notExists(authRes.Fault, 'Response should not be a Fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
+		assert.exists(authRes.AuthResponse.authToken, 'AuthResponse should exist');
 
 		account1Token = Array.isArray(authRes.AuthResponse.authToken)
 			? authRes.AuthResponse.authToken[0]._content || authRes.AuthResponse.authToken[0]
@@ -50,7 +49,6 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 
 		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
-		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 
 		const root = Array.isArray(folderRes.GetFolderResponse.folder)
 			? folderRes.GetFolderResponse.folder[0] : folderRes.GetFolderResponse.folder;
@@ -88,7 +86,6 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 
 		// Verify response
 		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
-		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
 			? saveRes.SaveDocumentResponse.doc[0] : saveRes.SaveDocumentResponse.doc;
@@ -105,7 +102,7 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 		assert.notExists(actionRes.Fault, 'Response should not be a Fault');
 		const itemAction = Array.isArray(actionRes.ItemActionResponse.action)
 			? actionRes.ItemActionResponse.action[0] : actionRes.ItemActionResponse.action;
-		assert.exists(itemAction, 'ItemActionResponse should contain action');
+		assert.equal(itemAction.op, '!flag', 'op should be !flag');
 	});
 
 
@@ -121,7 +118,6 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 
 		// Verify response
 		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
-		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
 			? saveRes.SaveDocumentResponse.doc[0] : saveRes.SaveDocumentResponse.doc;
@@ -138,7 +134,7 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 		assert.notExists(updateRes.Fault, 'Response should not be a Fault');
 		const itemAction = Array.isArray(updateRes.ItemActionResponse.action)
 			? updateRes.ItemActionResponse.action[0] : updateRes.ItemActionResponse.action;
-		assert.exists(itemAction, 'ItemActionResponse should contain action');
+		assert.equal(itemAction.op, 'update', 'op should be update');
 	});
 
 
@@ -154,7 +150,6 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 
 		// Verify response
 		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
-		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
 			? saveRes.SaveDocumentResponse.doc[0] : saveRes.SaveDocumentResponse.doc;
@@ -171,7 +166,7 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 		assert.notExists(actionRes.Fault, 'Response should not be a Fault');
 		const itemAction = Array.isArray(actionRes.ItemActionResponse.action)
 			? actionRes.ItemActionResponse.action[0] : actionRes.ItemActionResponse.action;
-		assert.exists(itemAction, 'ItemActionResponse should contain action');
+		assert.equal(itemAction.op, 'flag', 'op should be flag');
 	});
 
 
@@ -188,7 +183,6 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 
 		// Verify response
 		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
-		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
 			? saveRes.SaveDocumentResponse.doc[0] : saveRes.SaveDocumentResponse.doc;
@@ -204,11 +198,10 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 			</SaveDocumentRequest>`, account1Token
 		);
 
-		// Verify response
-		assert.exists(
-			updateRes.SaveDocumentResponse || updateRes.Fault,
-			'Should return SaveDocumentResponse or Fault'
-		);
+		assert.notExists(updateRes.Fault, 'Response should not be a Fault');
+		const updDoc = Array.isArray(updateRes.SaveDocumentResponse.doc)
+			? updateRes.SaveDocumentResponse.doc[0] : updateRes.SaveDocumentResponse.doc;
+		assert.exists(updDoc.id, 'Updated doc ID should exist');
 	});
 
 
@@ -225,7 +218,6 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 
 		// Verify response
 		assert.notExists(saveRes.Fault, 'Response should not be a Fault');
-		assert.exists(saveRes.SaveDocumentResponse, 'SaveDocumentResponse should exist');
 
 		const doc = Array.isArray(saveRes.SaveDocumentResponse.doc)
 			? saveRes.SaveDocumentResponse.doc[0] : saveRes.SaveDocumentResponse.doc;
@@ -243,8 +235,6 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 
 		// Verify response
 		assert.notExists(updateRes.Fault, 'Response should not be a Fault');
-		assert.exists(updateRes.SaveDocumentResponse,
-			'SaveDocumentResponse should exist for update');
 
 		// Verify the note flag still exists on the document
 		const getRes = await soap.makeSOAPEnvelopeAccount(
@@ -253,10 +243,8 @@ describe('Briefcase > Bugs > Bug 10545', function () {
 			</GetItemRequest>`, account1Token
 		);
 
-		// Verify response
-		assert.exists(
-			getRes.GetItemResponse || getRes.Fault,
-			'Should return GetItemResponse or Fault'
-		);
+		assert.notExists(getRes.Fault, 'Response should not be a Fault');
+		const getItem = getRes.GetItemResponse.doc || getRes.GetItemResponse.item;
+		assert.exists(getItem, 'GetItemResponse should contain doc/item');
 	});
 });

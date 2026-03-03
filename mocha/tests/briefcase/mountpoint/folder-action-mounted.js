@@ -27,7 +27,6 @@ describe('Briefcase > Mountpoint > Folder Action Mounted', function () {
 
 		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
-		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
 
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
 			? createRes1.CreateAccountResponse.account[0]
@@ -117,8 +116,6 @@ describe('Briefcase > Mountpoint > Folder Action Mounted', function () {
 
 		// Verify response
 		assert.notExists(mountRes.Fault, 'Response should not be a Fault');
-		assert.exists(mountRes.CreateMountpointResponse,
-			'CreateMountpointResponse should exist');
 		const link = Array.isArray(mountRes.CreateMountpointResponse.link)
 			? mountRes.CreateMountpointResponse.link[0] : mountRes.CreateMountpointResponse.link;
 		const mountId = link.id;
@@ -134,6 +131,6 @@ describe('Briefcase > Mountpoint > Folder Action Mounted', function () {
 		assert.notExists(deleteRes.Fault, 'Response should not be a Fault');
 		const folderAction = Array.isArray(deleteRes.FolderActionResponse.action)
 			? deleteRes.FolderActionResponse.action[0] : deleteRes.FolderActionResponse.action;
-		assert.exists(folderAction, 'FolderActionResponse should contain action');
+		assert.equal(folderAction.op, 'delete', 'op should be delete');
 	});
 });

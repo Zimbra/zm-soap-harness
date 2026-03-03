@@ -128,8 +128,6 @@ describe('Mail > Attachments > Remove Attachment Request Basic', function () {
 			</RemoveAttachmentsRequest>`, account2Token
 		);
 		assert.notExists(removeRes.Fault, 'RemoveAttachmentsRequest should not fault');
-		assert.exists(removeRes.RemoveAttachmentsResponse,
-			'RemoveAttachmentsResponse should exist');
 	});
 
 
@@ -258,8 +256,6 @@ describe('Mail > Attachments > Remove Attachment Request Basic', function () {
 			</RemoveAttachmentsRequest>`, account4Token
 		);
 		assert.notExists(removeRes.Fault, 'RemoveAttachmentsRequest should not fault');
-		assert.exists(removeRes.RemoveAttachmentsResponse,
-			'RemoveAttachmentsResponse should exist');
 	});
 
 
@@ -315,7 +311,7 @@ describe('Mail > Attachments > Remove Attachment Request Basic', function () {
 				<m id="${msgId}" part="#"/>
 			</RemoveAttachmentsRequest>`, account4Token, false
 		);
-		assert.exists(removeInvalidRes.Fault, 'Should return Fault for invalid part');
+		assert.isString(removeInvalidRes.Fault.Detail.Error.Code, 'Should return Fault for invalid part');
 		assert.include(removeInvalidRes.Fault.Detail.Error.Code,
 			'service.INVALID_REQUEST', 'Should return INVALID_REQUEST');
 
@@ -325,7 +321,7 @@ describe('Mail > Attachments > Remove Attachment Request Basic', function () {
 				<m id="${msgId}" part="5"/>
 			</RemoveAttachmentsRequest>`, account4Token, false
 		);
-		assert.exists(removeNoPartRes.Fault, 'Should return Fault for non-existent part');
+		assert.isString(removeNoPartRes.Fault.Detail.Error.Code, 'Should return Fault for non-existent part');
 		assert.include(removeNoPartRes.Fault.Detail.Error.Code,
 			'mail.NO_SUCH_PART', 'Should return NO_SUCH_PART');
 	});

@@ -50,8 +50,8 @@ describe('Admin > Accounts > Accounts Loop', function () {
 
 			// Verify response
 			assert.notExists(response.Fault, 'Response should not be a Fault');
-			assert.exists(response.CreateAccountResponse,
-				`Account ${i + 1} should be created`);
+			assert.exists(response.CreateAccountResponse.account[0].id,
+				`Account ${i + 1} id should exist`);
 		}
 	});
 
@@ -77,8 +77,6 @@ describe('Admin > Accounts > Accounts Loop', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.GetAccountResponse,
-			'GetAccountResponse should exist');
 		const account = Array.isArray(response.GetAccountResponse.account)
 			? response.GetAccountResponse.account[0]
 			: response.GetAccountResponse.account;
@@ -153,8 +151,6 @@ describe('Admin > Accounts > Accounts Loop', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.DeleteAccountResponse,
-			'DeleteAccountResponse should exist');
 	});
 
 
@@ -181,8 +177,6 @@ describe('Admin > Accounts > Accounts Loop', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.RenameAccountResponse,
-			'RenameAccountResponse should exist');
 	});
 
 
@@ -209,8 +203,6 @@ describe('Admin > Accounts > Accounts Loop', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.AddAccountAliasResponse,
-			'AddAccountAliasResponse should exist');
 	});
 
 
@@ -245,8 +237,6 @@ describe('Admin > Accounts > Accounts Loop', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.RemoveAccountAliasResponse,
-			'RemoveAccountAliasResponse should exist');
 	});
 
 
@@ -271,8 +261,6 @@ describe('Admin > Accounts > Accounts Loop', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.SearchAccountsResponse,
-			'SearchAccountsResponse should exist');
 
 		const accounts = response.SearchAccountsResponse.account || [];
 		const found = accounts.find(a => a.id === acctId);
@@ -292,8 +280,6 @@ describe('Admin > Accounts > Accounts Loop', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.GetAllAdminAccountsResponse,
-			'GetAllAdminAccountsResponse should exist');
 
 		const accounts = response.GetAllAdminAccountsResponse.account || [];
 

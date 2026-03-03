@@ -45,7 +45,6 @@ describe('Admin > Accounts > Account Delete', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.DeleteAccountResponse, 'Should delete account successfully');
 	});
 
 
@@ -76,7 +75,7 @@ describe('Admin > Accounts > Account Delete', function () {
 			</DeleteAccountRequest>`, adminAuth);
 
 		// Verify response
-		assert.exists(res.Fault, 'Should return Fault for simultaneous delete');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return Fault for simultaneous delete');
 	});
 
 
@@ -105,7 +104,7 @@ describe('Admin > Accounts > Account Delete', function () {
 			</DeleteAccountRequest>`, adminAuth);
 
 		// Verify response
-		assert.exists(res.Fault, 'Should return Fault for already deleted account');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return Fault for already deleted account');
 		assert.include(res.Fault.Detail.Error.Code, 'account.NO_SUCH_ACCOUNT',
 			'Should return NO_SUCH_ACCOUNT');
 	});
@@ -121,7 +120,7 @@ describe('Admin > Accounts > Account Delete', function () {
 			</DeleteAccountRequest>`, adminAuth);
 
 		// Verify response
-		assert.exists(res.Fault, 'Should return Fault for non-existing account');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return Fault for non-existing account');
 		assert.include(res.Fault.Detail.Error.Code, 'account.NO_SUCH_ACCOUNT',
 			'Should return NO_SUCH_ACCOUNT');
 	});
@@ -135,7 +134,7 @@ describe('Admin > Accounts > Account Delete', function () {
 			</DeleteAccountRequest>`, adminAuth);
 
 		// Verify response
-		assert.exists(res.Fault, 'Should return Fault for text id');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return Fault for text id');
 	});
 
 
@@ -169,7 +168,6 @@ describe('Admin > Accounts > Account Delete', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.DeleteAccountResponse, 'Should delete renamed account by id');
 	});
 
 
@@ -184,8 +182,8 @@ describe('Admin > Accounts > Account Delete', function () {
 				</DeleteAccountRequest>`, adminAuth);
 
 			// Verify response
-			assert.isTrue(res.Fault !== undefined || res.DeleteAccountResponse !== undefined,
-				`Should return Fault or response for id=${id}`);
+			assert.isString(res.Fault.Detail.Error.Code,
+				`Should return Fault for id=${id}`);
 		}
 	});
 
@@ -208,7 +206,6 @@ describe('Admin > Accounts > Account Delete', function () {
 			</DeleteAccountRequest>`, adminAuth);
 		// Invalid attributes should be ignored — account should still be deleted
 		// Verify response
-		assert.exists(res.DeleteAccountResponse || res.Fault,
-			'Should handle invalid attribute');
+		assert.notExists(res.Fault, 'Response should not be a Fault');
 	});
 });

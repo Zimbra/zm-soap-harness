@@ -83,22 +83,12 @@ describe('Folders > Sharing > Grantee > Sharing Grantee Guest', function () {
 		const folderData = getFolderResp.GetFolderResponse.folder[0];
 
 		// Verify response
-		assert.exists(folderData, 'Folder should exist');
-		const acl = folderData.acl;
-		if (acl && acl.grant) {
-			const grant = acl.grant;
-			const grants = Array.isArray(grant) ? grant : [grant];
-			// Match by email - field may be 'd' or 'zid' depending on grant type
-			const guestGrant = grants.find(g => g.d === guestEmail || g.zid === guestEmail);
-
-			// Verify response
-			assert.exists(guestGrant,
-				`Guest grant should be present on folder, found grants: ${JSON.stringify(grants)}`);
-		} else {
-			// Grant was applied but acl might not be returned in GetFolderRequest for some configs
-			// Verify the FolderActionResponse was successful instead
-			assert.isTrue(true, 'Grant action succeeded');
-		}
+		assert.exists(folderData.acl, 'ACL should exist on folder');
+		const grant = folderData.acl.grant;
+		const grants = Array.isArray(grant) ? grant : [grant];
+		const guestGrant = grants.find(g => g.d === guestEmail || g.zid === guestEmail);
+		assert.exists(guestGrant,
+			`Guest grant should be present on folder, found grants: ${JSON.stringify(grants)}`);
 	});
 
 

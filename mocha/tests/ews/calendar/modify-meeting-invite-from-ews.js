@@ -95,7 +95,6 @@ describe('EWS > Calendar > Modify Meeting Invite From EWS', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAppointmentResponse, 'CreateAppointmentResponse should exist');
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>
@@ -404,7 +403,6 @@ describe('EWS > Calendar > Modify Meeting Invite From EWS', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAppointmentResponse, 'CreateAppointmentResponse should exist');
 		const syncRes = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 				<ItemShape>

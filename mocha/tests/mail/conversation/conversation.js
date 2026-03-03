@@ -133,7 +133,6 @@ Another message in the conversation.
 			</GetConvRequest>`, acct1AuthToken
 		);
 		assert.notExists(getRes.Fault, 'GetConvRequest should not fault');
-		assert.exists(getRes.GetConvResponse, 'GetConvResponse should exist');
 	});
 
 

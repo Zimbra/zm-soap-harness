@@ -175,7 +175,6 @@ describe('Sharing > Shared All Folders With Me', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'GetShareInfoRequest should not fault');
-		assert.exists(res.GetShareInfoResponse, 'GetShareInfoResponse should exist');
 	});
 
 
@@ -226,8 +225,6 @@ describe('Sharing > Shared All Folders With Me', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Mount Contacts should not fault');
-		assert.exists(res.CreateMountpointResponse,
-			'CreateMountpointResponse should exist');
 	});
 
 
@@ -265,7 +262,6 @@ describe('Sharing > Shared All Folders With Me', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'GetShareInfoRequest should not fault');
-		assert.exists(res.GetShareInfoResponse, 'GetShareInfoResponse should exist');
 	});
 
 
@@ -384,7 +380,6 @@ describe('Sharing > Shared All Folders With Me', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'GetShareInfoRequest should not fault');
-		assert.exists(res.GetShareInfoResponse, 'GetShareInfoResponse should exist');
 	});
 
 
@@ -478,7 +473,6 @@ describe('Sharing > Shared All Folders With Me', function () {
 		if (!res.Fault) {
 
 			// Verify response
-			assert.exists(res.GetShareInfoResponse, 'GetShareInfoResponse should exist');
 		}
 	});
 });

@@ -22,7 +22,7 @@ describe('Auth > Bugs > ZCS 5598', function () {
 		);
 
 		// Verify response
-		assert.exists(authRes1.Fault, 'Should return Fault for incorrect password');
+		assert.isString(authRes1.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(authRes1.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED for existing user with incorrect password');
 
@@ -36,7 +36,7 @@ describe('Auth > Bugs > ZCS 5598', function () {
 		);
 
 		// Verify response
-		assert.exists(authRes2.Fault, 'Should return Fault for non-existent account');
+		assert.isString(authRes2.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(authRes2.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 			'Should return AUTH_FAILED for non-existent account');
 	});

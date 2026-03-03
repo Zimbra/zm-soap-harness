@@ -308,7 +308,6 @@ Third message in conversation
 			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(searchMsgRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchMsgRes.SearchResponse, 'SearchResponse should exist');
 
 		// Get message1 to verify no null pointer exception
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
@@ -319,7 +318,7 @@ Third message in conversation
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
 		const getMsg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
-		assert.exists(getMsg, 'GetMsgResponse should contain m');
+		assert.exists(getMsg.id, 'message id should exist');
 
 		// Search for conversation to verify no crash
 		const searchConvRes = await soap.makeSOAPEnvelopeAccount(
@@ -328,6 +327,5 @@ Third message in conversation
 			</SearchRequest>`, accountAuthToken
 		);
 		assert.notExists(searchConvRes.Fault, 'SearchRequest for conversation should not fault');
-		assert.exists(searchConvRes.SearchResponse, 'SearchResponse should exist');
 	});
 });

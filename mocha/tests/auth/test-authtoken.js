@@ -30,11 +30,11 @@ describe('Auth > Test Authtoken', function () {
 
 		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
-		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
-
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
 			? createRes1.CreateAccountResponse.account[0]
 			: createRes1.CreateAccountResponse.account;
+		assert.exists(acct1.id, 'Account1 ID should exist');
+		assert.isString(acct1.id, 'Account1 ID should be a string');
 		testAccount1Id = acct1.id;
 
 		// Create test account 2
@@ -50,11 +50,11 @@ describe('Auth > Test Authtoken', function () {
 
 		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
-		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
-
 		const acct2 = Array.isArray(createRes2.CreateAccountResponse.account)
 			? createRes2.CreateAccountResponse.account[0]
 			: createRes2.CreateAccountResponse.account;
+		assert.exists(acct2.id, 'Account2 ID should exist');
+		assert.isString(acct2.id, 'Account2 ID should be a string');
 		testAccount2Id = acct2.id;
 
 		// Get auth token for account1
@@ -83,13 +83,10 @@ describe('Auth > Test Authtoken', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.GetFolderResponse, 'GetFolderResponse should exist');
 		const folder = Array.isArray(response.GetFolderResponse.folder)
 			? response.GetFolderResponse.folder[0]
 			: response.GetFolderResponse.folder;
-
-		// Verify response
-		assert.exists(folder, 'folder should exist');
+		assert.exists(folder.id, 'folder id should exist');
 		assert.equal(folder.id, '1', 'Root folder id should be 1');
 	});
 
@@ -102,13 +99,10 @@ describe('Auth > Test Authtoken', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.GetFolderResponse, 'GetFolderResponse should exist');
 		const folder = Array.isArray(response.GetFolderResponse.folder)
 			? response.GetFolderResponse.folder[0]
 			: response.GetFolderResponse.folder;
-
-		// Verify response
-		assert.exists(folder, 'folder should exist');
+		assert.exists(folder.id, 'folder id should exist');
 		assert.equal(folder.id, '1', 'Root folder id should be 1');
 	});
 
@@ -123,7 +117,7 @@ describe('Auth > Test Authtoken', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.DelegateAuthResponse, 'DelegateAuthResponse should exist');
+		assert.exists(response.DelegateAuthResponse.authToken, 'Delegated authToken should exist');
 
 		const delegateToken = Array.isArray(response.DelegateAuthResponse.authToken)
 			? response.DelegateAuthResponse.authToken[0]._content
@@ -137,13 +131,10 @@ describe('Auth > Test Authtoken', function () {
 
 		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
-		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 		const folder = Array.isArray(folderRes.GetFolderResponse.folder)
 			? folderRes.GetFolderResponse.folder[0]
 			: folderRes.GetFolderResponse.folder;
-
-		// Verify response
-		assert.exists(folder, 'folder should exist');
+		assert.exists(folder.id, 'folder id should exist');
 	});
 
 
@@ -157,7 +148,7 @@ describe('Auth > Test Authtoken', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.DelegateAuthResponse, 'DelegateAuthResponse should exist');
+		assert.exists(response.DelegateAuthResponse.authToken, 'Delegated authToken should exist');
 
 		const delegateToken = Array.isArray(response.DelegateAuthResponse.authToken)
 			? response.DelegateAuthResponse.authToken[0]._content
@@ -171,7 +162,6 @@ describe('Auth > Test Authtoken', function () {
 
 		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
-		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 		const folder = Array.isArray(folderRes.GetFolderResponse.folder)
 			? folderRes.GetFolderResponse.folder[0]
 			: folderRes.GetFolderResponse.folder;
@@ -191,7 +181,7 @@ describe('Auth > Test Authtoken', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should return Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(response.Fault.Detail.Error.Code, 'service.PERM_DENIED',
 			'Should return PERM_DENIED');
 	});
@@ -206,7 +196,7 @@ describe('Auth > Test Authtoken', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should return Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(response.Fault.Detail.Error.Code, 'service.PERM_DENIED',
 			'Should return PERM_DENIED');
 	});
@@ -221,7 +211,7 @@ describe('Auth > Test Authtoken', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should return Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(response.Fault.Detail.Error.Code, 'service.PERM_DENIED',
 			'Should return PERM_DENIED');
 	});
@@ -239,7 +229,6 @@ describe('Auth > Test Authtoken', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(response.AuthResponse.authToken, 'authToken should exist');
@@ -258,7 +247,6 @@ describe('Auth > Test Authtoken', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
 		assert.exists(response.AuthResponse.authToken, 'authToken should exist');
@@ -275,8 +263,6 @@ describe('Auth > Test Authtoken', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.DelegateAuthResponse,
-			'DelegateAuthResponse should exist');
 		assert.exists(response.DelegateAuthResponse.authToken, 'Delegated authToken should exist');
 		assert.match(String(response.DelegateAuthResponse.lifetime), /^\d+$/,
 			'Delegated lifetime should be numeric');
@@ -292,7 +278,7 @@ describe('Auth > Test Authtoken', function () {
 		);
 
 		// Verify response
-		assert.exists(response.Fault, 'Should return Fault');
+		assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		assert.include(response.Fault.Detail.Error.Code, 'service.PERM_DENIED',
 			'Should return PERM_DENIED');
 	});
@@ -308,8 +294,7 @@ describe('Auth > Test Authtoken', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.DelegateAuthResponse,
-			'DelegateAuthResponse should exist');
+		assert.exists(response.DelegateAuthResponse.authToken, 'Delegated authToken should exist');
 
 		const delegateToken = Array.isArray(response.DelegateAuthResponse.authToken)
 			? response.DelegateAuthResponse.authToken[0]._content
@@ -323,12 +308,9 @@ describe('Auth > Test Authtoken', function () {
 
 		// Verify response
 		assert.notExists(folderRes.Fault, 'Response should not be a Fault');
-		assert.exists(folderRes.GetFolderResponse, 'GetFolderResponse should exist');
 		const folder = Array.isArray(folderRes.GetFolderResponse.folder)
 			? folderRes.GetFolderResponse.folder[0]
 			: folderRes.GetFolderResponse.folder;
-
-		// Verify response
-		assert.exists(folder, 'folder should exist');
+		assert.exists(folder.id, 'folder id should exist');
 	});
 });

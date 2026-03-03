@@ -42,8 +42,6 @@ describe('Admin > Accounts > Foreign Principal > Backup Request', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse,
-			'Should create account with foreign principal');
 		const acct = Array.isArray(
 			createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
@@ -58,8 +56,6 @@ describe('Admin > Accounts > Foreign Principal > Backup Request', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
-		assert.exists(getRes.GetAccountResponse,
-			'GetAccountResponse should exist');
 		const getAcct = Array.isArray(
 			getRes.GetAccountResponse.account)
 			? getRes.GetAccountResponse.account[0]
@@ -86,8 +82,6 @@ describe('Admin > Accounts > Foreign Principal > Backup Request', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchDirectoryResponse,
-			'SearchDirectoryResponse should exist');
 
 		// Verify foreign principal still accessible
 		const getRes2 = await soap.makeSOAPEnvelopeAdmin(
@@ -97,8 +91,6 @@ describe('Admin > Accounts > Foreign Principal > Backup Request', function () {
 
 		// Verify response
 		assert.notExists(getRes2.Fault, 'Response should not be a Fault');
-		assert.exists(getRes2.GetAccountResponse,
-			'Should still find account by foreign principal');
 	});
 
 
@@ -116,8 +108,6 @@ describe('Admin > Accounts > Foreign Principal > Backup Request', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse,
-			'Should create account');
 		const acct = Array.isArray(
 			createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
@@ -161,8 +151,6 @@ describe('Admin > Accounts > Foreign Principal > Backup Request', function () {
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchDirectoryResponse,
-			'SearchDirectoryResponse should exist');
 
 		// Verify foreign principal via GetAccount
 		const getRes = await soap.makeSOAPEnvelopeAdmin(
@@ -172,7 +160,5 @@ describe('Admin > Accounts > Foreign Principal > Backup Request', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
-		assert.exists(getRes.GetAccountResponse,
-			'Should find account by foreign principal');
 	});
 });

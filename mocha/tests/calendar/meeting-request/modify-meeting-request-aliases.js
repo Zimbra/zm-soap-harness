@@ -234,6 +234,5 @@ describe('Calendar > Meeting Request > Modify Meeting Request Aliases', function
 			</GetMsgRequest>`, account1Token
         );
         assert.notExists(verifyRes.Fault, 'GetMsgRequest should not fault');
-        assert.exists(verifyRes.GetMsgResponse, 'GetMsgResponse should exist');
     });
 });

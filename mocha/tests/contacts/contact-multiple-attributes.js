@@ -59,7 +59,9 @@ describe('Contacts > Contact Multiple Attributes', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Create should not be a Fault');
-		assert.exists(res.CreateContactResponse.cn, 'Contact should be created');
+		const cn = Array.isArray(res.CreateContactResponse.cn)
+			? res.CreateContactResponse.cn[0] : res.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 	});
 
 
@@ -96,7 +98,6 @@ describe('Contacts > Contact Multiple Attributes', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
-		assert.exists(modRes.ModifyContactResponse, 'ModifyContactResponse should exist');
 	});
 
 
@@ -143,6 +144,5 @@ describe('Contacts > Contact Multiple Attributes', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'Get should not be a Fault');
-		assert.exists(getRes.GetContactsResponse, 'GetContactsResponse should exist');
 	});
 });

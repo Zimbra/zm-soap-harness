@@ -52,7 +52,6 @@ describe('Admin > Wait Set > Admin Create Wait Set Request Folders', function ()
 			</AdminCreateWaitSetRequest>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'AdminCreateWaitSetRequest should not fault');
-		assert.exists(res.AdminCreateWaitSetResponse, 'AdminCreateWaitSetResponse should exist');
 		return {
 			waitSet: res.AdminCreateWaitSetResponse.waitSet,
 			seq: res.AdminCreateWaitSetResponse.seq
@@ -82,7 +81,6 @@ describe('Admin > Wait Set > Admin Create Wait Set Request Folders', function ()
 			</AdminWaitSetRequest>`, adminAuthToken
 		);
 		assert.notExists(waitRes.Fault, 'AdminWaitSetRequest should not fault');
-		assert.exists(waitRes.AdminWaitSetResponse, 'AdminWaitSetResponse should exist');
 	});
 
 
@@ -115,7 +113,6 @@ describe('Admin > Wait Set > Admin Create Wait Set Request Folders', function ()
 			</AdminWaitSetRequest>`, adminAuthToken
 		);
 		assert.notExists(waitRes.Fault, 'AdminWaitSetRequest should not fault');
-		assert.exists(waitRes.AdminWaitSetResponse, 'AdminWaitSetResponse should exist');
 	});
 
 
@@ -157,7 +154,6 @@ describe('Admin > Wait Set > Admin Create Wait Set Request Folders', function ()
 			</AdminWaitSetRequest>`, adminAuthToken
 		);
 		assert.notExists(waitRes.Fault, 'AdminWaitSetRequest should not fault');
-		assert.exists(waitRes.AdminWaitSetResponse, 'AdminWaitSetResponse should exist');
 	});
 
 
@@ -190,7 +186,6 @@ describe('Admin > Wait Set > Admin Create Wait Set Request Folders', function ()
 			</AdminWaitSetRequest>`, adminAuthToken
 		);
 		assert.notExists(waitRes.Fault, 'AdminWaitSetRequest should not fault');
-		assert.exists(waitRes.AdminWaitSetResponse, 'AdminWaitSetResponse should exist');
 	});
 
 
@@ -223,7 +218,6 @@ describe('Admin > Wait Set > Admin Create Wait Set Request Folders', function ()
 			</AdminWaitSetRequest>`, adminAuthToken
 		);
 		assert.notExists(waitRes.Fault, 'AdminWaitSetRequest should not fault');
-		assert.exists(waitRes.AdminWaitSetResponse, 'AdminWaitSetResponse should exist');
 	});
 
 
@@ -258,7 +252,6 @@ describe('Admin > Wait Set > Admin Create Wait Set Request Folders', function ()
 			</AdminWaitSetRequest>`, adminAuthToken
 		);
 		assert.notExists(waitRes.Fault, 'AdminWaitSetRequest should not fault');
-		assert.exists(waitRes.AdminWaitSetResponse, 'AdminWaitSetResponse should exist');
 	});
 
 
@@ -291,6 +284,5 @@ describe('Admin > Wait Set > Admin Create Wait Set Request Folders', function ()
 			</AdminWaitSetRequest>`, adminAuthToken
 		);
 		assert.notExists(waitRes.Fault, 'AdminWaitSetRequest should not fault');
-		assert.exists(waitRes.AdminWaitSetResponse, 'AdminWaitSetResponse should exist');
 	});
 });

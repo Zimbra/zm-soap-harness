@@ -61,7 +61,6 @@ describe('Contacts > Contacts Create', function () {
 		);
 
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(res.CreateContactResponse.cn)
 			? res.CreateContactResponse.cn[0] : res.CreateContactResponse.cn;
 		assert.exists(cn.id, 'Contact id should exist');
@@ -139,7 +138,6 @@ describe('Contacts > Contacts Create', function () {
 		);
 
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(res.CreateContactResponse.cn)
 			? res.CreateContactResponse.cn[0] : res.CreateContactResponse.cn;
 		assert.exists(cn.id, 'Contact id should exist');
@@ -159,8 +157,8 @@ describe('Contacts > Contacts Create', function () {
 			</CreateContactRequest>`, account1Token, false
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
-		const code = res.Fault?.Detail?.Error?.Code || '';
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
+		const code = res.Fault.Detail.Error.Code;
 		assert.include(code, 'service.INVALID_REQUEST', 'Error code should be service.INVALID_REQUEST');
 	});
 
@@ -176,7 +174,9 @@ describe('Contacts > Contacts Create', function () {
 		);
 
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateContactResponse.cn, 'Contact should be created');
+		const cn = Array.isArray(res.CreateContactResponse.cn)
+			? res.CreateContactResponse.cn[0] : res.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 	});
 
 
@@ -191,7 +191,9 @@ describe('Contacts > Contacts Create', function () {
 		);
 
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateContactResponse.cn, 'Contact should be created');
+		const cn = Array.isArray(res.CreateContactResponse.cn)
+			? res.CreateContactResponse.cn[0] : res.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 	});
 
 
@@ -241,7 +243,6 @@ describe('Contacts > Contacts Create', function () {
 		);
 
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(res.CreateContactResponse.cn)
 			? res.CreateContactResponse.cn[0] : res.CreateContactResponse.cn;
 		assert.exists(cn.id, 'Contact id should exist');
@@ -262,7 +263,6 @@ describe('Contacts > Contacts Create', function () {
 		);
 
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(res.CreateContactResponse.cn)
 			? res.CreateContactResponse.cn[0] : res.CreateContactResponse.cn;
 		assert.exists(cn.id, 'Contact id should exist');
@@ -283,8 +283,8 @@ describe('Contacts > Contacts Create', function () {
 			</CreateContactRequest>`, account1Token, false
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
-		const code = res.Fault?.Detail?.Error?.Code || '';
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
+		const code = res.Fault.Detail.Error.Code;
 		assert.include(code, 'service.INVALID_REQUEST', 'Error code should be service.INVALID_REQUEST');
 	});
 
@@ -302,8 +302,8 @@ describe('Contacts > Contacts Create', function () {
 			</CreateContactRequest>`, account1Token, false
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
-		const code = res.Fault?.Detail?.Error?.Code || '';
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
+		const code = res.Fault.Detail.Error.Code;
 		assert.include(code, 'service.INVALID_REQUEST', 'Error code should be service.INVALID_REQUEST');
 	});
 
@@ -320,7 +320,6 @@ describe('Contacts > Contacts Create', function () {
 			</CreateContactRequest>`, account1Token
 		);
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
-		assert.exists(createRes.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
 		const contactId = cn.id;
@@ -332,8 +331,8 @@ describe('Contacts > Contacts Create', function () {
 			</ContactActionRequest>`, account1Token
 		);
 		assert.notExists(del1.Fault, 'First delete should not be a Fault');
-		assert.exists(del1.ContactActionResponse, 'ContactActionResponse should exist');
-		assert.exists(del1.ContactActionResponse.action, 'Action should exist');
+		assert.equal(del1.ContactActionResponse.action.op, 'delete', 'Verify op is delete');
+		assert.equal(del1.ContactActionResponse.action.id, contactId, 'Verify action id');
 
 		// Delete it second time
 		const del2 = await soap.makeSOAPEnvelopeAccount(
@@ -342,8 +341,8 @@ describe('Contacts > Contacts Create', function () {
 			</ContactActionRequest>`, account1Token
 		);
 		assert.notExists(del2.Fault, 'Second delete should not be a Fault');
-		assert.exists(del2.ContactActionResponse, 'ContactActionResponse should exist');
-		assert.exists(del2.ContactActionResponse.action, 'Action should exist');
+		assert.equal(del2.ContactActionResponse.action.op, 'delete', 'Verify op is delete');
+		assert.equal(del2.ContactActionResponse.action.id, contactId, 'Verify action id');
 	});
 
 
@@ -361,7 +360,9 @@ describe('Contacts > Contacts Create', function () {
 				</CreateContactRequest>`, account1Token
 			);
 			assert.notExists(res.Fault, `fileAs=${fileAs} should not be a Fault`);
-			assert.exists(res.CreateContactResponse.cn, `Contact with fileAs=${fileAs} should be created`);
+			const cn = Array.isArray(res.CreateContactResponse.cn)
+				? res.CreateContactResponse.cn[0] : res.CreateContactResponse.cn;
+			assert.exists(cn.id, `Contact id with fileAs=${fileAs} should exist`);
 		}
 	});
 
@@ -375,8 +376,8 @@ describe('Contacts > Contacts Create', function () {
 			</CreateContactRequest>`, account1Token, false
 		);
 
-		assert.exists(res.Fault, 'Response should be a Fault');
-		const code = res.Fault?.Detail?.Error?.Code || '';
+		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
+		const code = res.Fault.Detail.Error.Code;
 		assert.include(code, 'service.INVALID_REQUEST', 'Error code should be service.INVALID_REQUEST');
 	});
 
@@ -399,7 +400,6 @@ END:VCARD
 		);
 
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(res.CreateContactResponse.cn)
 			? res.CreateContactResponse.cn[0] : res.CreateContactResponse.cn;
 		const attrs = cn._attrs || {};
@@ -449,7 +449,6 @@ END:VCARD
 		);
 
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(res.CreateContactResponse.cn)
 			? res.CreateContactResponse.cn[0] : res.CreateContactResponse.cn;
 		const attrs = cn._attrs || {};
@@ -478,7 +477,6 @@ END:VCARD
 		);
 
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.CreateContactResponse, 'CreateContactResponse should exist');
 		const cn = Array.isArray(res.CreateContactResponse.cn)
 			? res.CreateContactResponse.cn[0] : res.CreateContactResponse.cn;
 		assert.exists(cn.id, 'Contact id should exist');

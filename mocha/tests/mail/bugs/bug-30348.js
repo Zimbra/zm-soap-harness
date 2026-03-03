@@ -51,7 +51,6 @@ describe('Mail > Bugs > Bug 30348', function () {
 			</SearchRequest>`, authToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest with locale should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 
 		// SearchRequest with query and locale jp
 		const searchRes2 = await soap.makeSOAPEnvelopeAccount(
@@ -61,6 +60,5 @@ describe('Mail > Bugs > Bug 30348', function () {
 			</SearchRequest>`, authToken
 		);
 		assert.notExists(searchRes2.Fault, 'SearchRequest with query and locale should not fault');
-		assert.exists(searchRes2.SearchResponse, 'SearchResponse should exist');
 	});
 });

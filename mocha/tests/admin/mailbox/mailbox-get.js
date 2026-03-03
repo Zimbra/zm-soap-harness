@@ -47,7 +47,6 @@ describe('Admin > Mailbox > Mailbox Get', function () {
 			</GetMailboxRequest>`, adminAuthToken
 		);
 		assert.notExists(mboxRes.Fault, 'GetMailboxRequest should not fault');
-		assert.exists(mboxRes.GetMailboxResponse, 'GetMailboxResponse should exist');
 		assert.exists(mboxRes.GetMailboxResponse.mbox, 'Mbox should exist');
 	});
 
@@ -59,7 +58,6 @@ describe('Admin > Mailbox > Mailbox Get', function () {
 			</GetMailboxRequest>`, adminAuthToken
 		);
 		assert.notExists(mboxRes.Fault, 'GetMailboxRequest with leading space should not fault');
-		assert.exists(mboxRes.GetMailboxResponse, 'GetMailboxResponse should exist');
 		assert.exists(mboxRes.GetMailboxResponse.mbox, 'Mbox should exist');
 	});
 
@@ -71,7 +69,6 @@ describe('Admin > Mailbox > Mailbox Get', function () {
 			</GetMailboxRequest>`, adminAuthToken
 		);
 		assert.notExists(mboxRes.Fault, 'GetMailboxRequest with trailing space should not fault');
-		assert.exists(mboxRes.GetMailboxResponse, 'GetMailboxResponse should exist');
 		assert.exists(mboxRes.GetMailboxResponse.mbox, 'Mbox should exist');
 	});
 
@@ -82,7 +79,7 @@ describe('Admin > Mailbox > Mailbox Get', function () {
 				<mbox id=""/>
 			</GetMailboxRequest>`, adminAuthToken, false
 		);
-		assert.exists(mboxRes.Fault, 'GetMailboxRequest with blank id should fault');
+		assert.isString(mboxRes.Fault.Detail.Error.Code, 'GetMailboxRequest with blank id should fault');
 		assert.include(mboxRes.Fault.Detail.Error.Code, 'account.NO_SUCH_ACCOUNT');
 	});
 
@@ -93,7 +90,7 @@ describe('Admin > Mailbox > Mailbox Get', function () {
 				<mbox id="some text that is not valid for mbx"/>
 			</GetMailboxRequest>`, adminAuthToken, false
 		);
-		assert.exists(mboxRes.Fault, 'GetMailboxRequest with text id should fault');
+		assert.isString(mboxRes.Fault.Detail.Error.Code, 'GetMailboxRequest with text id should fault');
 		assert.include(mboxRes.Fault.Detail.Error.Code, 'account.NO_SUCH_ACCOUNT');
 	});
 
@@ -104,7 +101,7 @@ describe('Admin > Mailbox > Mailbox Get', function () {
 				<mbox id=":'&lt;//\\\\"/>
 			</GetMailboxRequest>`, adminAuthToken, false
 		);
-		assert.exists(mboxRes.Fault, 'GetMailboxRequest with special char id should fault');
+		assert.isString(mboxRes.Fault.Detail.Error.Code, 'GetMailboxRequest with special char id should fault');
 		assert.include(mboxRes.Fault.Detail.Error.Code, 'account.NO_SUCH_ACCOUNT');
 	});
 
@@ -135,7 +132,7 @@ describe('Admin > Mailbox > Mailbox Get', function () {
 				<mbox id="${tempId}"/>
 			</GetMailboxRequest>`, adminAuthToken, false
 		);
-		assert.exists(mboxRes.Fault, 'GetMailboxRequest for deleted account should fault');
+		assert.isString(mboxRes.Fault.Detail.Error.Code, 'GetMailboxRequest for deleted account should fault');
 		assert.include(mboxRes.Fault.Detail.Error.Code, 'account.NO_SUCH_ACCOUNT');
 	});
 
@@ -146,7 +143,7 @@ describe('Admin > Mailbox > Mailbox Get', function () {
 				<mbox/>
 			</GetMailboxRequest>`, adminAuthToken, false
 		);
-		assert.exists(mboxRes.Fault, 'GetMailboxRequest without id should fault');
+		assert.isString(mboxRes.Fault.Detail.Error.Code, 'GetMailboxRequest without id should fault');
 		assert.include(mboxRes.Fault.Detail.Error.Code, 'account.NO_SUCH_ACCOUNT');
 	});
 
@@ -181,7 +178,6 @@ describe('Admin > Mailbox > Mailbox Get', function () {
 			</GetMailboxRequest>`, adminAuthToken
 		);
 		assert.notExists(mboxRes.Fault, 'GetMailboxRequest after delete should not fault');
-		assert.exists(mboxRes.GetMailboxResponse, 'GetMailboxResponse should exist');
 		assert.exists(mboxRes.GetMailboxResponse.mbox, 'Mbox should exist');
 	});
 
@@ -191,6 +187,5 @@ describe('Admin > Mailbox > Mailbox Get', function () {
 			`<GetAllMailboxesRequest xmlns="urn:zimbraAdmin" limit="5"/>`, adminAuthToken
 		);
 		assert.notExists(allRes.Fault, 'GetAllMailboxesRequest should not fault');
-		assert.exists(allRes.GetAllMailboxesResponse, 'GetAllMailboxesResponse should exist');
 	});
 });

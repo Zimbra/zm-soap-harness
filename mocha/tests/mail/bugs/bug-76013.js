@@ -177,7 +177,6 @@ describe('Mail > Bugs > Bug 76013', function () {
 			</SearchRequest>`, account2AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const msgs = Array.isArray(searchRes.SearchResponse.m)
 			? searchRes.SearchResponse.m : [searchRes.SearchResponse.m];
 		assert.exists(msgs[0], 'Message should exist in shared inbox');
@@ -205,6 +204,5 @@ describe('Mail > Bugs > Bug 76013', function () {
 			</SearchRequest>`, account2AuthToken
 		);
 		assert.notExists(sentSearchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(sentSearchRes.SearchResponse, 'SearchResponse should exist');
 	});
 });

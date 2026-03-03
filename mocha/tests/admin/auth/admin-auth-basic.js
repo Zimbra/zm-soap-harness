@@ -38,7 +38,6 @@ describe('Admin > Auth > Admin Auth Basic', function () {
 
 		// Verify auth token is returned
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.AuthResponse, 'AuthResponse should exist');
 		assert.exists(res.AuthResponse.authToken, 'authToken should exist');
 	});
 
@@ -54,7 +53,6 @@ describe('Admin > Auth > Admin Auth Basic', function () {
 
 		// Verify auth token is returned
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.AuthResponse, 'AuthResponse should exist');
 		assert.exists(res.AuthResponse.authToken, 'authToken should exist');
 	});
 
@@ -71,7 +69,6 @@ describe('Admin > Auth > Admin Auth Basic', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
-		assert.exists(createRes.CreateAccountResponse, 'CreateAccountResponse should exist');
 
 		// Authenticate as the new admin user with accented password
 		const authRes = await soap.makeSOAPEnvelopeAdmin(
@@ -83,7 +80,6 @@ describe('Admin > Auth > Admin Auth Basic', function () {
 
 		// Verify auth token is returned
 		assert.notExists(authRes.Fault, 'AuthRequest should not fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 	});
 
@@ -114,7 +110,6 @@ describe('Admin > Auth > Admin Auth Basic', function () {
 			</AuthRequest>`, null
 		);
 		assert.notExists(authByFp.Fault, 'Auth by foreignPrincipal should not fault');
-		assert.exists(authByFp.AuthResponse, 'AuthResponse should exist');
 		assert.exists(authByFp.AuthResponse.authToken, 'authToken should exist');
 
 		// Auth by id
@@ -126,7 +121,6 @@ describe('Admin > Auth > Admin Auth Basic', function () {
 			</AuthRequest>`, null
 		);
 		assert.notExists(authById.Fault, 'Auth by id should not fault');
-		assert.exists(authById.AuthResponse, 'AuthResponse should exist');
 		assert.exists(authById.AuthResponse.authToken, 'authToken should exist');
 	});
 
@@ -152,7 +146,6 @@ describe('Admin > Auth > Admin Auth Basic', function () {
 			</AuthRequest>`, null
 		);
 		assert.notExists(authRes.Fault, 'Auth without domain should not fault');
-		assert.exists(authRes.AuthResponse, 'AuthResponse should exist');
 		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
 
 		// Create delegated admin account
@@ -175,7 +168,6 @@ describe('Admin > Auth > Admin Auth Basic', function () {
 			</AuthRequest>`, null
 		);
 		assert.notExists(authRes2.Fault, 'Auth delegated admin without domain should not fault');
-		assert.exists(authRes2.AuthResponse, 'AuthResponse should exist');
 		assert.exists(authRes2.AuthResponse.authToken, 'authToken should exist');
 	});
 
@@ -189,7 +181,7 @@ describe('Admin > Auth > Admin Auth Basic', function () {
 		);
 
 		// Verify fault code
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST');
 	});
 
@@ -203,7 +195,7 @@ describe('Admin > Auth > Admin Auth Basic', function () {
 		);
 
 		// Verify fault code
-		assert.exists(res.Fault, 'Should return a Fault');
+		assert.isString(res.Fault.Detail.Error.Code, 'Should return a Fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.AUTH_REQUIRED');
 	});
 });

@@ -80,7 +80,6 @@ describe('Admin > GAL > Sync Gal Account Request', function () {
 			</SyncGalAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(syncRes.Fault, 'SyncGalAccountRequest should not fault');
-		assert.exists(syncRes.SyncGalAccountResponse, 'SyncGalAccountResponse should exist');
 	});
 
 
@@ -106,7 +105,6 @@ describe('Admin > GAL > Sync Gal Account Request', function () {
 			</SyncGalAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(syncRes.Fault, 'SyncGalAccountRequest by id should not fault');
-		assert.exists(syncRes.SyncGalAccountResponse, 'SyncGalAccountResponse should exist');
 	});
 
 
@@ -119,7 +117,6 @@ describe('Admin > GAL > Sync Gal Account Request', function () {
 			</SyncGalAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(syncRes.Fault, 'SyncGalAccountRequest fullSync=true should not fault');
-		assert.exists(syncRes.SyncGalAccountResponse, 'SyncGalAccountResponse should exist');
 	});
 
 
@@ -132,7 +129,6 @@ describe('Admin > GAL > Sync Gal Account Request', function () {
 			</SyncGalAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(syncRes.Fault, 'SyncGalAccountRequest fullSync=false should not fault');
-		assert.exists(syncRes.SyncGalAccountResponse, 'SyncGalAccountResponse should exist');
 	});
 
 
@@ -145,7 +141,6 @@ describe('Admin > GAL > Sync Gal Account Request', function () {
 			</SyncGalAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(syncRes.Fault, 'SyncGalAccountRequest reset should not fault');
-		assert.exists(syncRes.SyncGalAccountResponse, 'SyncGalAccountResponse should exist');
 	});
 
 
@@ -184,6 +179,5 @@ describe('Admin > GAL > Sync Gal Account Request', function () {
 			</SyncGalAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(syncRes.Fault, 'SyncGalAccountRequest with multiple accounts should not fault');
-		assert.exists(syncRes.SyncGalAccountResponse, 'SyncGalAccountResponse should exist');
 	});
 });

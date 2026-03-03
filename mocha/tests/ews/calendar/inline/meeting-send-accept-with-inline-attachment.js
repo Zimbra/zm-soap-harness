@@ -222,7 +222,6 @@ describe('EWS > Calendar > Inline > Meeting Send Accept With Inline Attachment',
 			</SendInviteReplyRequest>`, acct2Token
 		);
 		assert.notExists(acceptRes.Fault, 'SendInviteReply should not fault');
-		assert.exists(acceptRes.SendInviteReplyResponse, 'SendInviteReplyResponse should exist');
 
 		// Step 7: Verify accept response received by organizer
 		await common.delay(3000);

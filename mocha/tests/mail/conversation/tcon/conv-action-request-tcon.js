@@ -89,7 +89,7 @@ describe('Mail > Conversation > Tcon > Conv Action Request Tcon', function () {
 				<action id="${convId}" op="read" tcon="     s"/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res1.Fault, 'Leading spaces tcon should fault');
+		assert.isString(res1.Fault.Detail.Error.Code, 'Leading spaces tcon should fault');
 		assert.include(res1.Fault.Detail.Error.Code,
 			'service.INVALID_REQUEST', 'Leading spaces should give INVALID_REQUEST');
 
@@ -99,7 +99,7 @@ describe('Mail > Conversation > Tcon > Conv Action Request Tcon', function () {
 				<action id="${convId}" op="read" tcon="s      "/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res2.Fault, 'Trailing spaces tcon should fault');
+		assert.isString(res2.Fault.Detail.Error.Code, 'Trailing spaces tcon should fault');
 		assert.include(res2.Fault.Detail.Error.Code,
 			'service.INVALID_REQUEST', 'Trailing spaces should give INVALID_REQUEST');
 
@@ -109,7 +109,7 @@ describe('Mail > Conversation > Tcon > Conv Action Request Tcon', function () {
 				<action id="${convId}" op="read" tcon="         s      "/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res3.Fault, 'Both spaces tcon should fault');
+		assert.isString(res3.Fault.Detail.Error.Code, 'Both spaces tcon should fault');
 		assert.include(res3.Fault.Detail.Error.Code,
 			'service.INVALID_REQUEST', 'Both spaces should give INVALID_REQUEST');
 
@@ -119,7 +119,7 @@ describe('Mail > Conversation > Tcon > Conv Action Request Tcon', function () {
 				<action id="${convId}" op="read" tcon="           "/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res4.Fault, 'Spaces only tcon should fault');
+		assert.isString(res4.Fault.Detail.Error.Code, 'Spaces only tcon should fault');
 		assert.include(res4.Fault.Detail.Error.Code,
 			'service.INVALID_REQUEST', 'Spaces only should give INVALID_REQUEST');
 
@@ -129,7 +129,7 @@ describe('Mail > Conversation > Tcon > Conv Action Request Tcon', function () {
 				<action id="${convId}" op="read" tcon="//\\\\'^%"/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res5.Fault, 'Special chars tcon should fault');
+		assert.isString(res5.Fault.Detail.Error.Code, 'Special chars tcon should fault');
 		assert.include(res5.Fault.Detail.Error.Code,
 			'service.INVALID_REQUEST', 'Special chars should give INVALID_REQUEST');
 
@@ -139,7 +139,7 @@ describe('Mail > Conversation > Tcon > Conv Action Request Tcon', function () {
 				<action id="${convId}" op="read" tcon="some text"/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res6.Fault, 'Text tcon should fault');
+		assert.isString(res6.Fault.Detail.Error.Code, 'Text tcon should fault');
 		assert.include(res6.Fault.Detail.Error.Code,
 			'service.INVALID_REQUEST', 'Text should give INVALID_REQUEST');
 
@@ -149,7 +149,7 @@ describe('Mail > Conversation > Tcon > Conv Action Request Tcon', function () {
 				<action id="${convId}" op="read" tcon="z"/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res7.Fault, 'Invalid alphabet tcon should fault');
+		assert.isString(res7.Fault.Detail.Error.Code, 'Invalid alphabet tcon should fault');
 		assert.include(res7.Fault.Detail.Error.Code,
 			'service.INVALID_REQUEST', 'Invalid alphabet should give INVALID_REQUEST');
 
@@ -159,7 +159,7 @@ describe('Mail > Conversation > Tcon > Conv Action Request Tcon', function () {
 				<action id="${convId}" op="read" tcon="0099"/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res8.Fault, 'Invalid number tcon should fault');
+		assert.isString(res8.Fault.Detail.Error.Code, 'Invalid number tcon should fault');
 		assert.include(res8.Fault.Detail.Error.Code,
 			'service.INVALID_REQUEST', 'Invalid number should give INVALID_REQUEST');
 
@@ -169,7 +169,7 @@ describe('Mail > Conversation > Tcon > Conv Action Request Tcon', function () {
 				<action id="${convId}" op="read" tcon="-50"/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res9.Fault, 'Negative number tcon should fault');
+		assert.isString(res9.Fault.Detail.Error.Code, 'Negative number tcon should fault');
 		assert.include(res9.Fault.Detail.Error.Code,
 			'service.INVALID_REQUEST', 'Negative number should give INVALID_REQUEST');
 
@@ -179,7 +179,7 @@ describe('Mail > Conversation > Tcon > Conv Action Request Tcon', function () {
 				<action id="${convId}" op="read" tcon="10.10"/>
 			</ConvActionRequest>`, authToken, false
 		);
-		assert.exists(res10.Fault, 'Decimal number tcon should fault');
+		assert.isString(res10.Fault.Detail.Error.Code, 'Decimal number tcon should fault');
 		assert.include(res10.Fault.Detail.Error.Code,
 			'service.INVALID_REQUEST', 'Decimal number should give INVALID_REQUEST');
 	});

@@ -151,7 +151,6 @@ describe('EWS > Recover Mail From Dumpster', function () {
 			</SearchRequest>`, account2AuthToken
 		);
 		assert.notExists(searchRes.Fault, 'Response should not be a Fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
 		const hit = Array.isArray(searchRes.SearchResponse.c)
 			? searchRes.SearchResponse.c[0] : searchRes.SearchResponse.c;
 		assert.equal(hit.su, messageSubject1, 'Subject should match');

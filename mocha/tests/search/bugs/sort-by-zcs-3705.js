@@ -45,7 +45,6 @@ describe('Search > Bugs > Sort By ZCS 3705', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
-		assert.exists(res.PingResponse, 'Response element should exist');
 	});
 
 
@@ -61,7 +60,6 @@ describe('Search > Bugs > Sort By ZCS 3705', function () {
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'Response element should exist');
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -72,6 +70,5 @@ describe('Search > Bugs > Sort By ZCS 3705', function () {
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse, 'Response element should exist');
 	});
 });

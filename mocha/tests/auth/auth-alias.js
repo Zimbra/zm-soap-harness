@@ -34,11 +34,11 @@ describe('Auth > Auth Alias', function () {
 
 		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
-		assert.exists(createRes1.CreateAccountResponse, 'Should create account1');
-
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
 			? createRes1.CreateAccountResponse.account[0]
 			: createRes1.CreateAccountResponse.account;
+		assert.exists(acct1.id, 'Account1 ID should exist');
+		assert.isString(acct1.id, 'Account1 ID should be a string');
 		const acct1Id = acct1.id;
 		const host1 = acct1.a.find(a => a.n === 'zimbraMailHost');
 		account1Server = host1 ? host1._content : config.server;
@@ -67,11 +67,11 @@ describe('Auth > Auth Alias', function () {
 
 		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
-		assert.exists(createRes2.CreateAccountResponse, 'Should create account2');
-
 		const acct2 = Array.isArray(createRes2.CreateAccountResponse.account)
 			? createRes2.CreateAccountResponse.account[0]
 			: createRes2.CreateAccountResponse.account;
+		assert.exists(acct2.id, 'Account2 ID should exist');
+		assert.isString(acct2.id, 'Account2 ID should be a string');
 		const acct2Id = acct2.id;
 
 		// Add alias for account2
@@ -105,8 +105,9 @@ describe('Auth > Auth Alias', function () {
 
 			// Verify response
 			assert.notExists(response.Fault, 'Response should not be a Fault');
-			assert.exists(response.AuthResponse, 'AuthResponse should exist');
 			assert.exists(response.AuthResponse.authToken, 'authToken should exist');
+			assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
+				'lifetime should be numeric');
 		});
 	}
 
@@ -123,7 +124,7 @@ describe('Auth > Auth Alias', function () {
 			);
 
 			// Verify response
-			assert.exists(response.Fault, 'Should return Fault');
+			assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 			assert.include(response.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 				'Should return AUTH_FAILED');
 			// Verify real account name is NOT in the error trace
@@ -158,7 +159,7 @@ describe('Auth > Auth Alias', function () {
 				);
 
 				// Verify response
-				assert.exists(aliasRes.Fault, 'Should return Fault for alias login when disabled');
+				assert.isString(aliasRes.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 				assert.include(aliasRes.Fault.Detail.Error.Code, 'account.AUTH_FAILED',
 					'Should return AUTH_FAILED for alias login');
 
@@ -173,7 +174,6 @@ describe('Auth > Auth Alias', function () {
 
 				// Verify response
 				assert.notExists(acctRes.Fault, 'Response should not be a Fault');
-				assert.exists(acctRes.AuthResponse, 'AuthResponse should exist for regular login');
 				assert.match(String(acctRes.AuthResponse.lifetime), /^\d+$/,
 					'lifetime should be numeric');
 				assert.exists(acctRes.AuthResponse.authToken, 'authToken should exist');

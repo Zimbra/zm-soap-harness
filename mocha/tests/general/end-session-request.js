@@ -47,8 +47,8 @@ describe('General > End Session Request', function () {
 
 		// Verify response
 		assert.notExists(getInfoRes.Fault, 'GetInfoRequest should not be a Fault');
-		assert.exists(getInfoRes.GetInfoResponse.name || getInfoRes.GetInfoResponse.id,
-			'GetInfoResponse should contain identity data');
+		assert.exists(getInfoRes.GetInfoResponse.name,
+			'GetInfoResponse name should exist');
 
 		// End the session
 		const endSessionRes = await soap.makeSOAPEnvelopeAccount(
@@ -57,8 +57,6 @@ describe('General > End Session Request', function () {
 
 		// Verify response
 		assert.notExists(endSessionRes.Fault, 'EndSessionRequest should not be a Fault');
-		assert.exists(endSessionRes.EndSessionResponse,
-			'EndSessionResponse should exist');
 	});
 
 
@@ -72,7 +70,5 @@ describe('General > End Session Request', function () {
 
 		// Verify response
 		assert.notExists(endSessionRes.Fault, 'EndSessionRequest should not be a Fault');
-		assert.exists(endSessionRes.EndSessionResponse,
-			'EndSessionResponse should exist');
 	});
 });

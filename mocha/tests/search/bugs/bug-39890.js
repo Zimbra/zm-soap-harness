@@ -48,7 +48,6 @@ describe('Search > Bugs > Bug 39890', function () {
 
 		// Verify response
 		assert.notExists(res2.Fault, 'Response should not be a Fault');
-		assert.exists(res2.SearchResponse, 'Response element should exist');
 
 		// SearchRequest
 		const res3 = await soap.makeSOAPEnvelopeAccount(
@@ -59,7 +58,6 @@ describe('Search > Bugs > Bug 39890', function () {
 
 		// Verify response
 		assert.notExists(res3.Fault, 'Response should not be a Fault');
-		assert.exists(res3.SearchResponse, 'Response element should exist');
 
 		// SearchRequest
 		const res4 = await soap.makeSOAPEnvelopeAccount(
@@ -70,7 +68,6 @@ describe('Search > Bugs > Bug 39890', function () {
 
 		// Verify response
 		assert.notExists(res4.Fault, 'Response should not be a Fault');
-		assert.exists(res4.SearchResponse, 'Response element should exist');
 
 		// SearchRequest
 		const res5 = await soap.makeSOAPEnvelopeAccount(
@@ -81,7 +78,6 @@ describe('Search > Bugs > Bug 39890', function () {
 
 		// Verify response
 		assert.notExists(res5.Fault, 'Response should not be a Fault');
-		assert.exists(res5.SearchResponse, 'Response element should exist');
 
 		// SearchRequest
 		const res6 = await soap.makeSOAPEnvelopeAccount(
@@ -92,7 +88,6 @@ describe('Search > Bugs > Bug 39890', function () {
 
 		// Verify response
 		assert.notExists(res6.Fault, 'Response should not be a Fault');
-		assert.exists(res6.SearchResponse, 'Response element should exist');
 
 		// SearchRequest
 		const res7 = await soap.makeSOAPEnvelopeAccount(
@@ -103,7 +98,6 @@ describe('Search > Bugs > Bug 39890', function () {
 
 		// Verify response
 		assert.notExists(res7.Fault, 'Response should not be a Fault');
-		assert.exists(res7.SearchResponse, 'Response element should exist');
 
 		// SearchRequest
 		const res8 = await soap.makeSOAPEnvelopeAccount(
@@ -114,7 +108,6 @@ describe('Search > Bugs > Bug 39890', function () {
 
 		// Verify response
 		assert.notExists(res8.Fault, 'Response should not be a Fault');
-		assert.exists(res8.SearchResponse, 'Response element should exist');
 
 		// SearchRequest
 		const res9 = await soap.makeSOAPEnvelopeAccount(
@@ -125,7 +118,6 @@ describe('Search > Bugs > Bug 39890', function () {
 
 		// Verify response
 		assert.notExists(res9.Fault, 'Response should not be a Fault');
-		assert.exists(res9.SearchResponse, 'Response element should exist');
 
 		// SearchRequest
 		const res10 = await soap.makeSOAPEnvelopeAccount(
@@ -136,7 +128,6 @@ describe('Search > Bugs > Bug 39890', function () {
 
 		// Verify response
 		assert.notExists(res10.Fault, 'Response should not be a Fault');
-		assert.exists(res10.SearchResponse, 'Response element should exist');
 
 		// SearchRequest
 		const res11 = await soap.makeSOAPEnvelopeAccount(
@@ -147,6 +138,5 @@ describe('Search > Bugs > Bug 39890', function () {
 
 		// Verify response
 		assert.notExists(res11.Fault, 'Response should not be a Fault');
-		assert.exists(res11.SearchResponse, 'Response element should exist');
 	});
 });

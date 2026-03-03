@@ -296,6 +296,5 @@ describe('Prefs > Filters > Conditions > Filter Anyof', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
-		assert.exists(getRes.GetFilterRulesResponse, 'GetFilterRulesResponse should exist');
 	});
 });

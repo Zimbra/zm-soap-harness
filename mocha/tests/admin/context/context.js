@@ -159,7 +159,6 @@ do it
 
 		// Verify message was added
 		assert.notExists(addMsgRes.Fault, 'AddMsgRequest should not fault');
-		assert.exists(addMsgRes.AddMsgResponse, 'AddMsgResponse should exist');
 		const msg = Array.isArray(addMsgRes.AddMsgResponse.m)
 			? addMsgRes.AddMsgResponse.m[0] : addMsgRes.AddMsgResponse.m;
 		assert.exists(msg.id, 'Message id should exist');

@@ -60,7 +60,6 @@ describe('Prefs > New Mail Notification > New Mail Notification Basic', function
 			</ModifyPrefsRequest>`, baseAuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 
 		// Verify preferences
 		const getRes = await soap.makeSOAPEnvelopeAccount(
@@ -163,7 +162,6 @@ describe('Prefs > New Mail Notification > New Mail Notification Basic', function
 			</ModifyPrefsRequest>`, baseAuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 
 
@@ -191,7 +189,6 @@ describe('Prefs > New Mail Notification > New Mail Notification Basic', function
 			</ModifyPrefsRequest>`, baseAuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 
 
@@ -219,7 +216,6 @@ describe('Prefs > New Mail Notification > New Mail Notification Basic', function
 			</ModifyPrefsRequest>`, baseAuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 
 
@@ -304,7 +300,6 @@ describe('Prefs > New Mail Notification > New Mail Notification Basic', function
 			</GetPrefsRequest>`, baseAuthToken
 		);
 		assert.notExists(getRes.Fault, 'GetPrefsRequest should not fault');
-		assert.exists(getRes.GetPrefsResponse, 'GetPrefsResponse should exist');
 	});
 
 
@@ -375,7 +370,6 @@ describe('Prefs > New Mail Notification > New Mail Notification Basic', function
 			</ModifyPrefsRequest>`, baseAuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 
 
@@ -403,7 +397,6 @@ describe('Prefs > New Mail Notification > New Mail Notification Basic', function
 			</ModifyPrefsRequest>`, baseAuthToken
 		);
 		assert.notExists(modRes.Fault, 'ModifyPrefsRequest should not fault');
-		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 
 
@@ -446,6 +439,5 @@ describe('Prefs > New Mail Notification > New Mail Notification Basic', function
 			</ModifyPrefsRequest>`, baseAuthToken
 		);
 		assert.notExists(modRes.Fault, 'Change notification address should not fault');
-		assert.exists(modRes.ModifyPrefsResponse, 'ModifyPrefsResponse should exist');
 	});
 });

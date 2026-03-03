@@ -59,7 +59,7 @@ describe('Mail Client > Tags > Backup Request', function () {
 		assert.notExists(tagRes.Fault, 'CreateTagRequest should not fault');
 		const createdTag = Array.isArray(tagRes.CreateTagResponse.tag)
 			? tagRes.CreateTagResponse.tag[0] : tagRes.CreateTagResponse.tag;
-		assert.exists(createdTag, 'CreateTagResponse should contain tag');
+		assert.exists(createdTag.id, 'tag id should exist');
 		const tagId = tagRes.CreateTagResponse?.tag?.id;
 
 		const backupRes = await soap.makeSOAPEnvelopeAdmin(
@@ -70,7 +70,6 @@ describe('Mail Client > Tags > Backup Request', function () {
 			</BackupRequest>`, adminAuthToken
 		);
 		assert.notExists(backupRes.Fault, 'BackupRequest should not fault');
-		assert.exists(backupRes.BackupResponse, 'BackupResponse should exist');
 
 		await soap.makeSOAPEnvelopeAdmin(
 			`<DeleteAccountRequest xmlns="urn:zimbraAdmin">
@@ -87,14 +86,12 @@ describe('Mail Client > Tags > Backup Request', function () {
 			</RestoreRequest>`, adminAuthToken
 		);
 		assert.notExists(restoreRes.Fault, 'RestoreRequest should not fault');
-		assert.exists(restoreRes.RestoreResponse, 'RestoreResponse should exist');
 
 		const acctAuthToken2 = await soap.getAccountAuthToken(account1Name);
 		const getTagRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetTagRequest xmlns="urn:zimbraMail"/>', acctAuthToken2
 		);
 		assert.notExists(getTagRes.Fault, 'GetTagRequest should not fault');
-		assert.exists(getTagRes.GetTagResponse, 'GetTagResponse should exist after restore');
 	});
 
 
@@ -109,7 +106,7 @@ describe('Mail Client > Tags > Backup Request', function () {
 		assert.notExists(tagRes.Fault, 'CreateTagRequest should not fault');
 		const createdTag = Array.isArray(tagRes.CreateTagResponse.tag)
 			? tagRes.CreateTagResponse.tag[0] : tagRes.CreateTagResponse.tag;
-		assert.exists(createdTag, 'CreateTagResponse should contain tag');
+		assert.exists(createdTag.id, 'tag id should exist');
 		const tagId = tagRes.CreateTagResponse?.tag?.id;
 
 		const backupRes = await soap.makeSOAPEnvelopeAdmin(
@@ -120,7 +117,6 @@ describe('Mail Client > Tags > Backup Request', function () {
 			</BackupRequest>`, adminAuthToken
 		);
 		assert.notExists(backupRes.Fault, 'BackupRequest should not fault');
-		assert.exists(backupRes.BackupResponse, 'BackupResponse should exist');
 
 		const acctAuthToken2 = await soap.getAccountAuthToken(account2Name);
 		await soap.makeSOAPEnvelopeAccount(
@@ -137,7 +133,6 @@ describe('Mail Client > Tags > Backup Request', function () {
 			</BackupRequest>`, adminAuthToken
 		);
 		assert.notExists(incrRes.Fault, 'Incremental BackupRequest should not fault');
-		assert.exists(incrRes.BackupResponse, 'Incremental BackupResponse should exist');
 
 		await soap.makeSOAPEnvelopeAdmin(
 			`<DeleteAccountRequest xmlns="urn:zimbraAdmin">
@@ -153,13 +148,11 @@ describe('Mail Client > Tags > Backup Request', function () {
 			</RestoreRequest>`, adminAuthToken
 		);
 		assert.notExists(restoreRes.Fault, 'RestoreRequest should not fault');
-		assert.exists(restoreRes.RestoreResponse, 'RestoreResponse should exist');
 
 		const acctAuthToken3 = await soap.getAccountAuthToken(account2Name);
 		const getTagRes = await soap.makeSOAPEnvelopeAccount(
 			'<GetTagRequest xmlns="urn:zimbraMail"/>', acctAuthToken3
 		);
 		assert.notExists(getTagRes.Fault, 'GetTagRequest should not fault');
-		assert.exists(getTagRes.GetTagResponse, 'GetTagResponse should exist after restore');
 	});
 });

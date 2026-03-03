@@ -89,7 +89,7 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 
 		// Verify response
 		assert.notExists(childRes.Fault, 'Response should not be a Fault');
-		assert.exists(childRes.CreateFolderResponse, 'Should create child folder');
+		assert.exists(childRes.CreateFolderResponse.folder[0].id, 'Child folder ID should exist');
 	});
 
 
@@ -124,7 +124,7 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 
 		// Verify response
 		assert.notExists(childRes.Fault, 'Response should not be a Fault');
-		assert.exists(childRes.CreateFolderResponse, 'Should create child folder');
+		assert.exists(childRes.CreateFolderResponse.folder[0].id, 'Child folder ID should exist');
 	});
 
 
@@ -159,7 +159,7 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 
 		// Verify response
 		assert.notExists(childRes.Fault, 'Response should not be a Fault');
-		assert.exists(childRes.CreateFolderResponse, 'Should create child folder');
+		assert.exists(childRes.CreateFolderResponse.folder[0].id, 'Child folder ID should exist');
 	});
 
 
@@ -194,7 +194,7 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 
 		// Verify response
 		assert.notExists(childRes.Fault, 'Response should not be a Fault');
-		assert.exists(childRes.CreateFolderResponse, 'Should create child folder');
+		assert.exists(childRes.CreateFolderResponse.folder[0].id, 'Child folder ID should exist');
 	});
 
 
@@ -238,7 +238,7 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 
 		// Verify response
 		assert.notExists(childRes.Fault, 'Response should not be a Fault');
-		assert.exists(childRes.CreateFolderResponse, 'Should create child folder');
+		assert.exists(childRes.CreateFolderResponse.folder[0].id, 'Child folder ID should exist');
 	});
 
 
@@ -282,6 +282,6 @@ describe('Briefcase > Sharing > Sharing Inherit', function () {
 
 		// Verify response
 		assert.notExists(childRes.Fault, 'Response should not be a Fault');
-		assert.exists(childRes.CreateFolderResponse, 'Should create child folder');
+		assert.exists(childRes.CreateFolderResponse.folder[0].id, 'Child folder ID should exist');
 	});
 });

@@ -35,7 +35,6 @@ describe('Auth > Virtualhost > Virtualhost Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(domRes.Fault, 'Response should not be a Fault');
-		assert.exists(domRes.CreateDomainResponse, 'Should create domain');
 
 		domain1Id = Array.isArray(domRes.CreateDomainResponse.domain)
 			? domRes.CreateDomainResponse.domain[0].id
@@ -51,7 +50,6 @@ describe('Auth > Virtualhost > Virtualhost Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
-		assert.exists(createRes.CreateAccountResponse, 'Should create account1');
 
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
@@ -103,7 +101,6 @@ describe('Auth > Virtualhost > Virtualhost Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.exists(response.AuthResponse.lifetime, 'lifetime should exist');
 		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');
@@ -123,7 +120,6 @@ describe('Auth > Virtualhost > Virtualhost Auth Basic', function () {
 
 		// Verify response
 		assert.notExists(response.Fault, 'Response should not be a Fault');
-		assert.exists(response.AuthResponse, 'AuthResponse should exist');
 		assert.exists(response.AuthResponse.lifetime, 'lifetime should exist');
 		assert.match(String(response.AuthResponse.lifetime), /^\d+$/,
 			'lifetime should be numeric');

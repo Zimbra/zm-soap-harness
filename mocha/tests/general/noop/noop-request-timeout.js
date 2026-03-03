@@ -59,8 +59,6 @@ describe('General > Noop > Noop Request Timeout', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'NoOpRequest should not fault: ' + JSON.stringify(res.Fault));
-		assert.exists(res.NoOpResponse,
-			'NoOpResponse should exist');
 		assert.isBelow(elapsed, 50000,
 			'Response should return within the timeout period');
 	});

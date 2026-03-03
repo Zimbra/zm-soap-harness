@@ -49,8 +49,6 @@ describe('Admin > Accounts > Foreign Principal > Account Get', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
-		assert.exists(getRes.GetAccountResponse,
-			'GetAccountResponse should exist');
 		const account = Array.isArray(getRes.GetAccountResponse.account)
 			? getRes.GetAccountResponse.account[0]
 			: getRes.GetAccountResponse.account;
@@ -97,7 +95,6 @@ describe('Admin > Accounts > Foreign Principal > Account Get', function () {
 
 		// Verify response
 		assert.notExists(getRes1.Fault, 'Response should not be a Fault');
-		assert.exists(getRes1.GetAccountResponse, 'Should find account by fp1');
 		assert.equal((Array.isArray(getRes1.GetAccountResponse?.account) ? getRes1.GetAccountResponse.account[0].id : getRes1.GetAccountResponse?.account?.id), acctId);
 
 		// GetAccountRequest
@@ -109,7 +106,6 @@ describe('Admin > Accounts > Foreign Principal > Account Get', function () {
 
 		// Verify response
 		assert.notExists(getRes2.Fault, 'Response should not be a Fault');
-		assert.exists(getRes2.GetAccountResponse, 'Should find account by fp2');
 		assert.equal((Array.isArray(getRes2.GetAccountResponse?.account) ? getRes2.GetAccountResponse.account[0].id : getRes2.GetAccountResponse?.account?.id), acctId);
 	});
 
@@ -178,8 +174,6 @@ describe('Admin > Accounts > Foreign Principal > Account Get', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'Response should not be a Fault');
-		assert.exists(getRes.GetAccountResponse,
-			'GetAccountResponse should exist with applyCos=1');
 	});
 
 
@@ -212,7 +206,7 @@ describe('Admin > Accounts > Foreign Principal > Account Get', function () {
 		);
 
 		// Verify response
-		assert.exists(getRes.Fault, 'Should return fault for deleted account');
+		assert.isString(getRes.Fault.Detail.Error.Code, 'Should return fault for deleted account');
 		assert.isTrue(getRes.Fault.Detail && getRes.Fault.Detail.Error &&
 			getRes.Fault.Detail.Error.Code.includes('NO_SUCH_ACCOUNT'),
 			'Should return NO_SUCH_ACCOUNT');
@@ -250,7 +244,7 @@ describe('Admin > Accounts > Foreign Principal > Account Get', function () {
 		);
 
 		// Verify response
-		assert.exists(getRes.Fault,
+		assert.isString(getRes.Fault.Detail.Error.Code,
 			'Should return fault for duplicate foreign principal');
 	});
 });

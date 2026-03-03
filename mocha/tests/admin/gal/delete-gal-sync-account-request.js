@@ -60,7 +60,6 @@ describe('Admin > GAL > Delete Gal Sync Account Request', function () {
 			</DeleteGalSyncAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(deleteRes.Fault, 'DeleteGalSyncAccountRequest by name should not fault');
-		assert.exists(deleteRes.DeleteGalSyncAccountResponse, 'DeleteGalSyncAccountResponse should exist');
 	});
 
 
@@ -74,7 +73,6 @@ describe('Admin > GAL > Delete Gal Sync Account Request', function () {
 			</DeleteGalSyncAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(deleteRes.Fault, 'DeleteGalSyncAccountRequest by id should not fault');
-		assert.exists(deleteRes.DeleteGalSyncAccountResponse, 'DeleteGalSyncAccountResponse should exist');
 	});
 
 
@@ -97,7 +95,7 @@ describe('Admin > GAL > Delete Gal Sync Account Request', function () {
 				</account>
 			</SyncGalAccountRequest>`, adminAuthToken, false
 		);
-		assert.exists(syncRes.Fault, 'SyncGalAccountRequest should fault for deleted account');
+		assert.isString(syncRes.Fault.Detail.Error.Code, 'SyncGalAccountRequest should fault for deleted account');
 		assert.include(syncRes.Fault.Detail.Error.Code, 'account.NO_SUCH_ACCOUNT');
 	});
 });

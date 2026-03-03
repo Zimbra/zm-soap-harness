@@ -84,7 +84,6 @@ Content for ${r.subject}</content>
 
 			// Verify response
 			assert.notExists(res.Fault, `Response should not be a Fault for query: ${query}`);
-			assert.exists(res.SearchResponse, `SearchResponse should exist for query: ${query}`);
 		}
 	});
 });

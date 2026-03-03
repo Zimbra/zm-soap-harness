@@ -183,7 +183,6 @@ describe('EWS > Flag Unflag', function () {
 			account1Email, account1Password
 		);
 		const updateBody = ews.getBody(updateRes);
-		assert.exists(updateBody.UpdateItemResponse, 'UpdateItemResponse should exist');
 
 		// Re-sync via EWS to get updated item
 		const syncRes2 = await ews.makeEWSRequest(
@@ -339,7 +338,6 @@ describe('EWS > Flag Unflag', function () {
 			account1Email, account1Password
 		);
 		const getFolderBody = ews.getBody(getFolderRes);
-		assert.exists(getFolderBody.GetFolderResponse, 'GetFolderResponse should exist');
 
 		const syncRes2 = await ews.makeEWSRequest(
 			`<SyncFolderItems xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">

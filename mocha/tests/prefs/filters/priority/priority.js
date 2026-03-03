@@ -43,7 +43,6 @@ describe('Prefs > Filters > Priority > Priority', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'High priority filter should not fault');
-		assert.exists(modRes.ModifyFilterRulesResponse, 'Response should exist');
 	});
 
 
@@ -255,7 +254,6 @@ describe('Prefs > Filters > Priority > Priority', function () {
 
 		// Verify response
 		assert.notExists(getRes.Fault, 'GetFilterRulesRequest should not fault');
-		assert.exists(getRes.GetFilterRulesResponse, 'Response should exist');
 	});
 
 

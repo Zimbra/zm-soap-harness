@@ -77,7 +77,6 @@ describe('Sync > Sync Request 01', function () {
 
 		// Verify response
 		assert.notExists(syncRes.Fault, 'Response should not be a Fault');
-		assert.exists(syncRes.SyncResponse, 'SyncResponse should exist');
 		assert.exists(syncRes.SyncResponse.token, 'SyncResponse should have a token');
 	});
 
@@ -99,7 +98,6 @@ describe('Sync > Sync Request 01', function () {
 
 		// Verify response
 		assert.notExists(syncRes2.Fault, 'Response should not be a Fault');
-		assert.exists(syncRes2.SyncResponse, 'SyncResponse should exist');
 		assert.exists(syncRes2.SyncResponse.token, 'SyncResponse should return a valid token');
 	});
 
