@@ -59,41 +59,128 @@ describe('Contacts > Bugs > Bug 41920', function () {
 
 	// Tests
 	it('Functional | Search shared contacts should not return duplicates', async () => {
-		await soap.makeSOAPEnvelopeAccount(
+		// Create contact 1
+		const createRes1 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
 					<a n="firstName">firstName1</a>
 					<a n="lastName">lastName1</a>
-					<a n="email">firstname01@testsearch.com</a>
+					<a n="middleName">middleName1</a>
+					<a n="email">firstname01_lastname01@testsearch.com</a>
+					<a n="jobTitle">jobTitle1</a>
 				</cn>
 			</CreateContactRequest>`, account1Token
 		);
-		await soap.makeSOAPEnvelopeAccount(
+		assert.notExists(createRes1.Fault, 'CreateContact 1 should not fault');
+		const cn1 = Array.isArray(createRes1.CreateContactResponse.cn)
+			? createRes1.CreateContactResponse.cn[0] : createRes1.CreateContactResponse.cn;
+		const contact1Id = cn1.id;
+		assert.exists(contact1Id, 'Contact 1 id should exist');
+
+		// Create contact 2
+		const createRes2 = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
 					<a n="firstName">firstName2</a>
 					<a n="lastName">lastName2</a>
-					<a n="email">firstname02@testsearch.com</a>
+					<a n="middleName">middleName2</a>
+					<a n="email">firstname02_lastname02@testsearch.com</a>
+					<a n="jobTitle">jobTitle2</a>
 				</cn>
 			</CreateContactRequest>`, account1Token
 		);
+		assert.notExists(createRes2.Fault, 'CreateContact 2 should not fault');
+		const cn2 = Array.isArray(createRes2.CreateContactResponse.cn)
+			? createRes2.CreateContactResponse.cn[0] : createRes2.CreateContactResponse.cn;
+		const contact2Id = cn2.id;
+		assert.exists(contact2Id, 'Contact 2 id should exist');
 
-		// Get the folder
+		// Get the contacts folder ID
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetFolderRequest xmlns="urn:zimbraMail"/>`, account1Token
 		);
-
-		// Verify response
 		assert.notExists(folderRes.Fault, 'GetFolder should not be a Fault');
+		const folders = folderRes.GetFolderResponse.folder;
+		const rootFolder = Array.isArray(folders) ? folders[0] : folders;
+		const contactsFolder = rootFolder.folder.find(f => f.name === 'Contacts');
+		assert.exists(contactsFolder, 'Contacts folder should exist');
+		const contactsFolderId = contactsFolder.id;
+		assert.exists(contactsFolderId, 'Contacts folder id should exist');
 
-		// Search item
+		// Share contacts folder with account2
+		const shareRes = await soap.makeSOAPEnvelopeAccount(
+			`<FolderActionRequest xmlns="urn:zimbraMail">
+				<action op="grant" id="${contactsFolderId}">
+					<grant gt="usr" d="${account2Email}" perm="r"/>
+				</action>
+			</FolderActionRequest>`, account1Token
+		);
+		assert.notExists(shareRes.Fault, 'FolderAction should not fault');
+		assert.exists(shareRes.FolderActionResponse.action,
+			'FolderActionResponse action should exist');
+
+		// Login as account2 and get root folder
+		const folder2Res = await soap.makeSOAPEnvelopeAccount(
+			`<GetFolderRequest xmlns="urn:zimbraMail"/>`, account2Token
+		);
+		assert.notExists(folder2Res.Fault, 'GetFolder for acct2 should not fault');
+		const root2 = Array.isArray(folder2Res.GetFolderResponse.folder)
+			? folder2Res.GetFolderResponse.folder[0]
+			: folder2Res.GetFolderResponse.folder;
+		const rootFolderId = root2.id;
+		assert.exists(rootFolderId, 'Root folder id should exist');
+
+		// Create mountpoint
+		const shareName = `share${common.getUniqueString()}`;
+		const mountRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateMountpointRequest xmlns="urn:zimbraMail">
+				<link l="${rootFolderId}" name="${shareName}" zid="${account1Id}"
+					rid="${contactsFolderId}" view="contact"/>
+			</CreateMountpointRequest>`, account2Token
+		);
+		assert.notExists(mountRes.Fault, 'CreateMountpoint should not fault');
+		const link = Array.isArray(mountRes.CreateMountpointResponse.link)
+			? mountRes.CreateMountpointResponse.link[0]
+			: mountRes.CreateMountpointResponse.link;
+		assert.exists(link.id, 'Mountpoint id should exist');
+
+		// Search shared contacts
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact" sortBy="nameAsc">
-				<query>in:contacts</query>
-			</SearchRequest>`, account1Token
+				<query>in:${shareName}</query>
+			</SearchRequest>`, account2Token
 		);
-
-		// Verify response
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
+		const searchContacts = Array.isArray(searchRes.SearchResponse.cn)
+			? searchRes.SearchResponse.cn : [searchRes.SearchResponse.cn];
+		const searchAttrs1 = searchContacts.find(cn => {
+			const attrs = Array.isArray(cn.a) ? cn.a : [cn.a];
+			return attrs.some(a => a.n === 'firstName' && a._content === 'firstName1');
+		});
+		assert.exists(searchAttrs1, 'Search should find firstName1');
+		const searchAttrs2 = searchContacts.find(cn => {
+			const attrs = Array.isArray(cn.a) ? cn.a : [cn.a];
+			return attrs.some(a => a.n === 'firstName' && a._content === 'firstName2');
+		});
+		assert.exists(searchAttrs2, 'Search should find firstName2');
+
+		// Get contact by remote ID
+		const getRes = await soap.makeSOAPEnvelopeAccount(
+			`<GetContactsRequest xmlns="urn:zimbraMail">
+				<cn id="${account1Id}:${contact1Id}"/>
+			</GetContactsRequest>`, account2Token
+		);
+		assert.notExists(getRes.Fault, 'GetContacts should not fault');
+		const getCn = Array.isArray(getRes.GetContactsResponse.cn)
+			? getRes.GetContactsResponse.cn[0] : getRes.GetContactsResponse.cn;
+		const getAttrArr = Array.isArray(getCn.a) ? getCn.a : [getCn.a];
+		const getAttr = (name) => {
+			const found = getAttrArr.find(a => a.n === name);
+			return found ? found._content : undefined;
+		};
+		assert.equal(getAttr('firstName'), 'firstName1', 'firstName should match');
+		assert.equal(getAttr('lastName'), 'lastName1', 'lastName should match');
+		assert.equal(getAttr('email'), 'firstname01_lastname01@testsearch.com',
+			'email should match');
 	});
 });

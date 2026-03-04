@@ -62,7 +62,7 @@ describe('Contacts > Sharing > Search Shared Contact', function () {
 	// Tests
 	it('Functional | Search shared contacts returns results', async () => {
 		// Create contacts in account1
-		await soap.makeSOAPEnvelopeAccount(
+		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
 					<a n="firstName">SearchShared${common.getUniqueString()}</a>
@@ -71,6 +71,10 @@ describe('Contacts > Sharing > Search Shared Contact', function () {
 				</cn>
 			</CreateContactRequest>`, account1Token
 		);
+		assert.notExists(createRes.Fault, 'CreateContact should not fault');
+		const cn = Array.isArray(createRes.CreateContactResponse.cn)
+			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		// Search contacts locally
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
@@ -79,5 +83,9 @@ describe('Contacts > Sharing > Search Shared Contact', function () {
 			</SearchRequest>`, account1Token
 		);
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
+		const contacts = Array.isArray(searchRes.SearchResponse.cn)
+			? searchRes.SearchResponse.cn : (searchRes.SearchResponse.cn ? [searchRes.SearchResponse.cn] : []);
+		assert.isAbove(contacts.length, 0, 'Should return at least one contact');
+		assert.exists(contacts[0].id, 'Contact id should exist');
 	});
 });

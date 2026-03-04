@@ -138,6 +138,7 @@ describe('Contacts > Contacts Action', function () {
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		const delRes = await soap.makeSOAPEnvelopeAccount(
 			`<ContactActionRequest xmlns="urn:zimbraMail">
@@ -174,6 +175,7 @@ describe('Contacts > Contacts Action', function () {
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		const moveRes = await soap.makeSOAPEnvelopeAccount(
 			`<ContactActionRequest xmlns="urn:zimbraMail">
@@ -200,6 +202,7 @@ describe('Contacts > Contacts Action', function () {
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		const moveRes = await soap.makeSOAPEnvelopeAccount(
 			`<ContactActionRequest xmlns="urn:zimbraMail">
@@ -226,6 +229,7 @@ describe('Contacts > Contacts Action', function () {
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		const moveRes = await soap.makeSOAPEnvelopeAccount(
 			`<ContactActionRequest xmlns="urn:zimbraMail">
@@ -252,6 +256,7 @@ describe('Contacts > Contacts Action', function () {
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		// Move to trash first
 		await soap.makeSOAPEnvelopeAccount(
@@ -301,6 +306,7 @@ describe('Contacts > Contacts Action', function () {
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		// Tag the contact
 		const actionRes = await soap.makeSOAPEnvelopeAccount(
@@ -339,6 +345,7 @@ describe('Contacts > Contacts Action', function () {
 		);
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		await soap.makeSOAPEnvelopeAccount(
 			`<ContactActionRequest xmlns="urn:zimbraMail">
@@ -371,6 +378,7 @@ describe('Contacts > Contacts Action', function () {
 		);
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		const actionRes = await soap.makeSOAPEnvelopeAccount(
 			`<ContactActionRequest xmlns="urn:zimbraMail">
@@ -395,6 +403,7 @@ describe('Contacts > Contacts Action', function () {
 		);
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		// Flag first
 		await soap.makeSOAPEnvelopeAccount(
@@ -439,6 +448,7 @@ describe('Contacts > Contacts Action', function () {
 		);
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		// Update with tag
 		const actionRes = await soap.makeSOAPEnvelopeAccount(
@@ -464,6 +474,7 @@ describe('Contacts > Contacts Action', function () {
 		);
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		const actionRes = await soap.makeSOAPEnvelopeAccount(
 			`<ContactActionRequest xmlns="urn:zimbraMail">

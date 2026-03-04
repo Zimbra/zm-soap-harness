@@ -28,7 +28,7 @@ describe('Contacts > Autocomplete > Autocomplete ZBUG 4317', function () {
 		assert.exists(host, 'zimbraMailHost should exist');
 		accountToken = await soap.getAccountAuthToken(accountEmail);
 
-		await soap.makeSOAPEnvelopeAccount(
+		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
 					<a n="firstName">BugFirst${common.getUniqueString()}</a>
@@ -37,6 +37,10 @@ describe('Contacts > Autocomplete > Autocomplete ZBUG 4317', function () {
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
+		assert.notExists(createRes.Fault, 'CreateContact should not fault');
+		const cn = Array.isArray(createRes.CreateContactResponse.cn)
+			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 	});
 
 	beforeEach(async function () {
@@ -62,6 +66,10 @@ describe('Contacts > Autocomplete > Autocomplete ZBUG 4317', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAbove(matches.length, 0, 'Should return at least one match for bug4317');
+		assert.exists(matches[0].email, 'match should have email attribute');
 	});
 
 
@@ -74,5 +82,10 @@ describe('Contacts > Autocomplete > Autocomplete ZBUG 4317', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAbove(matches.length, 0, 'Should return at least one match for Bug');
+		assert.exists(matches[0].type, 'match should have type attribute');
+		assert.exists(matches[0].email, 'match should have email attribute');
 	});
 });

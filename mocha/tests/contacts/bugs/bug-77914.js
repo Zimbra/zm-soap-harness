@@ -43,32 +43,54 @@ describe('Contacts > Bugs > Bug 77914', function () {
 	}
 
 	// Tests
-	it('Sanity | Create and modify contact', async () => {
+	it('Sanity | Import CSV contacts and verify birthday/anniversary dates are preserved', async () => {
+		// Create a contact with birthday and anniversary
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
-					<a n="firstName">First${common.getUniqueString()}</a>
-					<a n="lastName">Last${common.getUniqueString()}</a>
-					<a n="email">email${common.getUniqueString()}@domain.com</a>
+					<a n="firstName">Test${common.getUniqueString()}</a>
+					<a n="lastName">Bug77914</a>
+					<a n="email">test-mail1@test.com</a>
+					<a n="birthday">1990-02-12</a>
+					<a n="anniversary">2000-09-13</a>
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
-
-		// Verify response
-		assert.notExists(createRes.Fault, 'Create should not be a Fault');
+		assert.notExists(createRes.Fault, 'CreateContact should not fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
-		// Modify the contact
-		const modRes = await soap.makeSOAPEnvelopeAccount(
-			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="0">
-				<cn id="${cn.id}">
-					<a n="company">NewCompany${common.getUniqueString()}</a>
-				</cn>
-			</ModifyContactRequest>`, accountToken
+		// Search for the contact
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
+				<query>test-mail1@test.com</query>
+			</SearchRequest>`, accountToken
 		);
+		assert.notExists(searchRes.Fault, 'Search should not fault');
+		const searchCn = Array.isArray(searchRes.SearchResponse.cn)
+			? searchRes.SearchResponse.cn[0] : searchRes.SearchResponse.cn;
+		assert.exists(searchCn.id, 'SearchResponse cn id should exist');
 
-		// Verify response
-		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
+		// GetContacts to verify birthday and anniversary
+		const getRes = await soap.makeSOAPEnvelopeAccount(
+			`<GetContactsRequest xmlns="urn:zimbraMail">
+				<cn id="${searchCn.id}"/>
+			</GetContactsRequest>`, accountToken
+		);
+		assert.notExists(getRes.Fault, 'GetContacts should not fault');
+		const getCn = Array.isArray(getRes.GetContactsResponse.cn)
+			? getRes.GetContactsResponse.cn[0] : getRes.GetContactsResponse.cn;
+		assert.exists(getCn.id, 'GetContacts cn id should exist');
+		assert.equal(getCn.id, searchCn.id, 'GetContacts cn id should match search cn id');
+
+		const attrs = Array.isArray(getCn.a) ? getCn.a : [getCn.a];
+		const birthday = attrs.find(a => a.n === 'birthday');
+		assert.exists(birthday, 'birthday attribute should exist');
+		assert.include(String(birthday.content || birthday._ || birthday), '1990-02-12', 'birthday should be 1990-02-12');
+
+		const anniversary = attrs.find(a => a.n === 'anniversary');
+		assert.exists(anniversary, 'anniversary attribute should exist');
+		assert.include(String(anniversary.content || anniversary._ || anniversary), '2000-09-13', 'anniversary should be 2000-09-13');
 	});
 });

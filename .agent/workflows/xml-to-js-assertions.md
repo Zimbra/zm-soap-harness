@@ -10,19 +10,62 @@ description: Verify and fix JS test assertions by cross-referencing original XML
 > [!CAUTION]
 > **THUMBRULE: COMPLETE ONE MODULE BEFORE MOVING TO NEXT.**
 > NEVER move to the next module/folder until the current module passes with ZERO real issues:
-> 1. Run `node .agent/scripts/xml-to-js-assertions-parity.js <module>` — all test counts must match
-> 2. Run `node .agent/scripts/verify-tselect-parity.cjs <module>` — all t:select assertions covered
-> 3. Run `node .agent/scripts/scan-weak-assertions.cjs mocha/tests/<module>/` — zero weak patterns
+> 1. Run `node .agent/scripts/report-xml-to-js-assertions.cjs <module>` — all test counts must match, all t:select assertions covered, zero weak patterns
 > 4. Fix every single gap, re-run all scripts, confirm zero remaining
 > 5. Only THEN move to the next module
 
 > [!CAUTION]
-> **THUMBRULE: NO NEW FOLDERS. NO NEW FILES.**
-> The entire XML-to-JS migration is **already complete** — every folder and every file already exists with 1:1 structural parity (1 XML folder = 1 JS folder, 1 XML file = 1 JS file). The **ONLY** work in this exercise is to add missing `<t:select>` assertions into the **existing** JS files. Do NOT create any new folder. Do NOT create any new file. Zero exceptions.
+> **THUMBRULE: ALWAYS INCLUDE ALL SUBFOLDERS IN SCOPE.**
+> When working on a module (e.g., `contacts`), you MUST process ALL files — root-level AND every subfolder (e.g., `attachments/`, `autocomplete/`, `bugs/`, `gal/`, `mail/`, `sharing/`, `tags/`). Never ask the user "shall I continue with subfolders?" — they are part of the module. Process everything in one sweep, fixing every file with assertion gaps (❌ GAP in `report-xml-to-js-assertions.cjs` output).
 
 > [!CAUTION]
-> **THUMBRULE: EVERY JS FILE HAS AN XML COUNTERPART. FIND IT.**
-> The entire project is fully migrated — every JS file in `mocha/tests/` was created from an XML file in `data/soapvalidator/`. There are **ZERO** exceptions. Before starting any assertion work on a folder, you MUST build an **explicit 1:1 mapping table** pairing every JS file to its exact XML file path. If the name doesn't match exactly (e.g., `multihost/multihost-auth-basic.js` ↔ `Multihost/Multihost-Auth-Basic.xml`), search the XML folder tree until you find it. Never assume a file is "clean" or "no unique selects" without reading the **correct** XML file. If after exhaustive search no XML file can be found, ONLY THEN log as MISMATCH.
+> **THUMBRULE: USE `report-xml-to-js-assertions.cjs` AS THE PRIMARY GAP FINDER.**
+> The `report-xml-to-js-assertions.cjs` script compares raw JS assertion count vs XML `t:select` count per file. Use it to identify gaps:
+> - **❌ GAP (N)** — Must fix. N assertions are missing. Read the XML, identify every missing `t:select` node, add the JS assertion.
+> - **✅** — File is at 100% parity. No action needed.
+> Target: **100% parity** — every `t:select` in eligible test cases (smoke, sanity, functional, regression) AND their setup/before sections MUST have a corresponding JS assertion.
+
+
+> [!CAUTION]
+> **THUMBRULE: EVERY JS FILE HAS AN XML COUNTERPART. FIND IT. IF NOT FOUND, MIGRATE IT.**
+> Before starting any assertion work on a folder, you MUST build an **explicit 1:1 mapping table** pairing every JS file to its exact XML file path. If the name doesn't match exactly (e.g., `multihost/multihost-auth-basic.js` ↔ `Multihost/Multihost-Auth-Basic.xml`), search the XML folder tree until you find it. Never assume a file is "clean" or "no unique selects" without reading the **correct** XML file.
+
+> [!CAUTION]
+> **THUMBRULE: MISSING JS FILE? CREATE IT. MISSING JS FOLDER? CREATE IT. NO EXCEPTIONS.**
+> During this assertion-strengthening exercise, if you discover that an XML file in `data/soapvalidator/` has **no corresponding JS file** in `mocha/tests/`, you MUST:
+> 1. **Create the JS file** (and folder if needed) following the `/xml-to-js-migration` workflow
+> 2. **Migrate every smoke, sanity, functional and regression test** from the XML to JS with **full 1:1 parity**
+> 3. **Do NOT skip, ignore, or log as MISMATCH** — every XML test MUST have a JS equivalent
+> 4. The newly created JS file must follow all `/formatting-rules` and `/naming-convention` workflows
+>
+> This applies to BOTH directions: if a JS file exists without an XML match, find the XML. If an XML file exists without a JS match, **create the JS file and migrate it**.
+
+> [!CAUTION]
+> **THUMBRULE: FIX EVERYTHING IN ONE SHOT — TESTS AND ASSERTIONS TOGETHER.**
+> When fixing a JS file, do NOT fix only assertions or only test names — rewrite the ENTIRE file in a single pass:
+> 1. **Correct test names** — every `it()` must use the verbatim `t:objective` from the XML
+> 2. **Correct test count** — every eligible XML `t:test_case` must have a corresponding `it()` block
+> 3. **All assertions** — every `t:select` node must have a corresponding JS assertion
+> 4. **Correct setup** — the `before()` hook must match the XML setup (contacts, accounts, folders, etc.)
+> 5. **Never iterate** — do NOT fix one aspect and come back for another. One rewrite = done.
+
+
+> [!CAUTION]
+> **THUMBRULE: ONLY COUNT ASSERTIONS FROM ELIGIBLE TEST CASE TYPES (WHITELIST APPROACH).**
+> When calculating assertion gaps (both in the report script and manually), use a **WHITELIST** — ONLY include `t:select` nodes from:
+> - XML test cases with type: **smoke**, **sanity**, **functional**, **regression**
+> - **before** suite setup sections (content before the first `t:test_case` block)
+>
+> EXCLUDE **ALL OTHER TYPES** — this includes but is not limited to:
+> - `always`, `setup`, `deprecated`, `ping`, `tbd`, `q4fix`, `bhr`, `exclude`, commented-out XML code
+>
+> This applies to BOTH the JS assertion count AND the XML assertion count when computing parity %.
+
+
+> [!CAUTION]
+> **THUMBRULE: DO NOT RUN ESLINT DURING ASSERTION FIXES.**
+> Skip `eslint --fix` while working on fixing assertion gaps. It wastes time and is not needed for assertion parity work. Only run formatting tools at the very end if explicitly requested by the user.
+
 
 > [!CAUTION]
 > **THUMBRULE: BUILD THE MAPPING TABLE FIRST — BEFORE ANY ASSERTION WORK.**
@@ -91,9 +134,9 @@ description: Verify and fix JS test assertions by cross-referencing original XML
 - Follow Array-safe access patterns: `const x = Array.isArray(res.X) ? res.X[0] : res.X;`
 - All assertion syntax must comply with `/strengthen-assertions` rules
 
-### Step 6: Verify
-- Run the file's test(s) to confirm no regressions
-- If running a batch, run the module's tests after completing all files in the folder
+### Step 6: Verify with All Three Scripts
+- Run `node .agent/scripts/report-xml-to-js-assertions.cjs <module>` — all test counts must match, all files ≥70% ratio, zero weak patterns
+- Fix any remaining gaps revealed by these scripts, then re-run until clean
 
 ## Key Rules
 
@@ -117,7 +160,7 @@ description: Verify and fix JS test assertions by cross-referencing original XML
 
 ## Phase 2 Log File
 
-**All mismatches, skipped items, unresolvable tests, and TODOs MUST be appended to:** `.agent/xml-to-js-assertions.txt`
+**All mismatches, skipped items, unresolvable tests, and TODOs MUST be appended to:** `.agent/scripts/report-xml-to-js-assertions.txt`
 
 **Log EVERYTHING that couldn't be completed:**
 - File/folder mismatches (XML with no JS, JS with no XML)

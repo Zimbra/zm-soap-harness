@@ -56,6 +56,7 @@ describe('Contacts > Contact Item Action', function () {
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		const delRes = await soap.makeSOAPEnvelopeAccount(
 			`<ItemActionRequest xmlns="urn:zimbraMail">
@@ -80,15 +81,22 @@ describe('Contacts > Contact Item Action', function () {
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
+		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		// Delete first
-		await soap.makeSOAPEnvelopeAccount(
+		const del1Res = await soap.makeSOAPEnvelopeAccount(
 			`<ItemActionRequest xmlns="urn:zimbraMail">
 				<action op="delete" id="${cn.id}"/>
 			</ItemActionRequest>`, accountToken
 		);
+		assert.notExists(del1Res.Fault, 'First delete should not be a Fault');
+		const del1Action = Array.isArray(del1Res.ItemActionResponse.action)
+			? del1Res.ItemActionResponse.action[0] : del1Res.ItemActionResponse.action;
+		assert.equal(del1Action.id, cn.id, 'First delete action id should match');
+		assert.equal(del1Action.op, 'delete', 'First delete op should be delete');
 
 		// Delete again
 		const del2Res = await soap.makeSOAPEnvelopeAccount(
@@ -111,6 +119,7 @@ describe('Contacts > Contact Item Action', function () {
 		assert.notExists(folderRes.Fault, 'CreateFolder should not be a Fault');
 		const folder = Array.isArray(folderRes.CreateFolderResponse.folder)
 			? folderRes.CreateFolderResponse.folder[0] : folderRes.CreateFolderResponse.folder;
+		assert.exists(folder.id, 'Folder id should exist');
 
 		// Create contact
 		const createRes = await soap.makeSOAPEnvelopeAccount(
@@ -122,8 +131,10 @@ describe('Contacts > Contact Item Action', function () {
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
+		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		// Move
 		const moveRes = await soap.makeSOAPEnvelopeAccount(
@@ -149,8 +160,10 @@ describe('Contacts > Contact Item Action', function () {
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
+		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		const moveRes = await soap.makeSOAPEnvelopeAccount(
 			`<ItemActionRequest xmlns="urn:zimbraMail">
@@ -158,6 +171,7 @@ describe('Contacts > Contact Item Action', function () {
 			</ItemActionRequest>`, accountToken, false
 		);
 		assert.isString(moveRes.Fault.Detail.Error.Code, 'Move to non-existing folder should be a Fault');
+		assert.include(moveRes.Fault.Detail.Error.Code, 'mail.NO_SUCH_FOLDER', 'Error code should be mail.NO_SUCH_FOLDER');
 	});
 
 
@@ -171,8 +185,10 @@ describe('Contacts > Contact Item Action', function () {
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
+		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		const readRes = await soap.makeSOAPEnvelopeAccount(
 			`<ItemActionRequest xmlns="urn:zimbraMail">
@@ -182,6 +198,7 @@ describe('Contacts > Contact Item Action', function () {
 		assert.notExists(readRes.Fault, 'Read should not be a Fault');
 		const action = Array.isArray(readRes.ItemActionResponse.action)
 			? readRes.ItemActionResponse.action[0] : readRes.ItemActionResponse.action;
+		assert.equal(action.id, cn.id, 'Action id should match');
 		assert.equal(action.op, 'read', 'Op should be read');
 	});
 
@@ -193,8 +210,11 @@ describe('Contacts > Contact Item Action', function () {
 				<tag name="tag${common.getUniqueString()}" color="4"/>
 			</CreateTagRequest>`, accountToken
 		);
+		assert.notExists(tagRes.Fault, 'CreateTag should not be a Fault');
 		const tag = Array.isArray(tagRes.CreateTagResponse.tag)
 			? tagRes.CreateTagResponse.tag[0] : tagRes.CreateTagResponse.tag;
+		assert.exists(tag.id, 'Tag id should exist');
+		assert.equal(tag.color, '4', 'Tag color should match');
 
 		// Create contact
 		const createRes = await soap.makeSOAPEnvelopeAccount(
@@ -206,8 +226,10 @@ describe('Contacts > Contact Item Action', function () {
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
+		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		// Tag
 		const tagActionRes = await soap.makeSOAPEnvelopeAccount(
@@ -218,6 +240,7 @@ describe('Contacts > Contact Item Action', function () {
 		assert.notExists(tagActionRes.Fault, 'Tag should not be a Fault');
 		const action = Array.isArray(tagActionRes.ItemActionResponse.action)
 			? tagActionRes.ItemActionResponse.action[0] : tagActionRes.ItemActionResponse.action;
+		assert.equal(action.id, cn.id, 'Action id should match');
 		assert.equal(action.op, 'tag', 'Op should be tag');
 	});
 
@@ -233,8 +256,10 @@ describe('Contacts > Contact Item Action', function () {
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
+		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		// Create tag
 		const tagRes = await soap.makeSOAPEnvelopeAccount(
@@ -242,8 +267,11 @@ describe('Contacts > Contact Item Action', function () {
 				<tag name="tag${common.getUniqueString()}" color="4"/>
 			</CreateTagRequest>`, accountToken
 		);
+		assert.notExists(tagRes.Fault, 'CreateTag should not be a Fault');
 		const tag = Array.isArray(tagRes.CreateTagResponse.tag)
 			? tagRes.CreateTagResponse.tag[0] : tagRes.CreateTagResponse.tag;
+		assert.exists(tag.id, 'Tag id should exist');
+		assert.equal(tag.color, '4', 'Tag color should match');
 
 		// Create folder
 		const folderRes = await soap.makeSOAPEnvelopeAccount(
@@ -251,8 +279,10 @@ describe('Contacts > Contact Item Action', function () {
 				<folder name="folder${common.getUniqueString()}" l="1"/>
 			</CreateFolderRequest>`, accountToken
 		);
+		assert.notExists(folderRes.Fault, 'CreateFolder should not be a Fault');
 		const folder = Array.isArray(folderRes.CreateFolderResponse.folder)
 			? folderRes.CreateFolderResponse.folder[0] : folderRes.CreateFolderResponse.folder;
+		assert.exists(folder.id, 'Folder id should exist');
 
 		// Update
 		const updateRes = await soap.makeSOAPEnvelopeAccount(
@@ -263,6 +293,7 @@ describe('Contacts > Contact Item Action', function () {
 		assert.notExists(updateRes.Fault, 'Update should not be a Fault');
 		const action = Array.isArray(updateRes.ItemActionResponse.action)
 			? updateRes.ItemActionResponse.action[0] : updateRes.ItemActionResponse.action;
+		assert.equal(action.id, cn.id, 'Action id should match');
 		assert.equal(action.op, 'update', 'Op should be update');
 	});
 

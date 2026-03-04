@@ -206,6 +206,37 @@ describe('Contacts > Contact Loop', function () {
 	});
 
 
+	it('Functional | Update a contact from large list', async () => {
+		// Create a tag for update
+		const tagRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateTagRequest xmlns="urn:zimbraMail">
+				<tag name="Tag${common.getUniqueString()}" color="1"/>
+			</CreateTagRequest>`, accountToken
+		);
+		assert.notExists(tagRes.Fault, 'CreateTagRequest should not fault');
+		const tag = Array.isArray(tagRes.CreateTagResponse.tag)
+			? tagRes.CreateTagResponse.tag[0] : tagRes.CreateTagResponse.tag;
+		assert.exists(tag.id, 'Tag id should exist');
+
+		// Get contacts folder id
+		const folderRes = await soap.makeSOAPEnvelopeAccount(
+			`<GetFolderRequest xmlns="urn:zimbraMail"/>`, accountToken
+		);
+		assert.notExists(folderRes.Fault, 'GetFolderRequest should not fault');
+
+		// Update the contact with tag and move back to contacts folder
+		const actionRes = await soap.makeSOAPEnvelopeAccount(
+			`<ContactActionRequest xmlns="urn:zimbraMail">
+				<action id="${searchContactId}" op="update" l="7" tag="${tag.id}"/>
+			</ContactActionRequest>`, accountToken
+		);
+		assert.notExists(actionRes.Fault, 'Update should not be a Fault');
+		const action = Array.isArray(actionRes.ContactActionResponse.action)
+			? actionRes.ContactActionResponse.action[0] : actionRes.ContactActionResponse.action;
+		assert.equal(action.op, 'update', 'Op should be update');
+	});
+
+
 	it('Functional | Delete a contact from large list', async () => {
 		// Create a contact to delete (don't delete the search contact)
 		const createRes = await soap.makeSOAPEnvelopeAccount(

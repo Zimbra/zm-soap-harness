@@ -33,17 +33,25 @@ describe('Contacts > Bugs > Bug 67327', function () {
 		tag2Name = `tag2${common.getUniqueString()}`;
 		tag3Name = `tag3${common.getUniqueString()}`;
 
-		await soap.makeSOAPEnvelopeAccount(
+		const tag1Res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tag1Name}"/>
 			</CreateTagRequest>`, accountToken
 		);
+		const tag1 = Array.isArray(tag1Res.CreateTagResponse.tag)
+			? tag1Res.CreateTagResponse.tag[0] : tag1Res.CreateTagResponse.tag;
+		assert.exists(tag1.id, 'Tag1 id should exist');
+		assert.equal(tag1.name, tag1Name, 'Tag1 name should match');
 
-		await soap.makeSOAPEnvelopeAccount(
+		const tag2Res = await soap.makeSOAPEnvelopeAccount(
 			`<CreateTagRequest xmlns="urn:zimbraMail">
 				<tag name="${tag2Name}"/>
 			</CreateTagRequest>`, accountToken
 		);
+		const tag2 = Array.isArray(tag2Res.CreateTagResponse.tag)
+			? tag2Res.CreateTagResponse.tag[0] : tag2Res.CreateTagResponse.tag;
+		assert.exists(tag2.id, 'Tag2 id should exist');
+		assert.equal(tag2.name, tag2Name, 'Tag2 name should match');
 	});
 
 	beforeEach(async function () {
@@ -72,6 +80,7 @@ describe('Contacts > Bugs > Bug 67327', function () {
 		);
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
@@ -84,6 +93,9 @@ describe('Contacts > Bugs > Bug 67327', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
+		const modCn = Array.isArray(modRes.ModifyContactResponse.cn)
+			? modRes.ModifyContactResponse.cn[0] : modRes.ModifyContactResponse.cn;
+		assert.equal(modCn.tn, tag1Name, 'tn should match tag1');
 	});
 
 
@@ -99,6 +111,7 @@ describe('Contacts > Bugs > Bug 67327', function () {
 		);
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
@@ -111,6 +124,9 @@ describe('Contacts > Bugs > Bug 67327', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
+		const modCn = Array.isArray(modRes.ModifyContactResponse.cn)
+			? modRes.ModifyContactResponse.cn[0] : modRes.ModifyContactResponse.cn;
+		assert.equal(modCn.tn, tag2Name, 'tn should match tag2');
 	});
 
 
@@ -126,8 +142,9 @@ describe('Contacts > Bugs > Bug 67327', function () {
 		);
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
-		// Modify the contact
+		// Modify the contact with replace=1
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="1">
 				<cn id="${cn.id}">
@@ -138,6 +155,36 @@ describe('Contacts > Bugs > Bug 67327', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
+		const modCn = Array.isArray(modRes.ModifyContactResponse.cn)
+			? modRes.ModifyContactResponse.cn[0] : modRes.ModifyContactResponse.cn;
+		assert.equal(modCn.tn, tag1Name, 'tn should still match tag1 after replace=1');
+
+		// Modify with replace=0 and both tags
+		const modRes2 = await soap.makeSOAPEnvelopeAccount(
+			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="0">
+				<cn id="${cn.id}" tn="${tag1Name},${tag2Name}">
+					<a n="email">newemail${common.getUniqueString()}@gmail.com</a>
+				</cn>
+			</ModifyContactRequest>`, accountToken
+		);
+		assert.notExists(modRes2.Fault, 'Modify with both tags should not fault');
+		const modCn2 = Array.isArray(modRes2.ModifyContactResponse.cn)
+			? modRes2.ModifyContactResponse.cn[0] : modRes2.ModifyContactResponse.cn;
+		assert.include(modCn2.tn, tag1Name, 'tn should contain tag1');
+		assert.include(modCn2.tn, tag2Name, 'tn should contain tag2');
+
+		// Modify with replace=0 and only tag1
+		const modRes3 = await soap.makeSOAPEnvelopeAccount(
+			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="0">
+				<cn id="${cn.id}" tn="${tag1Name}">
+					<a n="email">newemail${common.getUniqueString()}@gmail.com</a>
+				</cn>
+			</ModifyContactRequest>`, accountToken
+		);
+		assert.notExists(modRes3.Fault, 'Modify with tag1 only should not fault');
+		const modCn3 = Array.isArray(modRes3.ModifyContactResponse.cn)
+			? modRes3.ModifyContactResponse.cn[0] : modRes3.ModifyContactResponse.cn;
+		assert.equal(modCn3.tn, tag1Name, 'tn should match tag1 only');
 	});
 
 
@@ -153,6 +200,7 @@ describe('Contacts > Bugs > Bug 67327', function () {
 		);
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
@@ -165,6 +213,9 @@ describe('Contacts > Bugs > Bug 67327', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
+		const modCn = Array.isArray(modRes.ModifyContactResponse.cn)
+			? modRes.ModifyContactResponse.cn[0] : modRes.ModifyContactResponse.cn;
+		assert.exists(modCn.tn, 'tn should exist');
 	});
 
 
@@ -180,6 +231,7 @@ describe('Contacts > Bugs > Bug 67327', function () {
 		);
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
@@ -192,5 +244,8 @@ describe('Contacts > Bugs > Bug 67327', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
+		const modCn = Array.isArray(modRes.ModifyContactResponse.cn)
+			? modRes.ModifyContactResponse.cn[0] : modRes.ModifyContactResponse.cn;
+		assert.equal(modCn.tn, tag3Name, 'tn should match tag3');
 	});
 });

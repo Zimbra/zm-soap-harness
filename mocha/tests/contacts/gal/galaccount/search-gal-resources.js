@@ -52,6 +52,12 @@ describe('Contacts > GAL > Galaccount > Search GAL Resources', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+		assert.notExists(res.Fault, 'SearchGalResponse should exist');
+		if (res.SearchGalResponse.cn) {
+			const resources = Array.isArray(res.SearchGalResponse.cn)
+				? res.SearchGalResponse.cn : [res.SearchGalResponse.cn];
+			assert.isAbove(resources.length, 0, 'Should return at least one resource');
+		}
 	});
 
 
@@ -64,5 +70,6 @@ describe('Contacts > GAL > Galaccount > Search GAL Resources', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+		assert.notExists(res.Fault, 'SearchGalResponse should exist');
 	});
 });

@@ -66,6 +66,7 @@ describe('Contacts > Contact Modify Replacemode', function () {
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact ID should exist');
 
 		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
@@ -82,6 +83,13 @@ describe('Contacts > Contact Modify Replacemode', function () {
 		const modCn = Array.isArray(modRes.ModifyContactResponse.cn)
 			? modRes.ModifyContactResponse.cn[0] : modRes.ModifyContactResponse.cn;
 		assert.exists(modCn.id, 'Modified contact id should exist');
+		const modAttrs = Array.isArray(modCn.a) ? modCn.a : [modCn.a];
+		const smimeVals = modAttrs.filter(a => a.n === 'userSMIMECertificate').map(a => a._content);
+		assert.include(smimeVals, smime1, 'Original smime should still exist');
+		assert.include(smimeVals, smime2, 'New smime should be added');
+		const certVals = modAttrs.filter(a => a.n === 'userCertificate').map(a => a._content);
+		assert.include(certVals, cert1, 'Original cert should still exist');
+		assert.include(certVals, cert2, 'New cert should be added');
 	});
 
 
@@ -108,6 +116,7 @@ describe('Contacts > Contact Modify Replacemode', function () {
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact ID should exist');
 
 		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
@@ -123,6 +132,14 @@ describe('Contacts > Contact Modify Replacemode', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
+		const modCn = Array.isArray(modRes.ModifyContactResponse.cn)
+			? modRes.ModifyContactResponse.cn[0] : modRes.ModifyContactResponse.cn;
+		assert.exists(modCn.id, 'Modified contact ID should exist');
+		const modAttrs = Array.isArray(modCn.a) ? modCn.a : [modCn.a];
+		const smimeVals = modAttrs.filter(a => a.n === 'userSMIMECertificate').map(a => a._content);
+		assert.include(smimeVals, smime2, 'New smime2 should exist');
+		const certVals = modAttrs.filter(a => a.n === 'userCertificate').map(a => a._content);
+		assert.include(certVals, cert2, 'New cert2 should exist');
 	});
 
 
@@ -149,6 +166,7 @@ describe('Contacts > Contact Modify Replacemode', function () {
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact ID should exist');
 
 		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
@@ -164,6 +182,14 @@ describe('Contacts > Contact Modify Replacemode', function () {
 
 		// Verify response
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
+		const modCn = Array.isArray(modRes.ModifyContactResponse.cn)
+			? modRes.ModifyContactResponse.cn[0] : modRes.ModifyContactResponse.cn;
+		assert.exists(modCn.id, 'Modified contact ID should exist');
+		const modAttrs = modCn.a ? (Array.isArray(modCn.a) ? modCn.a : [modCn.a]) : [];
+		const smimeAttr = modAttrs.find(a => a.n === 'userSMIMECertificate');
+		assert.notExists(smimeAttr, 'userSMIMECertificate should be removed');
+		const certAttr = modAttrs.find(a => a.n === 'userCertificate');
+		assert.notExists(certAttr, 'userCertificate should be removed');
 	});
 
 
@@ -188,6 +214,7 @@ describe('Contacts > Contact Modify Replacemode', function () {
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact ID should exist');
 
 		// Modify the contact
 		const mod1 = await soap.makeSOAPEnvelopeAccount(
@@ -242,6 +269,7 @@ describe('Contacts > Contact Modify Replacemode', function () {
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact ID should exist');
 
 		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
@@ -258,5 +286,12 @@ describe('Contacts > Contact Modify Replacemode', function () {
 		const modCn = Array.isArray(modRes.ModifyContactResponse.cn)
 			? modRes.ModifyContactResponse.cn[0] : modRes.ModifyContactResponse.cn;
 		assert.exists(modCn.id, 'Modified contact id should exist');
+		const modAttrs = Array.isArray(modCn.a) ? modCn.a : [modCn.a];
+		const smimeVals = modAttrs.filter(a => a.n === 'userSMIMECertificate').map(a => a._content);
+		assert.notInclude(smimeVals, smime1, 'Old smime1 should not exist after replace=1');
+		assert.include(smimeVals, smime2, 'New smime2 should exist after replace=1');
+		const certVals = modAttrs.filter(a => a.n === 'userCertificate').map(a => a._content);
+		assert.notInclude(certVals, cert1, 'Old cert1 should not exist after replace=1');
+		assert.include(certVals, cert2, 'New cert2 should exist after replace=1');
 	});
 });

@@ -33,5 +33,5 @@ Whenever the user asks you to migrate tests, fix failing tests, or write new tes
 5.  **Multi-Step Assertions**: Never just check `assert.exists(res.Response)`. Always drill down into the response tree matching the XML `t:select path` and validate exact attributes.
 6.  **Failures & Faults**: Always check for faults FIRST (`assert.notExists(res.Fault, ...)`). If the test *expects* a fault, pass `false` as the third parameter to the SOAP wrapper (`makeSOAPEnvelope*(..., ..., false)`) to prevent auto-retrying.
 7.  **Format Afterwards**: Always run the formatting scripts from `.agent/scripts` or run `npx eslint --fix` after touching files.
-
+8.  **Missing Tests = Migrate**: If any `t:select` assertion or any smoke, sanity, functional, or regression test from an XML file is missing its JS counterpart, **create the JS file and migrate the test with full 1:1 parity**. Do NOT skip or ignore missing tests. Follow the `/xml-to-js-migration` and `/xml-to-js-assertions` workflows.
 By strictly following these references, you ensure the CI builds pass and the project retains a consistent, maintainable legacy upgrade path.

@@ -52,6 +52,9 @@ describe('Contacts > GAL > Galaccount > Bug 62353', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAbove(matches.length, 0, 'Should return at least one match for test');
 	});
 
 
@@ -64,5 +67,8 @@ describe('Contacts > GAL > Galaccount > Bug 62353', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAbove(matches.length, 0, 'Should return at least one match for admin');
 	});
 });

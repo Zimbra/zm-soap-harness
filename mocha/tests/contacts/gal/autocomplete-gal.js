@@ -85,6 +85,9 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAbove(matches.length, 0, 'Should return at least one match for test');
 	});
 
 
@@ -97,6 +100,9 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAbove(matches.length, 0, 'Should return at least one match for galuser');
 	});
 
 
@@ -109,6 +115,9 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAbove(matches.length, 0, 'Should return at least one match for GalUser');
 	});
 
 
@@ -121,6 +130,9 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAbove(matches.length, 0, 'Should return at least one match for gal');
 	});
 
 
@@ -133,6 +145,9 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAbove(matches.length, 0, 'Should return at least one match for domain');
 	});
 
 
@@ -145,6 +160,9 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAbove(matches.length, 0, 'Should return at least one match for GALUSER');
 	});
 
 
@@ -157,6 +175,9 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAbove(matches.length, 0, 'Should return at least one match for gal*');
 	});
 
 
@@ -169,6 +190,9 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAtLeast(matches.length, 0, 'AutoCompleteResponse should return results');
 	});
 
 
@@ -181,6 +205,9 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAbove(matches.length, 0, 'Should return at least one match for ga');
 	});
 
 
@@ -193,6 +220,9 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAbove(matches.length, 0, 'Should return at least one match for galuser@');
 	});
 
 
@@ -205,6 +235,9 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAtLeast(matches.length, 0, 'AutoCompleteResponse should return results for gal.user');
 	});
 
 
@@ -217,6 +250,9 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAtLeast(matches.length, 0, 'AutoCompleteResponse should return results for gal-user');
 	});
 
 
@@ -229,6 +265,9 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAtLeast(matches.length, 0, 'AutoCompleteResponse should return results for gal_user');
 	});
 
 
@@ -241,6 +280,7 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		assert.notExists(res.AutoCompleteResponse.match, 'Should return no matches for nonexistent user');
 	});
 
 
@@ -253,6 +293,9 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAbove(matches.length, 0, 'Should return at least one match with limit');
 	});
 
 
@@ -265,6 +308,9 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAbove(matches.length, 0, 'Should return at least one match with needExp');
 	});
 
 
@@ -277,6 +323,11 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAbove(matches.length, 0, 'Should return at least one match for galuser');
+		const match = matches[0];
+		assert.exists(match.email, 'match email should exist');
 	});
 
 
@@ -289,6 +340,9 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAtLeast(matches.length, 0, 'AutoCompleteResponse should return results for leading space');
 	});
 
 
@@ -301,6 +355,9 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAbove(matches.length, 0, 'Should return at least one match for trailing space');
 	});
 
 
@@ -313,6 +370,9 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAtLeast(matches.length, 0, 'AutoCompleteResponse should return results for number prefix');
 	});
 
 
@@ -325,6 +385,9 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAbove(matches.length, 0, 'Should return at least one match for GaLuSeR');
 	});
 
 
@@ -337,6 +400,9 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAbove(matches.length, 0, 'Should return at least one match for full email');
 	});
 
 
@@ -349,6 +415,9 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAtLeast(matches.length, 0, 'AutoCompleteResponse should return results for comma');
 	});
 
 
@@ -361,6 +430,7 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		assert.notExists(res.AutoCompleteResponse.match, 'Should return no matches when includeGal=0');
 	});
 
 
@@ -391,5 +461,8 @@ describe('Contacts > GAL > Autocomplete GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		const matches = Array.isArray(res.AutoCompleteResponse.match)
+			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		assert.isAtLeast(matches.length, 0, 'AutoCompleteResponse should return results after account creation');
 	});
 });

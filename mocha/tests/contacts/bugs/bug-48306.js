@@ -53,7 +53,49 @@ describe('Contacts > Bugs > Bug 48306', function () {
 			</ImportContactsRequest>`, accountToken
 		);
 
-		// Verify response
+		// Verify import response
 		assert.notExists(importRes.Fault, 'Import should not be a Fault');
+		const importCn = Array.isArray(importRes.ImportContactsResponse.cn)
+			? importRes.ImportContactsResponse.cn[0] : importRes.ImportContactsResponse.cn;
+		assert.equal(importCn.n, '1', 'Import should count 1 contact');
+		assert.exists(importCn.ids, 'Import cn should have ids');
+		const contactId = importCn.ids;
+
+		// Get folder structure
+		const folderRes = await soap.makeSOAPEnvelopeAccount(
+			`<GetFolderRequest xmlns="urn:zimbraMail"/>`, accountToken
+		);
+		assert.notExists(folderRes.Fault, 'GetFolder should not fault');
+		const rootFolder = Array.isArray(folderRes.GetFolderResponse.folder)
+			? folderRes.GetFolderResponse.folder[0] : folderRes.GetFolderResponse.folder;
+		const folders = Array.isArray(rootFolder.folder) ? rootFolder.folder : [rootFolder.folder];
+		const inboxFolder = folders.find(f => f.name === 'Inbox');
+		assert.exists(inboxFolder, 'Inbox folder should exist');
+		assert.exists(inboxFolder.id, 'Inbox folder id should exist');
+		const trashFolder = folders.find(f => f.name === 'Trash');
+		assert.exists(trashFolder, 'Trash folder should exist');
+		const sentFolder = folders.find(f => f.name === 'Sent');
+		assert.exists(sentFolder, 'Sent folder should exist');
+
+		// Get the imported contact
+		const getRes = await soap.makeSOAPEnvelopeAccount(
+			`<GetContactsRequest xmlns="urn:zimbraMail">
+				<cn id="${contactId}"/>
+			</GetContactsRequest>`, accountToken
+		);
+
+		// Verify contact details
+		assert.notExists(getRes.Fault, 'GetContacts should not be a Fault');
+		const getCn = Array.isArray(getRes.GetContactsResponse.cn)
+			? getRes.GetContactsResponse.cn[0] : getRes.GetContactsResponse.cn;
+		const getAttrArr = Array.isArray(getCn.a) ? getCn.a : [getCn.a];
+		const getAttr = (name) => {
+			const found = getAttrArr.find(a => a.n === name);
+			return found ? found._content : undefined;
+		};
+		assert.equal(getAttr('custom1'), 'Street Dog', 'custom1 should match');
+		assert.equal(getAttr('email'), 'scruffy@not.fatkudu.net', 'email should match');
+		assert.equal(getAttr('birthday'), '2003-08-28', 'birthday should match');
+		assert.equal(getAttr('firstName'), 'Scruffy', 'firstName should match');
 	});
 });

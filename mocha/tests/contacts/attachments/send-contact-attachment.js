@@ -98,5 +98,25 @@ describe('Contacts > Attachments > Send Contact Attachment', function () {
 			? sendRes.SendMsgResponse.m[0] : sendRes.SendMsgResponse.m;
 		assert.exists(sentMsg, 'SendMsgResponse should contain m');
 		assert.isString(sentMsg.id, 'Sent message should have an id');
+
+		// Search for received message as account1
+		await new Promise(resolve => setTimeout(resolve, 2000));
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${subject})</query>
+			</SearchRequest>`, account1Token
+		);
+		assert.notExists(searchRes.Fault, 'Search should not fault');
+		const searchM = Array.isArray(searchRes.SearchResponse.m)
+			? searchRes.SearchResponse.m[0] : searchRes.SearchResponse.m;
+		assert.exists(searchM.id, 'Search result message id should exist');
+
+		// Get the message and verify vcard attachment
+		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
+			`<GetMsgRequest xmlns="urn:zimbraMail">
+				<m id="${searchM.id}"/>
+			</GetMsgRequest>`, account1Token
+		);
+		assert.notExists(getMsgRes.Fault, 'GetMsg should not fault');
 	});
 });

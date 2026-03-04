@@ -52,6 +52,13 @@ describe('Contacts > GAL > ZCS 455', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+		assert.exists(res.SearchGalResponse.cn, 'SearchGalResponse cn should exist');
+		const cnArr = Array.isArray(res.SearchGalResponse.cn)
+			? res.SearchGalResponse.cn : [res.SearchGalResponse.cn];
+		assert.isAbove(cnArr.length, 0, 'Should return at least one contact');
+		assert.exists(cnArr[0].id, 'First cn should have id');
+		const emailAttr = cnArr[0].a ? (Array.isArray(cnArr[0].a) ? cnArr[0].a : [cnArr[0].a]).find(a => a.n === 'email') : null;
+		assert.exists(emailAttr, 'cn should have email attribute');
 	});
 
 
@@ -64,5 +71,10 @@ describe('Contacts > GAL > ZCS 455', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+		assert.exists(res.SearchGalResponse.cn, 'SearchGalResponse cn should exist');
+		const cnArr = Array.isArray(res.SearchGalResponse.cn)
+			? res.SearchGalResponse.cn : [res.SearchGalResponse.cn];
+		assert.isAbove(cnArr.length, 0, 'Should return at least one contact');
+		assert.exists(cnArr[0].id, 'First cn should have id');
 	});
 });

@@ -50,6 +50,9 @@ describe('Contacts > Contacts Import', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'Response should not be a Fault');
+		const importCn = Array.isArray(res.ImportContactsResponse.cn)
+			? res.ImportContactsResponse.cn[0] : res.ImportContactsResponse.cn;
+		assert.equal(String(importCn.n), '0', 'Import count should be 0');
 	});
 
 	// Applicable zimbra versions
@@ -74,6 +77,7 @@ describe('Contacts > Contacts Import', function () {
 		const importCn = Array.isArray(res.ImportContactsResponse.cn)
 			? res.ImportContactsResponse.cn[0] : res.ImportContactsResponse.cn;
 		assert.exists(importCn.ids, 'Import cn should have ids');
+		assert.equal(String(importCn.n), '1', 'Import count should be 1');
 	});
 
 
@@ -95,6 +99,7 @@ describe('Contacts > Contacts Import', function () {
 		const importCn = Array.isArray(res.ImportContactsResponse.cn)
 			? res.ImportContactsResponse.cn[0] : res.ImportContactsResponse.cn;
 		assert.exists(importCn.ids, 'Import cn should have ids');
+		assert.equal(String(importCn.n), '5', 'Import count should be 5');
 	});
 
 
@@ -140,6 +145,7 @@ describe('Contacts > Contacts Import', function () {
 
 		// Verify response
 		assert.isString(res.Fault.Detail.Error.Code, 'Response should be a Fault');
+		assert.include(res.Fault.Detail.Error.Code, 'mail.UNABLE_TO_IMPORT_CONTACTS', 'Error code should be mail.UNABLE_TO_IMPORT_CONTACTS');
 	});
 
 
@@ -177,6 +183,7 @@ describe('Contacts > Contacts Import', function () {
 		const importCn = Array.isArray(res.ImportContactsResponse.cn)
 			? res.ImportContactsResponse.cn[0] : res.ImportContactsResponse.cn;
 		assert.exists(importCn.ids, 'Import cn should have ids');
+		assert.equal(String(importCn.n), '1', 'Import count should be 1');
 	});
 
 
@@ -192,6 +199,9 @@ describe('Contacts > Contacts Import', function () {
 
 		// Verify response
 		assert.notExists(importRes.Fault, 'Import should not be a Fault');
+		const tbCn = Array.isArray(importRes.ImportContactsResponse.cn)
+			? importRes.ImportContactsResponse.cn[0] : importRes.ImportContactsResponse.cn;
+		assert.exists(tbCn.ids, 'Import cn should have ids');
 	});
 
 
@@ -222,5 +232,9 @@ describe('Contacts > Contacts Import', function () {
 
 		// Verify response
 		assert.notExists(importRes.Fault, 'Bulk import should not be a Fault');
+		const bulkCn = Array.isArray(importRes.ImportContactsResponse.cn)
+			? importRes.ImportContactsResponse.cn[0] : importRes.ImportContactsResponse.cn;
+		assert.exists(bulkCn.ids, 'Import cn should have ids');
+		assert.equal(String(bulkCn.n), '5', 'Import count should be 5');
 	});
 });

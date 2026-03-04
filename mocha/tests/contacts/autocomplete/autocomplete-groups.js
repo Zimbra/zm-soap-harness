@@ -40,8 +40,10 @@ describe('Contacts > Autocomplete > Autocomplete Groups', function () {
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
+		assert.notExists(contactRes.Fault, 'Create contact should not be a Fault');
 		const cn = Array.isArray(contactRes.CreateContactResponse.cn)
 			? contactRes.CreateContactResponse.cn[0] : contactRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">

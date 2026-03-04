@@ -6,13 +6,18 @@ import { main } from '../../../pages/main.js';
 
 describe('Contacts > Bugs > Bug 48742', function () {
 	this.timeout(120 * 1000);
-	let adminAuthToken, accountEmail, accountToken;
+	let adminAuthToken, accountToken;
+	const contactIds = [];
+	const lastNames = ['いちご', 'イチゴ', 'ｲﾁｺﾞ', '全角ひらがな', '全角カタカナ', '半角',
+		'あああいちごいいい', 'いちごいいい', 'あああいちご',
+		'アアアイチゴイイイ', 'イチゴイイイ', 'アアアイチゴ',
+		'ｱｱｱｲﾁｺﾞｲｲｲ', 'ｲﾁｺﾞｲｲｲ', 'ｱｱｱｲﾁｺﾞ'];
 
 	before(async function () {
 		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
-		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
+		const accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
 		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
@@ -28,13 +33,9 @@ describe('Contacts > Bugs > Bug 48742', function () {
 		assert.exists(host, 'zimbraMailHost should exist');
 		accountToken = await soap.getAccountAuthToken(accountEmail);
 
-		const lastNames = ['いちご', 'イチゴ', 'ｲﾁｺﾞ', '全角ひらがな', '全角カタカナ', '半角',
-			'あああいちごいいい', 'いちごいいい', 'あああいちご',
-			'アアアイチゴイイイ', 'イチゴイイイ', 'アアアイチゴ',
-			'ｱｱｱｲﾁｺﾞｲｲｲ', 'ｲﾁｺﾞｲｲｲ', 'ｱｱｱｲﾁｺﾞ'];
-
+		// Create 15 contacts with Japanese names
 		for (let i = 0; i < lastNames.length; i++) {
-			await soap.makeSOAPEnvelopeAccount(
+			const createRes = await soap.makeSOAPEnvelopeAccount(
 				`<CreateContactRequest xmlns="urn:zimbraMail">
 					<cn>
 						<a n="firstName">Fname${i + 1}</a>
@@ -43,6 +44,11 @@ describe('Contacts > Bugs > Bug 48742', function () {
 					</cn>
 				</CreateContactRequest>`, accountToken
 			);
+			assert.notExists(createRes.Fault, `CreateContact ${i + 1} should not fault`);
+			const cn = Array.isArray(createRes.CreateContactResponse.cn)
+				? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+			assert.exists(cn.id, `Contact ${i + 1} id should exist`);
+			contactIds.push(cn.id);
 		}
 	});
 
@@ -59,51 +65,79 @@ describe('Contacts > Bugs > Bug 48742', function () {
 		return;
 	}
 
+	// Helper: extract firstNames from search results
+	function getFirstNames(searchRes) {
+		assert.notExists(searchRes.Fault, 'Search should not fault');
+		assert.exists(searchRes.SearchResponse.cn, 'SearchResponse should have cn contacts');
+		const contacts = Array.isArray(searchRes.SearchResponse.cn)
+			? searchRes.SearchResponse.cn : [searchRes.SearchResponse.cn];
+		return contacts.map(cn => {
+			const attrs = Array.isArray(cn.a) ? cn.a : (cn.a ? [cn.a] : []);
+			const fn = attrs.find(a => a.n === 'firstName');
+			return fn ? fn._content : '';
+		});
+	}
+
 	// Tests
-	it('Sanity | Search contacts with hiragana いちご', async () => {
+	it('Sanity | Search contacts using and all the 15 contacts should be displayed 1', async () => {
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact" limit="20">
 				<query>いちご</query>
 			</SearchRequest>`, accountToken
 		);
-
-		// Verify response
-		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
+		const firstNames = getFirstNames(searchRes);
+		for (let i = 1; i <= 15; i++) {
+			assert.isTrue(firstNames.some(fn => fn.includes(`Fname${i}`)),
+				`Search results for いちご should contain Fname${i}`);
+		}
 	});
 
 
-	it('Sanity | Search contacts with katakana イチゴ', async () => {
+	it('Sanity | Search contacts using and all the 15 contacts should be displayed 2', async () => {
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact" limit="20">
 				<query>イチゴ</query>
 			</SearchRequest>`, accountToken
 		);
-
-		// Verify response
-		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
+		const firstNames = getFirstNames(searchRes);
+		for (let i = 1; i <= 15; i++) {
+			assert.isTrue(firstNames.some(fn => fn.includes(`Fname${i}`)),
+				`Search results for イチゴ should contain Fname${i}`);
+		}
 	});
 
 
-	it('Sanity | Search contacts with half-width katakana ｲﾁｺﾞ', async () => {
+	it('Sanity | Search contacts using and all the 15 contacts should be displayed 3', async () => {
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact" limit="20">
 				<query>ｲﾁｺﾞ</query>
 			</SearchRequest>`, accountToken
 		);
-
-		// Verify response
-		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
+		const firstNames = getFirstNames(searchRes);
+		for (let i = 1; i <= 15; i++) {
+			assert.isTrue(firstNames.some(fn => fn.includes(`Fname${i}`)),
+				`Search results for ｲﾁｺﾞ should contain Fname${i}`);
+		}
 	});
 
 
-	it('Sanity | Search contacts with full-width hiragana embedded', async () => {
+	it('Sanity | RFE - Find contacts by partial matches', async () => {
+		// Additional verification for nameSuffix partial match contacts (contacts 4,5,6)
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact" limit="20">
 				<query>全角ひらがな</query>
 			</SearchRequest>`, accountToken
 		);
-
-		// Verify response
-		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
+		assert.notExists(searchRes.Fault, 'Search should not fault');
+		assert.exists(searchRes.SearchResponse.cn, 'SearchResponse should have cn contacts');
+		const contacts = Array.isArray(searchRes.SearchResponse.cn)
+			? searchRes.SearchResponse.cn : [searchRes.SearchResponse.cn];
+		const firstNames = contacts.map(cn => {
+			const attrs = Array.isArray(cn.a) ? cn.a : (cn.a ? [cn.a] : []);
+			const fn = attrs.find(a => a.n === 'firstName');
+			return fn ? fn._content : '';
+		});
+		assert.isTrue(firstNames.some(fn => fn.includes('Fname4')),
+			'Search results for 全角ひらがな should contain Fname4');
 	});
 });

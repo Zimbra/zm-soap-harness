@@ -59,6 +59,7 @@ describe('Contacts > Contact Get Group Reference', function () {
 		assert.notExists(refRes.Fault, 'Create ref contact should not be a Fault');
 		const refCn = Array.isArray(refRes.CreateContactResponse.cn)
 			? refRes.CreateContactResponse.cn[0] : refRes.CreateContactResponse.cn;
+		assert.exists(refCn.id, 'Reference contact id should exist');
 
 		// Create group with C and I members
 		const groupRes = await soap.makeSOAPEnvelopeAccount(
@@ -73,6 +74,14 @@ describe('Contacts > Contact Get Group Reference', function () {
 		assert.notExists(groupRes.Fault, 'Create group should not be a Fault');
 		const groupCn = Array.isArray(groupRes.CreateContactResponse.cn)
 			? groupRes.CreateContactResponse.cn[0] : groupRes.CreateContactResponse.cn;
+		assert.exists(groupCn.id, 'Group contact id should exist');
+		const groupMembers = Array.isArray(groupCn.m) ? groupCn.m : [groupCn.m];
+		const cMember = groupMembers.find(m => m.type === 'C');
+		assert.exists(cMember, 'C type member should exist in CreateContactResponse');
+		assert.equal(cMember.value, refCn.id, 'C type member value should match ref contact id');
+		const iMember = groupMembers.find(m => m.type === 'I');
+		assert.exists(iMember, 'I type member should exist in CreateContactResponse');
+		assert.equal(iMember.value, email, 'I type member value should match email');
 
 		// Get contacts with derefGroupMember
 		const getRes = await soap.makeSOAPEnvelopeAccount(
@@ -84,5 +93,12 @@ describe('Contacts > Contact Get Group Reference', function () {
 		const getCn = Array.isArray(getRes.GetContactsResponse.cn)
 			? getRes.GetContactsResponse.cn[0] : getRes.GetContactsResponse.cn;
 		assert.exists(getCn.id, 'Contact id should exist in response');
+		const getMembers = Array.isArray(getCn.m) ? getCn.m : [getCn.m];
+		const getCMember = getMembers.find(m => m.type === 'C');
+		assert.exists(getCMember, 'C type member should exist in GetContactsResponse');
+		assert.equal(getCMember.value, refCn.id, 'C type member value should match ref contact id');
+		const getIMember = getMembers.find(m => m.type === 'I');
+		assert.exists(getIMember, 'I type member should exist in GetContactsResponse');
+		assert.equal(getIMember.value, email, 'I type member value should match email');
 	});
 });

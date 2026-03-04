@@ -6,13 +6,13 @@ import { main } from '../../../pages/main.js';
 
 describe('Contacts > Bugs > Bug 75912', function () {
 	this.timeout(120 * 1000);
-	let adminAuthToken, accountEmail, accountToken;
+	let adminAuthToken, accountToken;
 
 	before(async function () {
 		await main.before(this);
 		adminAuthToken = await soap.getAdminAuthToken();
 
-		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
+		const accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
 		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
@@ -43,86 +43,211 @@ describe('Contacts > Bugs > Bug 75912', function () {
 	}
 
 	// Tests
-	it('Sanity | Modify contact with replace=0 preserves existing fields', async () => {
-		const createRes = await soap.makeSOAPEnvelopeAccount(
+	it('Sanity | ModifyContactRequest(ReplaceMode 0) needs way to remove all m nodes 1', async () => {
+		// Create a contact reference
+		const contactEmail = `email${common.getUniqueString()}@domain.com`;
+		const createRefRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
-					<a n="firstName">First${common.getUniqueString()}</a>
-					<a n="lastName">Last${common.getUniqueString()}</a>
-					<a n="email">email${common.getUniqueString()}@hotmail.com</a>
-					<a n="company">Company1</a>
+					<a n="firstName">First.${common.getUniqueString()}</a>
+					<a n="lastName">Last.${common.getUniqueString()}</a>
+					<a n="email">${contactEmail}</a>
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
-		const cn = Array.isArray(createRes.CreateContactResponse.cn)
-			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.notExists(createRefRes.Fault, 'CreateContact ref should not fault');
+		const refCn = Array.isArray(createRefRes.CreateContactResponse.cn)
+			? createRefRes.CreateContactResponse.cn[0] : createRefRes.CreateContactResponse.cn;
+		const contactRefId = refCn.id;
+		assert.exists(contactRefId, 'Contact ref id should exist');
 
-		// Modify the contact
-		const modRes = await soap.makeSOAPEnvelopeAccount(
+		// Create contact group with members
+		const inlineEmail = `email${common.getUniqueString()}@domain.com`;
+		const groupEmail = `group${common.getUniqueString()}@domain.com`;
+		const createGroupRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateContactRequest xmlns="urn:zimbraMail" replace="0">
+				<cn fileAsStr="${groupEmail}">
+					<a n="filesAs">${groupEmail}</a>
+					<a n="type">group</a>
+					<m type="C" value="${contactRefId}"/>
+					<m type="I" value="${inlineEmail}"/>
+				</cn>
+			</CreateContactRequest>`, accountToken
+		);
+		assert.notExists(createGroupRes.Fault, 'CreateContactGroup should not fault');
+		const groupCn = Array.isArray(createGroupRes.CreateContactResponse.cn)
+			? createGroupRes.CreateContactResponse.cn[0] : createGroupRes.CreateContactResponse.cn;
+		const groupId = groupCn.id;
+		assert.exists(groupId, 'Group id should exist');
+		// Verify members exist in create response
+		const members = Array.isArray(groupCn.m) ? groupCn.m : (groupCn.m ? [groupCn.m] : []);
+		const cMember = members.find(m => m.type === 'C');
+		assert.exists(cMember, 'C member should exist');
+		assert.equal(cMember.value, contactRefId, 'C member value should match contact ref id');
+		const iMember = members.find(m => m.type === 'I');
+		assert.exists(iMember, 'I member should exist');
+		assert.equal(iMember.value, inlineEmail, 'I member value should match inline email');
+
+		// Modify group with replace=0 and m op=reset to drop all members
+		const modifyRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="0">
-				<cn id="${cn.id}">
-					<a n="jobTitle">Engineer</a>
+				<cn id="${groupId}">
+					<a n="type">group</a>
+					<m op="reset"/>
 				</cn>
 			</ModifyContactRequest>`, accountToken
 		);
-
-		// Verify response
-		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
+		assert.notExists(modifyRes.Fault, 'ModifyContact reset should not fault');
+		const modCn = Array.isArray(modifyRes.ModifyContactResponse.cn)
+			? modifyRes.ModifyContactResponse.cn[0] : modifyRes.ModifyContactResponse.cn;
+		assert.exists(modCn.id, 'Modified contact group id should exist');
+		// Verify members are dropped (emptyset)
+		const modMembers = Array.isArray(modCn.m) ? modCn.m : (modCn.m ? [modCn.m] : []);
+		const modCMember = modMembers.find(m => m.type === 'C' && m.value === contactRefId);
+		assert.notExists(modCMember, 'C member should be dropped after reset (emptyset)');
+		const modIMember = modMembers.find(m => m.type === 'I' && m.value === inlineEmail);
+		assert.notExists(modIMember, 'I member should be dropped after reset (emptyset)');
 	});
 
 
-	it('Sanity | Modify contact with replace=1 replaces all fields', async () => {
-		const createRes = await soap.makeSOAPEnvelopeAccount(
+	it('Sanity | ModifyContactRequest(ReplaceMode 0) needs way to remove all m nodes 2', async () => {
+		// Create a contact reference
+		const contactEmail = `email1${common.getUniqueString()}@domain.com`;
+		const createRefRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
-					<a n="firstName">First${common.getUniqueString()}</a>
-					<a n="lastName">Last${common.getUniqueString()}</a>
-					<a n="email">email${common.getUniqueString()}@hotmail.com</a>
-					<a n="company">Company2</a>
+					<a n="firstName">First1.${common.getUniqueString()}</a>
+					<a n="lastName">Last1.${common.getUniqueString()}</a>
+					<a n="email">${contactEmail}</a>
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
-		const cn = Array.isArray(createRes.CreateContactResponse.cn)
-			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.notExists(createRefRes.Fault, 'CreateContact ref should not fault');
+		const refCn = Array.isArray(createRefRes.CreateContactResponse.cn)
+			? createRefRes.CreateContactResponse.cn[0] : createRefRes.CreateContactResponse.cn;
+		const contactRefId = refCn.id;
+		assert.exists(contactRefId, 'Contact ref id should exist');
 
-		// Modify the contact
-		const modRes = await soap.makeSOAPEnvelopeAccount(
+		// Create contact group with members
+		const inlineEmail = `email${common.getUniqueString()}@domain.com`;
+		const groupEmail = `group1${common.getUniqueString()}@domain.com`;
+		const createGroupRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateContactRequest xmlns="urn:zimbraMail">
+				<cn fileAsStr="${groupEmail}">
+					<a n="filesAs">${groupEmail}</a>
+					<a n="type">group</a>
+					<m type="C" value="${contactRefId}"/>
+					<m type="I" value="${inlineEmail}"/>
+				</cn>
+			</CreateContactRequest>`, accountToken
+		);
+		assert.notExists(createGroupRes.Fault, 'CreateContactGroup should not fault');
+		const groupCn = Array.isArray(createGroupRes.CreateContactResponse.cn)
+			? createGroupRes.CreateContactResponse.cn[0] : createGroupRes.CreateContactResponse.cn;
+		const groupId = groupCn.id;
+		assert.exists(groupId, 'Group id should exist');
+		const members = Array.isArray(groupCn.m) ? groupCn.m : (groupCn.m ? [groupCn.m] : []);
+		const cMember = members.find(m => m.type === 'C');
+		assert.exists(cMember, 'C member should exist');
+		assert.equal(cMember.value, contactRefId, 'C member value should match');
+		const iMember = members.find(m => m.type === 'I');
+		assert.exists(iMember, 'I member should exist');
+		assert.equal(iMember.value, inlineEmail, 'I member value should match');
+
+		// Modify group: reset all members
+		const modifyRes = await soap.makeSOAPEnvelopeAccount(
+			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="0">
+				<cn id="${groupId}">
+					<a n="type">group</a>
+					<m op="reset"/>
+				</cn>
+			</ModifyContactRequest>`, accountToken
+		);
+		assert.notExists(modifyRes.Fault, 'ModifyContact reset should not fault');
+		const modCn = Array.isArray(modifyRes.ModifyContactResponse.cn)
+			? modifyRes.ModifyContactResponse.cn[0] : modifyRes.ModifyContactResponse.cn;
+		assert.exists(modCn.id, 'Modified contact group id should exist');
+		let modMembers = Array.isArray(modCn.m) ? modCn.m : (modCn.m ? [modCn.m] : []);
+		assert.notExists(modMembers.find(m => m.type === 'C' && m.value === contactRefId),
+			'C member should be dropped after reset (emptyset)');
+		assert.notExists(modMembers.find(m => m.type === 'I' && m.value === inlineEmail),
+			'I member should be dropped after reset (emptyset)');
+
+		// Re-add members using op="+"
+		const newInlineEmail = `email3${common.getUniqueString()}@domain.com`;
+		const readdRes = await soap.makeSOAPEnvelopeAccount(
+			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="0">
+				<cn id="${groupId}">
+					<a n="filesAs">${groupEmail}</a>
+					<a n="type">group</a>
+					<m op="+" type="C" value="${contactRefId}"/>
+					<m op="+" type="I" value="${newInlineEmail}"/>
+				</cn>
+			</ModifyContactRequest>`, accountToken
+		);
+		assert.notExists(readdRes.Fault, 'ModifyContact re-add should not fault');
+		const readdCn = Array.isArray(readdRes.ModifyContactResponse.cn)
+			? readdRes.ModifyContactResponse.cn[0] : readdRes.ModifyContactResponse.cn;
+		assert.exists(readdCn.id, 'Re-added group id should exist');
+		modMembers = Array.isArray(readdCn.m) ? readdCn.m : (readdCn.m ? [readdCn.m] : []);
+		assert.exists(modMembers.find(m => m.type === 'C' && m.value === contactRefId),
+			'C member should be re-added');
+		assert.exists(modMembers.find(m => m.type === 'I' && m.value === newInlineEmail),
+			'I member should be re-added');
+	});
+
+
+	it('Sanity | Send ModifyContactRequest(ReplaceMode 1) and m op reset', async () => {
+		// Create a contact reference
+		const contactEmail = `email2${common.getUniqueString()}@domain.com`;
+		const createRefRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateContactRequest xmlns="urn:zimbraMail">
+				<cn>
+					<a n="firstName">First2.${common.getUniqueString()}</a>
+					<a n="lastName">Last2.${common.getUniqueString()}</a>
+					<a n="email">${contactEmail}</a>
+				</cn>
+			</CreateContactRequest>`, accountToken
+		);
+		assert.notExists(createRefRes.Fault, 'CreateContact ref should not fault');
+		const refCn = Array.isArray(createRefRes.CreateContactResponse.cn)
+			? createRefRes.CreateContactResponse.cn[0] : createRefRes.CreateContactResponse.cn;
+		const contactRefId = refCn.id;
+		assert.exists(contactRefId, 'Contact ref id should exist');
+
+		// Create contact group
+		const inlineEmail = `email3${common.getUniqueString()}@domain.com`;
+		const groupEmail = `group3${common.getUniqueString()}@domain.com`;
+		const createGroupRes = await soap.makeSOAPEnvelopeAccount(
+			`<CreateContactRequest xmlns="urn:zimbraMail">
+				<cn fileAsStr="${groupEmail}">
+					<a n="filesAs">${groupEmail}</a>
+					<a n="type">group</a>
+					<m type="C" value="${contactRefId}"/>
+					<m type="I" value="${inlineEmail}"/>
+				</cn>
+			</CreateContactRequest>`, accountToken
+		);
+		assert.notExists(createGroupRes.Fault, 'CreateContactGroup should not fault');
+		const groupCn = Array.isArray(createGroupRes.CreateContactResponse.cn)
+			? createGroupRes.CreateContactResponse.cn[0] : createGroupRes.CreateContactResponse.cn;
+		const groupId = groupCn.id;
+		assert.exists(groupId, 'Group id should exist');
+		const members = Array.isArray(groupCn.m) ? groupCn.m : (groupCn.m ? [groupCn.m] : []);
+		assert.exists(members.find(m => m.type === 'C' && m.value === contactRefId), 'C member should exist');
+		assert.exists(members.find(m => m.type === 'I' && m.value === inlineEmail), 'I member should exist');
+
+		// Modify group with replace=1 and m op=reset — should return service.INVALID_REQUEST
+		const modifyRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="1">
-				<cn id="${cn.id}">
-					<a n="firstName">NewFirst${common.getUniqueString()}</a>
-					<a n="email">newemail${common.getUniqueString()}@gmail.com</a>
+				<cn id="${groupId}">
+					<a n="type">group</a>
+					<m op="reset"/>
 				</cn>
-			</ModifyContactRequest>`, accountToken
+			</ModifyContactRequest>`, accountToken, false
 		);
-
-		// Verify response
-		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
-	});
-
-
-	it('Sanity | Modify contact with force=1', async () => {
-		const createRes = await soap.makeSOAPEnvelopeAccount(
-			`<CreateContactRequest xmlns="urn:zimbraMail">
-				<cn>
-					<a n="firstName">First${common.getUniqueString()}</a>
-					<a n="lastName">Last${common.getUniqueString()}</a>
-					<a n="email">email${common.getUniqueString()}@hotmail.com</a>
-				</cn>
-			</CreateContactRequest>`, accountToken
-		);
-		const cn = Array.isArray(createRes.CreateContactResponse.cn)
-			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
-
-		// Modify the contact
-		const modRes = await soap.makeSOAPEnvelopeAccount(
-			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="0" force="1">
-				<cn id="${cn.id}">
-					<a n="email">force${common.getUniqueString()}@gmail.com</a>
-				</cn>
-			</ModifyContactRequest>`, accountToken
-		);
-
-		// Verify response
-		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
+		assert.exists(modifyRes.Fault, 'Replace=1 with reset should fault');
+		assert.match(modifyRes.Fault.Detail.Error.Code, /^service\.INVALID_REQUEST/,
+			'Error code should be service.INVALID_REQUEST');
 	});
 });

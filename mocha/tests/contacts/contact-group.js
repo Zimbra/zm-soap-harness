@@ -98,6 +98,14 @@ describe('Contacts > Contact Group', function () {
 			</SearchRequest>`, account1Token
 		);
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
+		const searchCn = Array.isArray(searchRes.SearchResponse.cn)
+			? searchRes.SearchResponse.cn[0] : searchRes.SearchResponse.cn;
+		assert.exists(searchCn.id, 'Search result id should exist');
+		assert.equal(searchCn.fileAsStr, groupName, 'fileAsStr should match group name');
+		const sAttrs = Array.isArray(searchCn.a) ? searchCn.a : [searchCn.a];
+		assert.equal(sAttrs.find(a => a.n === 'nickname')._content, groupName, 'nickname should match');
+		assert.equal(sAttrs.find(a => a.n === 'type')._content, 'group', 'type should be group');
+		assert.exists(sAttrs.find(a => a.n === 'dlist'), 'dlist should exist');
 	});
 
 
@@ -118,6 +126,7 @@ describe('Contacts > Contact Group', function () {
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Group id should exist');
 
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="0">
@@ -127,6 +136,23 @@ describe('Contacts > Contact Group', function () {
 			</ModifyContactRequest>`, account1Token
 		);
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
+		const modCn = Array.isArray(modRes.ModifyContactResponse.cn)
+			? modRes.ModifyContactResponse.cn[0] : modRes.ModifyContactResponse.cn;
+		assert.exists(modCn.id, 'ModifyContactResponse cn id should exist');
+
+		// Verify modified group via search
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
+				<query>contact:(${groupName})</query>
+			</SearchRequest>`, account1Token
+		);
+		assert.notExists(searchRes.Fault, 'Search should not fault');
+		const searchCn = Array.isArray(searchRes.SearchResponse.cn)
+			? searchRes.SearchResponse.cn[0] : searchRes.SearchResponse.cn;
+		assert.equal(searchCn.fileAsStr, groupName, 'fileAsStr should match');
+		const sAttrs = Array.isArray(searchCn.a) ? searchCn.a : [searchCn.a];
+		assert.equal(sAttrs.find(a => a.n === 'nickname')._content, groupName, 'nickname should match');
+		assert.equal(sAttrs.find(a => a.n === 'type')._content, 'group', 'type should be group');
 	});
 
 
@@ -145,6 +171,7 @@ describe('Contacts > Contact Group', function () {
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="1">
@@ -157,6 +184,23 @@ describe('Contacts > Contact Group', function () {
 			</ModifyContactRequest>`, account1Token
 		);
 		assert.notExists(modRes.Fault, 'Modify should not be a Fault');
+		const modCn = Array.isArray(modRes.ModifyContactResponse.cn)
+			? modRes.ModifyContactResponse.cn[0] : modRes.ModifyContactResponse.cn;
+		assert.exists(modCn.id, 'ModifyContactResponse cn id should exist');
+
+		// Verify modified group via search
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
+				<query>contact:(${groupName})</query>
+			</SearchRequest>`, account1Token
+		);
+		assert.notExists(searchRes.Fault, 'Search should not fault');
+		const searchCn = Array.isArray(searchRes.SearchResponse.cn)
+			? searchRes.SearchResponse.cn[0] : searchRes.SearchResponse.cn;
+		assert.equal(searchCn.fileAsStr, groupName, 'fileAsStr should match');
+		const sAttrs = Array.isArray(searchCn.a) ? searchCn.a : [searchCn.a];
+		assert.equal(sAttrs.find(a => a.n === 'nickname')._content, groupName, 'nickname should match');
+		assert.equal(sAttrs.find(a => a.n === 'type')._content, 'group', 'type should be group');
 	});
 
 
@@ -192,6 +236,7 @@ describe('Contacts > Contact Group', function () {
 		assert.notExists(createFolderRes.Fault, 'CreateFolder should not be a Fault');
 		const folder = Array.isArray(createFolderRes.CreateFolderResponse.folder)
 			? createFolderRes.CreateFolderResponse.folder[0] : createFolderRes.CreateFolderResponse.folder;
+		assert.exists(folder.id, 'Folder id should exist');
 
 		// Create group in subfolder
 		const res = await soap.makeSOAPEnvelopeAccount(
@@ -224,8 +269,10 @@ describe('Contacts > Contact Group', function () {
 				</cn>
 			</CreateContactRequest>`, account1Token
 		);
+		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Group id should exist');
 
 		const delRes = await soap.makeSOAPEnvelopeAccount(
 			`<ContactActionRequest xmlns="urn:zimbraMail">
@@ -233,6 +280,7 @@ describe('Contacts > Contact Group', function () {
 			</ContactActionRequest>`, account1Token
 		);
 		assert.notExists(delRes.Fault, 'Delete should not be a Fault');
+		assert.exists(delRes.ContactActionResponse.action, 'Delete action should exist');
 
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
 			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
@@ -240,6 +288,7 @@ describe('Contacts > Contact Group', function () {
 			</SearchRequest>`, account1Token
 		);
 		assert.notExists(searchRes.Fault, 'Search should not be a Fault');
+		assert.notExists(searchRes.SearchResponse.cn, 'Deleted group should not appear in search');
 	});
 
 
@@ -284,8 +333,10 @@ describe('Contacts > Contact Group', function () {
 				</cn>
 			</CreateContactRequest>`, account1Token
 		);
+		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Group id should exist');
 
 		const moveRes = await soap.makeSOAPEnvelopeAccount(
 			`<ContactActionRequest xmlns="urn:zimbraMail">
@@ -293,6 +344,7 @@ describe('Contacts > Contact Group', function () {
 			</ContactActionRequest>`, account1Token
 		);
 		assert.notExists(moveRes.Fault, 'Move should not be a Fault');
+		assert.exists(moveRes.ContactActionResponse.action, 'Move action should exist');
 	});
 
 
@@ -336,8 +388,10 @@ describe('Contacts > Contact Group', function () {
 				</cn>
 			</CreateContactRequest>`, account1Token
 		);
+		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Group id should exist');
 
 		// Move to folder
 		await soap.makeSOAPEnvelopeAccount(
@@ -353,6 +407,7 @@ describe('Contacts > Contact Group', function () {
 			</ContactActionRequest>`, account1Token
 		);
 		assert.notExists(delRes.Fault, 'Delete should not be a Fault');
+		assert.exists(delRes.ContactActionResponse.action, 'Delete action should exist');
 	});
 
 
@@ -391,6 +446,9 @@ describe('Contacts > Contact Group', function () {
 			</CreateContactRequest>`, account1Token
 		);
 		assert.notExists(res.Fault, 'Response should not be a Fault');
+		const cn = Array.isArray(res.CreateContactResponse.cn)
+			? res.CreateContactResponse.cn[0] : res.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Group id should exist');
 	});
 
 
@@ -406,6 +464,9 @@ describe('Contacts > Contact Group', function () {
 			</CreateContactRequest>`, account1Token
 		);
 		assert.notExists(res.Fault, 'Create empty group should not be a Fault');
+		const cn = Array.isArray(res.CreateContactResponse.cn)
+			? res.CreateContactResponse.cn[0] : res.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Empty group id should exist');
 	});
 
 
@@ -425,6 +486,7 @@ describe('Contacts > Contact Group', function () {
 		);
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Group id should exist');
 
 		const modRes = await soap.makeSOAPEnvelopeAccount(
 			`<ModifyContactRequest xmlns="urn:zimbraMail" replace="0">
@@ -435,5 +497,8 @@ describe('Contacts > Contact Group', function () {
 			</ModifyContactRequest>`, account1Token
 		);
 		assert.notExists(modRes.Fault, 'Rename group should not be a Fault');
+		const modCn = Array.isArray(modRes.ModifyContactResponse.cn)
+			? modRes.ModifyContactResponse.cn[0] : modRes.ModifyContactResponse.cn;
+		assert.exists(modCn.id, 'Renamed group id should exist');
 	});
 });

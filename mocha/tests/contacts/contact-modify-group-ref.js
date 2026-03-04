@@ -43,6 +43,7 @@ describe('Contacts > Contact Modify Group Ref', function () {
 		const refCn = Array.isArray(refRes.CreateContactResponse.cn)
 			? refRes.CreateContactResponse.cn[0] : refRes.CreateContactResponse.cn;
 		contactRefId = refCn.id;
+		assert.exists(contactRefId, 'Ref contact ID should exist');
 
 		// Create group with C and I members
 		const groupRes = await soap.makeSOAPEnvelopeAccount(
@@ -54,9 +55,16 @@ describe('Contacts > Contact Modify Group Ref', function () {
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
+		assert.notExists(groupRes.Fault, 'CreateContactRequest for group should not fault');
 		const groupCn = Array.isArray(groupRes.CreateContactResponse.cn)
 			? groupRes.CreateContactResponse.cn[0] : groupRes.CreateContactResponse.cn;
 		contactGroupId = groupCn.id;
+		assert.exists(contactGroupId, 'Group contact ID should exist');
+		const setupMembers = Array.isArray(groupCn.m) ? groupCn.m : (groupCn.m ? [groupCn.m] : []);
+		const setupCMembers = setupMembers.filter(m => m.type === 'C');
+		assert.isTrue(setupCMembers.some(m => m.value === String(contactRefId)), 'Setup: C-type member should contain contactRefId');
+		const setupIMembers = setupMembers.filter(m => m.type === 'I');
+		assert.isTrue(setupIMembers.some(m => m.value === inlineEmail), 'Setup: I-type member should contain inlineEmail');
 	});
 
 	beforeEach(async function () {
@@ -88,6 +96,11 @@ describe('Contacts > Contact Modify Group Ref', function () {
 		const modCn = Array.isArray(modRes.ModifyContactResponse.cn)
 			? modRes.ModifyContactResponse.cn[0] : modRes.ModifyContactResponse.cn;
 		assert.exists(modCn.id, 'Modified contact id should exist');
+		const members = Array.isArray(modCn.m) ? modCn.m : (modCn.m ? [modCn.m] : []);
+		const cMembers = members.filter(m => m.type === 'C');
+		assert.isTrue(cMembers.some(m => m.value === String(contactRefId)), 'C-type member should contain contactRefId');
+		const iMembers = members.filter(m => m.type === 'I');
+		assert.lengthOf(iMembers, 0, 'I-type member should be removed (emptyset)');
 	});
 
 
@@ -103,6 +116,7 @@ describe('Contacts > Contact Modify Group Ref', function () {
 		);
 		const refCn = Array.isArray(refRes.CreateContactResponse.cn)
 			? refRes.CreateContactResponse.cn[0] : refRes.CreateContactResponse.cn;
+		assert.exists(refCn.id, 'Ref contact ID should exist');
 
 		// Modify the contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
@@ -119,6 +133,12 @@ describe('Contacts > Contact Modify Group Ref', function () {
 		const modCn = Array.isArray(modRes.ModifyContactResponse.cn)
 			? modRes.ModifyContactResponse.cn[0] : modRes.ModifyContactResponse.cn;
 		assert.exists(modCn.id, 'Modified contact id should exist');
+		const members = Array.isArray(modCn.m) ? modCn.m : (modCn.m ? [modCn.m] : []);
+		const cMembers = members.filter(m => m.type === 'C');
+		assert.isTrue(cMembers.some(m => m.value === String(contactRefId)), 'C-type member should contain original contactRefId');
+		assert.isTrue(cMembers.some(m => m.value === String(refCn.id)), 'C-type member should contain new refCn.id');
+		const iMembers = members.filter(m => m.type === 'I');
+		assert.lengthOf(iMembers, 0, 'I-type member should be removed (emptyset)');
 	});
 
 

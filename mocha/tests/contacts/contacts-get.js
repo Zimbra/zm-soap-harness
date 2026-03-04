@@ -56,6 +56,7 @@ describe('Contacts > Contacts Get', function () {
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 		const contactId = cn.id;
 
 		const getRes = await soap.makeSOAPEnvelopeAccount(
@@ -64,6 +65,9 @@ describe('Contacts > Contacts Get', function () {
 			</GetContactsRequest>`, accountToken
 		);
 		assert.notExists(getRes.Fault, 'Get should not be a Fault');
+		const getCn = Array.isArray(getRes.GetContactsResponse.cn)
+			? getRes.GetContactsResponse.cn[0] : getRes.GetContactsResponse.cn;
+		assert.exists(getCn, 'GetContactsResponse cn should exist');
 	});
 
 
@@ -81,6 +85,7 @@ describe('Contacts > Contacts Get', function () {
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 		const contactId = cn.id;
 
 		// Delete the contact
@@ -115,6 +120,7 @@ describe('Contacts > Contacts Get', function () {
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 		const contactId = cn.id;
 
 		const getRes = await soap.makeSOAPEnvelopeAccount(
@@ -141,6 +147,7 @@ describe('Contacts > Contacts Get', function () {
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 		const contactId = cn.id;
 
 		const getRes = await soap.makeSOAPEnvelopeAccount(
@@ -219,6 +226,9 @@ describe('Contacts > Contacts Get', function () {
 			</GetContactsRequest>`, accountToken
 		);
 		assert.notExists(getRes.Fault, 'Get should not be a Fault');
+		const getCn = Array.isArray(getRes.GetContactsResponse.cn)
+			? getRes.GetContactsResponse.cn[0] : getRes.GetContactsResponse.cn;
+		assert.exists(getCn, 'GetContactsResponse cn should exist');
 	});
 
 
@@ -271,6 +281,7 @@ describe('Contacts > Contacts Get', function () {
 		assert.notExists(createRes2.Fault, 'Create with JS URLs should not be a Fault');
 		const cn2 = Array.isArray(createRes2.CreateContactResponse.cn)
 			? createRes2.CreateContactResponse.cn[0] : createRes2.CreateContactResponse.cn;
+		assert.exists(cn2.id, 'Contact id should exist');
 		const contactId2 = cn2.id;
 
 		// Get contact and verify URLs are blocked
@@ -303,6 +314,7 @@ describe('Contacts > Contacts Get', function () {
 			`<GetContactsRequest xmlns="urn:zimbraMail"/>`, accountToken
 		);
 		assert.notExists(getRes.Fault, 'Get all contacts should not be a Fault');
+		assert.notExists(getRes.Fault, 'GetContactsResponse should exist');
 	});
 
 
@@ -316,8 +328,10 @@ describe('Contacts > Contacts Get', function () {
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
+		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		const getRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetContactsRequest xmlns="urn:zimbraMail" returnHiddenAttrs="1">
@@ -325,6 +339,9 @@ describe('Contacts > Contacts Get', function () {
 			</GetContactsRequest>`, accountToken
 		);
 		assert.notExists(getRes.Fault, 'Get should not be a Fault');
+		const getCn = Array.isArray(getRes.GetContactsResponse.cn)
+			? getRes.GetContactsResponse.cn[0] : getRes.GetContactsResponse.cn;
+		assert.exists(getCn, 'GetContactsResponse cn should exist');
 	});
 
 
@@ -335,5 +352,6 @@ describe('Contacts > Contacts Get', function () {
 			</GetContactsRequest>`, accountToken, false
 		);
 		assert.isString(getRes.Fault.Detail.Error.Code, 'Get with alpha id should be a Fault');
+		assert.include(getRes.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', 'Error code should be service.INVALID_REQUEST');
 	});
 });

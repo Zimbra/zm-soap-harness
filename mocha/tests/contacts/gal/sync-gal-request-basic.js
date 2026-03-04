@@ -50,6 +50,7 @@ describe('Contacts > GAL > Sync GAL Request Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SyncGal should not be a Fault');
+		assert.exists(res.SyncGalResponse.token, 'SyncGalResponse token should exist');
 	});
 
 
@@ -57,15 +58,16 @@ describe('Contacts > GAL > Sync GAL Request Basic', function () {
 		const res1 = await soap.makeSOAPEnvelopeAccount(
 			`<SyncGalRequest xmlns="urn:zimbraAccount"/>`, accountToken
 		);
+		assert.notExists(res1.Fault, 'Initial SyncGal should not fault');
 		const token = res1.SyncGalResponse.token;
-		if (token) {
-			const res2 = await soap.makeSOAPEnvelopeAccount(
-				`<SyncGalRequest xmlns="urn:zimbraAccount" token="${token}"/>`, accountToken
-			);
+		assert.exists(token, 'Initial SyncGalResponse token should exist');
+		const res2 = await soap.makeSOAPEnvelopeAccount(
+			`<SyncGalRequest xmlns="urn:zimbraAccount" token="${token}"/>`, accountToken
+		);
 
-			// Verify response
-			assert.notExists(res2.Fault, 'SyncGal should not be a Fault');
-		}
+		// Verify response
+		assert.notExists(res2.Fault, 'SyncGal with token should not fault');
+		assert.exists(res2.SyncGalResponse.token, 'SyncGalResponse token should exist');
 	});
 
 
@@ -76,5 +78,10 @@ describe('Contacts > GAL > Sync GAL Request Basic', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SyncGal should not be a Fault');
+		assert.exists(res.SyncGalResponse.token, 'SyncGalResponse token should exist');
+		if (res.SyncGalResponse.cn) {
+			const cnArr = Array.isArray(res.SyncGalResponse.cn) ? res.SyncGalResponse.cn : [res.SyncGalResponse.cn];
+			assert.isAbove(cnArr.length, 0, 'Should have at least one cn entry');
+		}
 	});
 });

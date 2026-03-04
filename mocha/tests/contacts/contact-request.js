@@ -84,6 +84,7 @@ describe('Contacts > Contact Request', function () {
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		// Modify contact
 		const modRes = await soap.makeSOAPEnvelopeAccount(
@@ -118,6 +119,7 @@ describe('Contacts > Contact Request', function () {
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		// Get contact
 		const getRes = await soap.makeSOAPEnvelopeAccount(
@@ -150,6 +152,7 @@ describe('Contacts > Contact Request', function () {
 		assert.notExists(createRes.Fault, 'Create should not be a Fault');
 		const cn = Array.isArray(createRes.CreateContactResponse.cn)
 			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		// Trash contact
 		const actionRes = await soap.makeSOAPEnvelopeAccount(
@@ -174,13 +177,14 @@ TestFirst${common.getUniqueString()},TestLast${common.getUniqueString()},testema
 		assert.notExists(res.Fault, 'Import should not be a Fault');
 		const importCn = Array.isArray(res.ImportContactsResponse.cn)
 			? res.ImportContactsResponse.cn[0] : res.ImportContactsResponse.cn;
+		assert.equal(importCn.n, '1', 'Import should count 1 contact');
 		assert.exists(importCn.ids, 'Import cn should have ids');
 	});
 
 
 	it('Smoke | ExportContactsRequest', async () => {
 		// Create a contact first
-		await soap.makeSOAPEnvelopeAccount(
+		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">
 				<cn>
 					<a n="firstName">First${common.getUniqueString()}</a>
@@ -189,6 +193,10 @@ TestFirst${common.getUniqueString()},TestLast${common.getUniqueString()},testema
 				</cn>
 			</CreateContactRequest>`, accountToken
 		);
+		assert.notExists(createRes.Fault, 'Create should not be a Fault');
+		const cn = Array.isArray(createRes.CreateContactResponse.cn)
+			? createRes.CreateContactResponse.cn[0] : createRes.CreateContactResponse.cn;
+		assert.exists(cn.id, 'Contact id should exist');
 
 		// Export contacts
 		const res = await soap.makeSOAPEnvelopeAccount(

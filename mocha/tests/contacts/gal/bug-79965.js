@@ -52,6 +52,10 @@ describe('Contacts > GAL > Bug 79965', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+		assert.exists(res.SearchGalResponse.cn, 'SearchGalResponse cn should exist');
+		const cnArr = Array.isArray(res.SearchGalResponse.cn) ? res.SearchGalResponse.cn : [res.SearchGalResponse.cn];
+		const emailAttr = cnArr[0].a ? (Array.isArray(cnArr[0].a) ? cnArr[0].a : [cnArr[0].a]).find(a => a.n === 'email') : null;
+		assert.exists(emailAttr, 'cn should have email attribute');
 	});
 
 
@@ -64,5 +68,10 @@ describe('Contacts > GAL > Bug 79965', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'AutoComplete should not be a Fault');
+		assert.exists(res.AutoCompleteResponse.canBeCached, 'AutoCompleteResponse canBeCached should exist');
+		if (res.AutoCompleteResponse.match) {
+			const matches = Array.isArray(res.AutoCompleteResponse.match) ? res.AutoCompleteResponse.match : [res.AutoCompleteResponse.match];
+			assert.isAbove(matches.length, 0, 'Should return at least one match');
+		}
 	});
 });

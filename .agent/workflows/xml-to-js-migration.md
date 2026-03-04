@@ -24,7 +24,8 @@ description: How to migrate XML test files to JavaScript mocha tests (1:1 parity
 > 4. **2 BLANK LINES** between every `it()` block
 > 5. **MULTI-LINE SOAP XML** — Never single-line XML
 > 6. **FAULT CHECK** — `assert.notExists(res.Fault, ...)` before every response check
-> 7. **NEVER put `// Tests` before the Applicable block** — only ONE `// Tests` comment, AFTER the if block
+> 7. **EVERY `t:select` = ONE ASSERTION** — Every `<t:select>` node inside an eligible `<t:test_case>` MUST become a corresponding `assert.*` call in JS. Do NOT skip any `t:select`. If the XML selects an attribute, assert that attribute. If it matches a value, assert that value. This is the #1 cause of assertion gaps.
+> 8. **NEVER put `// Tests` before the Applicable block** — only ONE `// Tests` comment, AFTER the if block
 
 ## Exclusion Rules (STRICT)
 
