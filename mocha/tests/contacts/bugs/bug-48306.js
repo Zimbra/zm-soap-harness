@@ -88,12 +88,9 @@ describe('Contacts > Bugs > Bug 48306', function () {
 		assert.notExists(getRes.Fault, 'GetContacts should not be a Fault');
 		const getCn = Array.isArray(getRes.GetContactsResponse.cn)
 			? getRes.GetContactsResponse.cn[0] : getRes.GetContactsResponse.cn;
-		const getAttrArr = Array.isArray(getCn.a) ? getCn.a : [getCn.a];
-		const getAttr = (name) => {
-			const found = getAttrArr.find(a => a.n === name);
-			return found ? found._content : undefined;
-		};
-		assert.equal(getAttr('custom1'), 'Street Dog', 'custom1 should match');
+		const getAttrs = getCn._attrs || {};
+		const getAttr = (name) => getAttrs[name];
+		assert.equal(getAttr('Custom 1'), 'Street Dog', 'Custom 1 should match');
 		assert.equal(getAttr('email'), 'scruffy@not.fatkudu.net', 'email should match');
 		assert.equal(getAttr('birthday'), '2003-08-28', 'birthday should match');
 		assert.equal(getAttr('firstName'), 'Scruffy', 'firstName should match');

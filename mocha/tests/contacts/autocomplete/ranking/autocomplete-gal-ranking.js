@@ -30,6 +30,10 @@ describe('Contacts > Autocomplete > Ranking > Autocomplete GAL Ranking', functio
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(g1.Fault, 'Create gal1 should not fault');
+		const g1Info = Array.isArray(g1.CreateAccountResponse.account) ? g1.CreateAccountResponse.account[0] : g1.CreateAccountResponse.account;
+		assert.exists(g1Info.id, 'Account ID should exist');
+		const g1Host = g1Info.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(g1Host, 'zimbraMailHost should exist');
 
 		// Create gal2 account with display name
 		gal2Email = `account${common.getUniqueString()}@${config.testDomain}`;
@@ -43,6 +47,10 @@ describe('Contacts > Autocomplete > Ranking > Autocomplete GAL Ranking', functio
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(g2.Fault, 'Create gal2 should not fault');
+		const g2Info = Array.isArray(g2.CreateAccountResponse.account) ? g2.CreateAccountResponse.account[0] : g2.CreateAccountResponse.account;
+		assert.exists(g2Info.id, 'Account ID should exist');
+		const g2Host = g2Info.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(g2Host, 'zimbraMailHost should exist');
 
 		// Create contact1 account with display name
 		contact1Email = `account${common.getUniqueString()}@${config.testDomain}`;
@@ -56,6 +64,10 @@ describe('Contacts > Autocomplete > Ranking > Autocomplete GAL Ranking', functio
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(c1.Fault, 'Create contact1 should not fault');
+		const c1Info = Array.isArray(c1.CreateAccountResponse.account) ? c1.CreateAccountResponse.account[0] : c1.CreateAccountResponse.account;
+		assert.exists(c1Info.id, 'Account ID should exist');
+		const c1Host = c1Info.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(c1Host, 'zimbraMailHost should exist');
 
 		// Create account1 with GAL + shared autocomplete enabled
 		const account1Email = `account${common.getUniqueString()}@${config.testDomain}`;
@@ -68,6 +80,10 @@ describe('Contacts > Autocomplete > Ranking > Autocomplete GAL Ranking', functio
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(a1.Fault, 'Create account1 should not fault');
+		const a1Info = Array.isArray(a1.CreateAccountResponse.account) ? a1.CreateAccountResponse.account[0] : a1.CreateAccountResponse.account;
+		assert.exists(a1Info.id, 'Account ID should exist');
+		const a1Host = a1Info.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(a1Host, 'zimbraMailHost should exist');
 		account1Token = await soap.getAccountAuthToken(account1Email);
 
 		// Create account2
@@ -81,6 +97,10 @@ describe('Contacts > Autocomplete > Ranking > Autocomplete GAL Ranking', functio
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(a2.Fault, 'Create account2 should not fault');
+		const a2Info = Array.isArray(a2.CreateAccountResponse.account) ? a2.CreateAccountResponse.account[0] : a2.CreateAccountResponse.account;
+		assert.exists(a2Info.id, 'Account ID should exist');
+		const a2Host = a2Info.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(a2Host, 'zimbraMailHost should exist');
 		account2Token = await soap.getAccountAuthToken(account2Email);
 
 		// Create account3
@@ -94,6 +114,10 @@ describe('Contacts > Autocomplete > Ranking > Autocomplete GAL Ranking', functio
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(a3.Fault, 'Create account3 should not fault');
+		const a3Info = Array.isArray(a3.CreateAccountResponse.account) ? a3.CreateAccountResponse.account[0] : a3.CreateAccountResponse.account;
+		assert.exists(a3Info.id, 'Account ID should exist');
+		const a3Host = a3Info.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(a3Host, 'zimbraMailHost should exist');
 		account3Token = await soap.getAccountAuthToken(account3Email);
 	});
 
@@ -108,6 +132,24 @@ describe('Contacts > Autocomplete > Ranking > Autocomplete GAL Ranking', functio
 	// Applicable zimbra versions
 	if (config.serial === true || !String(config.serverEnvironment).toUpperCase().match(/ZIMBRA101|ZIMBRAX/)) {
 		return;
+	}
+
+	// Helper: retry AutoCompleteRequest until expected matches appear (GAL sync may take time)
+	async function retryAutoComplete(token, name, minMatches, maxRetries = 5, delayMs = 2000) {
+		let matches = [];
+		for (let attempt = 0; attempt < maxRetries; attempt++) {
+			const res = await soap.makeSOAPEnvelopeAccount(
+				`<AutoCompleteRequest xmlns="urn:zimbraMail">
+					<name>${name}</name>
+				</AutoCompleteRequest>`, token
+			);
+			if (res.Fault) break;
+			matches = Array.isArray(res.AutoCompleteResponse.match)
+				? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+			if (matches.length >= minMatches) return matches;
+			await new Promise(resolve => setTimeout(resolve, delayMs));
+		}
+		return matches;
 	}
 
 	// Tests
@@ -142,15 +184,8 @@ describe('Contacts > Autocomplete > Ranking > Autocomplete GAL Ranking', functio
 			assert.notExists(s.Fault, `SendMsg ${i + 1} to gal2 should not fault`);
 		}
 
-		// AutoComplete and verify gal2 ranked higher than gal1
-		const res = await soap.makeSOAPEnvelopeAccount(
-			`<AutoCompleteRequest xmlns="urn:zimbraMail">
-				<name>${firstname}</name>
-			</AutoCompleteRequest>`, account1Token
-		);
-		assert.notExists(res.Fault, 'AutoComplete should not fault');
-		const matches = Array.isArray(res.AutoCompleteResponse.match)
-			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		// AutoComplete and verify gal2 ranked higher than gal1 (retry for GAL sync)
+		const matches = await retryAutoComplete(account1Token, firstname, 2);
 		assert.isAbove(matches.length, 1, 'Should have at least 2 matches');
 		const matchEmails = matches.map(m => m.email);
 		assert.isTrue(matchEmails.some(e => e.includes(gal2Email)), 'gal2 should be in results');
@@ -205,15 +240,8 @@ describe('Contacts > Autocomplete > Ranking > Autocomplete GAL Ranking', functio
 			assert.notExists(s.Fault, `SendMsg ${i + 1} to contact1 should not fault`);
 		}
 
-		// AutoComplete and verify contact1 ranked higher than gal1
-		const res = await soap.makeSOAPEnvelopeAccount(
-			`<AutoCompleteRequest xmlns="urn:zimbraMail">
-				<name>${firstname}</name>
-			</AutoCompleteRequest>`, account2Token
-		);
-		assert.notExists(res.Fault, 'AutoComplete should not fault');
-		const matches = Array.isArray(res.AutoCompleteResponse.match)
-			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		// AutoComplete and verify contact1 ranked higher than gal1 (retry for GAL sync)
+		const matches = await retryAutoComplete(account2Token, firstname, 2);
 		assert.isAbove(matches.length, 1, 'Should have at least 2 matches');
 		const matchEmails = matches.map(m => m.email);
 		assert.isTrue(matchEmails.some(e => e.includes(contact1Email)), 'contact1 should be in results');
@@ -267,15 +295,8 @@ describe('Contacts > Autocomplete > Ranking > Autocomplete GAL Ranking', functio
 			assert.notExists(s.Fault, `SendMsg ${i + 1} to gal1 should not fault`);
 		}
 
-		// AutoComplete and verify gal1 ranked higher than contact1
-		const res = await soap.makeSOAPEnvelopeAccount(
-			`<AutoCompleteRequest xmlns="urn:zimbraMail">
-				<name>${firstname}</name>
-			</AutoCompleteRequest>`, account3Token
-		);
-		assert.notExists(res.Fault, 'AutoComplete should not fault');
-		const matches = Array.isArray(res.AutoCompleteResponse.match)
-			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+		// AutoComplete and verify gal1 ranked higher than contact1 (retry for GAL sync)
+		const matches = await retryAutoComplete(account3Token, firstname, 2);
 		assert.isAbove(matches.length, 1, 'Should have at least 2 matches');
 		const matchEmails = matches.map(m => m.email);
 		assert.isTrue(matchEmails.some(e => e.includes(gal1Email)), 'gal1 should be in results');

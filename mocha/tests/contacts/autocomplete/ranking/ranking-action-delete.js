@@ -31,6 +31,10 @@ describe('Contacts > Autocomplete > Ranking > Ranking Action Delete', function (
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(c1.Fault, 'Create contact1 should not fault');
+		const c1Info = Array.isArray(c1.CreateAccountResponse.account) ? c1.CreateAccountResponse.account[0] : c1.CreateAccountResponse.account;
+		assert.exists(c1Info.id, 'Account ID should exist');
+		const c1Host = c1Info.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(c1Host, 'zimbraMailHost should exist');
 
 		contact2Email = `account${common.getUniqueString()}@${config.testDomain}`;
 		const c2 = await soap.makeSOAPEnvelopeAdmin(
@@ -43,6 +47,10 @@ describe('Contacts > Autocomplete > Ranking > Ranking Action Delete', function (
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(c2.Fault, 'Create contact2 should not fault');
+		const c2Info = Array.isArray(c2.CreateAccountResponse.account) ? c2.CreateAccountResponse.account[0] : c2.CreateAccountResponse.account;
+		assert.exists(c2Info.id, 'Account ID should exist');
+		const c2Host = c2Info.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(c2Host, 'zimbraMailHost should exist');
 
 		contact3Email = `account${common.getUniqueString()}@${config.testDomain}`;
 		// contact3 not as account, used as third contact email only
@@ -56,6 +64,10 @@ describe('Contacts > Autocomplete > Ranking > Ranking Action Delete', function (
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(a1.Fault, 'Create account1 should not fault');
+		const a1Info = Array.isArray(a1.CreateAccountResponse.account) ? a1.CreateAccountResponse.account[0] : a1.CreateAccountResponse.account;
+		assert.exists(a1Info.id, 'Account ID should exist');
+		const a1Host = a1Info.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(a1Host, 'zimbraMailHost should exist');
 		account1Token = await soap.getAccountAuthToken(account1Email);
 
 		// Create account2 (GAL contacts test)
@@ -68,6 +80,10 @@ describe('Contacts > Autocomplete > Ranking > Ranking Action Delete', function (
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(a2.Fault, 'Create account2 should not fault');
+		const a2Info = Array.isArray(a2.CreateAccountResponse.account) ? a2.CreateAccountResponse.account[0] : a2.CreateAccountResponse.account;
+		assert.exists(a2Info.id, 'Account ID should exist');
+		const a2Host = a2Info.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(a2Host, 'zimbraMailHost should exist');
 		account2Token = await soap.getAccountAuthToken(account2Email);
 
 		// Create account3 (shared contacts test)
@@ -106,6 +122,10 @@ describe('Contacts > Autocomplete > Ranking > Ranking Action Delete', function (
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(a4.Fault, 'Create account4 should not fault');
+		const a4Info = Array.isArray(a4.CreateAccountResponse.account) ? a4.CreateAccountResponse.account[0] : a4.CreateAccountResponse.account;
+		assert.exists(a4Info.id, 'Account ID should exist');
+		const a4Host = a4Info.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(a4Host, 'zimbraMailHost should exist');
 		account4Token = await soap.getAccountAuthToken(account4Email);
 	});
 
@@ -255,17 +275,22 @@ describe('Contacts > Autocomplete > Ranking > Ranking Action Delete', function (
 			);
 		}
 
-		// Verify ranking: contact2=2, contact1=1
-		let res = await soap.makeSOAPEnvelopeAccount(
-			`<AutoCompleteRequest xmlns="urn:zimbraMail">
-				<name>${firstname}</name>
-			</AutoCompleteRequest>`, account2Token
-		);
-		assert.notExists(res.Fault, 'AutoComplete should not fault');
-		let matches = Array.isArray(res.AutoCompleteResponse.match)
-			? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
-		let c2Match = matches.find(m => m.email && m.email.includes(contact2Email));
-		let c1Match = matches.find(m => m.email && m.email.includes(contact1Email));
+		// Verify ranking: contact2=2, contact1=1 (with polling for ranking updates)
+		let res, matches, c2Match, c1Match;
+		for (let attempt = 0; attempt < 10; attempt++) {
+			res = await soap.makeSOAPEnvelopeAccount(
+				`<AutoCompleteRequest xmlns="urn:zimbraMail">
+					<name>${firstname}</name>
+				</AutoCompleteRequest>`, account2Token
+			);
+			assert.notExists(res.Fault, 'AutoComplete should not fault');
+			matches = Array.isArray(res.AutoCompleteResponse.match)
+				? res.AutoCompleteResponse.match : (res.AutoCompleteResponse.match ? [res.AutoCompleteResponse.match] : []);
+			c2Match = matches.find(m => m.email && m.email.includes(contact2Email));
+			c1Match = matches.find(m => m.email && m.email.includes(contact1Email));
+			if (c2Match && c1Match) break;
+			if (attempt < 9) await new Promise(r => setTimeout(r, 3000));
+		}
 		assert.exists(c2Match, 'contact2 should be in GAL results');
 		assert.equal(c2Match.ranking, '2', 'contact2 ranking should be 2');
 		assert.exists(c1Match, 'contact1 should be in GAL results');
@@ -435,7 +460,6 @@ describe('Contacts > Autocomplete > Ranking > Ranking Action Delete', function (
 				<action op="delete"/>
 			</RankingActionRequest>`, account1Token, false
 		);
-		assert.exists(res.Fault, 'Delete without email should fault');
 		assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',
 			'Should return INVALID_REQUEST error code');
 	});

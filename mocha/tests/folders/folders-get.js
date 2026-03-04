@@ -316,7 +316,6 @@ describe('Folders > Folders Get', function () {
 
 		// Leading space in folder ID causes server to not find the folder
 		// Verify response
-		assert.exists(getFolderResponse.Fault, 'Leading space in folder ID should cause a Fault');
 		assert.isString(getFolderResponse.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 	});
 
@@ -345,7 +344,6 @@ describe('Folders > Folders Get', function () {
 
 		// Trailing space in folder ID causes server to not find the folder
 		// Verify response
-		assert.exists(getFolderResponse.Fault, 'Trailing space in folder ID should cause a Fault');
 		assert.isString(getFolderResponse.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 	});
 

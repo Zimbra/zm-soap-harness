@@ -84,13 +84,11 @@ describe('Contacts > Bugs > Bug 77914', function () {
 		assert.exists(getCn.id, 'GetContacts cn id should exist');
 		assert.equal(getCn.id, searchCn.id, 'GetContacts cn id should match search cn id');
 
-		const attrs = Array.isArray(getCn.a) ? getCn.a : [getCn.a];
-		const birthday = attrs.find(a => a.n === 'birthday');
-		assert.exists(birthday, 'birthday attribute should exist');
-		assert.include(String(birthday.content || birthday._ || birthday), '1990-02-12', 'birthday should be 1990-02-12');
+		const attrs = getCn._attrs || {};
+		assert.exists(attrs.birthday, 'birthday attribute should exist');
+		assert.include(String(attrs.birthday), '1990-02-12', 'birthday should be 1990-02-12');
 
-		const anniversary = attrs.find(a => a.n === 'anniversary');
-		assert.exists(anniversary, 'anniversary attribute should exist');
-		assert.include(String(anniversary.content || anniversary._ || anniversary), '2000-09-13', 'anniversary should be 2000-09-13');
+		assert.exists(attrs.anniversary, 'anniversary attribute should exist');
+		assert.include(String(attrs.anniversary), '2000-09-13', 'anniversary should be 2000-09-13');
 	});
 });

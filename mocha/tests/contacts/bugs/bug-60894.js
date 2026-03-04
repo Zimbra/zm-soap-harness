@@ -99,9 +99,8 @@ describe('Contacts > Bugs > Bug 60894', function () {
 			? searchRes.SearchResponse.cn : [searchRes.SearchResponse.cn];
 		assert.isAtLeast(contacts.length, 3, 'Should have at least 3 contacts');
 		const getLastName = (cn) => {
-			const attrs = Array.isArray(cn.a) ? cn.a : [cn.a];
-			const ln = attrs.find(a => a.n === 'lastName');
-			return ln ? ln._content : '';
+			const attrs = cn._attrs || {};
+			return attrs.lastName || '';
 		};
 		assert.equal(getLastName(contacts[0]), 'aa1', 'First contact lastName should be aa1');
 		assert.equal(getLastName(contacts[1]), 'B1', 'Second contact lastName should be B1');

@@ -69,13 +69,23 @@ describe('Contacts > Contact Multiple Attributes', function () {
 		const cn = Array.isArray(res.CreateContactResponse.cn)
 			? res.CreateContactResponse.cn[0] : res.CreateContactResponse.cn;
 		assert.exists(cn.id, 'Contact id should exist');
-		const cnAttrs = Array.isArray(cn.a) ? cn.a : [cn.a];
-		const smimeAttrs = cnAttrs.filter(a => a.n === 'userSMIMECertificate');
-		const certAttrs = cnAttrs.filter(a => a.n === 'userCertificate');
-		assert.isTrue(smimeAttrs.some(a => a._content === smime1), 'userSMIMECertificate should contain smime1');
-		assert.isTrue(smimeAttrs.some(a => a._content === smime2), 'userSMIMECertificate should contain smime2');
-		assert.isTrue(certAttrs.some(a => a._content === cert1), 'userCertificate should contain cert1');
-		assert.isTrue(certAttrs.some(a => a._content === cert2), 'userCertificate should contain cert2');
+
+		// Fetch contact via GetContactsRequest to verify multi-value attrs
+		const getRes = await soap.makeSOAPEnvelopeAccount(
+			`<GetContactsRequest xmlns="urn:zimbraMail">
+				<cn id="${cn.id}"/>
+			</GetContactsRequest>`, accountToken
+		);
+		assert.notExists(getRes.Fault, 'GetContacts should not fault');
+		const getCn = Array.isArray(getRes.GetContactsResponse.cn)
+			? getRes.GetContactsResponse.cn[0] : getRes.GetContactsResponse.cn;
+		const cnAttrs = getCn._attrs || {};
+		const smimeVals = Array.isArray(cnAttrs.userSMIMECertificate) ? cnAttrs.userSMIMECertificate : (cnAttrs.userSMIMECertificate ? [cnAttrs.userSMIMECertificate] : []);
+		const certVals = Array.isArray(cnAttrs.userCertificate) ? cnAttrs.userCertificate : (cnAttrs.userCertificate ? [cnAttrs.userCertificate] : []);
+		assert.isTrue(smimeVals.includes(smime1), 'userSMIMECertificate should contain smime1');
+		assert.isTrue(smimeVals.includes(smime2), 'userSMIMECertificate should contain smime2');
+		assert.isTrue(certVals.includes(cert1), 'userCertificate should contain cert1');
+		assert.isTrue(certVals.includes(cert2), 'userCertificate should contain cert2');
 	});
 
 
@@ -117,13 +127,23 @@ describe('Contacts > Contact Multiple Attributes', function () {
 		const modCn = Array.isArray(modRes.ModifyContactResponse.cn)
 			? modRes.ModifyContactResponse.cn[0] : modRes.ModifyContactResponse.cn;
 		assert.exists(modCn.id, 'ModifyContactResponse cn id should exist');
-		const modAttrs = Array.isArray(modCn.a) ? modCn.a : [modCn.a];
-		const modSmime = modAttrs.filter(a => a.n === 'userSMIMECertificate');
-		const modCerts = modAttrs.filter(a => a.n === 'userCertificate');
-		assert.isTrue(modSmime.some(a => a._content === smime1), 'userSMIMECertificate should contain smime1');
-		assert.isTrue(modSmime.some(a => a._content === smime2), 'userSMIMECertificate should contain smime2');
-		assert.isTrue(modCerts.some(a => a._content === cert1), 'userCertificate should contain cert1');
-		assert.isTrue(modCerts.some(a => a._content === cert2), 'userCertificate should contain cert2');
+
+		// Fetch contact via GetContactsRequest to verify multi-value attrs
+		const getRes = await soap.makeSOAPEnvelopeAccount(
+			`<GetContactsRequest xmlns="urn:zimbraMail">
+				<cn id="${cn.id}"/>
+			</GetContactsRequest>`, accountToken
+		);
+		assert.notExists(getRes.Fault, 'GetContacts should not fault');
+		const getCn = Array.isArray(getRes.GetContactsResponse.cn)
+			? getRes.GetContactsResponse.cn[0] : getRes.GetContactsResponse.cn;
+		const modAttrs = getCn._attrs || {};
+		const modSmimeVals = Array.isArray(modAttrs.userSMIMECertificate) ? modAttrs.userSMIMECertificate : (modAttrs.userSMIMECertificate ? [modAttrs.userSMIMECertificate] : []);
+		const modCertVals = Array.isArray(modAttrs.userCertificate) ? modAttrs.userCertificate : (modAttrs.userCertificate ? [modAttrs.userCertificate] : []);
+		assert.isTrue(modSmimeVals.includes(smime1), 'userSMIMECertificate should contain smime1');
+		assert.isTrue(modSmimeVals.includes(smime2), 'userSMIMECertificate should contain smime2');
+		assert.isTrue(modCertVals.includes(cert1), 'userCertificate should contain cert1');
+		assert.isTrue(modCertVals.includes(cert2), 'userCertificate should contain cert2');
 	});
 
 
@@ -174,12 +194,12 @@ describe('Contacts > Contact Multiple Attributes', function () {
 		assert.notExists(getRes.Fault, 'Get should not be a Fault');
 		const getCn = Array.isArray(getRes.GetContactsResponse.cn)
 			? getRes.GetContactsResponse.cn[0] : getRes.GetContactsResponse.cn;
-		const getAttrs = Array.isArray(getCn.a) ? getCn.a : [getCn.a];
-		const getSmime = getAttrs.filter(a => a.n === 'userSMIMECertificate');
-		const getCerts = getAttrs.filter(a => a.n === 'userCertificate');
-		assert.isTrue(getSmime.some(a => a._content === smime1), 'userSMIMECertificate should contain smime1');
-		assert.isTrue(getSmime.some(a => a._content === smime2), 'userSMIMECertificate should contain smime2');
-		assert.isTrue(getCerts.some(a => a._content === cert1), 'userCertificate should contain cert1');
-		assert.isTrue(getCerts.some(a => a._content === cert2), 'userCertificate should contain cert2');
+		const getAttrs = getCn._attrs || {};
+		const getSmimeVals = Array.isArray(getAttrs.userSMIMECertificate) ? getAttrs.userSMIMECertificate : (getAttrs.userSMIMECertificate ? [getAttrs.userSMIMECertificate] : []);
+		const getCertVals = Array.isArray(getAttrs.userCertificate) ? getAttrs.userCertificate : (getAttrs.userCertificate ? [getAttrs.userCertificate] : []);
+		assert.isTrue(getSmimeVals.includes(smime1), 'userSMIMECertificate should contain smime1');
+		assert.isTrue(getSmimeVals.includes(smime2), 'userSMIMECertificate should contain smime2');
+		assert.isTrue(getCertVals.includes(cert1), 'userCertificate should contain cert1');
+		assert.isTrue(getCertVals.includes(cert2), 'userCertificate should contain cert2');
 	});
 });

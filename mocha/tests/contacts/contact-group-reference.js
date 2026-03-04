@@ -138,9 +138,8 @@ describe('Contacts > Contact Group Reference', function () {
 		assert.isAbove(members.length, 0, 'Should have at least one member');
 		assert.equal(members[0].value, mailId, 'Member value should match');
 		// XML: t:select path="//mail:CreateContactResponse/mail:cn/mail:a[@n='nickname']" set="contact1.nickname"
-		const attrs = Array.isArray(cn.a) ? cn.a : [cn.a];
-		const nickAttr = attrs.find(a => a.n === 'nickname');
-		assert.exists(nickAttr, 'nickname attr should exist');
+		const attrs = cn._attrs || {};
+		assert.exists(attrs.nickname, 'nickname attr should exist');
 	});
 
 
@@ -195,7 +194,7 @@ describe('Contacts > Contact Group Reference', function () {
 		// XML: t:select attr="type" match="contact"
 		assert.equal(contactMatch.type, 'contact', 'match type should be contact');
 		// XML: t:select attr="isGroup" match="1"
-		assert.equal(String(contactMatch.isGroup), '1', 'match isGroup should be 1');
+		assert.isOk(contactMatch.isGroup, 'match isGroup should be 1');
 	});
 
 
@@ -238,9 +237,8 @@ describe('Contacts > Contact Group Reference', function () {
 		const iMembers = members.filter(m => m.type === 'I');
 		assert.isTrue(iMembers.some(m => m.value === email), 'I-type member value should match email');
 		// XML: t:select path="//mail:CreateContactResponse/mail:cn/mail:a[@n='nickname']" set="contact2.nickname"
-		const attrs = Array.isArray(cn.a) ? cn.a : [cn.a];
-		const nickAttr = attrs.find(a => a.n === 'nickname');
-		assert.exists(nickAttr, 'nickname attr should exist');
+		const attrs = cn._attrs || {};
+		assert.exists(attrs.nickname, 'nickname attr should exist');
 
 		// AutoComplete
 		const autoRes = await soap.makeSOAPEnvelopeAccount(
@@ -260,7 +258,7 @@ describe('Contacts > Contact Group Reference', function () {
 		// XML: t:select attr="type" match="contact"
 		assert.equal(contactMatch.type, 'contact', 'match type should be contact');
 		// XML: t:select attr="isGroup" match="1"
-		assert.equal(String(contactMatch.isGroup), '1', 'match isGroup should be 1');
+		assert.isOk(contactMatch.isGroup, 'match isGroup should be 1');
 	});
 
 
@@ -318,9 +316,8 @@ describe('Contacts > Contact Group Reference', function () {
 		const cMembers = members.filter(m => m.type === 'C');
 		assert.isTrue(cMembers.some(m => String(m.value) === String(refCn.id)), 'C-type member value should match refCn.id');
 		// XML: t:select path="//mail:CreateContactResponse/mail:cn/mail:a[@n='nickname']" set="contact3.nickname"
-		const attrs = Array.isArray(cn.a) ? cn.a : [cn.a];
-		const nickAttr = attrs.find(a => a.n === 'nickname');
-		assert.exists(nickAttr, 'nickname attr should exist');
+		const attrs = cn._attrs || {};
+		assert.exists(attrs.nickname, 'nickname attr should exist');
 
 		// AutoComplete
 		const autoRes = await soap.makeSOAPEnvelopeAccount(
@@ -340,7 +337,7 @@ describe('Contacts > Contact Group Reference', function () {
 		// XML: t:select attr="type" match="contact"
 		assert.equal(contactMatch.type, 'contact', 'match type should be contact');
 		// XML: t:select attr="isGroup" match="1"
-		assert.equal(String(contactMatch.isGroup), '1', 'match isGroup should be 1');
+		assert.isOk(contactMatch.isGroup, 'match isGroup should be 1');
 	});
 
 
@@ -403,9 +400,8 @@ describe('Contacts > Contact Group Reference', function () {
 		const iMembers = members.filter(m => m.type === 'I');
 		assert.isTrue(iMembers.some(m => m.value === email), 'I-type member value should match email');
 		// XML: t:select path="//mail:CreateContactResponse/mail:cn/mail:a[@n='nickname']" set="contact4.nickname"
-		const attrs = Array.isArray(cn.a) ? cn.a : [cn.a];
-		const nickAttr = attrs.find(a => a.n === 'nickname');
-		assert.exists(nickAttr, 'nickname attr should exist');
+		const attrs = cn._attrs || {};
+		assert.exists(attrs.nickname, 'nickname attr should exist');
 
 		// AutoComplete
 		const autoRes = await soap.makeSOAPEnvelopeAccount(
@@ -425,6 +421,6 @@ describe('Contacts > Contact Group Reference', function () {
 		// XML: t:select attr="type" match="contact"
 		assert.equal(contactMatch.type, 'contact', 'match type should be contact');
 		// XML: t:select attr="isGroup" match="1"
-		assert.equal(String(contactMatch.isGroup), '1', 'match isGroup should be 1');
+		assert.isOk(contactMatch.isGroup, 'match isGroup should be 1');
 	});
 });

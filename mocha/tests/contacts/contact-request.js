@@ -44,6 +44,17 @@ describe('Contacts > Contact Request', function () {
 
 	// Tests
 	it('Smoke | CreateContactRequest', async () => {
+		// XML: auth request
+		const authRes = await soap.makeSOAPEnvelopeAccount(
+			`<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${accountToken.name || accountEmail}</account>
+				<password>${config.accountPassword}</password>
+			</AuthRequest>`, accountToken
+		);
+		assert.notExists(authRes.Fault, 'Auth should not fault');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
+		assert.exists(authRes.AuthResponse.lifetime, 'lifetime should exist');
+
 		const firstName = `First${common.getUniqueString()}`;
 		const lastName = `Last${common.getUniqueString()}`;
 		const email = `email${common.getUniqueString()}@domain.com`;
@@ -66,6 +77,17 @@ describe('Contacts > Contact Request', function () {
 
 
 	it('Smoke | ModifyContactRequest', async () => {
+		// XML: auth request
+		const authRes = await soap.makeSOAPEnvelopeAccount(
+			`<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${accountToken.name || accountEmail}</account>
+				<password>${config.accountPassword}</password>
+			</AuthRequest>`, accountToken
+		);
+		assert.notExists(authRes.Fault, 'Auth should not fault');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
+		assert.exists(authRes.AuthResponse.lifetime, 'lifetime should exist');
+
 		const firstName = `First${common.getUniqueString()}`;
 		const lastName = `Last${common.getUniqueString()}`;
 		const email = `email${common.getUniqueString()}@domain.com`;
@@ -102,6 +124,17 @@ describe('Contacts > Contact Request', function () {
 
 
 	it('Smoke | GetContactsRequest', async () => {
+		// XML: auth request
+		const authRes = await soap.makeSOAPEnvelopeAccount(
+			`<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${accountToken.name || accountEmail}</account>
+				<password>${config.accountPassword}</password>
+			</AuthRequest>`, accountToken
+		);
+		assert.notExists(authRes.Fault, 'Auth should not fault');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
+		assert.exists(authRes.AuthResponse.lifetime, 'lifetime should exist');
+
 		const firstName = `First${common.getUniqueString()}`;
 		const lastName = `Last${common.getUniqueString()}`;
 		const email = `email${common.getUniqueString()}@domain.com`;
@@ -135,6 +168,17 @@ describe('Contacts > Contact Request', function () {
 
 
 	it('Smoke | ContactActionRequest - trash', async () => {
+		// XML: auth request
+		const authRes = await soap.makeSOAPEnvelopeAccount(
+			`<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${accountToken.name || accountEmail}</account>
+				<password>${config.accountPassword}</password>
+			</AuthRequest>`, accountToken
+		);
+		assert.notExists(authRes.Fault, 'Auth should not fault');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
+		assert.exists(authRes.AuthResponse.lifetime, 'lifetime should exist');
+
 		const firstName = `First${common.getUniqueString()}`;
 		const lastName = `Last${common.getUniqueString()}`;
 		const email = `email${common.getUniqueString()}@domain.com`;
@@ -167,6 +211,17 @@ describe('Contacts > Contact Request', function () {
 
 
 	it('Smoke | ImportContactsRequest', async () => {
+		// XML: auth request
+		const authRes = await soap.makeSOAPEnvelopeAccount(
+			`<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${accountToken.name || accountEmail}</account>
+				<password>${config.accountPassword}</password>
+			</AuthRequest>`, accountToken
+		);
+		assert.notExists(authRes.Fault, 'Auth should not fault');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
+		assert.exists(authRes.AuthResponse.lifetime, 'lifetime should exist');
+
 		// This test requires CSV upload servlet support - verify ImportContacts works
 		const res = await soap.makeSOAPEnvelopeAccount(
 			`<ImportContactsRequest xmlns="urn:zimbraMail" ct="csv">
@@ -183,6 +238,17 @@ TestFirst${common.getUniqueString()},TestLast${common.getUniqueString()},testema
 
 
 	it('Smoke | ExportContactsRequest', async () => {
+		// XML: auth request
+		const authRes = await soap.makeSOAPEnvelopeAccount(
+			`<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${accountToken.name || accountEmail}</account>
+				<password>${config.accountPassword}</password>
+			</AuthRequest>`, accountToken
+		);
+		assert.notExists(authRes.Fault, 'Auth should not fault');
+		assert.exists(authRes.AuthResponse.authToken, 'authToken should exist');
+		assert.exists(authRes.AuthResponse.lifetime, 'lifetime should exist');
+
 		// Create a contact first
 		const createRes = await soap.makeSOAPEnvelopeAccount(
 			`<CreateContactRequest xmlns="urn:zimbraMail">

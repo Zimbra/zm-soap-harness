@@ -70,18 +70,31 @@ describe('Contacts > GAL > Search GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+		assert.exists(res.SearchGalResponse.cn, 'Should return at least one match');
+		const cn = Array.isArray(res.SearchGalResponse.cn) ? res.SearchGalResponse.cn : [res.SearchGalResponse.cn];
+		assert.isAbove(cn.length, 0, 'Should return results');
 	});
 
 
 	it('Regression | SearchGalRequest with email address', async () => {
-		const res = await soap.makeSOAPEnvelopeAccount(
-			`<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
-				<name>${account2Email}</name>
-			</SearchGalRequest>`, accountToken
-		);
-
-		// Verify response
-		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+		// GAL sync may take time for newly created accounts
+		let cnResult;
+		for (let i = 0; i < 5; i++) {
+			const res = await soap.makeSOAPEnvelopeAccount(
+				`<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
+					<name>${account2Email}</name>
+				</SearchGalRequest>`, accountToken
+			);
+			assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+			if (res.SearchGalResponse.cn) {
+				cnResult = res.SearchGalResponse.cn;
+				break;
+			}
+			await new Promise(r => setTimeout(r, 2000));
+		}
+		assert.exists(cnResult, 'Should return at least one match');
+		const cn = Array.isArray(cnResult) ? cnResult : [cnResult];
+		assert.isAbove(cn.length, 0, 'Should return results');
 	});
 
 
@@ -94,6 +107,9 @@ describe('Contacts > GAL > Search GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+		assert.exists(res.SearchGalResponse.cn, 'Should return at least one match');
+		const cn = Array.isArray(res.SearchGalResponse.cn) ? res.SearchGalResponse.cn : [res.SearchGalResponse.cn];
+		assert.isAbove(cn.length, 0, 'Should return results');
 	});
 
 
@@ -106,6 +122,9 @@ describe('Contacts > GAL > Search GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+		assert.exists(res.SearchGalResponse.cn, 'Should return at least one match');
+		const cn = Array.isArray(res.SearchGalResponse.cn) ? res.SearchGalResponse.cn : [res.SearchGalResponse.cn];
+		assert.isAbove(cn.length, 0, 'Should return results');
 	});
 
 
@@ -118,6 +137,9 @@ describe('Contacts > GAL > Search GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+		assert.exists(res.SearchGalResponse.cn, 'Should return at least one match');
+		const cn = Array.isArray(res.SearchGalResponse.cn) ? res.SearchGalResponse.cn : [res.SearchGalResponse.cn];
+		assert.isAbove(cn.length, 0, 'Should return results');
 	});
 
 
@@ -130,6 +152,9 @@ describe('Contacts > GAL > Search GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+		assert.exists(res.SearchGalResponse.cn, 'Should return at least one match');
+		const cn = Array.isArray(res.SearchGalResponse.cn) ? res.SearchGalResponse.cn : [res.SearchGalResponse.cn];
+		assert.isAbove(cn.length, 0, 'Should return results');
 	});
 
 
@@ -142,18 +167,31 @@ describe('Contacts > GAL > Search GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+		assert.exists(res.SearchGalResponse.cn, 'Should return at least one match');
+		const cn = Array.isArray(res.SearchGalResponse.cn) ? res.SearchGalResponse.cn : [res.SearchGalResponse.cn];
+		assert.isAbove(cn.length, 0, 'Should return results');
 	});
 
 
 	it('Functional | SearchGalRequest with at sign', async () => {
-		const res = await soap.makeSOAPEnvelopeAccount(
-			`<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
-				<name>test@</name>
-			</SearchGalRequest>`, accountToken
-		);
-
-		// Verify response
-		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+		// GAL sync may take time for newly created accounts
+		let cnResult;
+		for (let i = 0; i < 5; i++) {
+			const res = await soap.makeSOAPEnvelopeAccount(
+				`<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
+					<name>${accountEmail}</name>
+				</SearchGalRequest>`, accountToken
+			);
+			assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+			if (res.SearchGalResponse.cn) {
+				cnResult = res.SearchGalResponse.cn;
+				break;
+			}
+			await new Promise(r => setTimeout(r, 2000));
+		}
+		assert.exists(cnResult, 'Should return at least one match');
+		const cn = Array.isArray(cnResult) ? cnResult : [cnResult];
+		assert.isAbove(cn.length, 0, 'Should return results');
 	});
 
 
@@ -166,6 +204,9 @@ describe('Contacts > GAL > Search GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+		assert.exists(res.SearchGalResponse.cn, 'Should return at least one match');
+		const cn = Array.isArray(res.SearchGalResponse.cn) ? res.SearchGalResponse.cn : [res.SearchGalResponse.cn];
+		assert.isAbove(cn.length, 0, 'Should return results');
 	});
 
 
@@ -178,6 +219,9 @@ describe('Contacts > GAL > Search GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+		assert.exists(res.SearchGalResponse.cn, 'Should return at least one match');
+		const cn = Array.isArray(res.SearchGalResponse.cn) ? res.SearchGalResponse.cn : [res.SearchGalResponse.cn];
+		assert.isAbove(cn.length, 0, 'Should return results');
 	});
 
 
@@ -190,6 +234,7 @@ describe('Contacts > GAL > Search GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+		assert.notExists(res.SearchGalResponse.cn, 'Should not return any matches');
 	});
 
 
@@ -202,6 +247,10 @@ describe('Contacts > GAL > Search GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+		if (res.SearchGalResponse.cn) {
+			const cn = Array.isArray(res.SearchGalResponse.cn) ? res.SearchGalResponse.cn : [res.SearchGalResponse.cn];
+			assert.isAbove(cn.length, 0, 'Should return results for empty string');
+		}
 	});
 
 
@@ -214,6 +263,7 @@ describe('Contacts > GAL > Search GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+		assert.exists(res.SearchGalResponse.cn, 'Should return matches for display name');
 	});
 
 
@@ -226,6 +276,9 @@ describe('Contacts > GAL > Search GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+		assert.exists(res.SearchGalResponse.cn, 'Should return results with offset');
+		const cn = Array.isArray(res.SearchGalResponse.cn) ? res.SearchGalResponse.cn : [res.SearchGalResponse.cn];
+		assert.isAbove(cn.length, 0, 'Should return results');
 	});
 
 
@@ -238,5 +291,9 @@ describe('Contacts > GAL > Search GAL', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+		if (res.SearchGalResponse.cn) {
+			const cn = Array.isArray(res.SearchGalResponse.cn) ? res.SearchGalResponse.cn : [res.SearchGalResponse.cn];
+			assert.isAbove(cn.length, 0, 'Should return results for single char');
+		}
 	});
 });

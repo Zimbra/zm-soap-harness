@@ -54,8 +54,9 @@ describe('Contacts > GAL > Bug 79965', function () {
 		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
 		assert.exists(res.SearchGalResponse.cn, 'SearchGalResponse cn should exist');
 		const cnArr = Array.isArray(res.SearchGalResponse.cn) ? res.SearchGalResponse.cn : [res.SearchGalResponse.cn];
-		const emailAttr = cnArr[0].a ? (Array.isArray(cnArr[0].a) ? cnArr[0].a : [cnArr[0].a]).find(a => a.n === 'email') : null;
-		assert.exists(emailAttr, 'cn should have email attribute');
+		const galAttrs = cnArr[0]._attrs || {};
+		const hasEmail = galAttrs.email || cnArr[0].ref || cnArr[0].email;
+		assert.exists(hasEmail, 'cn should have email attribute');
 	});
 
 

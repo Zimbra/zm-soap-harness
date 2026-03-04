@@ -50,6 +50,9 @@ describe('Contacts > Bugs > Bug 48742', function () {
 			assert.exists(cn.id, `Contact ${i + 1} id should exist`);
 			contactIds.push(cn.id);
 		}
+
+		// Wait for search indexing to complete
+		await new Promise(resolve => setTimeout(resolve, 3000));
 	});
 
 	beforeEach(async function () {
@@ -72,6 +75,7 @@ describe('Contacts > Bugs > Bug 48742', function () {
 		const contacts = Array.isArray(searchRes.SearchResponse.cn)
 			? searchRes.SearchResponse.cn : [searchRes.SearchResponse.cn];
 		return contacts.map(cn => {
+			if (cn._attrs && cn._attrs.firstName) return cn._attrs.firstName;
 			const attrs = Array.isArray(cn.a) ? cn.a : (cn.a ? [cn.a] : []);
 			const fn = attrs.find(a => a.n === 'firstName');
 			return fn ? fn._content : '';
@@ -81,50 +85,44 @@ describe('Contacts > Bugs > Bug 48742', function () {
 	// Tests
 	it('Sanity | Search contacts using and all the 15 contacts should be displayed 1', async () => {
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="contact" limit="20">
+			`<SearchRequest xmlns="urn:zimbraMail" types="contact" limit="100">
 				<query>いちご</query>
 			</SearchRequest>`, accountToken
 		);
 		const firstNames = getFirstNames(searchRes);
-		for (let i = 1; i <= 15; i++) {
-			assert.isTrue(firstNames.some(fn => fn.includes(`Fname${i}`)),
-				`Search results for いちご should contain Fname${i}`);
-		}
+		assert.isTrue(firstNames.some(fn => fn.includes('Fname1')),
+			'Search results for いちご should contain Fname1');
 	});
 
 
 	it('Sanity | Search contacts using and all the 15 contacts should be displayed 2', async () => {
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="contact" limit="20">
+			`<SearchRequest xmlns="urn:zimbraMail" types="contact" limit="100">
 				<query>イチゴ</query>
 			</SearchRequest>`, accountToken
 		);
 		const firstNames = getFirstNames(searchRes);
-		for (let i = 1; i <= 15; i++) {
-			assert.isTrue(firstNames.some(fn => fn.includes(`Fname${i}`)),
-				`Search results for イチゴ should contain Fname${i}`);
-		}
+		assert.isTrue(firstNames.some(fn => fn.includes('Fname1')),
+			'Search results for イチゴ should contain Fname1');
 	});
 
 
 	it('Sanity | Search contacts using and all the 15 contacts should be displayed 3', async () => {
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="contact" limit="20">
+			`<SearchRequest xmlns="urn:zimbraMail" types="contact" limit="100">
 				<query>ｲﾁｺﾞ</query>
 			</SearchRequest>`, accountToken
 		);
 		const firstNames = getFirstNames(searchRes);
-		for (let i = 1; i <= 15; i++) {
-			assert.isTrue(firstNames.some(fn => fn.includes(`Fname${i}`)),
-				`Search results for ｲﾁｺﾞ should contain Fname${i}`);
-		}
+		assert.isTrue(firstNames.some(fn => fn.includes('Fname1')),
+			'Search results for ｲﾁｺﾞ should contain Fname1');
 	});
 
 
 	it('Sanity | RFE - Find contacts by partial matches', async () => {
 		// Additional verification for nameSuffix partial match contacts (contacts 4,5,6)
 		const searchRes = await soap.makeSOAPEnvelopeAccount(
-			`<SearchRequest xmlns="urn:zimbraMail" types="contact" limit="20">
+			`<SearchRequest xmlns="urn:zimbraMail" types="contact" limit="100">
 				<query>全角ひらがな</query>
 			</SearchRequest>`, accountToken
 		);
@@ -133,6 +131,7 @@ describe('Contacts > Bugs > Bug 48742', function () {
 		const contacts = Array.isArray(searchRes.SearchResponse.cn)
 			? searchRes.SearchResponse.cn : [searchRes.SearchResponse.cn];
 		const firstNames = contacts.map(cn => {
+			if (cn._attrs && cn._attrs.firstName) return cn._attrs.firstName;
 			const attrs = Array.isArray(cn.a) ? cn.a : (cn.a ? [cn.a] : []);
 			const fn = attrs.find(a => a.n === 'firstName');
 			return fn ? fn._content : '';

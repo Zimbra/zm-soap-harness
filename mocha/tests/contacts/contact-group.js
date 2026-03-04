@@ -102,10 +102,12 @@ describe('Contacts > Contact Group', function () {
 			? searchRes.SearchResponse.cn[0] : searchRes.SearchResponse.cn;
 		assert.exists(searchCn.id, 'Search result id should exist');
 		assert.equal(searchCn.fileAsStr, groupName, 'fileAsStr should match group name');
-		const sAttrs = Array.isArray(searchCn.a) ? searchCn.a : [searchCn.a];
-		assert.equal(sAttrs.find(a => a.n === 'nickname')._content, groupName, 'nickname should match');
-		assert.equal(sAttrs.find(a => a.n === 'type')._content, 'group', 'type should be group');
-		assert.exists(sAttrs.find(a => a.n === 'dlist'), 'dlist should exist');
+		const sAttrs = searchCn._attrs || {};
+		assert.exists(sAttrs.nickname, 'nickname attribute should exist');
+		assert.equal(sAttrs.nickname, groupName, 'nickname should match');
+		assert.exists(sAttrs.type, 'type attribute should exist');
+		assert.equal(sAttrs.type, 'group', 'type should be group');
+		assert.exists(sAttrs.dlist, 'dlist should exist');
 	});
 
 
@@ -150,9 +152,11 @@ describe('Contacts > Contact Group', function () {
 		const searchCn = Array.isArray(searchRes.SearchResponse.cn)
 			? searchRes.SearchResponse.cn[0] : searchRes.SearchResponse.cn;
 		assert.equal(searchCn.fileAsStr, groupName, 'fileAsStr should match');
-		const sAttrs = Array.isArray(searchCn.a) ? searchCn.a : [searchCn.a];
-		assert.equal(sAttrs.find(a => a.n === 'nickname')._content, groupName, 'nickname should match');
-		assert.equal(sAttrs.find(a => a.n === 'type')._content, 'group', 'type should be group');
+		const sAttrs = searchCn._attrs || {};
+		assert.exists(sAttrs.nickname, 'nickname attribute should exist');
+		assert.equal(sAttrs.nickname, groupName, 'nickname should match');
+		assert.exists(sAttrs.type, 'type attribute should exist');
+		assert.equal(sAttrs.type, 'group', 'type should be group');
 	});
 
 
@@ -198,9 +202,11 @@ describe('Contacts > Contact Group', function () {
 		const searchCn = Array.isArray(searchRes.SearchResponse.cn)
 			? searchRes.SearchResponse.cn[0] : searchRes.SearchResponse.cn;
 		assert.equal(searchCn.fileAsStr, groupName, 'fileAsStr should match');
-		const sAttrs = Array.isArray(searchCn.a) ? searchCn.a : [searchCn.a];
-		assert.equal(sAttrs.find(a => a.n === 'nickname')._content, groupName, 'nickname should match');
-		assert.equal(sAttrs.find(a => a.n === 'type')._content, 'group', 'type should be group');
+		const sAttrs = searchCn._attrs || {};
+		assert.exists(sAttrs.nickname, 'nickname attribute should exist');
+		assert.equal(sAttrs.nickname, groupName, 'nickname should match');
+		assert.exists(sAttrs.type, 'type attribute should exist');
+		assert.equal(sAttrs.type, 'group', 'type should be group');
 	});
 
 
@@ -253,6 +259,24 @@ describe('Contacts > Contact Group', function () {
 		const cn = Array.isArray(res.CreateContactResponse.cn)
 			? res.CreateContactResponse.cn[0] : res.CreateContactResponse.cn;
 		assert.exists(cn.id, 'Group id should exist');
+
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
+				<query>in:contacts/${folderName}(${groupName})</query>
+			</SearchRequest>`, account1Token
+		);
+		assert.notExists(searchRes.Fault, 'Search should not fault');
+		const searchCn = Array.isArray(searchRes.SearchResponse.cn)
+			? searchRes.SearchResponse.cn[0] : searchRes.SearchResponse.cn;
+		assert.exists(searchCn, 'Search result should exist');
+		assert.equal(searchCn.fileAsStr, groupName, 'fileAsStr should match');
+		const sAttrs = searchCn._attrs || {};
+		assert.exists(sAttrs.nickname, 'nickname attribute should exist');
+		assert.equal(sAttrs.nickname, groupName, 'nickname should match');
+		assert.exists(sAttrs.type, 'type attribute should exist');
+		assert.equal(sAttrs.type, 'group', 'type should match');
+		assert.exists(sAttrs.dlist, 'dlist attribute should exist');
+		assert.equal(sAttrs.dlist, `${account2Email},${account3Email}`, 'dlist should match');
 	});
 
 
@@ -345,6 +369,24 @@ describe('Contacts > Contact Group', function () {
 		);
 		assert.notExists(moveRes.Fault, 'Move should not be a Fault');
 		assert.exists(moveRes.ContactActionResponse.action, 'Move action should exist');
+
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
+				<query>in:contacts/${folderName}(${groupName})</query>
+			</SearchRequest>`, account1Token
+		);
+		assert.notExists(searchRes.Fault, 'Search should not fault');
+		const searchCn = Array.isArray(searchRes.SearchResponse.cn)
+			? searchRes.SearchResponse.cn[0] : searchRes.SearchResponse.cn;
+		assert.exists(searchCn, 'Search result should exist');
+		assert.equal(searchCn.fileAsStr, groupName, 'fileAsStr should match');
+		const sAttrs = searchCn._attrs || {};
+		assert.exists(sAttrs.nickname, 'nickname attribute should exist');
+		assert.equal(sAttrs.nickname, groupName, 'nickname should match');
+		assert.exists(sAttrs.type, 'type attribute should exist');
+		assert.equal(sAttrs.type, 'group', 'type should match');
+		assert.exists(sAttrs.dlist, 'dlist attribute should exist');
+		assert.equal(sAttrs.dlist, `${account2Email},${account3Email}`, 'dlist should match');
 	});
 
 
@@ -400,6 +442,17 @@ describe('Contacts > Contact Group', function () {
 			</ContactActionRequest>`, account1Token
 		);
 
+		const searchRes1 = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
+				<query>in:contacts/${folderName}(${groupName})</query>
+			</SearchRequest>`, account1Token
+		);
+		assert.notExists(searchRes1.Fault, 'Search should not fault');
+		const searchCn1 = Array.isArray(searchRes1.SearchResponse.cn)
+			? searchRes1.SearchResponse.cn[0] : searchRes1.SearchResponse.cn;
+		assert.exists(searchCn1, 'Search result should exist');
+		assert.equal(searchCn1.fileAsStr, groupName, 'fileAsStr should match');
+
 		// Delete from folder
 		const delRes = await soap.makeSOAPEnvelopeAccount(
 			`<ContactActionRequest xmlns="urn:zimbraMail">
@@ -408,6 +461,14 @@ describe('Contacts > Contact Group', function () {
 		);
 		assert.notExists(delRes.Fault, 'Delete should not be a Fault');
 		assert.exists(delRes.ContactActionResponse.action, 'Delete action should exist');
+
+		const searchRes2 = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
+				<query>contact:(${groupName})</query>
+			</SearchRequest>`, account1Token
+		);
+		assert.notExists(searchRes2.Fault, 'Search should not fault');
+		assert.isTrue(!searchRes2.SearchResponse.cn, 'Deleted group should not appear in search');
 	});
 
 
@@ -430,6 +491,25 @@ describe('Contacts > Contact Group', function () {
 		const cn = Array.isArray(res.CreateContactResponse.cn)
 			? res.CreateContactResponse.cn[0] : res.CreateContactResponse.cn;
 		assert.exists(cn.id, 'Group id should exist');
+
+		const searchRes = await soap.makeSOAPEnvelopeAccount(
+			`<SearchRequest xmlns="urn:zimbraMail" types="contact">
+				<query>contact:(${groupName})</query>
+			</SearchRequest>`, account1Token
+		);
+		assert.notExists(searchRes.Fault, 'Search should not fault');
+		const searchCn = Array.isArray(searchRes.SearchResponse.cn)
+			? searchRes.SearchResponse.cn[0] : searchRes.SearchResponse.cn;
+		assert.exists(searchCn, 'Search result should exist');
+		assert.equal(searchCn.fileAsStr, groupName, 'fileAsStr should match');
+		const sAttrs = searchCn._attrs || {};
+		assert.exists(sAttrs.nickname, 'nickname attribute should exist');
+		assert.equal(sAttrs.nickname, groupName, 'nickname should match');
+		assert.exists(sAttrs.type, 'type attribute should exist');
+		assert.equal(sAttrs.type, 'group', 'type should match');
+		assert.exists(sAttrs.dlist, 'dlist attribute should exist');
+		const expectedDlist = `"First Last"<${member1Email}>,"First2 Last2"<${member2Email}>`;
+		assert.equal(sAttrs.dlist, expectedDlist, 'dlist should match');
 	});
 
 

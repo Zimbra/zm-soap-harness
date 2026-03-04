@@ -83,11 +83,21 @@ describe('Contacts > Contact Modify Replacemode', function () {
 		const modCn = Array.isArray(modRes.ModifyContactResponse.cn)
 			? modRes.ModifyContactResponse.cn[0] : modRes.ModifyContactResponse.cn;
 		assert.exists(modCn.id, 'Modified contact id should exist');
-		const modAttrs = Array.isArray(modCn.a) ? modCn.a : [modCn.a];
-		const smimeVals = modAttrs.filter(a => a.n === 'userSMIMECertificate').map(a => a._content);
+
+		// Fetch contact via GetContactsRequest to verify multi-value attrs
+		const getRes = await soap.makeSOAPEnvelopeAccount(
+			`<GetContactsRequest xmlns="urn:zimbraMail">
+				<cn id="${cn.id}"/>
+			</GetContactsRequest>`, accountToken
+		);
+		assert.notExists(getRes.Fault, 'GetContacts should not fault');
+		const getCn = Array.isArray(getRes.GetContactsResponse.cn)
+			? getRes.GetContactsResponse.cn[0] : getRes.GetContactsResponse.cn;
+		const modAttrs = getCn._attrs || {};
+		const smimeVals = Array.isArray(modAttrs.userSMIMECertificate) ? modAttrs.userSMIMECertificate : (modAttrs.userSMIMECertificate ? [modAttrs.userSMIMECertificate] : []);
 		assert.include(smimeVals, smime1, 'Original smime should still exist');
 		assert.include(smimeVals, smime2, 'New smime should be added');
-		const certVals = modAttrs.filter(a => a.n === 'userCertificate').map(a => a._content);
+		const certVals = Array.isArray(modAttrs.userCertificate) ? modAttrs.userCertificate : (modAttrs.userCertificate ? [modAttrs.userCertificate] : []);
 		assert.include(certVals, cert1, 'Original cert should still exist');
 		assert.include(certVals, cert2, 'New cert should be added');
 	});
@@ -135,10 +145,20 @@ describe('Contacts > Contact Modify Replacemode', function () {
 		const modCn = Array.isArray(modRes.ModifyContactResponse.cn)
 			? modRes.ModifyContactResponse.cn[0] : modRes.ModifyContactResponse.cn;
 		assert.exists(modCn.id, 'Modified contact ID should exist');
-		const modAttrs = Array.isArray(modCn.a) ? modCn.a : [modCn.a];
-		const smimeVals = modAttrs.filter(a => a.n === 'userSMIMECertificate').map(a => a._content);
+
+		// Fetch contact via GetContactsRequest to verify multi-value attrs
+		const getRes = await soap.makeSOAPEnvelopeAccount(
+			`<GetContactsRequest xmlns="urn:zimbraMail">
+				<cn id="${cn.id}"/>
+			</GetContactsRequest>`, accountToken
+		);
+		assert.notExists(getRes.Fault, 'GetContacts should not fault');
+		const getCn = Array.isArray(getRes.GetContactsResponse.cn)
+			? getRes.GetContactsResponse.cn[0] : getRes.GetContactsResponse.cn;
+		const modAttrs = getCn._attrs || {};
+		const smimeVals = Array.isArray(modAttrs.userSMIMECertificate) ? modAttrs.userSMIMECertificate : (modAttrs.userSMIMECertificate ? [modAttrs.userSMIMECertificate] : []);
 		assert.include(smimeVals, smime2, 'New smime2 should exist');
-		const certVals = modAttrs.filter(a => a.n === 'userCertificate').map(a => a._content);
+		const certVals = Array.isArray(modAttrs.userCertificate) ? modAttrs.userCertificate : (modAttrs.userCertificate ? [modAttrs.userCertificate] : []);
 		assert.include(certVals, cert2, 'New cert2 should exist');
 	});
 
@@ -185,11 +205,9 @@ describe('Contacts > Contact Modify Replacemode', function () {
 		const modCn = Array.isArray(modRes.ModifyContactResponse.cn)
 			? modRes.ModifyContactResponse.cn[0] : modRes.ModifyContactResponse.cn;
 		assert.exists(modCn.id, 'Modified contact ID should exist');
-		const modAttrs = modCn.a ? (Array.isArray(modCn.a) ? modCn.a : [modCn.a]) : [];
-		const smimeAttr = modAttrs.find(a => a.n === 'userSMIMECertificate');
-		assert.notExists(smimeAttr, 'userSMIMECertificate should be removed');
-		const certAttr = modAttrs.find(a => a.n === 'userCertificate');
-		assert.notExists(certAttr, 'userCertificate should be removed');
+		const modAttrs = modCn._attrs || {};
+		assert.notExists(modAttrs.userSMIMECertificate, 'userSMIMECertificate should be removed');
+		assert.notExists(modAttrs.userCertificate, 'userCertificate should be removed');
 	});
 
 
@@ -286,11 +304,21 @@ describe('Contacts > Contact Modify Replacemode', function () {
 		const modCn = Array.isArray(modRes.ModifyContactResponse.cn)
 			? modRes.ModifyContactResponse.cn[0] : modRes.ModifyContactResponse.cn;
 		assert.exists(modCn.id, 'Modified contact id should exist');
-		const modAttrs = Array.isArray(modCn.a) ? modCn.a : [modCn.a];
-		const smimeVals = modAttrs.filter(a => a.n === 'userSMIMECertificate').map(a => a._content);
+
+		// Fetch contact via GetContactsRequest to verify multi-value attrs
+		const getRes = await soap.makeSOAPEnvelopeAccount(
+			`<GetContactsRequest xmlns="urn:zimbraMail">
+				<cn id="${cn.id}"/>
+			</GetContactsRequest>`, accountToken
+		);
+		assert.notExists(getRes.Fault, 'GetContacts should not fault');
+		const getCn = Array.isArray(getRes.GetContactsResponse.cn)
+			? getRes.GetContactsResponse.cn[0] : getRes.GetContactsResponse.cn;
+		const modAttrs = getCn._attrs || {};
+		const smimeVals = Array.isArray(modAttrs.userSMIMECertificate) ? modAttrs.userSMIMECertificate : (modAttrs.userSMIMECertificate ? [modAttrs.userSMIMECertificate] : []);
 		assert.notInclude(smimeVals, smime1, 'Old smime1 should not exist after replace=1');
 		assert.include(smimeVals, smime2, 'New smime2 should exist after replace=1');
-		const certVals = modAttrs.filter(a => a.n === 'userCertificate').map(a => a._content);
+		const certVals = Array.isArray(modAttrs.userCertificate) ? modAttrs.userCertificate : (modAttrs.userCertificate ? [modAttrs.userCertificate] : []);
 		assert.notInclude(certVals, cert1, 'Old cert1 should not exist after replace=1');
 		assert.include(certVals, cert2, 'New cert2 should exist after replace=1');
 	});

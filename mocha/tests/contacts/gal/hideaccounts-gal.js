@@ -111,12 +111,18 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 			? modRes.ModifyAccountResponse.account[0] : modRes.ModifyAccountResponse.account;
 		assert.exists(modAcct.id, 'ModifyAccountResponse account id should exist');
 
-		const res = await soap.makeSOAPEnvelopeAccount(
-			`<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
-				<name>${hiddenEmail}</name>
-			</SearchGalRequest>`, account1Token
-		);
-		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+		// Verify visible (with polling for GAL cache update)
+		let res;
+		for (let attempt = 0; attempt < 10; attempt++) {
+			res = await soap.makeSOAPEnvelopeAccount(
+				`<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
+					<name>${hiddenEmail}</name>
+				</SearchGalRequest>`, account1Token
+			);
+			assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+			if (res.SearchGalResponse.cn) break;
+			if (attempt < 9) await new Promise(r => setTimeout(r, 3000));
+		}
 		assert.exists(res.SearchGalResponse.cn, 'Unhidden account should appear in SearchGal');
 	});
 
@@ -226,12 +232,18 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 		assert.exists(modMail, 'Modified resource mail should exist');
 
 		// Verify visible
-		const res2 = await soap.makeSOAPEnvelopeAccount(
-			`<SearchGalRequest xmlns="urn:zimbraAccount" type="resource">
-				<name>${resName}@${domain}</name>
-			</SearchGalRequest>`, account1Token
-		);
-		assert.notExists(res2.Fault, 'SearchGal should not be a Fault');
+		// Verify visible (with polling for GAL cache update)
+		let res2;
+		for (let attempt = 0; attempt < 10; attempt++) {
+			res2 = await soap.makeSOAPEnvelopeAccount(
+				`<SearchGalRequest xmlns="urn:zimbraAccount" type="resource">
+					<name>${resName}@${domain}</name>
+				</SearchGalRequest>`, account1Token
+			);
+			assert.notExists(res2.Fault, 'SearchGal should not be a Fault');
+			if (res2.SearchGalResponse.cn) break;
+			if (attempt < 9) await new Promise(r => setTimeout(r, 3000));
+		}
 		assert.exists(res2.SearchGalResponse.cn, 'Unhidden resource should appear in SearchGal');
 	});
 
@@ -281,12 +293,18 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 		assert.exists(modMail, 'Modified resource mail should exist');
 
 		// Verify visible
-		const res2 = await soap.makeSOAPEnvelopeAccount(
-			`<SearchGalRequest xmlns="urn:zimbraAccount" type="resource">
-				<name>${resName}@${domain}</name>
-			</SearchGalRequest>`, account1Token
-		);
-		assert.notExists(res2.Fault, 'SearchGal should not be a Fault');
+		// Verify visible (with polling for GAL cache update)
+		let res2;
+		for (let attempt = 0; attempt < 10; attempt++) {
+			res2 = await soap.makeSOAPEnvelopeAccount(
+				`<SearchGalRequest xmlns="urn:zimbraAccount" type="resource">
+					<name>${resName}@${domain}</name>
+				</SearchGalRequest>`, account1Token
+			);
+			assert.notExists(res2.Fault, 'SearchGal should not be a Fault');
+			if (res2.SearchGalResponse.cn) break;
+			if (attempt < 9) await new Promise(r => setTimeout(r, 3000));
+		}
 		assert.exists(res2.SearchGalResponse.cn, 'Unhidden equipment resource should appear in SearchGal');
 	});
 
@@ -386,12 +404,18 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 		);
 		assert.notExists(aliasRes.Fault, 'AddAccountAlias should not fault');
 
-		const res = await soap.makeSOAPEnvelopeAccount(
-			`<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
-				<name>${aliasEmail}</name>
-			</SearchGalRequest>`, account1Token
-		);
-		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+		// Verify visible (with polling for GAL cache update)
+		let res;
+		for (let attempt = 0; attempt < 10; attempt++) {
+			res = await soap.makeSOAPEnvelopeAccount(
+				`<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
+					<name>${aliasEmail}</name>
+				</SearchGalRequest>`, account1Token
+			);
+			assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+			if (res.SearchGalResponse.cn) break;
+			if (attempt < 9) await new Promise(r => setTimeout(r, 3000));
+		}
 		assert.exists(res.SearchGalResponse.cn, 'Visible alias should appear in SearchGal');
 	});
 
@@ -421,12 +445,18 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 		);
 		assert.notExists(aliasRes.Fault, 'AddAccountAlias should not fault');
 
-		const res = await soap.makeSOAPEnvelopeAccount(
-			`<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
-				<name>${aliasEmail}</name>
-			</SearchGalRequest>`, account1Token
-		);
-		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+		// Verify visible (with polling for GAL cache update)
+		let res;
+		for (let attempt = 0; attempt < 10; attempt++) {
+			res = await soap.makeSOAPEnvelopeAccount(
+				`<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
+					<name>${aliasEmail}</name>
+				</SearchGalRequest>`, account1Token
+			);
+			assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+			if (res.SearchGalResponse.cn) break;
+			if (attempt < 9) await new Promise(r => setTimeout(r, 3000));
+		}
 		assert.exists(res.SearchGalResponse.cn, 'Visible alias on different domain should appear');
 	});
 
@@ -530,12 +560,18 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 			? dlRes.CreateDistributionListResponse.dl[0] : dlRes.CreateDistributionListResponse.dl;
 		assert.exists(dl.id, 'DL id should exist');
 
-		const res = await soap.makeSOAPEnvelopeAccount(
-			`<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
-				<name>${dlName}</name>
-			</SearchGalRequest>`, account1Token
-		);
-		assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+		// Verify visible (with polling for GAL cache update)
+		let res;
+		for (let attempt = 0; attempt < 10; attempt++) {
+			res = await soap.makeSOAPEnvelopeAccount(
+				`<SearchGalRequest xmlns="urn:zimbraAccount" type="account">
+					<name>${dlName}</name>
+				</SearchGalRequest>`, account1Token
+			);
+			assert.notExists(res.Fault, 'SearchGal should not be a Fault');
+			if (res.SearchGalResponse.cn) break;
+			if (attempt < 9) await new Promise(r => setTimeout(r, 3000));
+		}
 		assert.exists(res.SearchGalResponse.cn, 'Visible DL should appear in SearchGal');
 	});
 
@@ -673,7 +709,6 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 					<name>test</name>
 				</SearchGalRequest>`, account1Token, false
 			);
-			assert.exists(res.Fault, `SearchGal type=${type} should fault`);
 			assert.isString(res.Fault.Detail.Error.Code, `Fault Code for type=${type} should be string`);
 			assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST', `type=${type} should return INVALID_REQUEST`);
 		}

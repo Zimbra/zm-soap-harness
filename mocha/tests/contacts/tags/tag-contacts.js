@@ -207,9 +207,10 @@ describe('Contacts > Tags > Tag Contacts', function () {
 				<action id="${cn.id}" op="tag" tag="-1"/>
 			</ContactActionRequest>`, accountToken, false
 		);
-		const r5HasFault = r5.Fault && r5.Fault.Detail && r5.Fault.Detail.Error;
-		const r5HasAction = r5.ContactActionResponse && r5.ContactActionResponse.action;
-		assert.isTrue(!!r5HasFault || !!r5HasAction, 'negative tag should return either fault code or action');
+		// XML: t:select path="//zimbra:Code | //mail:ContactActionResponse/mail:action" — accept either outcome
+		const hasFault = r5.Fault && r5.Fault.Detail && r5.Fault.Detail.Error && r5.Fault.Detail.Error.Code;
+		const hasAction = r5.ContactActionResponse && r5.ContactActionResponse.action;
+		assert.isOk(hasFault || hasAction, 'negative tag should return either fault code or action');
 
 		// XML: zero (0) -> mail.NO_SUCH_TAG
 		const r6 = await soap.makeSOAPEnvelopeAccount(
@@ -345,9 +346,8 @@ describe('Contacts > Tags > Tag Contacts', function () {
 				<action id="-1" op="tag" tag="${tag.id}"/>
 			</ContactActionRequest>`, accountToken, false
 		);
-		const r5HasFault = r5.Fault && r5.Fault.Detail && r5.Fault.Detail.Error;
-		const r5HasAction = r5.ContactActionResponse && r5.ContactActionResponse.action;
-		assert.isTrue(!!r5HasFault || !!r5HasAction, 'negative id should return either fault code or action');
+		assert.notExists(r5.Fault, 'negative id should return either fault code or action');
+		assert.exists(r5.ContactActionResponse.action, 'ContactActionResponse action should exist');
 
 		// XML: zero (0) -> mail.NO_SUCH_CONTACT
 		const r6 = await soap.makeSOAPEnvelopeAccount(

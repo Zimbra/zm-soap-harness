@@ -417,15 +417,7 @@ END:VCARD
 		const cn = Array.isArray(res.CreateContactResponse.cn)
 			? res.CreateContactResponse.cn[0] : res.CreateContactResponse.cn;
 		const attrs = cn._attrs || {};
-		const getAttr = (name) => {
-			if (attrs[name]) return attrs[name];
-			if (cn.a) {
-				const arr = Array.isArray(cn.a) ? cn.a : [cn.a];
-				const found = arr.find(a => a.n === name);
-				return found ? found._content : undefined;
-			}
-			return undefined;
-		};
+		const getAttr = (name) => attrs[name];
 		assert.equal(getAttr('firstName'), 'John', 'firstName should be John');
 		assert.equal(getAttr('lastName'), 'Smith', 'lastName should be Smith');
 		assert.equal(getAttr('middleName'), 'M.', 'middleName should be M.');
@@ -466,15 +458,7 @@ END:VCARD
 		const cn = Array.isArray(res.CreateContactResponse.cn)
 			? res.CreateContactResponse.cn[0] : res.CreateContactResponse.cn;
 		const attrs = cn._attrs || {};
-		const getAttr = (name) => {
-			if (attrs[name]) return attrs[name];
-			if (cn.a) {
-				const arr = Array.isArray(cn.a) ? cn.a : [cn.a];
-				const found = arr.find(a => a.n === name);
-				return found ? found._content : undefined;
-			}
-			return undefined;
-		};
+		const getAttr = (name) => attrs[name];
 		assert.equal(getAttr('email'), '_EMAILONE_@DOMAIN.COM_', 'Email should match');
 	});
 

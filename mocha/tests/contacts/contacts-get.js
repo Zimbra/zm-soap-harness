@@ -294,15 +294,7 @@ describe('Contacts > Contacts Get', function () {
 		const getCn = Array.isArray(getRes2.GetContactsResponse.cn)
 			? getRes2.GetContactsResponse.cn[0] : getRes2.GetContactsResponse.cn;
 		const attrs = getCn._attrs || {};
-		const getAttr = (name) => {
-			if (attrs[name]) return attrs[name];
-			if (getCn.a) {
-				const arr = Array.isArray(getCn.a) ? getCn.a : [getCn.a];
-				const found = arr.find(a => a.n === name);
-				return found ? found._content : undefined;
-			}
-			return undefined;
-		};
+		const getAttr = (name) => attrs[name];
 		assert.match(getAttr('homeUrl'), /^JAVASCRIPT-BLOCKED/, 'homeUrl should be blocked');
 		assert.match(getAttr('otherUrl'), /^JAVASCRIPT-BLOCKED/, 'otherUrl should be blocked');
 		assert.match(getAttr('workUrl'), /^JAVASCRIPT-BLOCKED/, 'workUrl should be blocked');

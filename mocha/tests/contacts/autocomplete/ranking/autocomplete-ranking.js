@@ -30,6 +30,10 @@ describe('Contacts > Autocomplete > Ranking > Autocomplete Ranking', function ()
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(c1.Fault, 'Create contact1 should not fault');
+		const c1Info = Array.isArray(c1.CreateAccountResponse.account) ? c1.CreateAccountResponse.account[0] : c1.CreateAccountResponse.account;
+		assert.exists(c1Info.id, 'Account ID should exist');
+		const c1Host = c1Info.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(c1Host, 'zimbraMailHost should exist');
 
 		// Create contact2 account
 		contact2Email = `account${common.getUniqueString()}@${config.testDomain}`;
@@ -43,6 +47,10 @@ describe('Contacts > Autocomplete > Ranking > Autocomplete Ranking', function ()
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(c2.Fault, 'Create contact2 should not fault');
+		const c2Info = Array.isArray(c2.CreateAccountResponse.account) ? c2.CreateAccountResponse.account[0] : c2.CreateAccountResponse.account;
+		assert.exists(c2Info.id, 'Account ID should exist');
+		const c2Host = c2Info.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(c2Host, 'zimbraMailHost should exist');
 
 		// Create account1
 		const account1Email = `account${common.getUniqueString()}@${config.testDomain}`;
@@ -53,6 +61,10 @@ describe('Contacts > Autocomplete > Ranking > Autocomplete Ranking', function ()
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(a1.Fault, 'Create account1 should not fault');
+		const a1Info = Array.isArray(a1.CreateAccountResponse.account) ? a1.CreateAccountResponse.account[0] : a1.CreateAccountResponse.account;
+		assert.exists(a1Info.id, 'Account ID should exist');
+		const a1Host = a1Info.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(a1Host, 'zimbraMailHost should exist');
 		account1Token = await soap.getAccountAuthToken(account1Email);
 
 		// Create account2 with zimbraContactAutoCompleteMaxResults=5
@@ -65,6 +77,10 @@ describe('Contacts > Autocomplete > Ranking > Autocomplete Ranking', function ()
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(a2.Fault, 'Create account2 should not fault');
+		const a2Info = Array.isArray(a2.CreateAccountResponse.account) ? a2.CreateAccountResponse.account[0] : a2.CreateAccountResponse.account;
+		assert.exists(a2Info.id, 'Account ID should exist');
+		const a2Host = a2Info.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(a2Host, 'zimbraMailHost should exist');
 		account2Token = await soap.getAccountAuthToken(account2Email);
 	});
 

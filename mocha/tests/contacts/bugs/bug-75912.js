@@ -44,6 +44,7 @@ describe('Contacts > Bugs > Bug 75912', function () {
 
 	// Tests
 	it('Sanity | ModifyContactRequest(ReplaceMode 0) needs way to remove all m nodes 1', async () => {
+
 		// Create a contact reference
 		const contactEmail = `email${common.getUniqueString()}@domain.com`;
 		const createRefRes = await soap.makeSOAPEnvelopeAccount(
@@ -104,13 +105,14 @@ describe('Contacts > Bugs > Bug 75912', function () {
 		// Verify members are dropped (emptyset)
 		const modMembers = Array.isArray(modCn.m) ? modCn.m : (modCn.m ? [modCn.m] : []);
 		const modCMember = modMembers.find(m => m.type === 'C' && m.value === contactRefId);
-		assert.notExists(modCMember, 'C member should be dropped after reset (emptyset)');
+		assert.isTrue(!modCMember, 'C member should be dropped after reset (emptyset)');
 		const modIMember = modMembers.find(m => m.type === 'I' && m.value === inlineEmail);
-		assert.notExists(modIMember, 'I member should be dropped after reset (emptyset)');
+		assert.isTrue(!modIMember, 'I member should be dropped after reset (emptyset)');
 	});
 
 
 	it('Sanity | ModifyContactRequest(ReplaceMode 0) needs way to remove all m nodes 2', async () => {
+
 		// Create a contact reference
 		const contactEmail = `email1${common.getUniqueString()}@domain.com`;
 		const createRefRes = await soap.makeSOAPEnvelopeAccount(
@@ -168,9 +170,9 @@ describe('Contacts > Bugs > Bug 75912', function () {
 			? modifyRes.ModifyContactResponse.cn[0] : modifyRes.ModifyContactResponse.cn;
 		assert.exists(modCn.id, 'Modified contact group id should exist');
 		let modMembers = Array.isArray(modCn.m) ? modCn.m : (modCn.m ? [modCn.m] : []);
-		assert.notExists(modMembers.find(m => m.type === 'C' && m.value === contactRefId),
+		assert.isTrue(!modMembers.find(m => m.type === 'C' && m.value === contactRefId),
 			'C member should be dropped after reset (emptyset)');
-		assert.notExists(modMembers.find(m => m.type === 'I' && m.value === inlineEmail),
+		assert.isTrue(!modMembers.find(m => m.type === 'I' && m.value === inlineEmail),
 			'I member should be dropped after reset (emptyset)');
 
 		// Re-add members using op="+"
@@ -198,6 +200,7 @@ describe('Contacts > Bugs > Bug 75912', function () {
 
 
 	it('Sanity | Send ModifyContactRequest(ReplaceMode 1) and m op reset', async () => {
+
 		// Create a contact reference
 		const contactEmail = `email2${common.getUniqueString()}@domain.com`;
 		const createRefRes = await soap.makeSOAPEnvelopeAccount(
@@ -246,7 +249,6 @@ describe('Contacts > Bugs > Bug 75912', function () {
 				</cn>
 			</ModifyContactRequest>`, accountToken, false
 		);
-		assert.exists(modifyRes.Fault, 'Replace=1 with reset should fault');
 		assert.match(modifyRes.Fault.Detail.Error.Code, /^service\.INVALID_REQUEST/,
 			'Error code should be service.INVALID_REQUEST');
 	});
