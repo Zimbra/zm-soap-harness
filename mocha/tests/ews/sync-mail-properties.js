@@ -28,6 +28,9 @@ describe('EWS > Sync Mail Properties', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createRes1.Fault, 'CreateAccount1 should not be a Fault');
+		assert.exists(createRes1.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createRes1.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		const createRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -37,6 +40,9 @@ describe('EWS > Sync Mail Properties', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createRes2.Fault, 'CreateAccount2 should not be a Fault');
+		assert.exists(createRes2.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host2 = createRes2.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 	});
 
 	beforeEach(async function () {

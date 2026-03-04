@@ -45,6 +45,8 @@ describe('Calendar > Appointments > Appointment Modify', function () {
 			</CreateAccountRequest>`, adminAuthToken
         );
         const id = res.CreateAccountResponse.account[0].id;
+        const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
         const token = await soap.getAccountAuthToken(email);
         return { email, id, token };
     }

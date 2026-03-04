@@ -79,6 +79,8 @@ describe('Admin > Accounts > Account Getmembership', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		account1Id = a1.CreateAccountResponse.account[0].id;
+		const host = a1.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Create account
 		const a2 = await soap.makeSOAPEnvelopeAdmin(
@@ -88,6 +90,8 @@ describe('Admin > Accounts > Account Getmembership', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		account2Id = a2.CreateAccountResponse.account[0].id;
+		const host2 = a2.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 
 		// Create account
 		const a3 = await soap.makeSOAPEnvelopeAdmin(
@@ -97,6 +101,8 @@ describe('Admin > Accounts > Account Getmembership', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		account3Id = a3.CreateAccountResponse.account[0].id;
+		const host3 = a3.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host3, 'zimbraMailHost should exist');
 
 		// Add account2 to list1
 		await soap.makeSOAPEnvelopeAdmin(
@@ -114,6 +120,8 @@ describe('Admin > Accounts > Account Getmembership', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		account4Id = a4.CreateAccountResponse.account[0].id;
+		const host4 = a4.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host4, 'zimbraMailHost should exist');
 
 		// CreateDistributionListRequest
 		const dl4Res = await soap.makeSOAPEnvelopeAdmin(
@@ -159,6 +167,8 @@ describe('Admin > Accounts > Account Getmembership', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		account5Id = a5.CreateAccountResponse.account[0].id;
+		const host5 = a5.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host5, 'zimbraMailHost should exist');
 
 		// CreateDistributionListRequest
 		const dl6Res = await soap.makeSOAPEnvelopeAdmin(

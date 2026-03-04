@@ -15,12 +15,19 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 		forwardAccountName = `test.${common.getUniqueString()}@${config.testDomain}`;
 
 		// Create account
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${forwardAccountName}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 	});
 
 	beforeEach(async function () {
@@ -61,6 +68,8 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		const acctId = acctRes.CreateAccountResponse.account[0].id;
+		const host = acctRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const attrs = acctRes.CreateAccountResponse.account[0].a || [];
 		const reminderAttr = attrs.find(a => a.n === 'zimbraCalendarReminderDeviceEmail');
 
@@ -110,6 +119,8 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		const acctId = acctRes.CreateAccountResponse.account[0].id;
+		const host = acctRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const attrs = acctRes.CreateAccountResponse.account[0].a || [];
 		const reminderAttr = attrs.find(a => a.n === 'zimbraCalendarReminderDeviceEmail');
 
@@ -161,6 +172,8 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		const acctId = acctRes.CreateAccountResponse.account[0].id;
+		const host = acctRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const attrs = acctRes.CreateAccountResponse.account[0].a || [];
 		const enabledAttr = attrs.find(a => a.n === 'zimbraFeatureCalendarReminderDeviceEmailEnabled');
 		if (enabledAttr) {
@@ -203,6 +216,8 @@ describe('Admin > Accounts > Account Device Reminder', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		const acctId = acctRes.CreateAccountResponse.account[0].id;
+		const host = acctRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Unset
 		const modRes = await soap.makeSOAPEnvelopeAdmin(

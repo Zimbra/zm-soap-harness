@@ -38,6 +38,8 @@ describe('Calendar > Snooze Calendar Item Alarm Request', function () {
         );
         assert.notExists(acctRes.Fault, 'CreateAccountRequest should not fault');
         assert.exists(acctRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+        const host = acctRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
         const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
         // Get calendar folder id
@@ -106,6 +108,8 @@ describe('Calendar > Snooze Calendar Item Alarm Request', function () {
         );
         assert.notExists(acctRes.Fault, 'CreateAccountRequest should not fault');
         assert.exists(acctRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+        const host = acctRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
         const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
         // Get tasks folder id

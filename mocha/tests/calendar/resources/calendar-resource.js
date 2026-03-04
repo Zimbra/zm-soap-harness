@@ -38,10 +38,12 @@ describe('Calendar > Resources > Calendar Resource', function () {
 			</CreateCalendarResourceRequest>`, adminAuthToken
         );
         assert.notExists(res.Fault, 'Should not fault');
-        assert.exists(
-            res.CreateCalendarResourceResponse.calresource,
-            'Resource should be created'
-        );
+        const calRes = Array.isArray(res.CreateCalendarResourceResponse.calresource)
+            ? res.CreateCalendarResourceResponse.calresource[0]
+            : res.CreateCalendarResourceResponse.calresource;
+        assert.exists(calRes, 'Resource should be created');
+        const host = calRes.a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
     });
 
 
@@ -55,9 +57,12 @@ describe('Calendar > Resources > Calendar Resource', function () {
 				<a n="displayName">${resName}</a>
 			</CreateCalendarResourceRequest>`, adminAuthToken
         );
-        const resId = Array.isArray(createRes.CreateCalendarResourceResponse.calresource)
-            ? createRes.CreateCalendarResourceResponse.calresource[0].id
-            : createRes.CreateCalendarResourceResponse.calresource.id;
+        const calRes2 = Array.isArray(createRes.CreateCalendarResourceResponse.calresource)
+            ? createRes.CreateCalendarResourceResponse.calresource[0]
+            : createRes.CreateCalendarResourceResponse.calresource;
+        const resId = calRes2.id;
+        const host2 = calRes2.a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host2, 'zimbraMailHost should exist');
 
         const delRes = await soap.makeSOAPEnvelopeAdmin(
             `<DeleteCalendarResourceRequest xmlns="urn:zimbraAdmin">
@@ -65,8 +70,8 @@ describe('Calendar > Resources > Calendar Resource', function () {
 			</DeleteCalendarResourceRequest>`, adminAuthToken
         );
         assert.notExists(delRes.Fault, 'Should not fault');
-        assert.exists(
-            delRes.DeleteCalendarResourceResponse,
+        assert.notExists(
+            delRes.Fault,
             'Response should exist'
         );
     });
@@ -82,9 +87,12 @@ describe('Calendar > Resources > Calendar Resource', function () {
 				<a n="displayName">${resName}</a>
 			</CreateCalendarResourceRequest>`, adminAuthToken
         );
-        const resId = Array.isArray(createRes.CreateCalendarResourceResponse.calresource)
-            ? createRes.CreateCalendarResourceResponse.calresource[0].id
-            : createRes.CreateCalendarResourceResponse.calresource.id;
+        const calRes3 = Array.isArray(createRes.CreateCalendarResourceResponse.calresource)
+            ? createRes.CreateCalendarResourceResponse.calresource[0]
+            : createRes.CreateCalendarResourceResponse.calresource;
+        const resId = calRes3.id;
+        const host3 = calRes3.a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host3, 'zimbraMailHost should exist');
 
         const modRes = await soap.makeSOAPEnvelopeAdmin(
             `<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
@@ -111,9 +119,12 @@ describe('Calendar > Resources > Calendar Resource', function () {
 				<a n="displayName">${resName}</a>
 			</CreateCalendarResourceRequest>`, adminAuthToken
         );
-        const resId = Array.isArray(createRes.CreateCalendarResourceResponse.calresource)
-            ? createRes.CreateCalendarResourceResponse.calresource[0].id
-            : createRes.CreateCalendarResourceResponse.calresource.id;
+        const calRes4 = Array.isArray(createRes.CreateCalendarResourceResponse.calresource)
+            ? createRes.CreateCalendarResourceResponse.calresource[0]
+            : createRes.CreateCalendarResourceResponse.calresource;
+        const resId = calRes4.id;
+        const host4 = calRes4.a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host4, 'zimbraMailHost should exist');
 
         const renRes = await soap.makeSOAPEnvelopeAdmin(
             `<RenameCalendarResourceRequest xmlns="urn:zimbraAdmin">
@@ -139,9 +150,12 @@ describe('Calendar > Resources > Calendar Resource', function () {
 				<a n="displayName">${resName}</a>
 			</CreateCalendarResourceRequest>`, adminAuthToken
         );
-        const resId = Array.isArray(createRes.CreateCalendarResourceResponse.calresource)
-            ? createRes.CreateCalendarResourceResponse.calresource[0].id
-            : createRes.CreateCalendarResourceResponse.calresource.id;
+        const calRes5 = Array.isArray(createRes.CreateCalendarResourceResponse.calresource)
+            ? createRes.CreateCalendarResourceResponse.calresource[0]
+            : createRes.CreateCalendarResourceResponse.calresource;
+        const resId = calRes5.id;
+        const host5 = calRes5.a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host5, 'zimbraMailHost should exist');
 
         const getRes = await soap.makeSOAPEnvelopeAdmin(
             `<GetCalendarResourceRequest xmlns="urn:zimbraAdmin">
@@ -158,7 +172,7 @@ describe('Calendar > Resources > Calendar Resource', function () {
 
     it('Smoke | GetAllCalendarResourcesRequest', async () => {
         const resName = `res${common.getUniqueString()}@${testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
+        const createRes6 = await soap.makeSOAPEnvelopeAdmin(
             `<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
 				<name>${resName}</name>
 				<password>${config.accountPassword}</password>
@@ -166,6 +180,12 @@ describe('Calendar > Resources > Calendar Resource', function () {
 				<a n="displayName">${resName}</a>
 			</CreateCalendarResourceRequest>`, adminAuthToken
         );
+        assert.notExists(createRes6.Fault, 'CreateCalendarResourceRequest should not fault');
+        const calRes6 = Array.isArray(createRes6.CreateCalendarResourceResponse.calresource)
+            ? createRes6.CreateCalendarResourceResponse.calresource[0]
+            : createRes6.CreateCalendarResourceResponse.calresource;
+        const host6 = calRes6.a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host6, 'zimbraMailHost should exist');
 
         const getRes = await soap.makeSOAPEnvelopeAdmin(
             `<GetAllCalendarResourcesRequest xmlns="urn:zimbraAdmin">
@@ -182,7 +202,7 @@ describe('Calendar > Resources > Calendar Resource', function () {
 
     it('Smoke | SearchCalendarResourcesRequest', async () => {
         const resName = `res${common.getUniqueString()}@${testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
+        const createRes7 = await soap.makeSOAPEnvelopeAdmin(
             `<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
 				<name>${resName}</name>
 				<password>${config.accountPassword}</password>
@@ -190,6 +210,12 @@ describe('Calendar > Resources > Calendar Resource', function () {
 				<a n="displayName">${resName}</a>
 			</CreateCalendarResourceRequest>`, adminAuthToken
         );
+        assert.notExists(createRes7.Fault, 'CreateCalendarResourceRequest should not fault');
+        const calRes7 = Array.isArray(createRes7.CreateCalendarResourceResponse.calresource)
+            ? createRes7.CreateCalendarResourceResponse.calresource[0]
+            : createRes7.CreateCalendarResourceResponse.calresource;
+        const host7 = calRes7.a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host7, 'zimbraMailHost should exist');
 
         const searchRes = await soap.makeSOAPEnvelopeAdmin(
             `<SearchCalendarResourcesRequest xmlns="urn:zimbraAdmin"

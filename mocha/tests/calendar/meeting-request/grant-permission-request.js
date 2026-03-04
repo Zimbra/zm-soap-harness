@@ -143,7 +143,7 @@ describe('Calendar > Meeting Request > Grant Permission Request', function () {
 		assert.notExists(folderRes.Fault, 'GetFolderRequest should not fault');
 
 		// Search for appointments
-		const searchRes = await soap.makeSOAPEnvelopeAccount(
+		const searchRes = await soap.pollForSearchResult(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				calExpandInstStart="${now - 86400000}"
 				calExpandInstEnd="${now + 2 * 86400000}"
@@ -155,7 +155,7 @@ describe('Calendar > Meeting Request > Grant Permission Request', function () {
 		assert.exists(searchRes.SearchResponse.appt, 'Appointment from account2 should exist');
 
 		// Search for account3 appointment - should not be present
-		const searchRes2 = await soap.makeSOAPEnvelopeAccount(
+		const searchRes2 = await soap.pollForSearchResult(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				calExpandInstStart="${now - 86400000}"
 				calExpandInstEnd="${now + 2 * 86400000}"
@@ -198,6 +198,8 @@ describe('Calendar > Meeting Request > Grant Permission Request', function () {
 		);
 		assert.notExists(acct3Res.Fault, 'CreateAccountRequest should not fault');
 		const acct3Id = acct3Res.CreateAccountResponse.account[0].id;
+		const host = acct3Res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const acct3Token = await soap.getAccountAuthToken(acct3Email);
 
 		// Account3 grants viewFreeBusy permission to account2 only

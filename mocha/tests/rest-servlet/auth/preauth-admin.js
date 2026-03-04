@@ -41,6 +41,9 @@ describe('Rest Servlet > Auth > Preauth Admin', function () {
 
 		// Verify response
 		assert.notExists(create1Res.Fault, 'Response should not be a Fault');
+		assert.exists(create1Res.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = create1Res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Create delegated admin account
 		account2Email = 'preauth' + common.getUniqueString() + '@' + domainName;
@@ -56,6 +59,9 @@ describe('Rest Servlet > Auth > Preauth Admin', function () {
 
 		// Verify response
 		assert.notExists(create2Res.Fault, 'Response should not be a Fault');
+		assert.exists(create2Res.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host2 = create2Res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 	});
 
 	beforeEach(async function () {

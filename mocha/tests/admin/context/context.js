@@ -28,6 +28,8 @@ describe('Admin > Context > Context', function () {
 		assert.notExists(createRes1.Fault, 'Account 1 creation should not fault');
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
 			? createRes1.CreateAccountResponse.account[0] : createRes1.CreateAccountResponse.account;
+		const host = acct1.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		account1Id = acct1.id;
 
 		// Create test account 2
@@ -41,6 +43,8 @@ describe('Admin > Context > Context', function () {
 		assert.notExists(createRes2.Fault, 'Account 2 creation should not fault');
 		const acct2 = Array.isArray(createRes2.CreateAccountResponse.account)
 			? createRes2.CreateAccountResponse.account[0] : createRes2.CreateAccountResponse.account;
+		const host2 = acct2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		account2Id = acct2.id;
 
 		// Create test account 3

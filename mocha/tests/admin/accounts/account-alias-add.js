@@ -21,13 +21,53 @@ describe('Admin > Accounts > Account Alias Add', function () {
 		testAccount5 = `test.${common.getUniqueString()}@${config.testDomain}`;
 
 		const res1 = await soap.createAccountByNameAndEmailAddress(adminAuthToken, testAccount1, testAccount1);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${testAccount1}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		account1Id = res1.accountId;
 
 		const res3 = await soap.createAccountByNameAndEmailAddress(adminAuthToken, testAccount3, testAccount3);
+		const acctInfoRes2 = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${testAccount3}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes2.Fault, 'GetAccountRequest should not fault');
+		const acctInfo2 = Array.isArray(acctInfoRes2.GetAccountResponse.account)
+			? acctInfoRes2.GetAccountResponse.account[0]
+			: acctInfoRes2.GetAccountResponse.account;
+		assert.exists(acctInfo2.id, 'Account ID should exist');
+		const host2 = acctInfo2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		account3Id = res3.accountId;
 
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, testAccount4, testAccount4);
+		const acctInfoRes3 = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${testAccount4}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes3.Fault, 'GetAccountRequest should not fault');
+		const acctInfo3 = Array.isArray(acctInfoRes3.GetAccountResponse.account)
+			? acctInfoRes3.GetAccountResponse.account[0]
+			: acctInfoRes3.GetAccountResponse.account;
+		assert.exists(acctInfo3.id, 'Account ID should exist');
+		const host3 = acctInfo3.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host3, 'zimbraMailHost should exist');
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, testAccount5, testAccount5);
+		const acctInfoRes4 = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${testAccount5}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes4.Fault, 'GetAccountRequest should not fault');
+		const acctInfo4 = Array.isArray(acctInfoRes4.GetAccountResponse.account)
+			? acctInfoRes4.GetAccountResponse.account[0]
+			: acctInfoRes4.GetAccountResponse.account;
+		assert.exists(acctInfo4.id, 'Account ID should exist');
+		const host4 = acctInfo4.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host4, 'zimbraMailHost should exist');
 
 		aliasName = `alias.${common.getUniqueString()}@${config.testDomain}`;
 		aliasName2 = 'alias01'; // Invalid (no domain)

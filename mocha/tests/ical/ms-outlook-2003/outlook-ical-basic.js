@@ -32,6 +32,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 	it('Smoke | Verify the basic iCal format invitation with basic information', async () => {
 		const accountEmail = `ical.ob1.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_subject1';
@@ -67,6 +77,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 	it('Functional | Verify the basic iCal format invitation without subject from Outlook2003', async () => {
 		const accountEmail = `ical.ob2.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const filePath = path.join(config.projectRoot, 'mocha/data/ical/outlook-ical-without-sub.txt');
@@ -109,6 +129,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 	it('Functional | Verify the basic iCal format invitation without location from Outlook2003', async () => {
 		const accountEmail = `ical.ob3.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_subject3';
@@ -144,6 +174,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 	it('Functional | Verify the basic iCal format invitation with two invitees from Outlook2003', async () => {
 		const accountEmail = `ical.ob4.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_subject4';
@@ -179,6 +219,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 	it('Functional | Verify the basic iCal format invitation with One hour meeting from Outlook2003', async () => {
 		const accountEmail = `ical.ob5.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_subject5';
@@ -214,6 +264,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 	it('Functional | Verify the basic iCal format invitation for all day meeting from Outlook2003', async () => {
 		const accountEmail = `ical.ob6.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_subject6';
@@ -249,6 +309,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 	it('Functional | Verify the basic iCal format invitation without enabling the reminder from Outlook2003', async () => {
 		const accountEmail = `ical.ob7.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_subject7';
@@ -284,6 +354,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 	it('Functional | Verify the basic iCal format for an appointment with status of an appointment busy (Show Time as busy )', async () => {
 		const accountEmail = `ical.ob8.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_subject8';
@@ -319,6 +399,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 	it('Functional | Verify the basic iCal format for an appointment with status of an appointment = free/tentative/out of office (\'Show Time as\' = other than busy )', async () => {
 		const accountEmail = `ical.ob9.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_subject9';
@@ -354,6 +444,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 	it('Functional | Verify the basic iCal format for an appointment without alarm enable', async () => {
 		const accountEmail = `ical.ob10.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_subject10';
@@ -389,6 +489,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 	it('Functional | Verify the basic iCal format for an appointment which send as a private from Outlook2003', async () => {
 		const accountEmail = `ical.ob11.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_subject11';
@@ -424,6 +534,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 	it('Functional | Verify the basic iCal format for an appointment which send as a public from Outlook2003', async () => {
 		const accountEmail = `ical.ob12.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_subject12';
@@ -459,6 +579,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 	it('Functional | Verify the basic iCal format for an appointment which is sent with low priority from Outlook2003', async () => {
 		const accountEmail = `ical.ob13.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_subject13';
@@ -494,6 +624,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 	it('Functional | Verify the basic iCal format for an appointment which is sent with high priority from Outlook2003', async () => {
 		const accountEmail = `ical.ob14.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_subject14';
@@ -529,6 +669,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 	it('Functional | Verify the basic iCal format for an appointment which is sent as a meeting request from Outlook2003', async () => {
 		const accountEmail = `ical.ob15.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_subject15';
@@ -564,6 +714,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Basic', function () {
 	it('Functional | Verify the basic iCal format for an appointment which is sent from different timezone of Outlook2003', async () => {
 		const accountEmail = `ical.ob16.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_subject16';

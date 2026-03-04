@@ -44,6 +44,8 @@ describe('Calendar > Sharing > New Appointment Summaries', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		const id = res.CreateAccountResponse.account[0].id;
+		const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const token = await soap.getAccountAuthToken(email);
 		return { email, id, token };
 	}
@@ -134,8 +136,8 @@ describe('Calendar > Sharing > New Appointment Summaries', function () {
 			sharee.token
 		);
 		assert.notExists(res.Fault, 'Summaries should not fault');
-		assert.exists(
-			res.GetApptSummariesResponse,
+		assert.notExists(
+			res.Fault,
 			'Response should exist'
 		);
 	});

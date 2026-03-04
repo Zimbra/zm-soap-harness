@@ -32,12 +32,19 @@ describe('Mail > Conversation > Mailing Lists > Subject Normalization', function
 	it('Functional | Exclude mailing list prefixes during subject normalization', async () => {
 		// Create test account
 		const accountEmail = `account${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const authToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Get inbox folder id
@@ -167,12 +174,19 @@ ${content4}
 	it('Functional | Verify the mailing list brackets are not included in the sort order by subject', async () => {
 		// Create test account
 		const accountEmail = `account${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const authToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Get inbox folder id
@@ -301,12 +315,19 @@ ${content}
 	it('Functional | Verify two messages with the same message ID are combined into the same conversation', async () => {
 		// Create test account
 		const accountEmail = `account${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const authToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Inject first MIME (subject: email01A)

@@ -30,12 +30,19 @@ describe('Prefs > Junk Options > Getwhiteblacklist Basic', function () {
 	// Tests
 	it('Smoke | Verify GetWhiteBlackListRequest set to domain blacklist is obeyed', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Add domain to blacklist
@@ -60,12 +67,19 @@ describe('Prefs > Junk Options > Getwhiteblacklist Basic', function () {
 
 	it('Sanity | Verify GetWhiteBlackListRequest set to user blacklist is obeyed', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Add user to blacklist
@@ -90,12 +104,19 @@ describe('Prefs > Junk Options > Getwhiteblacklist Basic', function () {
 
 	it('Sanity | Verify GetWhiteBlackListRequest set to user + domain blacklist is obeyed', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Add both user and domain to blacklist
@@ -122,12 +143,19 @@ describe('Prefs > Junk Options > Getwhiteblacklist Basic', function () {
 
 	it('Sanity | Verify GetWhiteBlackListRequest set to domain whitelist is obeyed', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Add domain to whitelist
@@ -152,12 +180,19 @@ describe('Prefs > Junk Options > Getwhiteblacklist Basic', function () {
 
 	it('Sanity | Verify GetWhiteBlackListRequest set to user whitelist is obeyed', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Add user to whitelist
@@ -182,12 +217,19 @@ describe('Prefs > Junk Options > Getwhiteblacklist Basic', function () {
 
 	it('Sanity | Verify GetWhiteBlackListRequest set to user + domain whitelist and blacklist is obeyed', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Add to both whitelist and blacklist
@@ -221,12 +263,19 @@ describe('Prefs > Junk Options > Getwhiteblacklist Basic', function () {
 
 	it('Sanity | Verify remove all records from whitelist and blacklist', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Add records
@@ -256,12 +305,19 @@ describe('Prefs > Junk Options > Getwhiteblacklist Basic', function () {
 
 	it('Sanity | Verify remove all records only from whitelist', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Add records
@@ -295,12 +351,19 @@ describe('Prefs > Junk Options > Getwhiteblacklist Basic', function () {
 
 	it('Sanity | Verify remove all records only from blacklist', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Add records
@@ -334,12 +397,19 @@ describe('Prefs > Junk Options > Getwhiteblacklist Basic', function () {
 
 	it('Sanity | Add and remove whitelist and blacklist in same request', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Add initial records
@@ -380,12 +450,19 @@ describe('Prefs > Junk Options > Getwhiteblacklist Basic', function () {
 
 	it('Sanity | Verify add duplicate records to whitelist', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Add record

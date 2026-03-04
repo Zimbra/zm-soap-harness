@@ -29,7 +29,7 @@ describe('Prefs > Filters > Sieve > Sieve ZCS High', function () {
 
 	// Tests
 
-	async function ca() { const e = `test.${common.getUniqueString()}@${testDomain}`; await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${e}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken); return await soap.getAccountAuthToken(e); }
+	async function ca() { const e = `test.${common.getUniqueString()}@${testDomain}`; const __cr = soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${e}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken); assert.notExists(__cr.Fault, 'CreateAccountRequest should not fault'); const __acct = Array.isArray(__cr.CreateAccountResponse.account) ? __cr.CreateAccountResponse.account[0] : __cr.CreateAccountResponse.account; assert.exists(__acct.id, 'Account ID should exist'); const __h = __acct.a.find(a => a.n === 'zimbraMailHost'); assert.exists(__h, 'zimbraMailHost should exist'); return await soap.getAccountAuthToken(e); }
 	async function cf(a, n, t, act, c = 'anyof') { const m = await soap.makeSOAPEnvelopeAccount(`<ModifyFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="${n}_${common.getUniqueString()}" active="1"><filterTests condition="${c}">${t}</filterTests><filterActions>${act}</filterActions></filterRule></filterRules></ModifyFilterRulesRequest>`, a); assert.notExists(m.Fault, `${n} fail`); return m; }
 
 	it('Regression | ZCS-860-01 EditHeader addheader filter', async () => { const a = await ca(); await cf(a, 'z860_01', '<headerTest header="subject" stringComparison="is" value="add860"/>', '<actionKeep/>'); });

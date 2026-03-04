@@ -31,6 +31,9 @@ describe('Auth > Forget Password > Reset Password ZCS 4802', function () {
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
+		assert.exists(createRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]

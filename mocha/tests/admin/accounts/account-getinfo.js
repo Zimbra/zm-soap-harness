@@ -39,6 +39,8 @@ describe('Admin > Accounts > Account Getinfo', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		account4Id = res4.CreateAccountResponse.account[0].id;
+		const host = res4.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// account6 with SAN
 		const res6 = await soap.makeSOAPEnvelopeAdmin(
@@ -49,6 +51,8 @@ describe('Admin > Accounts > Account Getinfo', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		account6Id = res6.CreateAccountResponse.account[0].id;
+		const host2 = res6.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 
 		// Delete account3
 		await soap.makeSOAPEnvelopeAdmin(

@@ -62,6 +62,15 @@ describe('Admin > Accounts > Modify Account 05', function () {
 					res.Fault.Detail.Error.Code.includes('account.NO_SUCH_ACCOUNT'))),
 			`Expected ModifyAccountResponse or INVALID_ATTR_VALUE/INVALID_REQUEST/NO_SUCH_ACCOUNT, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
+		// Verify zimbraMailHost
+		if (setupRes.CreateAccountResponse) {
+			const acctArr = Array.isArray(setupRes.CreateAccountResponse.account)
+				? setupRes.CreateAccountResponse.account[0] : setupRes.CreateAccountResponse.account;
+			if (acctArr && acctArr.a) {
+				const host = acctArr.a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+		}
 
 		// ModifyAccountRequest
 		res = await soap.makeSOAPEnvelopeAdmin(

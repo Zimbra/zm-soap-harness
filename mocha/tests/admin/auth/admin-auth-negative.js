@@ -24,6 +24,9 @@ describe('Admin > Auth > Admin Auth Negative', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createAdmin.Fault, 'Admin account creation should not fault');
+		assert.exists(createAdmin.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createAdmin.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Create non-admin test account
 		nonadminUserEmail = `admin${common.getUniqueString()}@${config.testDomain}`;
@@ -35,6 +38,9 @@ describe('Admin > Auth > Admin Auth Negative', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createNonAdmin.Fault, 'Non-admin account creation should not fault');
+		assert.exists(createNonAdmin.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host2 = createNonAdmin.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 	});
 
 	beforeEach(async function () {

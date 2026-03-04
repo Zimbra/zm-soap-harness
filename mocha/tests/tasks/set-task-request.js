@@ -12,6 +12,12 @@ describe('Tasks > Set Task Request', function () {
 		await main.before(this);
 		accountEmail = soap.testAccounts.testAccount1.emailAddress;
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAccount(
+			'<GetAccountInfoRequest xmlns="urn:zimbraAccount"><account by="name">' + accountEmail + '</account></GetAccountInfoRequest>', accountAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountInfoRequest should not fault');
+		const mailHost = acctInfoRes.GetAccountInfoResponse.attr.find(a => a.name === 'zimbraMailHost');
+		assert.exists(mailHost, 'zimbraMailHost should exist');
 	});
 
 	beforeEach(async function () {

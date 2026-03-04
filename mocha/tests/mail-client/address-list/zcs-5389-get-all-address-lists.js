@@ -41,12 +41,19 @@ describe('Mail Client > Address List > ZCS 5389 Get All Address Lists', function
 
 		// Create accounts
 		for (const acctName of [account1Name, account2Name, account3Name]) {
-			await soap.makeSOAPEnvelopeAdmin(
+			const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 				`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${acctName}</name>
 					<password>${config.accountPassword}</password>
 				</CreateAccountRequest>`, adminAuthToken
 			);
+			assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+			const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+				? createAcctRes.CreateAccountResponse.account[0]
+				: createAcctRes.CreateAccountResponse.account;
+			assert.exists(acctInfo.id, 'Account ID should exist');
+			const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+			assert.exists(host, 'zimbraMailHost should exist');
 		}
 
 		// Create address lists on domain1

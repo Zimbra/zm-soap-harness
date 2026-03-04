@@ -61,12 +61,19 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 
 		// Create internal account
 		const internalEmail = `internal.${common.getUniqueString()}@${config.testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${internalEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Auth as account and get briefcase folder ID
 		const accountToken = await soap.getAccountAuthToken(accountEmail);
@@ -150,12 +157,19 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 
 		// Create internal account
 		const internalEmail = `internal.${common.getUniqueString()}@${config.testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${internalEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Auth as account and get briefcase folder ID
 		const accountToken = await soap.getAccountAuthToken(accountEmail);
@@ -240,6 +254,9 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(createRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Auth as account and get briefcase folder ID
 		const accountToken = await soap.getAccountAuthToken(accountEmail);
@@ -251,12 +268,19 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 
 		// Create internal account
 		const internalEmail = `internal.${common.getUniqueString()}@${config.testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${internalEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host2 = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 
 		// Grant to internal — should succeed
 		const grant1 = await soap.makeSOAPEnvelopeAccount(
@@ -321,22 +345,36 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 
 		// Create account with this COS
 		const accountEmail = `test4.${common.getUniqueString()}@${config.testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 				<a n="zimbraCOSId">${cosId}</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Create internal account
 		const internalEmail = `internal.${common.getUniqueString()}@${config.testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${internalEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes2.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo2 = Array.isArray(createAcctRes2.CreateAccountResponse.account)
+			? createAcctRes2.CreateAccountResponse.account[0]
+			: createAcctRes2.CreateAccountResponse.account;
+		assert.exists(acctInfo2.id, 'Account ID should exist');
+		const host2 = acctInfo2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 
 		// Auth as account and get briefcase folder ID
 		const accountToken = await soap.getAccountAuthToken(accountEmail);
@@ -446,16 +484,25 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0] : createRes.CreateAccountResponse.account;
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountId = acct.id;
 
 		// Create internal account
 		const internalEmail = `internal.${common.getUniqueString()}@${config.testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${internalEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host2 = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 
 		// Auth as account and get briefcase folder ID
 		const accountToken = await soap.getAccountAuthToken(accountEmail);
@@ -556,22 +603,36 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 
 		// Create account — whitelist is already TRUE from COS
 		const accountEmail = `test6.${common.getUniqueString()}@${config.testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 				<a n="zimbraCOSId">${cosId}</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Create internal account
 		const internalEmail = `internal.${common.getUniqueString()}@${config.testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${internalEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes2.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo2 = Array.isArray(createAcctRes2.CreateAccountResponse.account)
+			? createAcctRes2.CreateAccountResponse.account[0]
+			: createAcctRes2.CreateAccountResponse.account;
+		assert.exists(acctInfo2.id, 'Account ID should exist');
+		const host2 = acctInfo2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 
 		// Auth as account and get briefcase
 		const accountToken = await soap.getAccountAuthToken(accountEmail);
@@ -636,12 +697,19 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 
 		// Create internal account
 		const internalEmail = `internal.${common.getUniqueString()}@${config.testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${internalEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Auth as account and get briefcase
 		const accountToken = await soap.getAccountAuthToken(accountEmail);
@@ -696,22 +764,36 @@ describe('Admin > External Sharing > External Virual Account White List', functi
 
 		// Create account
 		const accountEmail = `test8.${common.getUniqueString()}@${config.testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 				<a n="zimbraCOSId">${cosId}</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Create internal account
 		const internalEmail = `internal.${common.getUniqueString()}@${config.testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${internalEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes2.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo2 = Array.isArray(createAcctRes2.CreateAccountResponse.account)
+			? createAcctRes2.CreateAccountResponse.account[0]
+			: createAcctRes2.CreateAccountResponse.account;
+		assert.exists(acctInfo2.id, 'Account ID should exist');
+		const host2 = acctInfo2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 
 		// Auth as account and get briefcase
 		const accountToken = await soap.getAccountAuthToken(accountEmail);

@@ -17,23 +17,37 @@ describe('EWS > Tag Untag', function () {
 		account2Password = config.accountPassword;
 
 		const account1Name = `ewstest1${common.getUniqueString()}@${config.testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${account1Password}</password>
 				<a n="zimbraFeatureEwsEnabled">TRUE</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		account1Email = account1Name;
 
 		const account2Name = `ewstest2${common.getUniqueString()}@${config.testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Name}</name>
 				<password>${account2Password}</password>
 				<a n="zimbraFeatureEwsEnabled">TRUE</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes2.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo2 = Array.isArray(createAcctRes2.CreateAccountResponse.account)
+			? createAcctRes2.CreateAccountResponse.account[0]
+			: createAcctRes2.CreateAccountResponse.account;
+		assert.exists(acctInfo2.id, 'Account ID should exist');
+		const host2 = acctInfo2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		account2Email = account2Name;
 	});
 

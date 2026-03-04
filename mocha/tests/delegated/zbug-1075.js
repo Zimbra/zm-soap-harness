@@ -47,6 +47,9 @@ describe('Delegated > ZBUG 1075', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'CreateAccountRequest for grantee1 should not fault');
+		assert.exists(res.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Create user account1
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -58,6 +61,9 @@ describe('Delegated > ZBUG 1075', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'CreateAccountRequest for user1 should not fault');
+		assert.exists(res.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host2 = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 
 		// Grant domainAdminConsoleRights for domain1
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -92,6 +98,9 @@ describe('Delegated > ZBUG 1075', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'CreateAccountRequest for grantee2 should not fault');
+		assert.exists(res.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host3 = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host3, 'zimbraMailHost should exist');
 
 		// Create user account2
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -103,6 +112,9 @@ describe('Delegated > ZBUG 1075', function () {
 
 		// Verify response
 		assert.notExists(res.Fault, 'CreateAccountRequest for user2 should not fault');
+		assert.exists(res.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host4 = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host4, 'zimbraMailHost should exist');
 
 		// Grant domainAdminConsoleRights for domain2
 		res = await soap.makeSOAPEnvelopeAdmin(

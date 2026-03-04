@@ -18,6 +18,16 @@ describe('Folders > Bugs > Bug 66715', function () {
 				`bug66715_acct${i}_${common.getUniqueString()}@${config.testDomain}`;
 			const password = config.accountPassword;
 			const createResp = await soap.createAccountByNameAndEmailAddress(adminAuthToken, name, name);
+			const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+				`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${name}</account></GetAccountRequest>`, adminAuthToken
+			);
+			assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+			const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+				? acctInfoRes.GetAccountResponse.account[0]
+				: acctInfoRes.GetAccountResponse.account;
+			assert.exists(acctInfo.id, 'Account ID should exist');
+			const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+			assert.exists(host, 'zimbraMailHost should exist');
 			const authToken = await soap.getAccountAuthToken(name, password);
 			const accountId = createResp.accountId;
 			accounts.push({ name, password, authToken, id: accountId });

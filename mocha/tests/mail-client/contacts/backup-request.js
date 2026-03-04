@@ -31,6 +31,10 @@ describe('Mail Client > Contacts > Backup Request', function () {
 		);
 		const acct1 = Array.isArray(res1.CreateAccountResponse?.account)
 			? res1.CreateAccountResponse.account[0] : res1.CreateAccountResponse?.account;
+		if (acct1 && acct1.a) {
+			const host = acct1.a.find(a => a.n === 'zimbraMailHost');
+			assert.exists(host, 'zimbraMailHost should exist');
+		}
 		account1Id = acct1?.id;
 
 		// Create account2
@@ -42,6 +46,10 @@ describe('Mail Client > Contacts > Backup Request', function () {
 		);
 		const acct2 = Array.isArray(res2.CreateAccountResponse?.account)
 			? res2.CreateAccountResponse.account[0] : res2.CreateAccountResponse?.account;
+		if (acct2 && acct2.a) {
+			const host2 = acct2.a.find(a => a.n === 'zimbraMailHost');
+			assert.exists(host2, 'zimbraMailHost should exist');
+		}
 		account2Id = acct2?.id;
 	});
 

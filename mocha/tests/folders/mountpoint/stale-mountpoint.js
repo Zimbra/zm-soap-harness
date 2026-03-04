@@ -18,6 +18,16 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 				`stale_acct${i}_${common.getUniqueString()}@${config.testDomain}`;
 			const password = config.accountPassword;
 			await soap.createAccountByNameAndEmailAddress(adminAuthToken, name, name);
+			const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+				`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${name}</account></GetAccountRequest>`, adminAuthToken
+			);
+			assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+			const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+				? acctInfoRes.GetAccountResponse.account[0]
+				: acctInfoRes.GetAccountResponse.account;
+			assert.exists(acctInfo.id, 'Account ID should exist');
+			const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+			assert.exists(host, 'zimbraMailHost should exist');
 			const authToken = await soap.getAccountAuthToken(name, password);
 			const accountId = await soap.getAccount(adminAuthToken, name);
 			accounts.push({ name, password, authToken, id: accountId });
@@ -369,6 +379,16 @@ describe('Folders > Mountpoint > Stale Mountpoint', function () {
 		// Create a fresh owner account (will be deleted)
 		const ownerName = `stale_delete_${common.getUniqueString()}@${config.testDomain}`;
 		const createRes = await soap.createAccountByNameAndEmailAddress(adminAuthToken, ownerName, ownerName);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${ownerName}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const ownerId = createRes.accountId;
 		const ownerAuth = await soap.getAccountAuthToken(ownerName, config.accountPassword);
 

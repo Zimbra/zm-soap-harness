@@ -37,6 +37,8 @@ describe('Admin > Accounts > Last Logon > Get Account Request', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		const acctId = (Array.isArray(createRes.CreateAccountResponse?.account) ? (Array.isArray(createRes.CreateAccountResponse?.account) ? createRes.CreateAccountResponse.account[0].id : createRes.CreateAccountResponse?.account?.id) : createRes.CreateAccountResponse?.account?.id);
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// GetAccountRequest
 		const getRes = await soap.makeSOAPEnvelopeAdmin(
@@ -74,6 +76,8 @@ describe('Admin > Accounts > Last Logon > Get Account Request', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		const acctId = (Array.isArray(createRes.CreateAccountResponse?.account) ? (Array.isArray(createRes.CreateAccountResponse?.account) ? createRes.CreateAccountResponse.account[0].id : createRes.CreateAccountResponse?.account?.id) : createRes.CreateAccountResponse?.account?.id);
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Login as user
 		await soap.getAccountAuthToken(acctName, config.accountPassword);

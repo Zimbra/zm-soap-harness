@@ -95,7 +95,7 @@ describe('Calendar > Meeting Request > Meeting Request Recurrence Yearly', funct
 
 		// Verify invitee sees appointment and recurrence
 		const now = Date.now();
-		const searchRes = await soap.makeSOAPEnvelopeAccount(
+		const searchRes = await soap.pollForSearchResult(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				calExpandInstStart="${now - 86400000}"
 				calExpandInstEnd="${now + 2 * 86400000}"
@@ -135,6 +135,9 @@ describe('Calendar > Meeting Request > Meeting Request Recurrence Yearly', funct
 		);
 		assert.notExists(replyRes.Fault, 'SendInviteReplyRequest should not fault');
 
+		// Wait for reply to be processed by organizer's mailbox
+		await new Promise(r => setTimeout(r, 3000));
+
 		// Verify organizer sees accepted status
 		const verifyRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
@@ -154,21 +157,35 @@ describe('Calendar > Meeting Request > Meeting Request Recurrence Yearly', funct
 
 	it('Sanity | Create an yearly recurring appointment. 5 occurrences.', async () => {
 		const orgEmail = `org${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${orgEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const orgToken = await soap.getAccountAuthToken(orgEmail);
 
 		const invEmail = `inv${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${invEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes2.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo2 = Array.isArray(createAcctRes2.CreateAccountResponse.account)
+			? createAcctRes2.CreateAccountResponse.account[0]
+			: createAcctRes2.CreateAccountResponse.account;
+		assert.exists(acctInfo2.id, 'Account ID should exist');
+		const host2 = acctInfo2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		const invToken = await soap.getAccountAuthToken(invEmail);
 
 		// Create yearly recurring with 5 occurrences
@@ -210,7 +227,7 @@ describe('Calendar > Meeting Request > Meeting Request Recurrence Yearly', funct
 
 		// Verify invitee sees recurrence with count=5
 		const now = Date.now();
-		const searchRes = await soap.makeSOAPEnvelopeAccount(
+		const searchRes = await soap.pollForSearchResult(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				calExpandInstStart="${now - 86400000}"
 				calExpandInstEnd="${now + 2 * 86400000}"
@@ -238,21 +255,35 @@ describe('Calendar > Meeting Request > Meeting Request Recurrence Yearly', funct
 
 	it('Sanity | Create an yearly recurring appointment, every 3 years', async () => {
 		const orgEmail = `org${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${orgEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const orgToken = await soap.getAccountAuthToken(orgEmail);
 
 		const invEmail = `inv${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${invEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes2.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo2 = Array.isArray(createAcctRes2.CreateAccountResponse.account)
+			? createAcctRes2.CreateAccountResponse.account[0]
+			: createAcctRes2.CreateAccountResponse.account;
+		assert.exists(acctInfo2.id, 'Account ID should exist');
+		const host2 = acctInfo2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		const invToken = await soap.getAccountAuthToken(invEmail);
 
 		// Create yearly recurring every 3 years
@@ -293,7 +324,7 @@ describe('Calendar > Meeting Request > Meeting Request Recurrence Yearly', funct
 
 		// Verify invitee sees recurrence with interval=3
 		const now = Date.now();
-		const searchRes = await soap.makeSOAPEnvelopeAccount(
+		const searchRes = await soap.pollForSearchResult(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				calExpandInstStart="${now - 86400000}"
 				calExpandInstEnd="${now + 2 * 86400000}"
@@ -320,21 +351,35 @@ describe('Calendar > Meeting Request > Meeting Request Recurrence Yearly', funct
 
 	it('Sanity | Create an yearly recurring appointment, every 3 years. 4 occurences', async () => {
 		const orgEmail = `org${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${orgEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const orgToken = await soap.getAccountAuthToken(orgEmail);
 
 		const invEmail = `inv${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${invEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes2.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo2 = Array.isArray(createAcctRes2.CreateAccountResponse.account)
+			? createAcctRes2.CreateAccountResponse.account[0]
+			: createAcctRes2.CreateAccountResponse.account;
+		assert.exists(acctInfo2.id, 'Account ID should exist');
+		const host2 = acctInfo2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		const invToken = await soap.getAccountAuthToken(invEmail);
 
 		// Create yearly recurring every 3 years, 4 occurrences
@@ -376,7 +421,7 @@ describe('Calendar > Meeting Request > Meeting Request Recurrence Yearly', funct
 
 		// Verify invitee sees recurrence with interval=3 count=4
 		const now = Date.now();
-		const searchRes = await soap.makeSOAPEnvelopeAccount(
+		const searchRes = await soap.pollForSearchResult(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				calExpandInstStart="${now - 86400000}"
 				calExpandInstEnd="${now + 2 * 86400000}"
@@ -403,21 +448,35 @@ describe('Calendar > Meeting Request > Meeting Request Recurrence Yearly', funct
 
 	it('Functional | Create an appointment on 29 feb of the leap year', async () => {
 		const orgEmail = `org${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${orgEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const orgToken = await soap.getAccountAuthToken(orgEmail);
 
 		const invEmail = `inv${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${invEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes2.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo2 = Array.isArray(createAcctRes2.CreateAccountResponse.account)
+			? createAcctRes2.CreateAccountResponse.account[0]
+			: createAcctRes2.CreateAccountResponse.account;
+		assert.exists(acctInfo2.id, 'Account ID should exist');
+		const host2 = acctInfo2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		const invToken = await soap.getAccountAuthToken(invEmail);
 
 		// Create yearly recurring appointment on Feb 29 of a leap year
@@ -459,7 +518,7 @@ describe('Calendar > Meeting Request > Meeting Request Recurrence Yearly', funct
 		assert.exists(appt.invId, 'Appointment invId should exist');
 
 		// Verify invitee sees appointment
-		const searchRes = await soap.makeSOAPEnvelopeAccount(
+		const searchRes = await soap.pollForSearchResult(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				calExpandInstStart="1835395200000"
 				calExpandInstEnd="1835568000000"

@@ -31,6 +31,8 @@ describe('Sync > Mountpoint > Syncrequest Mail', function () {
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
 		account1Email = account1Name;
 		account1Id = createRes1.CreateAccountResponse.account[0].id;
+		const host = createRes1.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		account1AuthToken = await soap.getAccountAuthToken(account1Email);
 
 		// Create account2

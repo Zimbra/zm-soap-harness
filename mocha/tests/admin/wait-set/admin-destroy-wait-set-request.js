@@ -40,6 +40,8 @@ describe('Admin > Wait Set > Admin Destroy Wait Set Request', function () {
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0] : createRes.CreateAccountResponse.account;
 		assert.exists(acct.id, 'Account ID should exist');
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Create a wait set with allaccounts
 		const wsRes = await soap.makeSOAPEnvelopeAdmin(

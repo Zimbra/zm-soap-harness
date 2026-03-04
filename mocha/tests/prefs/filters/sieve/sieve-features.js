@@ -31,8 +31,15 @@ describe('Prefs > Filters > Sieve > Sieve Features', function () {
 
 	async function createAccountAndAuth() {
 		const email = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${email}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${email}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
 		return await soap.getAccountAuthToken(email);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 	}
 
 	async function createFilter(authToken, name, testsXml, actionsXml, condition = 'anyof') {

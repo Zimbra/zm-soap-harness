@@ -14,12 +14,19 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 		adminAuthToken = await soap.getAdminAuthToken();
 
 		accountEmail = `test${common.getUniqueString()}@${config.testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		accountToken = await soap.getAccountAuthToken(accountEmail);
 
 		hiddenEmail = `hidden${common.getUniqueString()}@${config.testDomain}`;
@@ -32,6 +39,8 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 		);
 		const acct = Array.isArray(hiddenRes.CreateAccountResponse.account)
 			? hiddenRes.CreateAccountResponse.account[0] : hiddenRes.CreateAccountResponse.account;
+		const host2 = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		hiddenId = acct.id;
 	});
 
@@ -149,6 +158,8 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 		);
 		const newAcct = Array.isArray(newRes.CreateAccountResponse.account)
 			? newRes.CreateAccountResponse.account[0] : newRes.CreateAccountResponse.account;
+		const host = newAcct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Modify the account
 		await soap.makeSOAPEnvelopeAdmin(
@@ -254,13 +265,20 @@ describe('Contacts > GAL > Hideaccounts GAL', function () {
 		const hidden2 = `hidden2${common.getUniqueString()}@${config.testDomain}`;
 
 		// Create an account
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${hidden2}</name>
 				<password>${config.accountPassword}</password>
 				<a n="zimbraHideInGal">TRUE</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Send search gal request
 		const res = await soap.makeSOAPEnvelopeAccount(

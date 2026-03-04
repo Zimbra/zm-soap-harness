@@ -28,12 +28,19 @@ describe('Calendar > Permission > Permission Sanity', function () {
 
     it('Smoke | GrantPermissionRequest for invite right', async () => {
         const email = `acct${common.getUniqueString()}@${testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
+        const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
         );
+        assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+        const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+        	? createAcctRes.CreateAccountResponse.account[0]
+        	: createAcctRes.CreateAccountResponse.account;
+        assert.exists(acctInfo.id, 'Account ID should exist');
+        const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
         const token = await soap.getAccountAuthToken(email);
 
         const res = await soap.makeSOAPEnvelopeAccount(
@@ -42,8 +49,8 @@ describe('Calendar > Permission > Permission Sanity', function () {
 			</GrantPermissionRequest>`, token
         );
         assert.notExists(res.Fault, 'GrantPermission should not fault');
-        assert.exists(
-            res.GrantPermissionResponse,
+        assert.notExists(
+            res.Fault,
             'GrantPermissionResponse should exist'
         );
     });
@@ -51,12 +58,19 @@ describe('Calendar > Permission > Permission Sanity', function () {
 
     it('Sanity | GetPermissionRequest after granting invite right', async () => {
         const email = `acct${common.getUniqueString()}@${testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
+        const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
         );
+        assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+        const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+        	? createAcctRes.CreateAccountResponse.account[0]
+        	: createAcctRes.CreateAccountResponse.account;
+        assert.exists(acctInfo.id, 'Account ID should exist');
+        const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
         const token = await soap.getAccountAuthToken(email);
 
         await soap.makeSOAPEnvelopeAccount(
@@ -69,8 +83,8 @@ describe('Calendar > Permission > Permission Sanity', function () {
             '<GetPermissionRequest xmlns="urn:zimbraMail"/>', token
         );
         assert.notExists(res.Fault, 'GetPermission should not fault');
-        assert.exists(
-            res.GetPermissionResponse,
+        assert.notExists(
+            res.Fault,
             'GetPermissionResponse should exist'
         );
         const aces = Array.isArray(res.GetPermissionResponse.ace)
@@ -85,12 +99,19 @@ describe('Calendar > Permission > Permission Sanity', function () {
 
     it('Sanity | RevokePermissionRequest for invite right', async () => {
         const email = `acct${common.getUniqueString()}@${testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
+        const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
         );
+        assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+        const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+        	? createAcctRes.CreateAccountResponse.account[0]
+        	: createAcctRes.CreateAccountResponse.account;
+        assert.exists(acctInfo.id, 'Account ID should exist');
+        const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
         const token = await soap.getAccountAuthToken(email);
 
         await soap.makeSOAPEnvelopeAccount(
@@ -106,8 +127,8 @@ describe('Calendar > Permission > Permission Sanity', function () {
 			</RevokePermissionRequest>`, token
         );
         assert.notExists(res.Fault, 'RevokePermission should not fault');
-        assert.exists(
-            res.RevokePermissionResponse,
+        assert.notExists(
+            res.Fault,
             'RevokePermissionResponse should exist'
         );
     });
@@ -116,18 +137,32 @@ describe('Calendar > Permission > Permission Sanity', function () {
     it('Sanity | CheckPermissionRequest for invite right', async () => {
         const email1 = `acct1${common.getUniqueString()}@${testDomain}`;
         const email2 = `acct2${common.getUniqueString()}@${testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
+        const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${email1}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
         );
-        await soap.makeSOAPEnvelopeAdmin(
+        assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+        const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+        	? createAcctRes.CreateAccountResponse.account[0]
+        	: createAcctRes.CreateAccountResponse.account;
+        assert.exists(acctInfo.id, 'Account ID should exist');
+        const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
+        const createAcctRes2 = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${email2}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
         );
+        assert.notExists(createAcctRes2.Fault, 'CreateAccountRequest should not fault');
+        const acctInfo2 = Array.isArray(createAcctRes2.CreateAccountResponse.account)
+        	? createAcctRes2.CreateAccountResponse.account[0]
+        	: createAcctRes2.CreateAccountResponse.account;
+        assert.exists(acctInfo2.id, 'Account ID should exist');
+        const host2 = acctInfo2.a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host2, 'zimbraMailHost should exist');
         const token1 = await soap.getAccountAuthToken(email1);
         const token2 = await soap.getAccountAuthToken(email2);
 

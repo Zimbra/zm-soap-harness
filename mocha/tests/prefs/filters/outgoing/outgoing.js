@@ -33,10 +33,17 @@ describe('Prefs > Filters > Outgoing > Outgoing', function () {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
 
 		// Create an account
-		await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
 
 		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Modify outgoing filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="contains" value="outgoing"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
@@ -50,10 +57,17 @@ describe('Prefs > Filters > Outgoing > Outgoing', function () {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
 
 		// Create an account
-		await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
 
 		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Modify outgoing filter rules
 		await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="to" stringComparison="contains" value="external"/></filterTests><filterActions><actionFlag flagName="flagged"/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
@@ -70,10 +84,17 @@ describe('Prefs > Filters > Outgoing > Outgoing', function () {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
 
 		// Create an account
-		await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
 
 		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Modify outgoing filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="is" value="file"/></filterTests><filterActions><actionFileInto folderPath="/Inbox"/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
@@ -87,10 +108,17 @@ describe('Prefs > Filters > Outgoing > Outgoing', function () {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
 
 		// Create an account
-		await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
 
 		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const tagName = `tag${common.getUniqueString()}`;
 
 		// Create a tag
@@ -108,10 +136,17 @@ describe('Prefs > Filters > Outgoing > Outgoing', function () {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
 
 		// Create an account
-		await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
 
 		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Modify outgoing filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="to" stringComparison="is" value="redir@test.com"/></filterTests><filterActions><actionRedirect a="copy@test.com"/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
@@ -125,10 +160,17 @@ describe('Prefs > Filters > Outgoing > Outgoing', function () {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
 
 		// Create an account
-		await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
 
 		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Modify outgoing filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="is" value="discard"/></filterTests><filterActions><actionDiscard/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
@@ -142,10 +184,17 @@ describe('Prefs > Filters > Outgoing > Outgoing', function () {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
 
 		// Create an account
-		await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
 
 		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Modify outgoing filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="contains" value="urgent"/></filterTests><filterActions><actionFlag flagName="flagged"/><actionStop/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
@@ -159,10 +208,17 @@ describe('Prefs > Filters > Outgoing > Outgoing', function () {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
 
 		// Create an account
-		await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
 
 		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Modify outgoing filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out${common.getUniqueString()}" active="1"><filterTests condition="allof"><headerTest header="subject" stringComparison="contains" value="report"/><headerTest header="to" stringComparison="contains" value="boss"/></filterTests><filterActions><actionFlag flagName="flagged"/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
@@ -176,10 +232,17 @@ describe('Prefs > Filters > Outgoing > Outgoing', function () {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
 
 		// Create an account
-		await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
 
 		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Modify outgoing filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out1_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="is" value="a"/></filterTests><filterActions><actionKeep/></filterActions></filterRule><filterRule name="out2_${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="is" value="b"/></filterTests><filterActions><actionFlag flagName="flagged"/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
@@ -193,10 +256,17 @@ describe('Prefs > Filters > Outgoing > Outgoing', function () {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
 
 		// Create an account
-		await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
 
 		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Modify outgoing filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out${common.getUniqueString()}" active="1"><filterTests condition="anyof"><bodyTest value="confidential"/></filterTests><filterActions><actionFlag flagName="flagged"/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
@@ -210,10 +280,17 @@ describe('Prefs > Filters > Outgoing > Outgoing', function () {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
 
 		// Create an account
-		await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
 
 		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Modify outgoing filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out${common.getUniqueString()}" active="1"><filterTests condition="anyof"><sizeTest numberComparison="over" s="5M"/></filterTests><filterActions><actionDiscard/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
@@ -227,10 +304,17 @@ describe('Prefs > Filters > Outgoing > Outgoing', function () {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
 
 		// Create an account
-		await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
 
 		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Modify outgoing filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out${common.getUniqueString()}" active="1"><filterTests condition="anyof"><attachmentTest/></filterTests><filterActions><actionFlag flagName="flagged"/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
@@ -244,10 +328,17 @@ describe('Prefs > Filters > Outgoing > Outgoing', function () {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
 
 		// Create an account
-		await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
 
 		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Modify outgoing filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out${common.getUniqueString()}" active="0"><filterTests condition="anyof"><headerTest header="subject" stringComparison="is" value="inactive"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
@@ -261,10 +352,17 @@ describe('Prefs > Filters > Outgoing > Outgoing', function () {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
 
 		// Create an account
-		await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
 
 		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Modify outgoing filter rules
 		const modRes = await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerExistsTest header="X-Custom"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
@@ -278,10 +376,17 @@ describe('Prefs > Filters > Outgoing > Outgoing', function () {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
 
 		// Create an account
-		await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
 
 		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Modify outgoing filter rules
 		await soap.makeSOAPEnvelopeAccount(`<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail"><filterRules><filterRule name="out${common.getUniqueString()}" active="1"><filterTests condition="anyof"><headerTest header="subject" stringComparison="is" value="apply"/></filterTests><filterActions><actionKeep/></filterActions></filterRule></filterRules></ModifyOutgoingFilterRulesRequest>`, authToken);
@@ -298,10 +403,17 @@ describe('Prefs > Filters > Outgoing > Outgoing', function () {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
 
 		// Create an account
-		await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(`<CreateAccountRequest xmlns="urn:zimbraAdmin"><name>${accountEmail}</name><password>${config.accountPassword}</password></CreateAccountRequest>`, adminAuthToken);
 
 		// Authenticate account
 		const authToken = await soap.getAccountAuthToken(accountEmail);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const ruleName = `out_${common.getUniqueString()}`;
 
 		// Modify outgoing filter rules

@@ -43,12 +43,21 @@ describe('Calendar > Privacy > Appointment Privacy Search Request', function () 
 			</CreateAccountRequest>`, adminAuthToken
         );
         const ownId = ownerRes.CreateAccountResponse.account[0].id;
-        await soap.makeSOAPEnvelopeAdmin(
+        const host = ownerRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
+        const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${delEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
         );
+        assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+        const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+        	? createAcctRes.CreateAccountResponse.account[0]
+        	: createAcctRes.CreateAccountResponse.account;
+        assert.exists(acctInfo.id, 'Account ID should exist');
+        const host2 = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host2, 'zimbraMailHost should exist');
         const ownToken = await soap.getAccountAuthToken(ownerEmail);
         const delToken = await soap.getAccountAuthToken(delEmail);
 

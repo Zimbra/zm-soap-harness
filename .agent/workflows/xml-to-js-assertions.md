@@ -8,6 +8,15 @@ description: Verify and fix JS test assertions by cross-referencing original XML
 > This is the **#1 MUST RULE** for the entire project. Every JS test file's assertions MUST be verified against the original XML test file's `<t:select>` nodes. No exceptions.
 
 > [!CAUTION]
+> **THUMBRULE: COMPLETE ONE MODULE BEFORE MOVING TO NEXT.**
+> NEVER move to the next module/folder until the current module passes with ZERO real issues:
+> 1. Run `node .agent/scripts/xml-to-js-assertions-parity.js <module>` — all test counts must match
+> 2. Run `node .agent/scripts/verify-tselect-parity.cjs <module>` — all t:select assertions covered
+> 3. Run `node .agent/scripts/scan-weak-assertions.cjs mocha/tests/<module>/` — zero weak patterns
+> 4. Fix every single gap, re-run all scripts, confirm zero remaining
+> 5. Only THEN move to the next module
+
+> [!CAUTION]
 > **THUMBRULE: NO NEW FOLDERS. NO NEW FILES.**
 > The entire XML-to-JS migration is **already complete** — every folder and every file already exists with 1:1 structural parity (1 XML folder = 1 JS folder, 1 XML file = 1 JS file). The **ONLY** work in this exercise is to add missing `<t:select>` assertions into the **existing** JS files. Do NOT create any new folder. Do NOT create any new file. Zero exceptions.
 

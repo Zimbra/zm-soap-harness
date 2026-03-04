@@ -54,19 +54,33 @@ describe('Mail > On Behalf Of > Send Msg Request On Behalf Of', function () {
 		);
 		assert.notExists(create1Res.Fault, 'CreateAccountRequest should not fault');
 
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account3Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes2.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo2 = Array.isArray(createAcctRes2.CreateAccountResponse.account)
+			? createAcctRes2.CreateAccountResponse.account[0]
+			: createAcctRes2.CreateAccountResponse.account;
+		assert.exists(acctInfo2.id, 'Account ID should exist');
+		const host2 = acctInfo2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 
 		const create4Res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -78,13 +92,22 @@ describe('Mail > On Behalf Of > Send Msg Request On Behalf Of', function () {
 		const account4Id = Array.isArray(create4Res.CreateAccountResponse.account)
 			? create4Res.CreateAccountResponse.account[0].id
 			: create4Res.CreateAccountResponse.account.id;
+		const host3 = account4Id.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host3, 'zimbraMailHost should exist');
 
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes3 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account5Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes3.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo3 = Array.isArray(createAcctRes3.CreateAccountResponse.account)
+			? createAcctRes3.CreateAccountResponse.account[0]
+			: createAcctRes3.CreateAccountResponse.account;
+		assert.exists(acctInfo3.id, 'Account ID should exist');
+		const host4 = acctInfo3.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host4, 'zimbraMailHost should exist');
 
 		// Grant sendOnBehalfOf right for account3 on account4
 		const grantRes = await soap.makeSOAPEnvelopeAdmin(
@@ -190,13 +213,22 @@ describe('Mail > On Behalf Of > Send Msg Request On Behalf Of', function () {
 		const account3Id = Array.isArray(create3Res.CreateAccountResponse.account)
 			? create3Res.CreateAccountResponse.account[0].id
 			: create3Res.CreateAccountResponse.account.id;
+		const host = account3Id.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account4Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host2 = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 
 		// Admin sends message on behalf of account3 to account4
 		const subject = `Subject${common.getUniqueString()}`;
@@ -287,13 +319,22 @@ describe('Mail > On Behalf Of > Send Msg Request On Behalf Of', function () {
 		const account2Id = Array.isArray(create2Res.CreateAccountResponse.account)
 			? create2Res.CreateAccountResponse.account[0].id
 			: create2Res.CreateAccountResponse.account.id;
+		const host = account2Id.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account4Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host2 = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 
 		// Grant sendOnBehalfOf right
 		const grantRes = await soap.makeSOAPEnvelopeAdmin(

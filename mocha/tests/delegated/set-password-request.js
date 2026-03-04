@@ -45,6 +45,8 @@ describe('Delegated > Set Password Request', function () {
 		// Verify response
 		assert.notExists(res.Fault, 'CreateAccountRequest for target should not fault');
 		targetId = res.CreateAccountResponse.account[0].id;
+		const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 	});
 
 	beforeEach(async function () {

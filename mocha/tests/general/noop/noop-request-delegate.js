@@ -18,12 +18,19 @@ describe('General > Noop > Noop Request Delegate', function () {
 		account2Email = `account2${common.getUniqueString()}@${config.testDomain}`;
 
 		// Create account
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Create account
 		const createRes2 = await soap.makeSOAPEnvelopeAdmin(
@@ -35,6 +42,8 @@ describe('General > Noop > Noop Request Delegate', function () {
 		const account2 = Array.isArray(createRes2.CreateAccountResponse.account)
 			? createRes2.CreateAccountResponse.account[0]
 			: createRes2.CreateAccountResponse.account;
+		const host2 = account2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		const account2Id = account2.id;
 
 		account1AuthToken = await soap.getAccountAuthToken(account1Email);

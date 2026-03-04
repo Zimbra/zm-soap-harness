@@ -37,6 +37,8 @@ describe('Admin > Mailbox > Export And Delete Items Request', function () {
 		);
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0] : createRes.CreateAccountResponse.account;
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountId = acct.id;
 
 		// Auth as account and add message

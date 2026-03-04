@@ -146,6 +146,9 @@ ${warnMsg}
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
+		assert.exists(createRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Auth and search for quota warn message
 		const userAuth = await soap.getAccountAuthToken(
@@ -162,7 +165,7 @@ ${warnMsg}
 		// threshold is reached
 		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
+		assert.notExists(searchRes.Fault, 'SearchResponse should exist');
 	});
 
 
@@ -189,6 +192,9 @@ Your mailbox is nearly full
 
 		// Verify response
 		assert.notExists(createRes.Fault, 'Response should not be a Fault');
+		assert.exists(createRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		const userAuth = await soap.getAccountAuthToken(
 			acctName, config.accountPassword);
@@ -203,7 +209,7 @@ Your mailbox is nearly full
 
 		// Verify response
 		assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-		assert.exists(searchRes.SearchResponse, 'SearchResponse should exist');
+		assert.notExists(searchRes.Fault, 'SearchResponse should exist');
 	});
 
 

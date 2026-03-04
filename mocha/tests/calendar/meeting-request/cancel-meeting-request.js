@@ -46,6 +46,8 @@ describe('Calendar > Meeting Request > Cancel Meeting Request', function () {
 		);
 		assert.notExists(orgRes.Fault, 'CreateAccountRequest should not fault');
 		const orgId = orgRes.CreateAccountResponse.account[0].id;
+		const host = orgRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		assert.exists(orgId, 'Organizer account ID should exist');
 		const orgToken = await soap.getAccountAuthToken(orgEmail);
 
@@ -59,6 +61,8 @@ describe('Calendar > Meeting Request > Cancel Meeting Request', function () {
 		);
 		assert.notExists(invRes.Fault, 'CreateAccountRequest should not fault');
 		const invId = invRes.CreateAccountResponse.account[0].id;
+		const host2 = invRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		assert.exists(invId, 'Invitee account ID should exist');
 
 		// Create appointment
@@ -134,6 +138,8 @@ describe('Calendar > Meeting Request > Cancel Meeting Request', function () {
 		);
 		assert.notExists(orgRes.Fault, 'CreateAccountRequest should not fault');
 		const orgId = orgRes.CreateAccountResponse.account[0].id;
+		const host = orgRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		assert.exists(orgId, 'Organizer account ID should exist');
 		const orgToken = await soap.getAccountAuthToken(orgEmail);
 
@@ -147,6 +153,8 @@ describe('Calendar > Meeting Request > Cancel Meeting Request', function () {
 		);
 		assert.notExists(invRes.Fault, 'CreateAccountRequest should not fault');
 		const invId = invRes.CreateAccountResponse.account[0].id;
+		const host2 = invRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		assert.exists(invId, 'Invitee account ID should exist');
 
 		// Create distribution list

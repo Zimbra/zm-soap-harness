@@ -40,6 +40,8 @@ describe('Calendar > Multi Node Cal Get Freebusy', function () {
 			</CreateAccountRequest>`, adminAuthToken
         );
         accountA1Id = r1.CreateAccountResponse.account[0].id;
+        const host = r1.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
 
         const r2 = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -48,6 +50,8 @@ describe('Calendar > Multi Node Cal Get Freebusy', function () {
 			</CreateAccountRequest>`, adminAuthToken
         );
         accountA2Id = r2.CreateAccountResponse.account[0].id;
+        const host2 = r2.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host2, 'zimbraMailHost should exist');
 
         const r3 = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -56,6 +60,8 @@ describe('Calendar > Multi Node Cal Get Freebusy', function () {
 			</CreateAccountRequest>`, adminAuthToken
         );
         accountB1Id = r3.CreateAccountResponse.account[0].id;
+        const host3 = r3.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host3, 'zimbraMailHost should exist');
 
         const r4 = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -64,6 +70,8 @@ describe('Calendar > Multi Node Cal Get Freebusy', function () {
 			</CreateAccountRequest>`, adminAuthToken
         );
         accountB2Id = r4.CreateAccountResponse.account[0].id;
+        const host4 = r4.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host4, 'zimbraMailHost should exist');
 
         accountA1Token = await soap.getAccountAuthToken(accountA1);
     });

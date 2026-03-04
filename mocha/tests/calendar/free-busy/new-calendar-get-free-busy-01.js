@@ -41,6 +41,8 @@ describe('Calendar > Free Busy > New Calendar Get Free Busy 01', function () {
 			</CreateAccountRequest>`, adminAuthToken
         );
         const id = res.CreateAccountResponse.account[0].id;
+        const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
         const token = await soap.getAccountAuthToken(email);
         return { email, id, token };
     }
@@ -244,12 +246,19 @@ describe('Calendar > Free Busy > New Calendar Get Free Busy 01', function () {
 
     it('Sanity | New GetFreeBusy for new account', async () => {
         const newAcct = `newacc${common.getUniqueString()}@${testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
+        const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${newAcct}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
         );
+        assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+        const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+        	? createAcctRes.CreateAccountResponse.account[0]
+        	: createAcctRes.CreateAccountResponse.account;
+        assert.exists(acctInfo.id, 'Account ID should exist');
+        const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
 
         const acct = await makeAcct('caller');
         const now = Date.now();

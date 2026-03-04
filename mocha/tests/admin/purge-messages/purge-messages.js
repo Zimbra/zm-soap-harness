@@ -26,6 +26,8 @@ describe('Admin > Purge Messages > Purge Messages', function () {
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0] : createRes.CreateAccountResponse.account;
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		account1Id = acct.id;
 
 		// Get mailbox ID
@@ -132,6 +134,8 @@ describe('Admin > Purge Messages > Purge Messages', function () {
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0] : createRes.CreateAccountResponse.account;
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const tempId = acct.id;
 
 		const deleteRes = await soap.makeSOAPEnvelopeAdmin(
@@ -174,6 +178,8 @@ describe('Admin > Purge Messages > Purge Messages', function () {
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0] : createRes.CreateAccountResponse.account;
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const tempId = acct.id;
 
 		// Inject a message via AddMsgRequest

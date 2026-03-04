@@ -16,6 +16,16 @@ describe('Folders > Sharing > Sharing Toadmin', function () {
 		adminAccount1 = `share_admin_${common.getUniqueString()}@${config.testDomain}`; // This will be an Admin account
 
 		await soap.createAccountByNameAndEmailAddress(adminAuth, testAccount1, testAccount1);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${testAccount1}</account></GetAccountRequest>`, adminAuth
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Create Admin Account
 		const createAccountRequest =

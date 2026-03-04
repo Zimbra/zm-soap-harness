@@ -23,6 +23,8 @@ describe('Admin > Mailbox > Mailbox Get', function () {
 		);
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0] : createRes.CreateAccountResponse.account;
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		accountId = acct.id;
 	});
 
@@ -117,6 +119,8 @@ describe('Admin > Mailbox > Mailbox Get', function () {
 		);
 		const tempAcct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0] : createRes.CreateAccountResponse.account;
+		const host = tempAcct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const tempId = tempAcct.id;
 
 		// Delete the account
@@ -159,6 +163,8 @@ describe('Admin > Mailbox > Mailbox Get', function () {
 		);
 		const tempAcct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0] : createRes.CreateAccountResponse.account;
+		const host = tempAcct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const tempId = tempAcct.id;
 
 		// Login as account to create mailbox

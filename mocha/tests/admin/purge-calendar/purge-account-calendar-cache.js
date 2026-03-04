@@ -25,6 +25,8 @@ describe('Admin > Purge Calendar > Purge Account Calendar Cache', function () {
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
 		const account = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0] : createRes.CreateAccountResponse.account;
+		const host = account.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		accountId = account.id;
 		assert.exists(accountId, 'Account id should exist');
 	});

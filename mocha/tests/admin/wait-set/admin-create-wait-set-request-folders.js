@@ -36,8 +36,13 @@ describe('Admin > Wait Set > Admin Create Wait Set Request Folders', function ()
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(res.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(res.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const acct = Array.isArray(res.CreateAccountResponse.account)
 			? res.CreateAccountResponse.account[0] : res.CreateAccountResponse.account;
+		const host2 = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		const token = await soap.getAccountAuthToken(email);
 		return { id: acct.id, email, token };
 	}

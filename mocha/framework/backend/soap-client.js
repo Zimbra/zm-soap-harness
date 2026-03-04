@@ -166,6 +166,30 @@ class SoapClient extends SoapClientCore {
 	async createAlias(adminAuthToken, account, aliasEmailAddress) {
 		return this.addAccountAlias(adminAuthToken, account, aliasEmailAddress);
 	}
+
+	/**
+	 * Poll for a search result (appointment) with retries.
+	 * Handles async meeting request delivery by retrying the search until results appear.
+	 * @param {string} searchXml - The SearchRequest XML
+	 * @param {string} token - Account auth token
+	 * @param {string} responseKey - Response key to check for (default: 'appt')
+	 * @param {number} maxRetries - Max retry attempts (default: 5)
+	 * @param {number} delayMs - Delay between retries in ms (default: 2000)
+	 * @returns {object} The search response
+	 */
+	async pollForSearchResult(searchXml, token, responseKey = 'appt', maxRetries = 5, delayMs = 2000) {
+		let searchRes;
+		for (let i = 0; i < maxRetries; i++) {
+			searchRes = await this.makeSOAPEnvelopeAccount(searchXml, token);
+			if (!searchRes.Fault && searchRes.SearchResponse?.[responseKey]) {
+				return searchRes;
+			}
+			if (i < maxRetries - 1) {
+				await new Promise(r => setTimeout(r, delayMs));
+			}
+		}
+		return searchRes;
+	}
 }
 
 // Create and export singleton instance

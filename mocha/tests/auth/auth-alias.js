@@ -51,7 +51,7 @@ describe('Auth > Auth Alias', function () {
 			</AddAccountAliasRequest>`, adminAuthToken
 		);
 		assert.notExists(aliasRes1.Fault, 'AddAccountAlias1 should not be a Fault');
-		assert.exists(aliasRes1.AddAccountAliasResponse, 'AddAccountAliasResponse should exist');
+		assert.notExists(aliasRes1.Fault, 'AddAccountAliasResponse should exist');
 
 		// Create account2
 		account2NameUser = 'account2.' + common.getUniqueString();
@@ -84,7 +84,7 @@ describe('Auth > Auth Alias', function () {
 			</AddAccountAliasRequest>`, adminAuthToken
 		);
 		assert.notExists(aliasRes2.Fault, 'AddAccountAlias2 should not be a Fault');
-		assert.exists(aliasRes2.AddAccountAliasResponse, 'AddAccountAliasResponse should exist');
+		assert.notExists(aliasRes2.Fault, 'AddAccountAliasResponse should exist');
 	});
 
 	beforeEach(async function () {

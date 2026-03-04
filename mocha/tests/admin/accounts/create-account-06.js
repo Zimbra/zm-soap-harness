@@ -44,6 +44,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -61,6 +66,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -76,6 +86,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -93,6 +108,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -108,6 +128,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -125,6 +150,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -140,6 +170,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 
 
@@ -161,6 +196,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -177,6 +217,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 
 
@@ -198,6 +243,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -215,6 +265,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -230,6 +285,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -247,6 +307,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -262,6 +327,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -279,6 +349,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -294,6 +369,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 
 
@@ -315,6 +395,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -331,6 +416,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -349,6 +439,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -365,6 +460,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 
 
@@ -386,6 +486,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -403,6 +508,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -419,6 +529,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -434,6 +549,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -452,6 +572,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -468,6 +593,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -482,6 +612,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 				res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN')),
 			`Expected service.FAILURE or NO_SUCH_DOMAIN, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 
 
@@ -503,6 +638,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -519,6 +659,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -537,6 +682,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -553,6 +703,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 
 
@@ -574,6 +729,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -591,6 +751,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -606,6 +771,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -623,6 +793,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -637,6 +812,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 				res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST')),
 			`Expected NO_SUCH_DOMAIN or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -654,6 +834,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -668,6 +853,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 				res.Fault.Detail.Error.Code.includes('account.NO_SUCH_DOMAIN')),
 			`Expected service.FAILURE or NO_SUCH_DOMAIN, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 
 
@@ -689,6 +879,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -705,6 +900,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 
 
@@ -726,6 +926,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -743,6 +948,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -758,6 +968,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -775,6 +990,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -790,6 +1010,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -807,6 +1032,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -822,6 +1052,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 
 
@@ -843,6 +1078,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -859,6 +1099,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 
 
@@ -880,6 +1125,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -897,6 +1147,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -912,6 +1167,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -929,6 +1189,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -944,6 +1209,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -961,6 +1231,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -976,6 +1251,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 
 
@@ -996,6 +1276,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 
 
@@ -1017,6 +1302,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1033,6 +1323,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -1051,6 +1346,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1067,6 +1367,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -1085,6 +1390,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1102,6 +1412,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1118,6 +1433,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 
 
@@ -1138,6 +1458,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 
 
@@ -1159,6 +1484,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1175,6 +1505,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -1193,6 +1528,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1209,6 +1549,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -1227,6 +1572,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1244,6 +1594,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1260,6 +1615,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 
 
@@ -1280,6 +1640,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 
 
@@ -1301,6 +1666,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1318,6 +1688,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1334,6 +1709,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1349,6 +1729,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -1367,6 +1752,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1383,6 +1773,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1398,6 +1793,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 
 
@@ -1419,6 +1819,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1435,6 +1840,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 
 
@@ -1456,6 +1866,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1473,6 +1888,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1488,6 +1908,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -1505,6 +1930,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1520,6 +1950,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -1537,6 +1972,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1552,6 +1992,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 
 
@@ -1573,6 +2018,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1589,6 +2039,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 
 
@@ -1610,6 +2065,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1627,6 +2087,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1642,6 +2107,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -1659,6 +2129,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1674,6 +2149,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -1691,6 +2171,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1706,6 +2191,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 
 
@@ -1727,6 +2217,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1743,6 +2238,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 
 
@@ -1764,6 +2264,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1781,6 +2286,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1797,6 +2307,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1812,6 +2327,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -1830,6 +2350,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1846,6 +2371,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1861,6 +2391,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 
 
@@ -1881,6 +2416,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 
 
@@ -1902,6 +2442,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1918,6 +2463,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -1936,6 +2486,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1952,6 +2507,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -1970,6 +2530,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -1987,6 +2552,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -2003,6 +2573,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 
 
@@ -2024,6 +2599,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -2040,6 +2620,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 					res.Fault.Detail.Error.Code.includes('service.INVALID_REQUEST'))),
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 
 
@@ -2061,6 +2646,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -2078,6 +2668,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected CreateAccountResponse or INVALID_ATTR_VALUE or ACCOUNT_EXISTS or INVALID_REQUEST, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'none'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -2093,6 +2688,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -2110,6 +2710,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -2125,6 +2730,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
@@ -2142,6 +2752,11 @@ describe('Admin > Accounts > Create Account 06', function () {
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
 
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
+
 		// Create account
 		res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -2157,5 +2772,10 @@ describe('Admin > Accounts > Create Account 06', function () {
 			!!res.CreateAccountResponse || (res.Body && res.Body.CreateAccountResponse),
 			`Expected INVALID_ATTR_VALUE or success, got: ${res.Fault
 				? JSON.stringify(res.Fault) : 'no fault'}`);
+
+			if (res.CreateAccountResponse) {
+				const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 	});
 });

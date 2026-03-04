@@ -43,14 +43,23 @@ describe('Mail > Drafts > Save Draft Shared Folder', function () {
 		const account1 = Array.isArray(account1Res.CreateAccountResponse.account)
 			? account1Res.CreateAccountResponse.account[0]
 			: account1Res.CreateAccountResponse.account;
+		const host = account1.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const account1Id = account1.id;
 
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host2 = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 
 		const account1AuthToken = await soap.getAccountAuthToken(account1Email);
 		const account2AuthToken = await soap.getAccountAuthToken(account2Email);
@@ -175,14 +184,23 @@ Content of the message
 		const account1 = Array.isArray(account1Res.CreateAccountResponse.account)
 			? account1Res.CreateAccountResponse.account[0]
 			: account1Res.CreateAccountResponse.account;
+		const host = account1.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const account1Id = account1.id;
 
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host2 = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 
 		const account1AuthToken = await soap.getAccountAuthToken(account1Email);
 		const account2AuthToken = await soap.getAccountAuthToken(account2Email);
@@ -307,14 +325,23 @@ Content of the message
 		const account1 = Array.isArray(account1Res.CreateAccountResponse.account)
 			? account1Res.CreateAccountResponse.account[0]
 			: account1Res.CreateAccountResponse.account;
+		const host = account1.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const account1Id = account1.id;
 
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host2 = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 
 		const account1AuthToken = await soap.getAccountAuthToken(account1Email);
 		const account2AuthToken = await soap.getAccountAuthToken(account2Email);

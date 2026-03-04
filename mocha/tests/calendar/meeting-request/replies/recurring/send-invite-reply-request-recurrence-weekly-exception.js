@@ -39,18 +39,32 @@ describe('Calendar > Meeting Request > Replies > Recurring > Send Invite Reply R
         // Create accounts
         const orgEmail = `organizer1${common.getUniqueString()}@${testDomain}`;
         const invEmail = `invitee1${common.getUniqueString()}@${testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
+        const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${orgEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
         );
-        await soap.makeSOAPEnvelopeAdmin(
+        assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+        const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+        	? createAcctRes.CreateAccountResponse.account[0]
+        	: createAcctRes.CreateAccountResponse.account;
+        assert.exists(acctInfo.id, 'Account ID should exist');
+        const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
+        const createAcctRes2 = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${invEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
         );
+        assert.notExists(createAcctRes2.Fault, 'CreateAccountRequest should not fault');
+        const acctInfo2 = Array.isArray(createAcctRes2.CreateAccountResponse.account)
+        	? createAcctRes2.CreateAccountResponse.account[0]
+        	: createAcctRes2.CreateAccountResponse.account;
+        assert.exists(acctInfo2.id, 'Account ID should exist');
+        const host2 = acctInfo2.a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host2, 'zimbraMailHost should exist');
         const orgToken = await soap.getAccountAuthToken(orgEmail);
 
         // Create recurring weekly appointment
@@ -140,99 +154,5 @@ describe('Calendar > Meeting Request > Replies > Recurring > Send Invite Reply R
 			</GetMsgRequest>`, orgToken
         );
         assert.notExists(excMsg.Fault, 'GetMsgRequest for exception should not fault');
-    });
-
-
-    it('Deprecated | Verify participant status is shown to the organizer for an exception to a basic weekly recurrent appointment 2', async () => {
-        // Create accounts
-        const orgEmail = `organizer1${common.getUniqueString()}@${testDomain}`;
-        const invEmail = `invitee1${common.getUniqueString()}@${testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
-            `<CreateAccountRequest xmlns="urn:zimbraAdmin">
-				<name>${orgEmail}</name>
-				<password>${config.accountPassword}</password>
-			</CreateAccountRequest>`, adminAuthToken
-        );
-        await soap.makeSOAPEnvelopeAdmin(
-            `<CreateAccountRequest xmlns="urn:zimbraAdmin">
-				<name>${invEmail}</name>
-				<password>${config.accountPassword}</password>
-			</CreateAccountRequest>`, adminAuthToken
-        );
-        const orgToken = await soap.getAccountAuthToken(orgEmail);
-        const invToken = await soap.getAccountAuthToken(invEmail);
-
-        // Create recurring weekly appointment
-        const subject = `subject${common.getUniqueString()}`;
-        const content = `content${common.getUniqueString()}`;
-        const t1 = futureTime(3600000);
-        const t2 = futureTime(3600000 + 3 * 3600000);
-        const createRes = await soap.makeSOAPEnvelopeAccount(
-            `<CreateAppointmentRequest xmlns="urn:zimbraMail">
-				<m>
-					<inv>
-						<comp status="CONF" fb="B" transp="O"
-							allDay="0" name="${subject}">
-							<or a="${orgEmail}"/>
-							<at a="${invEmail}" role="REQ" ptst="NE" rsvp="1"/>
-							<s d="${t1}"/>
-							<e d="${t2}"/>
-							<recur>
-								<add>
-									<rule freq="WEE">
-										<interval ival="1"/>
-									</rule>
-								</add>
-							</recur>
-						</comp>
-					</inv>
-					<e a="${invEmail}" t="t"/>
-					<su>${subject}</su>
-					<mp ct="text/plain">
-						<content>${content}</content>
-					</mp>
-				</m>
-			</CreateAppointmentRequest>`, orgToken
-        );
-        assert.notExists(createRes.Fault, 'CreateAppointmentRequest should not fault');
-        const invId = createRes.CreateAppointmentResponse.invId;
-
-        // Invitee accepts the series
-        const now = Date.now();
-        const searchRes = await soap.makeSOAPEnvelopeAccount(
-            `<SearchRequest xmlns="urn:zimbraMail"
-				calExpandInstStart="${now - 86400000}"
-				calExpandInstEnd="${now + 2 * 86400000}"
-				types="appointment">
-				<query>${subject}</query>
-			</SearchRequest>`, invToken
-        );
-        assert.notExists(searchRes.Fault, 'SearchRequest should not fault');
-        const appts = Array.isArray(searchRes.SearchResponse.appt)
-            ? searchRes.SearchResponse.appt : [searchRes.SearchResponse.appt];
-        const invInvId = appts[0].invId;
-
-        const replyRes = await soap.makeSOAPEnvelopeAccount(
-            `<SendInviteReplyRequest xmlns="urn:zimbraMail"
-				verb="ACCEPT" id="${invInvId}"
-				compNum="0" updateOrganizer="TRUE">
-				<m rt="r">
-					<e t="t" a="${orgEmail}"/>
-					<su>ACCEPT: ${subject}</su>
-					<mp ct="text/plain">
-						<content>ACCEPT: ${subject}</content>
-					</mp>
-				</m>
-			</SendInviteReplyRequest>`, invToken
-        );
-        assert.notExists(replyRes.Fault, 'SendInviteReplyRequest ACCEPT should not fault');
-
-        // Verify organizer sees accepted status
-        const orgMsgRes = await soap.makeSOAPEnvelopeAccount(
-            `<GetMsgRequest xmlns="urn:zimbraMail">
-				<m id="${invId}"/>
-			</GetMsgRequest>`, orgToken
-        );
-        assert.notExists(orgMsgRes.Fault, 'GetMsgRequest should not fault');
     });
 });

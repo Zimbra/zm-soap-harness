@@ -39,6 +39,10 @@ describe('Mail Client > Mail > Backup Request', function () {
 			);
 			const acct = Array.isArray(res.CreateAccountResponse?.account)
 				? res.CreateAccountResponse.account[0] : res.CreateAccountResponse?.account;
+			if (acct && acct.a) {
+				const host = acct.a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 			if (name === account2Name) account2Id = acct?.id;
 			if (name === account3Name) account3Id = acct?.id;
 		}

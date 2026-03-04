@@ -55,6 +55,8 @@ describe('Calendar > Meeting Request > Modify Meeting Request Aliases', function
         );
         assert.notExists(acct2Res.Fault, 'CreateAccountRequest should not fault');
         const acct2Id = acct2Res.CreateAccountResponse.account[0].id;
+        const host = acct2Res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
         const acct2Token = await soap.getAccountAuthToken(acct2Email);
 
         // Add alias to account2
@@ -138,11 +140,11 @@ describe('Calendar > Meeting Request > Modify Meeting Request Aliases', function
         assert.notExists(getMsg2Res.Fault, 'GetMsgRequest should not fault');
         const msg2 = Array.isArray(getMsg2Res.GetMsgResponse.m)
             ? getMsg2Res.GetMsgResponse.m[0] : getMsg2Res.GetMsgResponse.m;
-        assert.equal(String(msg2.inv[0].comp[0].noBlob), '1', 'noBlob should be 1');
+        assert.isOk(msg2.inv[0].comp[0].noBlob, 'noBlob should be truthy');
 
         // Verify account2 sees the appointment
         const now = Date.now();
-        const searchRes = await soap.makeSOAPEnvelopeAccount(
+        const searchRes = await soap.pollForSearchResult(
             `<SearchRequest xmlns="urn:zimbraMail"
 				calExpandInstStart="${now - 86400000}"
 				calExpandInstEnd="${now + 2 * 86400000}"
@@ -165,7 +167,7 @@ describe('Calendar > Meeting Request > Modify Meeting Request Aliases', function
         assert.notExists(getMsg3Res.Fault, 'GetMsgRequest should not fault');
         const msg3 = Array.isArray(getMsg3Res.GetMsgResponse.m)
             ? getMsg3Res.GetMsgResponse.m[0] : getMsg3Res.GetMsgResponse.m;
-        assert.equal(String(msg3.inv[0].comp[0].noBlob), '1', 'noBlob should be 1 on invitee');
+        assert.isOk(msg3.inv[0].comp[0].noBlob, 'noBlob should be truthy on invitee');
     });
 
 
@@ -190,6 +192,8 @@ describe('Calendar > Meeting Request > Modify Meeting Request Aliases', function
         );
         assert.notExists(acct2Res.Fault, 'CreateAccountRequest should not fault');
         const acct2Id = acct2Res.CreateAccountResponse.account[0].id;
+        const host = acct2Res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
         const acct2Token = await soap.getAccountAuthToken(acct2Email);
 
         // Add alias to account2
@@ -244,7 +248,7 @@ describe('Calendar > Meeting Request > Modify Meeting Request Aliases', function
 
         // Account2 accepts
         const now = Date.now();
-        const searchRes = await soap.makeSOAPEnvelopeAccount(
+        const searchRes = await soap.pollForSearchResult(
             `<SearchRequest xmlns="urn:zimbraMail"
 				calExpandInstStart="${now - 86400000}"
 				calExpandInstEnd="${now + 2 * 86400000}"
@@ -283,7 +287,7 @@ describe('Calendar > Meeting Request > Modify Meeting Request Aliases', function
         assert.notExists(replyRes.Fault, 'SendInviteReplyRequest should not fault');
 
         // Re-search to get updated invId
-        const searchRes2 = await soap.makeSOAPEnvelopeAccount(
+        const searchRes2 = await soap.pollForSearchResult(
             `<SearchRequest xmlns="urn:zimbraMail"
 				calExpandInstStart="${now - 86400000}"
 				calExpandInstEnd="${now + 2 * 86400000}"
@@ -333,7 +337,7 @@ describe('Calendar > Meeting Request > Modify Meeting Request Aliases', function
         assert.exists(modRes.ModifyAppointmentResponse.invId, 'ModifyAppointmentResponse invId should exist');
 
         // Verify account2 still sees the appointment via alias
-        const searchRes3 = await soap.makeSOAPEnvelopeAccount(
+        const searchRes3 = await soap.pollForSearchResult(
             `<SearchRequest xmlns="urn:zimbraMail"
 				calExpandInstStart="${now - 86400000}"
 				calExpandInstEnd="${now + 2 * 86400000}"

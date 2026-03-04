@@ -64,6 +64,9 @@ describe('Admin > LDAP > Modify LDAP Entry Request', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(createRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Get LDAP entry for the account
 		const getRes = await soap.makeSOAPEnvelopeAdmin(
@@ -100,6 +103,9 @@ describe('Admin > LDAP > Modify LDAP Entry Request', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(createRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Re-create to get the DN from the error message
 		const reCreateRes = await soap.makeSOAPEnvelopeAdmin(

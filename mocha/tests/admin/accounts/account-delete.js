@@ -36,6 +36,8 @@ describe('Admin > Accounts > Account Delete', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
 		const accountId = createRes.CreateAccountResponse.account[0].id;
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// DeleteAccountRequest
 		const res = await soap.makeSOAPEnvelopeAdmin(
@@ -59,6 +61,8 @@ describe('Admin > Accounts > Account Delete', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
 		const id1 = create1.CreateAccountResponse.account[0].id;
+		const host = create1.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Create account
 		const create2 = await soap.makeSOAPEnvelopeAdmin(
@@ -67,6 +71,8 @@ describe('Admin > Accounts > Account Delete', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
 		const id2 = create2.CreateAccountResponse.account[0].id;
+		const host2 = create2.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 
 		// Try to delete both by comma-separated ids
 		const res = await soap.makeSOAPEnvelopeAdmin(
@@ -90,6 +96,8 @@ describe('Admin > Accounts > Account Delete', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
 		const accountId = createRes.CreateAccountResponse.account[0].id;
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Delete first time
 		await soap.makeSOAPEnvelopeAdmin(
@@ -149,6 +157,8 @@ describe('Admin > Accounts > Account Delete', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
 		const accountId = createRes.CreateAccountResponse.account[0].id;
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Rename
 		const newName = `del_renamed_${common.getUniqueString()}@${config.testDomain}`;
@@ -198,6 +208,8 @@ describe('Admin > Accounts > Account Delete', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
 		const accountId = createRes.CreateAccountResponse.account[0].id;
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// DeleteAccountRequest
 		const res = await soap.makeSOAPEnvelopeAdmin(

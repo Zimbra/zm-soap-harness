@@ -45,6 +45,8 @@ describe('Calendar > Meeting Request > Create Meeting Request Basic', function (
 		);
 		assert.notExists(orgRes.Fault, 'CreateAccountRequest should not fault');
 		const orgId = orgRes.CreateAccountResponse.account[0].id;
+		const host = orgRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		assert.exists(orgId, 'Organizer account ID should exist');
 		const orgToken = await soap.getAccountAuthToken(orgEmail);
 
@@ -58,6 +60,8 @@ describe('Calendar > Meeting Request > Create Meeting Request Basic', function (
 		);
 		assert.notExists(invRes.Fault, 'CreateAccountRequest should not fault');
 		const invId = invRes.CreateAccountResponse.account[0].id;
+		const host2 = invRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		assert.exists(invId, 'Invitee account ID should exist');
 		const invToken = await soap.getAccountAuthToken(invEmail);
 
@@ -93,7 +97,7 @@ describe('Calendar > Meeting Request > Create Meeting Request Basic', function (
 
 		// Verify invitee sees the meeting
 		const now = Date.now();
-		const searchRes = await soap.makeSOAPEnvelopeAccount(
+		const searchRes = await soap.pollForSearchResult(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				calExpandInstStart="${now - 86400000}"
 				calExpandInstEnd="${now + 2 * 86400000}"
@@ -120,6 +124,8 @@ describe('Calendar > Meeting Request > Create Meeting Request Basic', function (
 		);
 		assert.notExists(orgRes.Fault, 'CreateAccountRequest should not fault');
 		const orgId = orgRes.CreateAccountResponse.account[0].id;
+		const host = orgRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		assert.exists(orgId, 'Organizer account ID should exist');
 		const orgToken = await soap.getAccountAuthToken(orgEmail);
 
@@ -133,6 +139,8 @@ describe('Calendar > Meeting Request > Create Meeting Request Basic', function (
 		);
 		assert.notExists(invRes.Fault, 'CreateAccountRequest should not fault');
 		const invId = invRes.CreateAccountResponse.account[0].id;
+		const host2 = invRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		assert.exists(invId, 'Invitee account ID should exist');
 		const invToken = await soap.getAccountAuthToken(invEmail);
 
@@ -168,7 +176,7 @@ describe('Calendar > Meeting Request > Create Meeting Request Basic', function (
 
 		// Invitee accepts the meeting
 		const now = Date.now();
-		const searchRes = await soap.makeSOAPEnvelopeAccount(
+		const searchRes = await soap.pollForSearchResult(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				calExpandInstStart="${now - 86400000}"
 				calExpandInstEnd="${now + 2 * 86400000}"
@@ -198,6 +206,9 @@ describe('Calendar > Meeting Request > Create Meeting Request Basic', function (
 		);
 		assert.notExists(replyRes.Fault, 'SendInviteReplyRequest should not fault');
 
+		// Wait for reply to be processed by organizer's mailbox
+		await new Promise(r => setTimeout(r, 3000));
+
 		// Verify organizer sees accepted status
 		const getMsgRes = await soap.makeSOAPEnvelopeAccount(
 			`<GetMsgRequest xmlns="urn:zimbraMail">
@@ -222,6 +233,8 @@ describe('Calendar > Meeting Request > Create Meeting Request Basic', function (
 		);
 		assert.notExists(orgRes.Fault, 'CreateAccountRequest should not fault');
 		const orgId = orgRes.CreateAccountResponse.account[0].id;
+		const host = orgRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		assert.exists(orgId, 'Organizer account ID should exist');
 		const orgToken = await soap.getAccountAuthToken(orgEmail);
 
@@ -284,7 +297,7 @@ describe('Calendar > Meeting Request > Create Meeting Request Basic', function (
 
 		// Verify invitee 1 sees the meeting
 		const now = Date.now();
-		const search1Res = await soap.makeSOAPEnvelopeAccount(
+		const search1Res = await soap.pollForSearchResult(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				calExpandInstStart="${now - 86400000}"
 				calExpandInstEnd="${now + 2 * 86400000}"
@@ -298,7 +311,7 @@ describe('Calendar > Meeting Request > Create Meeting Request Basic', function (
 		assert.isAtLeast(inv1Appts.length, 1, 'Invitee 1 should see the appointment');
 
 		// Verify invitee 2 sees the meeting
-		const search2Res = await soap.makeSOAPEnvelopeAccount(
+		const search2Res = await soap.pollForSearchResult(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				calExpandInstStart="${now - 86400000}"
 				calExpandInstEnd="${now + 2 * 86400000}"

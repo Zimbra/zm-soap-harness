@@ -44,6 +44,8 @@ describe('Mail > SMTP > Mail Trash Lifetime', function () {
 		const accountId = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0].id
 			: createRes.CreateAccountResponse.account.id;
+		const host = accountId.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Login to the account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
@@ -151,6 +153,8 @@ simple text string in the body
 		const accountId = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0].id
 			: createRes.CreateAccountResponse.account.id;
+		const host = accountId.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Login to the account
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);

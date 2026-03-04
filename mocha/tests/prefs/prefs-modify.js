@@ -38,6 +38,9 @@ describe('Prefs > Prefs Modify', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createAccountRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(createAccountRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createAccountRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Send ModifyPrefsRequest with TRUE
@@ -92,6 +95,9 @@ describe('Prefs > Prefs Modify', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createAccountRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(createAccountRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createAccountRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Attempt to set pref not in schema
@@ -115,6 +121,9 @@ describe('Prefs > Prefs Modify', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createAccountRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(createAccountRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createAccountRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Attempt to set pref starting with zimbraPref not in schema
@@ -138,6 +147,9 @@ describe('Prefs > Prefs Modify', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createAccountRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(createAccountRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createAccountRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Set to TRUE
@@ -168,6 +180,9 @@ describe('Prefs > Prefs Modify', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createAccountRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(createAccountRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createAccountRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Spaces padded
@@ -225,6 +240,9 @@ describe('Prefs > Prefs Modify', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createAccountRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(createAccountRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createAccountRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Set TRUE
@@ -255,6 +273,9 @@ describe('Prefs > Prefs Modify', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createAccountRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(createAccountRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createAccountRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Camel case False
@@ -303,6 +324,9 @@ describe('Prefs > Prefs Modify', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createAccountRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(createAccountRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createAccountRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Set conversation
@@ -333,6 +357,9 @@ describe('Prefs > Prefs Modify', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createAccountRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(createAccountRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createAccountRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		const res = await soap.makeSOAPEnvelopeAccount(
@@ -355,6 +382,9 @@ describe('Prefs > Prefs Modify', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createAccountRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(createAccountRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createAccountRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		const res = await soap.makeSOAPEnvelopeAccount(
@@ -376,6 +406,9 @@ describe('Prefs > Prefs Modify', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createAccountRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(createAccountRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createAccountRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		const res = await soap.makeSOAPEnvelopeAccount(
@@ -397,6 +430,9 @@ describe('Prefs > Prefs Modify', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createAccountRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(createAccountRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createAccountRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Number 18
@@ -430,12 +466,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Sanity | Set zimbraPrefMailInitialSearch Valid inputs', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Set zimbraPrefMailInitialSearch to in:inbox
@@ -451,12 +494,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Functional | Set zimbraPrefMailInitialSearch blank', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Set zimbraPrefMailInitialSearch to blank
@@ -472,12 +522,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Sanity | Set zimbraPrefReplyToAddress Email address', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Set zimbraPrefReplyToAddress
@@ -493,12 +550,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Functional | Set zimbraPrefReplyToAddress blank', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Set zimbraPrefReplyToAddress to blank
@@ -514,12 +578,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Sanity | Set zimbraPrefReplyIncludeOriginalText includeNone, includeAsAttachment, includeBody, includeBodyWithPrefix', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Set includeNone
@@ -559,12 +630,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Regression | Set zimbraPrefReplyIncludeOriginalText to various values', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Blank value
@@ -589,12 +667,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Sanity | Set zimbraPrefForwardIncludeOriginalText includeAsAttachment, includeBody, includeBodyWithPrefix', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Set includeAsAttachment
@@ -626,12 +711,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Regression | Set zimbraPrefForwardIncludeOriginalText various values', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Blank value
@@ -656,12 +748,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Sanity | Set zimbraPrefForwardReplyPrefixChar any character or word', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Set to < character
@@ -677,12 +776,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Sanity | Set zimbraPrefMailSignatureEnabled = TRUE/FALSE', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Set TRUE
@@ -706,12 +812,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Regression | Set zimbraPrefMailSignatureEnabled various values', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Case sensitive True
@@ -753,12 +866,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Sanity | Set zimbraPrefNewMailNotificationEnabled = TRUE/FALSE', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Set TRUE
@@ -782,12 +902,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Regression | Set zimbraPrefNewMailNotificationEnabled to various values', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Case sensitive True
@@ -821,12 +948,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Sanity | Set zimbraPrefOutOfOfficeReplyEnabled TRUE, FALSE', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Set TRUE
@@ -850,12 +984,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Regression | Set zimbraPrefOutOfOfficeReplyEnabled various values', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Case sensitive True
@@ -889,12 +1030,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Sanity | Set zimbraPrefOutOfOfficeReply Some text', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Set zimbraPrefOutOfOfficeReply
@@ -910,12 +1058,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Sanity | Set zimbraPrefNewMailNotificationEnabled TRUE, FALSE', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Set TRUE
@@ -939,12 +1094,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Regression | Set zimbraPrefNewMailNotificationEnabled various values', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Case sensitive True
@@ -978,12 +1140,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Functional | Set zimbraPrefNewMailNotificationAddress = Some text', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Set invalid notification address
@@ -1000,12 +1169,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Sanity | Set zimbraPrefMessageViewHtmlPreferred = TRUE/FALSE', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Set TRUE
@@ -1029,12 +1205,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Regression | Set zimbraPrefMessageViewHtmlPreferred to various values', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Case sensitive True
@@ -1068,12 +1251,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Sanity | Set zimbraPrefDedupeMessagesSentToSelf = Valid Requests (dedupeNone/moveSentMessageToInbox/secondCopyifOnToOrCC)', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Set dedupeNone
@@ -1105,12 +1295,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Regression | Set zimbraPrefDedupeMessagesSentToSelf to various values', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Blank value
@@ -1135,12 +1332,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Sanity | Set zimbraPrefAutoAddAddressEnabled TRUE, FALSE', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Set TRUE
@@ -1164,12 +1368,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Regression | Set zimbraPrefAutoAddAddressEnabled to various values', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Lowercase true
@@ -1211,12 +1422,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Sanity | Set zimbraPrefContactsPerPage valid value (from list)', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Set to 25
@@ -1232,12 +1450,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Regression | Set zimbraPrefContactsPerPage valid value (not in list)', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Set to 14
@@ -1278,12 +1503,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Sanity | Verify creating a filter rule with valid parameters', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Create a filter rule
@@ -1309,12 +1541,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Sanity | Verify creating a rule with duplicate name', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Create a filter rule
@@ -1356,12 +1595,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Regression | Verify Saving a valid rule with blank rules, blank op, etc', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Blank rules
@@ -1490,12 +1736,19 @@ describe('Prefs > Prefs Modify', function () {
 	it('Regression | Set Zimbra Preference that is not in LDAB Schema, leading spaces, etc', async () => {
 		// Create the account
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Pref not in zimbra schema

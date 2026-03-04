@@ -32,6 +32,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Recur', function () {
 	it('Smoke | Verify the iCal format invitation for an appointment of half an hour repeating daily and never ending.', async () => {
 		const accountEmail = `ical.or1.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_recur1';
@@ -67,6 +77,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Recur', function () {
 	it('Functional | Verify the ical format invitation for a daily appointment every 3 days ending after 10 occurrences', async () => {
 		const accountEmail = `ical.or2.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_recur2';
@@ -102,6 +122,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Recur', function () {
 	it('Functional | Verify the ical format invitation for an appointment repeating daily every 5 days ending after 1 month', async () => {
 		const accountEmail = `ical.or3.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_recur3';
@@ -137,6 +167,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Recur', function () {
 	it('Functional | Verify the ical format invitation for an daily appointment every weekday never ending', async () => {
 		const accountEmail = `ical.or4.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_recur4';
@@ -172,6 +212,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Recur', function () {
 	it('Functional | Verify the ical format invitation for an appointment every weekday ending after 10 occurrences', async () => {
 		const accountEmail = `ical.or5.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_recur5';
@@ -207,6 +257,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Recur', function () {
 	it('Functional | Verify the ical format invitation for an appointment every weekday ending after 1 month', async () => {
 		const accountEmail = `ical.or6.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_recur6';
@@ -242,6 +302,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Recur', function () {
 	it('Functional | Verify the ical format invitation for an repeating every 1 week on Thursday never ending', async () => {
 		const accountEmail = `ical.or7.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_recur7';
@@ -277,6 +347,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Recur', function () {
 	it('Functional | Verify the ical format invitation for weekly appointment repeating every 2 weeks on Thursday ending after 10 occurrences', async () => {
 		const accountEmail = `ical.or8.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_recur8';
@@ -312,6 +392,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Recur', function () {
 	it('Functional | Verify the ical format invitation for weekly appointment repeating every 2 weeks on Thursday ending by 20th january 2006', async () => {
 		const accountEmail = `ical.or9.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_recur9';
@@ -347,6 +437,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Recur', function () {
 	it('Functional | Verify the ical format invitation for monthly appointment repeating on every 15th day of a month never ending', async () => {
 		const accountEmail = `ical.or10.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_recur10';
@@ -382,6 +482,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Recur', function () {
 	it('Functional | Verify the ical format invitation for monthly appointment repeating on every 15th day of a month ending after 15 occurrences .', async () => {
 		const accountEmail = `ical.or11.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_recur11';
@@ -417,6 +527,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Recur', function () {
 	it('Functional | Verify the ical format invitation for monthly appointment repeating on every 15ht day of a month ending by 20th nov 2005(after 1 month)', async () => {
 		const accountEmail = `ical.or12.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_recur12';
@@ -452,6 +572,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Recur', function () {
 	it('Functional | Verify the ical format invitation for monthly appointment repeating on the second Monday of every 1 months never ending', async () => {
 		const accountEmail = `ical.or13.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_recur13';
@@ -487,6 +617,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Recur', function () {
 	it('Functional | Verify the ical format invitation for monthly appointment repeating on the second monday of every 1 months ending after 5 occurrences', async () => {
 		const accountEmail = `ical.or14.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_recur14';
@@ -522,6 +662,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Recur', function () {
 	it('Functional | Verify the ical format invitation for monthly appointment repeating on the second Monday of every 1 month ending by 29th january 2007', async () => {
 		const accountEmail = `ical.or15.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_recur15';
@@ -557,6 +707,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Recur', function () {
 	it('Functional | Verify the ical format invitation for yearly appointment repeating on the fourth Wednesday of january ending by 29th jan 2015.', async () => {
 		const accountEmail = `ical.or16.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_recur16';
@@ -592,6 +752,16 @@ describe('ICAL > Ms Outlook 2003 > Outlook ICAL Recur', function () {
 	it('Functional | Verify the ical format invitation for daily appointment every 1 day starting on 20th november 2005 and ending on 20th december 2005.', async () => {
 		const accountEmail = `ical.or17.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, accountEmail, accountEmail);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${accountEmail}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail, config.accountPassword);
 
 		const mailSubject = 'outlook_ical_recur17';

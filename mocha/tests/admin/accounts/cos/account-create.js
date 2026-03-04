@@ -49,6 +49,8 @@ describe('Admin > Accounts > COS > Account Create', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		const acctId = acctRes.CreateAccountResponse.account[0].id;
+		const host = acctRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// GetAccountRequest
 		const getRes = await soap.makeSOAPEnvelopeAdmin(

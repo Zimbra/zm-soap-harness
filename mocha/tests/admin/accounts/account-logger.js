@@ -53,9 +53,17 @@ describe('Admin > Accounts > Account Logger', function () {
 			return Array.isArray(acct) ? acct[0].id : acct?.id;
 		};
 		account1Id = getAcctId(r1);
+		const host1 = r1.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host1, 'zimbraMailHost should exist');
 		account2Id = getAcctId(r2);
+		const host2 = r2.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		account3Id = getAcctId(r3);
+		const host3 = r3.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host3, 'zimbraMailHost should exist');
 		account4Id = getAcctId(r4);
+		const host4 = r4.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host4, 'zimbraMailHost should exist');
 	});
 
 	beforeEach(async function () {

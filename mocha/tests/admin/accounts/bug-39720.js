@@ -28,6 +28,9 @@ describe('Admin > Accounts > Bug 39720', function () {
 
 		// Verify response
 		assert.notExists(r1.Fault, 'Response should not be a Fault');
+		assert.exists(r1.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = r1.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		delegatedAdminId = Array.isArray(r1.CreateAccountResponse.account) ? r1.CreateAccountResponse.account[0].id : r1.CreateAccountResponse.account.id;
 
@@ -42,6 +45,9 @@ describe('Admin > Accounts > Bug 39720', function () {
 
 		// Verify response
 		assert.notExists(r2.Fault, 'Response should not be a Fault');
+		assert.exists(r2.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host2 = r2.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 
 		adminAcctId = Array.isArray(r2.CreateAccountResponse.account) ? r2.CreateAccountResponse.account[0].id : r2.CreateAccountResponse.account.id;
 
@@ -55,6 +61,9 @@ describe('Admin > Accounts > Bug 39720', function () {
 
 		// Verify response
 		assert.notExists(r3.Fault, 'Response should not be a Fault');
+		assert.exists(r3.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host3 = r3.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host3, 'zimbraMailHost should exist');
 
 		regularAcctId = Array.isArray(r3.CreateAccountResponse.account) ? r3.CreateAccountResponse.account[0].id : r3.CreateAccountResponse.account.id;
 	});

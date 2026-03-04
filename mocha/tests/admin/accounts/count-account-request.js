@@ -54,6 +54,9 @@ describe('Admin > Accounts > Count Account Request', function () {
 
 		// Verify response
 		assert.notExists(acct1Res.Fault, 'Response should not be a Fault');
+		assert.exists(acct1Res.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = acct1Res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Create account 2 with COS
 		const acct2Res = await soap.makeSOAPEnvelopeAdmin(
@@ -65,6 +68,9 @@ describe('Admin > Accounts > Count Account Request', function () {
 
 		// Verify response
 		assert.notExists(acct2Res.Fault, 'Response should not be a Fault');
+		assert.exists(acct2Res.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host2 = acct2Res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 
 		// Count accounts
 		const countRes = await soap.makeSOAPEnvelopeAdmin(

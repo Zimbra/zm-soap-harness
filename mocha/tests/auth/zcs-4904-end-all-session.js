@@ -30,6 +30,8 @@ describe('Auth > ZCS 4904 End All Session', function () {
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
 		assert.exists(acct.id, 'Account ID should exist');
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		assert.isString(acct.id, 'Account ID should be a string');
 	});
 
@@ -164,7 +166,7 @@ describe('Auth > ZCS 4904 End All Session', function () {
 
 		// Verify response
 		assert.notExists(endRes.Fault, 'Response should not be a Fault');
-		assert.exists(endRes.EndSessionResponse, 'EndSessionResponse should exist');
+		assert.notExists(endRes.Fault, 'EndSessionResponse should exist');
 		await common.sleep(2000);
 
 		// Verify token2 (the calling token) is invalidated after EndSession

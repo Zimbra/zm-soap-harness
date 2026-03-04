@@ -32,6 +32,9 @@ describe('Admin > Context > Target Server', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createRes1.Fault, 'Account 1 creation should not fault');
+		assert.exists(createRes1.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createRes1.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Create test account 2
 		const account2Email = `test2.${common.getUniqueString()}@${domainName}`;
@@ -42,6 +45,9 @@ describe('Admin > Context > Target Server', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createRes2.Fault, 'Account 2 creation should not fault');
+		assert.exists(createRes2.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host2 = createRes2.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 	});
 
 	beforeEach(async function () {

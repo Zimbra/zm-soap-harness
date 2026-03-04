@@ -47,6 +47,8 @@ describe('General > Password > Bugs > ZCS 126', function () {
 		const account = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
+		const host = account.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountId = account.id;
 
 		// AuthRequest
@@ -140,6 +142,8 @@ describe('General > Password > Bugs > ZCS 126', function () {
 		const account = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
+		const host = account.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountId = account.id;
 
 		// AuthRequest

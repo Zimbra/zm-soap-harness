@@ -32,9 +32,29 @@ describe('ICAL > Request Reply > Decline 102', function () {
 	it('Functional | Verify REPLY message', async () => {
 		const account1Email = `ical.rr1.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, account1Email, account1Email);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${account1Email}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		const account2Email = `ical.rr2.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, account2Email, account2Email);
+		const acctInfoRes2 = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${account2Email}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes2.Fault, 'GetAccountRequest should not fault');
+		const acctInfo2 = Array.isArray(acctInfoRes2.GetAccountResponse.account)
+			? acctInfoRes2.GetAccountResponse.account[0]
+			: acctInfoRes2.GetAccountResponse.account;
+		assert.exists(acctInfo2.id, 'Account ID should exist');
+		const host2 = acctInfo2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		const account2AuthToken = await soap.getAccountAuthToken(account2Email, config.accountPassword);
 
 		const filePath = path.join(config.projectRoot, 'mocha/data/ical/msg-100.txt');

@@ -44,6 +44,8 @@ describe('Admin > Accounts > Foreign Principal > Account Create', function () {
 		const account = Array.isArray(response.CreateAccountResponse.account)
 			? response.CreateAccountResponse.account[0]
 			: response.CreateAccountResponse.account;
+		const host = account.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Verify response
 		assert.exists(account.id, 'Account should have an id');
@@ -70,6 +72,8 @@ describe('Admin > Accounts > Foreign Principal > Account Create', function () {
 		const account = Array.isArray(response.CreateAccountResponse.account)
 			? response.CreateAccountResponse.account[0]
 			: response.CreateAccountResponse.account;
+		const host = account.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Verify response
 		assert.exists(account.id, 'Account should have an id');
@@ -95,6 +99,8 @@ describe('Admin > Accounts > Foreign Principal > Account Create', function () {
 		const account = Array.isArray(res1.CreateAccountResponse.account)
 			? res1.CreateAccountResponse.account[0]
 			: res1.CreateAccountResponse.account;
+		const host = account.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Verify response
 		assert.exists(account.id, 'Account should have an id');
@@ -113,6 +119,8 @@ describe('Admin > Accounts > Foreign Principal > Account Create', function () {
 		const account2 = Array.isArray(res2.CreateAccountResponse.account)
 			? res2.CreateAccountResponse.account[0]
 			: res2.CreateAccountResponse.account;
+		const host2 = account2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 
 		// Verify response
 		assert.exists(account2.id, 'Account should have an id');
@@ -138,6 +146,8 @@ describe('Admin > Accounts > Foreign Principal > Account Create', function () {
 			assert.notExists(response.Fault, 'Response should not be a Fault');
 			assert.exists(response.CreateAccountResponse.account[0].id,
 				`Account id should exist for zimbraForeignPrincipal="${val}"`);
+			const host = response.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+			assert.exists(host, 'zimbraMailHost should exist');
 		}
 		// Empty and whitespace-only values are trimmed by Zimbra — server may accept or reject
 		for (const val of ['', '             ']) {
@@ -156,6 +166,8 @@ describe('Admin > Accounts > Foreign Principal > Account Create', function () {
 			assert.notExists(response.Fault, 'Response should not be a Fault');
 			assert.exists(response.CreateAccountResponse.account[0].id,
 				`Account id should exist for zimbraForeignPrincipal="${val}"`);
+			const host2 = response.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+			assert.exists(host2, 'zimbraMailHost should exist');
 		}
 	});
 });

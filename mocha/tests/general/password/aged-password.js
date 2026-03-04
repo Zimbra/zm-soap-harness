@@ -45,6 +45,8 @@ describe('General > Password > Aged Password', function () {
 		const account = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
+		const host = account.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountId = account.id;
 		const modTime = common.getGMTTime().replace('T', '');
 
@@ -102,6 +104,8 @@ describe('General > Password > Aged Password', function () {
 		const account = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
+		const host = account.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountId = account.id;
 		const d = new Date(); d.setDate(d.getDate() - 8);
 		const modTime = d.toISOString().replace(/[-T:]|\..*/g, '') + 'Z';
@@ -181,6 +185,8 @@ describe('General > Password > Aged Password', function () {
 		const account = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
+		const host = account.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountId = account.id;
 		const d = new Date(); d.setDate(d.getDate() - 10);
 		const modTime = d.toISOString().replace(/[-T:]|\..*/g, '') + 'Z';
@@ -238,6 +244,8 @@ describe('General > Password > Aged Password', function () {
 		const account = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
+		const host = account.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountId = account.id;
 		const d = new Date(); d.setDate(d.getDate() - 65);
 		const modTime = d.toISOString().replace(/[-T:]|\..*/g, '') + 'Z';
@@ -346,6 +354,8 @@ describe('General > Password > Aged Password', function () {
 		const account = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
+		const host = account.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountId = account.id;
 		const modTime = common.getGMTTime().replace('T', '');
 
@@ -390,6 +400,8 @@ describe('General > Password > Aged Password', function () {
 		const account = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
+		const host = account.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountId = account.id;
 		const modTime = common.getGMTTime().replace('T', '');
 
@@ -448,6 +460,8 @@ describe('General > Password > Aged Password', function () {
 		const account = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
+		const host = account.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountId = account.id;
 		const d = new Date(); d.setDate(d.getDate() - 2);
 		const modTime = d.toISOString().replace(/[-T:]|\..*/g, '') + 'Z';
@@ -504,6 +518,8 @@ describe('General > Password > Aged Password', function () {
 		const account = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
+		const host = account.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountId = account.id;
 		const modTime = common.getGMTTime().replace('T', '');
 
@@ -547,6 +563,8 @@ describe('General > Password > Aged Password', function () {
 		const account = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
+		const host = account.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountId = account.id;
 		const d = new Date(); d.setDate(d.getDate() - 2);
 		const modTime = d.toISOString().replace(/[-T:]|\..*/g, '') + 'Z';
@@ -594,6 +612,8 @@ describe('General > Password > Aged Password', function () {
 		const account = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
+		const host = account.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountId = account.id;
 		const modTime = common.getGMTTime().replace('T', '');
 
@@ -637,6 +657,8 @@ describe('General > Password > Aged Password', function () {
 		const account = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
+		const host = account.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountId = account.id;
 		const d = new Date(); d.setDate(d.getDate() - 370);
 		const modTime = d.toISOString().replace(/[-T:]|\..*/g, '') + 'Z';

@@ -29,6 +29,10 @@ describe('Mail Client > Briefcase > Backup Request Shared Briefcase', function (
 			);
 			const acct = Array.isArray(res.CreateAccountResponse?.account)
 				? res.CreateAccountResponse.account[0] : res.CreateAccountResponse?.account;
+			if (acct && acct.a) {
+				const host = acct.a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
+			}
 			if (name === account1Name) account1Id = acct?.id;
 			if (name === account3Name) account3Id = acct?.id;
 		}

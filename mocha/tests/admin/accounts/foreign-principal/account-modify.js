@@ -42,6 +42,8 @@ describe('Admin > Accounts > Foreign Principal > Account Modify', function () {
 		const acctId = (() => {
 			const a = createRes.CreateAccountResponse?.account; return Array.isArray(a) ? a[0].id : a?.id;
 		})();
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// ModifyAccountRequest
 		const modRes = await soap.makeSOAPEnvelopeAdmin(
@@ -104,6 +106,8 @@ describe('Admin > Accounts > Foreign Principal > Account Modify', function () {
 		const acctId = (() => {
 			const a = createRes.CreateAccountResponse?.account; return Array.isArray(a) ? a[0].id : a?.id;
 		})();
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// ModifyAccountRequest
 		const modRes = await soap.makeSOAPEnvelopeAdmin(
@@ -167,6 +171,8 @@ describe('Admin > Accounts > Foreign Principal > Account Modify', function () {
 			const a = createRes.CreateAccountResponse?.account;
 			return Array.isArray(a) ? a[0].id : a?.id;
 		})();
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// ModifyAccountRequest
 		await soap.makeSOAPEnvelopeAdmin(

@@ -38,6 +38,8 @@ describe('Admin > Delegated > Set Password Request', function () {
 		assert.notExists(createTarget.Fault, 'Target account creation should not fault');
 		const targetAcct = Array.isArray(createTarget.CreateAccountResponse.account)
 			? createTarget.CreateAccountResponse.account[0] : createTarget.CreateAccountResponse.account;
+		const host = targetAcct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		targetAccountId = targetAcct.id;
 	});
 

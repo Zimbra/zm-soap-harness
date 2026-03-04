@@ -45,6 +45,8 @@ describe('Calendar > Appointments > Cancel Appointment Request Recurrence Daily'
         );
         assert.notExists(accRes.Fault, 'CreateAccountRequest should not fault');
         const accountId = accRes.CreateAccountResponse.account[0].id;
+        const host = accRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
         const accountToken = await soap.getAccountAuthToken(accountEmail);
         const subject = `Subject of meeting${common.getUniqueString()}`;
         const content = `Content of the message${common.getUniqueString()}`;
@@ -135,6 +137,8 @@ describe('Calendar > Appointments > Cancel Appointment Request Recurrence Daily'
         );
         assert.notExists(accRes.Fault, 'CreateAccountRequest should not fault');
         const accountId = accRes.CreateAccountResponse.account[0].id;
+        const host = accRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
         const accountToken = await soap.getAccountAuthToken(accountEmail);
         const subject = `Subject of meeting 2 ${common.getUniqueString()}`;
         const content = `Content of the message 2 ${common.getUniqueString()}`;

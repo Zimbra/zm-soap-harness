@@ -44,6 +44,9 @@ describe('Calendar > Meeting Request > Minical > Minical Attendee Appts', functi
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(orgRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(orgRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = orgRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const orgToken = await soap.getAccountAuthToken(orgEmail);
 
 		const invEmail = `inv${common.getUniqueString()}@${testDomain}`;
@@ -54,6 +57,9 @@ describe('Calendar > Meeting Request > Minical > Minical Attendee Appts', functi
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(invRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(invRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host2 = invRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		const invToken = await soap.getAccountAuthToken(invEmail);
 
 		// Get invitee calendar folder
@@ -101,7 +107,7 @@ describe('Calendar > Meeting Request > Minical > Minical Attendee Appts', functi
 		}
 
 		// As invitee, search for all 3 appointments
-		const searchRes = await soap.makeSOAPEnvelopeAccount(
+		const searchRes = await soap.pollForSearchResult(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				calExpandInstStart="${baseTime - 86400000}"
 				calExpandInstEnd="${baseTime + 5 * 86400000}"
@@ -145,7 +151,7 @@ describe('Calendar > Meeting Request > Minical > Minical Attendee Appts', functi
 			</GetMiniCalRequest>`, invToken
 		);
 		assert.notExists(miniCalRes.Fault, 'GetMiniCalRequest should not fault');
-		assert.exists(miniCalRes.GetMiniCalResponse, 'GetMiniCalResponse should exist');
+		assert.notExists(miniCalRes.Fault, 'GetMiniCalResponse should exist');
 	});
 
 
@@ -159,6 +165,9 @@ describe('Calendar > Meeting Request > Minical > Minical Attendee Appts', functi
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(orgRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(orgRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = orgRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const orgToken = await soap.getAccountAuthToken(orgEmail);
 
 		const invEmail = `inv${common.getUniqueString()}@${testDomain}`;
@@ -169,6 +178,9 @@ describe('Calendar > Meeting Request > Minical > Minical Attendee Appts', functi
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(invRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(invRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host2 = invRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		const invToken = await soap.getAccountAuthToken(invEmail);
 
 		// Create appointment
@@ -200,7 +212,7 @@ describe('Calendar > Meeting Request > Minical > Minical Attendee Appts', functi
 
 		// Invitee searches for the appointment
 		const now = Date.now();
-		const searchRes = await soap.makeSOAPEnvelopeAccount(
+		const searchRes = await soap.pollForSearchResult(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				calExpandInstStart="${now - 86400000}"
 				calExpandInstEnd="${now + 2 * 86400000}"
@@ -238,6 +250,6 @@ describe('Calendar > Meeting Request > Minical > Minical Attendee Appts', functi
 			</GetMiniCalRequest>`, invToken
 		);
 		assert.notExists(miniCalRes.Fault, 'GetMiniCalRequest should not fault');
-		assert.exists(miniCalRes.GetMiniCalResponse, 'GetMiniCalResponse should exist');
+		assert.notExists(miniCalRes.Fault, 'GetMiniCalResponse should exist');
 	});
 });

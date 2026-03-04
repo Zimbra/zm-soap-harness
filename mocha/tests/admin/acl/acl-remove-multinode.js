@@ -35,6 +35,8 @@ describe('Admin > ACL > ACL Remove Multinode', function () {
 			if (email === account1Email) {
 				const acct = Array.isArray(res.CreateAccountResponse.account)
 					? res.CreateAccountResponse.account[0] : res.CreateAccountResponse.account;
+				const host = acct.a.find(a => a.n === 'zimbraMailHost');
+				assert.exists(host, 'zimbraMailHost should exist');
 				account1Id = acct.id;
 			}
 		}

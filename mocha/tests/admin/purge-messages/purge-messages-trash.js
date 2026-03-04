@@ -28,12 +28,19 @@ describe('Admin > Purge Messages > Purge Messages Trash', function () {
 
 		// Create sender account
 		senderEmail = `account1.${common.getUniqueString()}@${domainName}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${senderEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Create purge accounts
 		for (const idx of [2, 3, 4]) {
@@ -47,6 +54,8 @@ describe('Admin > Purge Messages > Purge Messages Trash', function () {
 			assert.notExists(res.Fault, `CreateAccountRequest for purge${idx} should not fault`);
 			const acct = Array.isArray(res.CreateAccountResponse.account)
 				? res.CreateAccountResponse.account[0] : res.CreateAccountResponse.account;
+			const host2 = acct.a.find(a => a.n === 'zimbraMailHost');
+			assert.exists(host2, 'zimbraMailHost should exist');
 			if (idx === 2) { purge02Email = email; purge02Id = acct.id; }
 			if (idx === 3) { purge03Email = email; purge03Id = acct.id; }
 			if (idx === 4) { purge04Email = email; purge04Id = acct.id; }

@@ -29,6 +29,16 @@ describe('Folders > Virtualhost > Virtualhost Getinforequest', function () {
 
 		virtHostAccount = `vh_user_info_${unique}@${domainName}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuth, virtHostAccount, virtHostAccount);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${virtHostAccount}</account></GetAccountRequest>`, adminAuth
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Login with Virtual Host
 		const authRequest =

@@ -28,6 +28,8 @@ describe('General > Headers > Context > Account Basic', function () {
 		const account = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
+		const host = account.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		account1Id = account.id;
 	});
 

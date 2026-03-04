@@ -52,6 +52,8 @@ describe('Admin > Accounts > Accounts Loop', function () {
 			assert.notExists(response.Fault, 'Response should not be a Fault');
 			assert.exists(response.CreateAccountResponse.account[0].id,
 				`Account ${i + 1} id should exist`);
+			const host = response.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+			assert.exists(host, 'zimbraMailHost should exist');
 		}
 	});
 
@@ -67,6 +69,8 @@ describe('Admin > Accounts > Accounts Loop', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		const acctId = createRes.CreateAccountResponse.account[0].id;
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// GetAccountRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
@@ -99,6 +103,8 @@ describe('Admin > Accounts > Accounts Loop', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		const acctId = createRes.CreateAccountResponse.account[0].id;
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// ModifyAccountRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
@@ -141,6 +147,8 @@ describe('Admin > Accounts > Accounts Loop', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		const acctId = createRes.CreateAccountResponse.account[0].id;
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// DeleteAccountRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
@@ -166,6 +174,8 @@ describe('Admin > Accounts > Accounts Loop', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		const acctId = createRes.CreateAccountResponse.account[0].id;
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// RenameAccountRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
@@ -192,6 +202,8 @@ describe('Admin > Accounts > Accounts Loop', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		const acctId = createRes.CreateAccountResponse.account[0].id;
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// AddAccountAliasRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(
@@ -218,6 +230,8 @@ describe('Admin > Accounts > Accounts Loop', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		const acctId = createRes.CreateAccountResponse.account[0].id;
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// AddAccountAliasRequest
 		await soap.makeSOAPEnvelopeAdmin(
@@ -251,6 +265,8 @@ describe('Admin > Accounts > Accounts Loop', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		const acctId = createRes.CreateAccountResponse.account[0].id;
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// SearchAccountsRequest
 		const response = await soap.makeSOAPEnvelopeAdmin(

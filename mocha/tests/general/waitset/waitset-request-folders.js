@@ -31,6 +31,8 @@ describe('General > Waitset > Waitset Request Folders', function () {
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
 			? createRes1.CreateAccountResponse.account[0]
 			: createRes1.CreateAccountResponse.account;
+		const host = acct1.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		account1Id = acct1.id;
 
 		// Create account
@@ -43,6 +45,8 @@ describe('General > Waitset > Waitset Request Folders', function () {
 		const acct2 = Array.isArray(createRes2.CreateAccountResponse.account)
 			? createRes2.CreateAccountResponse.account[0]
 			: createRes2.CreateAccountResponse.account;
+		const host2 = acct2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		account2Id = acct2.id;
 
 		// Create account
@@ -55,6 +59,8 @@ describe('General > Waitset > Waitset Request Folders', function () {
 		const acct3 = Array.isArray(createRes3.CreateAccountResponse.account)
 			? createRes3.CreateAccountResponse.account[0]
 			: createRes3.CreateAccountResponse.account;
+		const host3 = acct3.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host3, 'zimbraMailHost should exist');
 		account3Id = acct3.id;
 	});
 

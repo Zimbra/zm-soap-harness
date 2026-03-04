@@ -44,6 +44,9 @@ describe('Calendar > Meeting Request > Reminders > Get Msg Request Basic', funct
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(orgRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(orgRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = orgRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const orgToken = await soap.getAccountAuthToken(orgEmail);
 
 		const invEmail = `inv${common.getUniqueString()}@${testDomain}`;
@@ -54,6 +57,9 @@ describe('Calendar > Meeting Request > Reminders > Get Msg Request Basic', funct
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(invRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(invRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host2 = invRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		const invToken = await soap.getAccountAuthToken(invEmail);
 
 		// Create appointment
@@ -85,7 +91,7 @@ describe('Calendar > Meeting Request > Reminders > Get Msg Request Basic', funct
 
 		// Invitee searches for appointment
 		const now = Date.now();
-		const searchRes = await soap.makeSOAPEnvelopeAccount(
+		const searchRes = await soap.pollForSearchResult(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				calExpandInstStart="${now - 86400000}"
 				calExpandInstEnd="${now + 2 * 86400000}"
@@ -121,6 +127,9 @@ describe('Calendar > Meeting Request > Reminders > Get Msg Request Basic', funct
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(orgRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(orgRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = orgRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const orgToken = await soap.getAccountAuthToken(orgEmail);
 
 		// Create invitee with zimbraPrefCalendarAutoAddInvites=FALSE and reminder=15
@@ -134,6 +143,9 @@ describe('Calendar > Meeting Request > Reminders > Get Msg Request Basic', funct
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(invRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(invRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host2 = invRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		const invToken = await soap.getAccountAuthToken(invEmail);
 
 		// Create appointment
@@ -164,10 +176,10 @@ describe('Calendar > Meeting Request > Reminders > Get Msg Request Basic', funct
 		assert.notExists(createRes.Fault, 'CreateAppointmentRequest should not fault');
 
 		// Invitee searches for message and accepts
-		const searchMsgRes = await soap.makeSOAPEnvelopeAccount(
+		const searchMsgRes = await soap.pollForSearchResult(
 			`<SearchRequest xmlns="urn:zimbraMail" types="message">
 				<query>subject:(${subject})</query>
-			</SearchRequest>`, invToken
+			</SearchRequest>`, invToken, 'm'
 		);
 		assert.notExists(searchMsgRes.Fault, 'SearchRequest should not fault');
 		const msgs = Array.isArray(searchMsgRes.SearchResponse.m)
@@ -192,7 +204,7 @@ describe('Calendar > Meeting Request > Reminders > Get Msg Request Basic', funct
 
 		// Search for appointment
 		const now = Date.now();
-		const searchRes = await soap.makeSOAPEnvelopeAccount(
+		const searchRes = await soap.pollForSearchResult(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				calExpandInstStart="${now - 86400000}"
 				calExpandInstEnd="${now + 2 * 86400000}"

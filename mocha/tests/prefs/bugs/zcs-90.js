@@ -38,6 +38,8 @@ describe('Prefs > Bugs > ZCS 90', function () {
 		);
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
 		const accountId = createRes.CreateAccountResponse.account[0].id;
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Verify default calendar id via admin
 		const getRes = await soap.makeSOAPEnvelopeAdmin(
@@ -51,12 +53,19 @@ describe('Prefs > Bugs > ZCS 90', function () {
 
 	it('Sanity | Set zimbraPrefDefaultCalendarId to non default value and verify', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Create a calendar folder
@@ -108,7 +117,12 @@ describe('Prefs > Bugs > ZCS 90', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(account2Res.Fault, 'CreateAccountRequest 2 should not fault');
+		assert.exists(account2Res.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = account2Res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const account2Id = account2Res.CreateAccountResponse.account[0].id;
+		const host2 = account2Res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		const account2AuthToken = await soap.getAccountAuthToken(account2Email);
 		const account1AuthToken = await soap.getAccountAuthToken(account1Email);
 
@@ -134,12 +148,19 @@ describe('Prefs > Bugs > ZCS 90', function () {
 
 	it('Sanity | Set sub calendar of root calendar as default and verify', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Create sub-folder
@@ -163,12 +184,19 @@ describe('Prefs > Bugs > ZCS 90', function () {
 
 	it('Sanity | Set new calendar as default and verify', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Create new calendar folder in root
@@ -192,12 +220,19 @@ describe('Prefs > Bugs > ZCS 90', function () {
 
 	it('Sanity | Set sub calendar of new calendar as default and verify', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Create new calendar folder in root
@@ -231,12 +266,19 @@ describe('Prefs > Bugs > ZCS 90', function () {
 	it('Sanity | Shared calendar with viewer right cannot be set as default', async () => {
 		const account1Email = `test.${common.getUniqueString()}@${testDomain}`;
 		const account2Email = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const account2Res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Email}</name>
@@ -244,6 +286,8 @@ describe('Prefs > Bugs > ZCS 90', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		const account2Id = account2Res.CreateAccountResponse.account[0].id;
+		const host2 = account2Res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		const account1AuthToken = await soap.getAccountAuthToken(account1Email);
 		const account2AuthToken = await soap.getAccountAuthToken(account2Email);
 
@@ -278,12 +322,19 @@ describe('Prefs > Bugs > ZCS 90', function () {
 	it('Sanity | Shared calendar with manager right can be set as default', async () => {
 		const account1Email = `test.${common.getUniqueString()}@${testDomain}`;
 		const account3Email = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const account3Res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account3Email}</name>
@@ -291,6 +342,8 @@ describe('Prefs > Bugs > ZCS 90', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		const account3Id = account3Res.CreateAccountResponse.account[0].id;
+		const host2 = account3Res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		const account1AuthToken = await soap.getAccountAuthToken(account1Email);
 		const account3AuthToken = await soap.getAccountAuthToken(account3Email);
 
@@ -325,12 +378,19 @@ describe('Prefs > Bugs > ZCS 90', function () {
 	it('Sanity | Shared calendar with admin right can be set as default', async () => {
 		const account1Email = `test.${common.getUniqueString()}@${testDomain}`;
 		const account4Email = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const account4Res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account4Email}</name>
@@ -338,6 +398,8 @@ describe('Prefs > Bugs > ZCS 90', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		const account4Id = account4Res.CreateAccountResponse.account[0].id;
+		const host2 = account4Res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		const account1AuthToken = await soap.getAccountAuthToken(account1Email);
 		const account4AuthToken = await soap.getAccountAuthToken(account4Email);
 
@@ -371,12 +433,19 @@ describe('Prefs > Bugs > ZCS 90', function () {
 
 	it('Sanity | Delete default calendar and verify default resets', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Create new calendar
@@ -411,12 +480,19 @@ describe('Prefs > Bugs > ZCS 90', function () {
 
 	it('Sanity | Modify zimbraPrefDefaultCalendarId at COS level', async () => {
 		const accountEmail = `test.${common.getUniqueString()}@${testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
 		// Set default calendar id

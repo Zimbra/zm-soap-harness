@@ -34,6 +34,8 @@ describe('Rest Servlet > Account Status > Rest Account Status', function () {
 		const acct1 = Array.isArray(create1Res.CreateAccountResponse.account)
 			? create1Res.CreateAccountResponse.account[0]
 			: create1Res.CreateAccountResponse.account;
+		const host = acct1.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		account1Id = acct1.id;
 
 		// Create account2
@@ -52,6 +54,8 @@ describe('Rest Servlet > Account Status > Rest Account Status', function () {
 		const acct2 = Array.isArray(create2Res.CreateAccountResponse.account)
 			? create2Res.CreateAccountResponse.account[0]
 			: create2Res.CreateAccountResponse.account;
+		const host2 = acct2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		account2Id = acct2.id;
 
 		// Create account3
@@ -70,6 +74,8 @@ describe('Rest Servlet > Account Status > Rest Account Status', function () {
 		const acct3 = Array.isArray(create3Res.CreateAccountResponse.account)
 			? create3Res.CreateAccountResponse.account[0]
 			: create3Res.CreateAccountResponse.account;
+		const host3 = acct3.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host3, 'zimbraMailHost should exist');
 		account3Id = acct3.id;
 
 		// Create account4
@@ -88,6 +94,8 @@ describe('Rest Servlet > Account Status > Rest Account Status', function () {
 		const acct4 = Array.isArray(create4Res.CreateAccountResponse.account)
 			? create4Res.CreateAccountResponse.account[0]
 			: create4Res.CreateAccountResponse.account;
+		const host4 = acct4.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host4, 'zimbraMailHost should exist');
 		account4Id = acct4.id;
 
 		// Get auth tokens for all accounts

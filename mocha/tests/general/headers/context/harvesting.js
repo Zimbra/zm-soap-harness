@@ -44,6 +44,8 @@ describe('General > Headers > Context > Harvesting', function () {
 		const acct2 = Array.isArray(createRes2.CreateAccountResponse.account)
 			? createRes2.CreateAccountResponse.account[0]
 			: createRes2.CreateAccountResponse.account;
+		const host = acct2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		account2Id = acct2.id;
 
 		account1AuthToken = await soap.getAccountAuthToken(account1Email);

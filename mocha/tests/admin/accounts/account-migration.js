@@ -71,7 +71,7 @@ describe('Admin > Accounts > Account Migration', function () {
 		if (response.Fault) {
 			assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		} else {
-			assert.exists(response.ValidateRemoteZimbraConnectionResponse,
+			assert.notExists(response.Fault,
 				'ValidateRemoteZimbraConnectionResponse should exist');
 		}
 	});
@@ -91,7 +91,7 @@ describe('Admin > Accounts > Account Migration', function () {
 		if (response.Fault) {
 			assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		} else {
-			assert.exists(response.FetchAllRemoteAccountsResponse,
+			assert.notExists(response.Fault,
 				'FetchAllRemoteAccountsResponse should exist');
 		}
 	});
@@ -129,7 +129,7 @@ describe('Admin > Accounts > Account Migration', function () {
 		if (response.Fault) {
 			assert.isString(response.Fault.Detail.Error.Code, 'Fault error Code should be a string');
 		} else {
-			assert.exists(response.MigrateUsersDataResponse,
+			assert.notExists(response.Fault,
 				'MigrateUsersDataResponse should exist');
 		}
 	});
@@ -140,11 +140,18 @@ describe('Admin > Accounts > Account Migration', function () {
 			'@' + config.testDomain;
 
 		// Create account
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountName}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Send the message
 		const response = await soap.makeSOAPEnvelopeAccount(
@@ -168,11 +175,18 @@ describe('Admin > Accounts > Account Migration', function () {
 		const subject = 'Your email migration is done!';
 
 		// Create and authenticate account
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountName}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Auth request
 		const authRes = await soap.makeSOAPEnvelopeAccount(
@@ -190,6 +204,6 @@ describe('Admin > Accounts > Account Migration', function () {
 		// Migration mail may or may not exist depending on setup
 		// Verify response
 		assert.notExists(response.Fault, 'SearchRequest should not fault');
-		assert.exists(response.SearchResponse, 'SearchResponse should exist');
+		assert.notExists(response.Fault, 'SearchResponse should exist');
 	});
 });

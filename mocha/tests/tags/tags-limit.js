@@ -43,6 +43,9 @@ describe('Tags > Tags Limit', function () {
 
 		// Verify response
 		assert.notExists(createAcct.Fault, 'Response should not be a Fault');
+		assert.exists(createAcct.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createAcct.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const freshToken = await soap.getAccountAuthToken(freshEmail);
 
 		// Create 63 tags (limit is 127 in most configurations)
@@ -89,6 +92,9 @@ describe('Tags > Tags Limit', function () {
 
 		// Verify response
 		assert.notExists(createAcct.Fault, 'Response should not be a Fault');
+		assert.exists(createAcct.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createAcct.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const freshToken = await soap.getAccountAuthToken(freshEmail);
 
 		// Create tags up to a reduced count for performance

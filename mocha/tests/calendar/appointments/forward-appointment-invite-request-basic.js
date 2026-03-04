@@ -37,12 +37,19 @@ describe('Calendar > Appointments > Forward Appointment Invite Request Basic', f
         const attEmail = `att${common.getUniqueString()}@${testDomain}`;
         const fwdEmail = `fwd${common.getUniqueString()}@${testDomain}`;
         for (const email of [orgEmail, attEmail, fwdEmail]) {
-            await soap.makeSOAPEnvelopeAdmin(
+            const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
                 `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${email}</name>
 					<password>${config.accountPassword}</password>
 				</CreateAccountRequest>`, adminAuthToken
             );
+            assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+            const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+            	? createAcctRes.CreateAccountResponse.account[0]
+            	: createAcctRes.CreateAccountResponse.account;
+            assert.exists(acctInfo.id, 'Account ID should exist');
+            const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+            assert.exists(host, 'zimbraMailHost should exist');
         }
         const orgToken = await soap.getAccountAuthToken(orgEmail);
         const attToken = await soap.getAccountAuthToken(attEmail);
@@ -105,12 +112,19 @@ describe('Calendar > Appointments > Forward Appointment Invite Request Basic', f
         const attEmail = `att${common.getUniqueString()}@${testDomain}`;
         const fwdEmail = `fwd${common.getUniqueString()}@${testDomain}`;
         for (const email of [orgEmail, attEmail, fwdEmail]) {
-            await soap.makeSOAPEnvelopeAdmin(
+            const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
                 `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${email}</name>
 					<password>${config.accountPassword}</password>
 				</CreateAccountRequest>`, adminAuthToken
             );
+            assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+            const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+            	? createAcctRes.CreateAccountResponse.account[0]
+            	: createAcctRes.CreateAccountResponse.account;
+            assert.exists(acctInfo.id, 'Account ID should exist');
+            const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+            assert.exists(host, 'zimbraMailHost should exist');
         }
         const orgToken = await soap.getAccountAuthToken(orgEmail);
         const attToken = await soap.getAccountAuthToken(attEmail);
@@ -170,12 +184,19 @@ describe('Calendar > Appointments > Forward Appointment Invite Request Basic', f
         const fwd1Email = `fwd1${common.getUniqueString()}@${testDomain}`;
         const fwd2Email = `fwd2${common.getUniqueString()}@${testDomain}`;
         for (const email of [orgEmail, attEmail, fwd1Email, fwd2Email]) {
-            await soap.makeSOAPEnvelopeAdmin(
+            const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
                 `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${email}</name>
 					<password>${config.accountPassword}</password>
 				</CreateAccountRequest>`, adminAuthToken
             );
+            assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+            const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+            	? createAcctRes.CreateAccountResponse.account[0]
+            	: createAcctRes.CreateAccountResponse.account;
+            assert.exists(acctInfo.id, 'Account ID should exist');
+            const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+            assert.exists(host, 'zimbraMailHost should exist');
         }
         const orgToken = await soap.getAccountAuthToken(orgEmail);
         const attToken = await soap.getAccountAuthToken(attEmail);
@@ -232,12 +253,19 @@ describe('Calendar > Appointments > Forward Appointment Invite Request Basic', f
 
     it('Regression | Forward invite with invalid message id', async () => {
         const accountEmail = `test${common.getUniqueString()}@${testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
+        const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
         );
+        assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+        const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+        	? createAcctRes.CreateAccountResponse.account[0]
+        	: createAcctRes.CreateAccountResponse.account;
+        assert.exists(acctInfo.id, 'Account ID should exist');
+        const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
         const accountToken = await soap.getAccountAuthToken(accountEmail);
 
         const fwdRes = await soap.makeSOAPEnvelopeAccount(

@@ -22,16 +22,25 @@ describe('Contacts > Sharing > Permissions Basic', function () {
 		);
 		const acct1 = Array.isArray(res1.CreateAccountResponse.account)
 			? res1.CreateAccountResponse.account[0] : res1.CreateAccountResponse.account;
+		const host = acct1.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		account1Id = acct1.id;
 		account1Token = await soap.getAccountAuthToken(account1Email);
 
 		account2Email = `test${common.getUniqueString()}@${config.testDomain}`;
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host2 = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		account2Token = await soap.getAccountAuthToken(account2Email);
 	});
 

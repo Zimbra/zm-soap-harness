@@ -21,6 +21,8 @@ describe('Admin > Accounts > Account Get', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
 		testAccountId = createRes.CreateAccountResponse.account[0].id;
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 	});
 
 	after(async function () {
@@ -224,6 +226,8 @@ describe('Admin > Accounts > Account Get', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
 		const tempId = createRes.CreateAccountResponse.account[0].id;
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Delete
 		await soap.makeSOAPEnvelopeAdmin(
@@ -254,6 +258,8 @@ describe('Admin > Accounts > Account Get', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
 		const tempId = createRes.CreateAccountResponse.account[0].id;
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Delete
 		await soap.makeSOAPEnvelopeAdmin(
@@ -285,6 +291,8 @@ describe('Admin > Accounts > Account Get', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
 		const acctId = createRes.CreateAccountResponse.account[0].id;
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		const newName = `get_renamed_${common.getUniqueString()}@${config.testDomain}`;
 
@@ -325,6 +333,8 @@ describe('Admin > Accounts > Account Get', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
 		const acctId = createRes.CreateAccountResponse.account[0].id;
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		const newName = `get_renamed2_${common.getUniqueString()}@${config.testDomain}`;
 
@@ -365,6 +375,8 @@ describe('Admin > Accounts > Account Get', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
 		const id2 = create2.CreateAccountResponse.account[0].id;
+		const host = create2.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Get with id of testAccount but name of account2
 		const res = await soap.makeSOAPEnvelopeAdmin(
@@ -400,6 +412,8 @@ describe('Admin > Accounts > Account Get', function () {
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
 		const id2 = create2.CreateAccountResponse.account[0].id;
+		const host = create2.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// GetAccountRequest
 		const res = await soap.makeSOAPEnvelopeAdmin(
@@ -423,11 +437,18 @@ describe('Admin > Accounts > Account Get', function () {
 		const name2 = `get_multi2_${common.getUniqueString()}@${config.testDomain}`;
 
 		// Create account
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${name2}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuth);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// GetAccountRequest
 		const res = await soap.makeSOAPEnvelopeAdmin(

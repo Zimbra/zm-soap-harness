@@ -27,6 +27,8 @@ describe('Search > Folder > Mountpoint > Search Invalid', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		account1.id = res1.CreateAccountResponse.account[0].id;
+		const host = res1.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		account1.name = accountEmail;
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
@@ -39,6 +41,8 @@ describe('Search > Folder > Mountpoint > Search Invalid', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		account2.id = res2.CreateAccountResponse.account[0].id;
+		const host2 = res2.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		account2.name = accountEmail2;
 		accountAuthToken2 = await soap.getAccountAuthToken(accountEmail2);
 
@@ -51,6 +55,8 @@ describe('Search > Folder > Mountpoint > Search Invalid', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		account3.id = res3.CreateAccountResponse.account[0].id;
+		const host3 = res3.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host3, 'zimbraMailHost should exist');
 		account3.name = accountEmail3;
 		accountAuthToken3 = await soap.getAccountAuthToken(accountEmail3);
 
@@ -63,6 +69,8 @@ describe('Search > Folder > Mountpoint > Search Invalid', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		account4.id = res4.CreateAccountResponse.account[0].id;
+		const host4 = res4.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host4, 'zimbraMailHost should exist');
 		account4.name = accountEmail4;
 		accountAuthToken4 = await soap.getAccountAuthToken(accountEmail4);
 	});

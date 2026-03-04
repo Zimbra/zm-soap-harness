@@ -34,12 +34,19 @@ describe('Calendar > Appointments > Create Appointment Request Timezones', funct
 
     it('Smoke | Create an appointment with PST timezone', async () => {
         const accountEmail = `test${common.getUniqueString()}@${testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
+        const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
         );
+        assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+        const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+            ? createAcctRes.CreateAccountResponse.account[0]
+            : createAcctRes.CreateAccountResponse.account;
+        assert.exists(acctInfo.id, 'Account ID should exist');
+        const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
         const accountToken = await soap.getAccountAuthToken(accountEmail);
         const subject = `Subject of meeting${common.getUniqueString()}`;
         const epoch = 1514808000000;
@@ -75,12 +82,19 @@ describe('Calendar > Appointments > Create Appointment Request Timezones', funct
 
     it('Sanity | Create an appointment with EST timezone', async () => {
         const accountEmail = `test${common.getUniqueString()}@${testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
+        const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
         );
+        assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+        const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+            ? createAcctRes.CreateAccountResponse.account[0]
+            : createAcctRes.CreateAccountResponse.account;
+        assert.exists(acctInfo.id, 'Account ID should exist');
+        const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
         const accountToken = await soap.getAccountAuthToken(accountEmail);
         const subject = `Subject of meeting${common.getUniqueString()}`;
         const epoch = 1514808000000;
@@ -116,12 +130,19 @@ describe('Calendar > Appointments > Create Appointment Request Timezones', funct
 
     it('Sanity | Create an appointment with Asia/Kolkata timezone', async () => {
         const accountEmail = `test${common.getUniqueString()}@${testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
+        const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
         );
+        assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+        const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+            ? createAcctRes.CreateAccountResponse.account[0]
+            : createAcctRes.CreateAccountResponse.account;
+        assert.exists(acctInfo.id, 'Account ID should exist');
+        const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
         const accountToken = await soap.getAccountAuthToken(accountEmail);
         const subject = `Subject of meeting${common.getUniqueString()}`;
         const epoch = 1514808000000;
@@ -155,12 +176,19 @@ describe('Calendar > Appointments > Create Appointment Request Timezones', funct
 
     it('Sanity | Create an appointment with invalid time zone in start and end time', async () => {
         const accountEmail = `test${common.getUniqueString()}@${testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
+        const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
         );
+        assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+        const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+            ? createAcctRes.CreateAccountResponse.account[0]
+            : createAcctRes.CreateAccountResponse.account;
+        assert.exists(acctInfo.id, 'Account ID should exist');
+        const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
         const accountToken = await soap.getAccountAuthToken(accountEmail);
         const subject = `Subject of meeting${common.getUniqueString()}`;
         const epoch = 1514808000000;
@@ -187,7 +215,6 @@ describe('Calendar > Appointments > Create Appointment Request Timezones', funct
         );
 
         // Invalid timezone causes a fault on the server
-        assert.exists(createRes.Fault, 'CreateAppointmentRequest with invalid timezone should fault');
         assert.isString(createRes.Fault.Detail.Error.Code, 'Fault error Code should be a string');
     });
 });

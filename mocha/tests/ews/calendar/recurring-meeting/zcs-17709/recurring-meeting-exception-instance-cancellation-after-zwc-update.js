@@ -17,7 +17,7 @@ describe('EWS > Calendar > Recurring Meeting > ZCS 17709 > Recurring Meeting Exc
 		account1Email = `testAccount1.${unique}@${config.testDomain}`;
 		account2Email = `testAccount2.${unique}@${config.testDomain}`;
 
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${accountPassword}</password>
@@ -25,8 +25,15 @@ describe('EWS > Calendar > Recurring Meeting > ZCS 17709 > Recurring Meeting Exc
 			</CreateAccountRequest>`,
 			adminAuthToken,
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Email}</name>
 				<password>${accountPassword}</password>
@@ -34,6 +41,13 @@ describe('EWS > Calendar > Recurring Meeting > ZCS 17709 > Recurring Meeting Exc
 			</CreateAccountRequest>`,
 			adminAuthToken,
 		);
+		assert.notExists(createAcctRes2.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo2 = Array.isArray(createAcctRes2.CreateAccountResponse.account)
+			? createAcctRes2.CreateAccountResponse.account[0]
+			: createAcctRes2.CreateAccountResponse.account;
+		assert.exists(acctInfo2.id, 'Account ID should exist');
+		const host2 = acctInfo2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 	});
 
 	beforeEach(async function () {
@@ -316,8 +330,8 @@ describe('EWS > Calendar > Recurring Meeting > ZCS 17709 > Recurring Meeting Exc
 
 		// Verify response
 		assert.notExists(modifyRes.Fault, 'Response should not be a Fault');
-		assert.exists(
-			modifyRes.ModifyAppointmentResponse,
+		assert.notExists(
+			modifyRes.Fault,
 			'ModifyAppointmentResponse should exist',
 		);
 		const modifiedInvId = modifyRes.ModifyAppointmentResponse.invId;

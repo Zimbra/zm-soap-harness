@@ -24,32 +24,102 @@ describe('Sharing > Send Share Notification Request Basic', function () {
 		// Create 7 accounts
 		account1Email = `share1.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, account1Email, account1Email);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${account1Email}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		account1AuthToken = await soap.getAccountAuthToken(account1Email, config.accountPassword);
 
 		account2Email = `share2.${common.getUniqueString()}@${testDomain}`;
 		const res2 = await soap.createAccountByNameAndEmailAddress(adminAuthToken, account2Email, account2Email);
+		const acctInfoRes2 = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${account2Email}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes2.Fault, 'GetAccountRequest should not fault');
+		const acctInfo2 = Array.isArray(acctInfoRes2.GetAccountResponse.account)
+			? acctInfoRes2.GetAccountResponse.account[0]
+			: acctInfoRes2.GetAccountResponse.account;
+		assert.exists(acctInfo2.id, 'Account ID should exist');
+		const host2 = acctInfo2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		account2Id = res2.accountId;
 		account2AuthToken = await soap.getAccountAuthToken(account2Email, config.accountPassword);
 
 		account3Email = `share3.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, account3Email, account3Email);
+		const acctInfoRes3 = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${account3Email}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes3.Fault, 'GetAccountRequest should not fault');
+		const acctInfo3 = Array.isArray(acctInfoRes3.GetAccountResponse.account)
+			? acctInfoRes3.GetAccountResponse.account[0]
+			: acctInfoRes3.GetAccountResponse.account;
+		assert.exists(acctInfo3.id, 'Account ID should exist');
+		const host3 = acctInfo3.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host3, 'zimbraMailHost should exist');
 		account3AuthToken = await soap.getAccountAuthToken(account3Email, config.accountPassword);
 
 		account4Email = `share4.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, account4Email, account4Email);
+		const acctInfoRes4 = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${account4Email}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes4.Fault, 'GetAccountRequest should not fault');
+		const acctInfo4 = Array.isArray(acctInfoRes4.GetAccountResponse.account)
+			? acctInfoRes4.GetAccountResponse.account[0]
+			: acctInfoRes4.GetAccountResponse.account;
+		assert.exists(acctInfo4.id, 'Account ID should exist');
+		const host4 = acctInfo4.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host4, 'zimbraMailHost should exist');
 		account4AuthToken = await soap.getAccountAuthToken(account4Email, config.accountPassword);
 
 		account5Email = `share5.${common.getUniqueString()}@${testDomain}`;
 		const res5 = await soap.createAccountByNameAndEmailAddress(adminAuthToken, account5Email, account5Email);
+		const acctInfoRes5 = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${account5Email}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes5.Fault, 'GetAccountRequest should not fault');
+		const acctInfo5 = Array.isArray(acctInfoRes5.GetAccountResponse.account)
+			? acctInfoRes5.GetAccountResponse.account[0]
+			: acctInfoRes5.GetAccountResponse.account;
+		assert.exists(acctInfo5.id, 'Account ID should exist');
+		const host5 = acctInfo5.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host5, 'zimbraMailHost should exist');
 		account5Id = res5.accountId;
 		account5AuthToken = await soap.getAccountAuthToken(account5Email, config.accountPassword);
 
 		account6Email = `share6.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, account6Email, account6Email);
+		const acctInfoRes6 = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${account6Email}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes6.Fault, 'GetAccountRequest should not fault');
+		const acctInfo6 = Array.isArray(acctInfoRes6.GetAccountResponse.account)
+			? acctInfoRes6.GetAccountResponse.account[0]
+			: acctInfoRes6.GetAccountResponse.account;
+		assert.exists(acctInfo6.id, 'Account ID should exist');
+		const host6 = acctInfo6.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host6, 'zimbraMailHost should exist');
 		account6AuthToken = await soap.getAccountAuthToken(account6Email, config.accountPassword);
 
 		account7Email = `share7.${common.getUniqueString()}@${testDomain}`;
 		await soap.createAccountByNameAndEmailAddress(adminAuthToken, account7Email, account7Email);
+		const acctInfoRes7 = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${account7Email}</account></GetAccountRequest>`, adminAuthToken
+		);
+		assert.notExists(acctInfoRes7.Fault, 'GetAccountRequest should not fault');
+		const acctInfo7 = Array.isArray(acctInfoRes7.GetAccountResponse.account)
+			? acctInfoRes7.GetAccountResponse.account[0]
+			: acctInfoRes7.GetAccountResponse.account;
+		assert.exists(acctInfo7.id, 'Account ID should exist');
+		const host7 = acctInfo7.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host7, 'zimbraMailHost should exist');
 		account7AuthToken = await soap.getAccountAuthToken(account7Email, config.accountPassword);
 
 		// Create DL1 with accounts 1, 2, 3

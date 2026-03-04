@@ -39,6 +39,9 @@ describe('Rest Servlet > Sharing > User Servlet Basic Auth', function () {
 
 		// Verify response
 		assert.notExists(create2Res.Fault, 'Response should not be a Fault');
+		assert.exists(create2Res.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = create2Res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		account1Token = await soap.getAccountAuthToken(account1Email);
 		account2Token = await soap.getAccountAuthToken(account2Email);

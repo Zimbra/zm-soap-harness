@@ -16,12 +16,19 @@ describe('Admin > Accounts > Reload Account', function () {
 		const account2Name = `test${common.getUniqueString()}@${config.testDomain}`;
 
 		// Create account
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Name}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Create account
 		const r2 = await soap.makeSOAPEnvelopeAdmin(
@@ -31,6 +38,8 @@ describe('Admin > Accounts > Reload Account', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		account2Id = r2.CreateAccountResponse.account[0].id;
+		const host2 = r2.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 
 		// Modify account2 with various attributes
 		await soap.makeSOAPEnvelopeAdmin(

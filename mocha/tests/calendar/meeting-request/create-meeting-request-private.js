@@ -44,7 +44,9 @@ describe('Calendar > Meeting Request > Create Meeting Request Private', function
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(orgRes.Fault, 'CreateAccountRequest should not fault');
-		assert.exists(orgRes.CreateAccountResponse.account[0].id, 'Organizer ID should exist');
+		assert.exists(orgRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = orgRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const orgToken = await soap.getAccountAuthToken(orgEmail);
 
 		// Create invitee account
@@ -56,7 +58,12 @@ describe('Calendar > Meeting Request > Create Meeting Request Private', function
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(invRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(invRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host3 = invRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host3, 'zimbraMailHost should exist');
 		assert.exists(invRes.CreateAccountResponse.account[0].id, 'Invitee ID should exist');
+		const host4 = invRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host4, 'zimbraMailHost should exist');
 		const invToken = await soap.getAccountAuthToken(invEmail);
 
 		// Create private appointment (class="PRI")
@@ -100,11 +107,12 @@ describe('Calendar > Meeting Request > Create Meeting Request Private', function
 		const msg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
 		assert.equal(msg.inv[0].type, 'appt', 'Invitation type should be appt');
-		assert.include(msg.inv[0].comp[0].desc, content, 'Description should match content');
+		const desc = Array.isArray(msg.inv[0].comp[0].desc) ? msg.inv[0].comp[0].desc[0]._content : (msg.inv[0].comp[0].desc._content || msg.inv[0].comp[0].desc);
+		assert.include(desc, content, 'Description should match content');
 
 		// Verify invitee sees the appointment
 		const now = Date.now();
-		const searchRes = await soap.makeSOAPEnvelopeAccount(
+		const searchRes = await soap.pollForSearchResult(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				calExpandInstStart="${now - 86400000}"
 				calExpandInstEnd="${now + 2 * 86400000}"
@@ -133,6 +141,9 @@ describe('Calendar > Meeting Request > Create Meeting Request Private', function
 			</SendInviteReplyRequest>`, invToken
 		);
 		assert.notExists(replyRes.Fault, 'SendInviteReplyRequest should not fault');
+
+		// Wait for reply to be processed by organizer's mailbox
+		await new Promise(r => setTimeout(r, 3000));
 
 		// Verify organizer sees accepted status
 		const verifyRes = await soap.makeSOAPEnvelopeAccount(

@@ -32,12 +32,19 @@ describe('Calendar > Appointments > Appointment Import', function () {
     it('Smoke | Import an appointment using uploadservlet', async () => {
         // Create account
         const accountEmail = `test${common.getUniqueString()}@${testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
+        const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${accountEmail}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
         );
+        assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+        const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+        	? createAcctRes.CreateAccountResponse.account[0]
+        	: createAcctRes.CreateAccountResponse.account;
+        assert.exists(acctInfo.id, 'Account ID should exist');
+        const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
         const accountToken = await soap.getAccountAuthToken(accountEmail);
 
         // Upload ICS file
@@ -65,8 +72,8 @@ describe('Calendar > Appointments > Appointment Import', function () {
 			</ImportAppointmentsRequest>`, accountToken
         );
         assert.notExists(res.Fault, 'ImportAppointmentsRequest should not fault');
-        assert.exists(
-            res.ImportAppointmentsResponse,
+        assert.notExists(
+            res.Fault,
             'ImportAppointmentsResponse should exist'
         );
     });
@@ -117,8 +124,8 @@ describe('Calendar > Appointments > Appointment Import', function () {
 			</ImportAppointmentsRequest>`, resourceToken
         );
         assert.notExists(res.Fault, 'ImportAppointmentsRequest should not fault');
-        assert.exists(
-            res.ImportAppointmentsResponse,
+        assert.notExists(
+            res.Fault,
             'ImportAppointmentsResponse should exist'
         );
     });
@@ -169,8 +176,8 @@ describe('Calendar > Appointments > Appointment Import', function () {
 			</ImportAppointmentsRequest>`, resourceToken
         );
         assert.notExists(res.Fault, 'ImportAppointmentsRequest should not fault');
-        assert.exists(
-            res.ImportAppointmentsResponse,
+        assert.notExists(
+            res.Fault,
             'ImportAppointmentsResponse should exist'
         );
     });

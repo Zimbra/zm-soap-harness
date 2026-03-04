@@ -44,6 +44,8 @@ describe('Mail > SMTP > Mail Spam Lifetime', function () {
 		const accountId = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0].id
 			: createRes.CreateAccountResponse.account.id;
+		const host = accountId.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Inject a spam message via AddMsgRequest into junk folder (l=4)
 		const senderEmail = `spam${common.getUniqueString()}@example.com`;

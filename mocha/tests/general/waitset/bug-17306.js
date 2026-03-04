@@ -29,6 +29,8 @@ describe('General > Waitset > Bug 17306', function () {
 		const account = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
+		const host = account.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		accountId = account.id;
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 	});

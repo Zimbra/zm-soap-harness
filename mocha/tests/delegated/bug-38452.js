@@ -31,6 +31,8 @@ describe('Delegated > Bug 38452', function () {
 		// Verify response
 		assert.notExists(res.Fault, 'CreateAccountRequest should not fault');
 		granteeId = res.CreateAccountResponse.account[0].id;
+		const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Grant domainAdminRights to delegated admin
 		res = await soap.makeSOAPEnvelopeAdmin(

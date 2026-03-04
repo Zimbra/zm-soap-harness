@@ -57,6 +57,8 @@ describe('Admin > Password > NormalUser Aged Password', function () {
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0] : createRes.CreateAccountResponse.account;
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Set password modified time to 3 days ago (less than minAge of 7)
 		await soap.makeSOAPEnvelopeAdmin(
@@ -96,6 +98,8 @@ describe('Admin > Password > NormalUser Aged Password', function () {
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0] : createRes.CreateAccountResponse.account;
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Auth FIRST (this updates modified time), then set it to 10 days ago
 		const accountToken = await soap.getAccountAuthToken(accountEmail);
@@ -148,6 +152,8 @@ describe('Admin > Password > NormalUser Aged Password', function () {
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0] : createRes.CreateAccountResponse.account;
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Auth FIRST, then set modified time to 10 days ago
 		const accountToken = await soap.getAccountAuthToken(accountEmail);
@@ -186,6 +192,8 @@ describe('Admin > Password > NormalUser Aged Password', function () {
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0] : createRes.CreateAccountResponse.account;
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Set password modified time to 61 days ago (past maxAge of 60)
 		await soap.makeSOAPEnvelopeAdmin(
@@ -229,6 +237,9 @@ describe('Admin > Password > NormalUser Aged Password', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(createRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Auth and immediately change password — should succeed
 		const accountToken = await soap.getAccountAuthToken(accountEmail);
@@ -258,6 +269,8 @@ describe('Admin > Password > NormalUser Aged Password', function () {
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0] : createRes.CreateAccountResponse.account;
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Set password modified time to 1915 days ago
 		await soap.makeSOAPEnvelopeAdmin(
@@ -294,6 +307,8 @@ describe('Admin > Password > NormalUser Aged Password', function () {
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0] : createRes.CreateAccountResponse.account;
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Set password modified time to 23h59m50s ago (just under 1 day = 86400s, so 86370s)
 		await soap.makeSOAPEnvelopeAdmin(
@@ -332,6 +347,8 @@ describe('Admin > Password > NormalUser Aged Password', function () {
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0] : createRes.CreateAccountResponse.account;
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Auth FIRST, then set password modified time
 		const accountToken = await soap.getAccountAuthToken(accountEmail);
@@ -369,6 +386,8 @@ describe('Admin > Password > NormalUser Aged Password', function () {
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0] : createRes.CreateAccountResponse.account;
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Set modified time to 23h59m50s ago (just under 1 day)
 		await soap.makeSOAPEnvelopeAdmin(
@@ -405,6 +424,8 @@ describe('Admin > Password > NormalUser Aged Password', function () {
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0] : createRes.CreateAccountResponse.account;
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Set modified time to 24h+1s ago (just past 1 day = 86401s)
 		await soap.makeSOAPEnvelopeAdmin(
@@ -440,6 +461,8 @@ describe('Admin > Password > NormalUser Aged Password', function () {
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0] : createRes.CreateAccountResponse.account;
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Set modified time to 364 days ago (less than maxAge of 365)
 		await soap.makeSOAPEnvelopeAdmin(
@@ -476,6 +499,8 @@ describe('Admin > Password > NormalUser Aged Password', function () {
 		assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
 		const acct = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0] : createRes.CreateAccountResponse.account;
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Set modified time to 366 days ago (past maxAge of 365)
 		await soap.makeSOAPEnvelopeAdmin(

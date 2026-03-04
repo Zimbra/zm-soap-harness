@@ -17,6 +17,16 @@ describe('Folders > Sharing > Grantee > Sharing Grantee COS', function () {
 
 		const adminAuth = await soap.getAdminAuthToken();
 		const res1 = await soap.createAccountByNameAndEmailAddress(adminAuth, testAccount1, testAccount1);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${testAccount1}</account></GetAccountRequest>`, adminAuth
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		auth1 = await soap.getAccountAuthToken(testAccount1, config.accountPassword);
 		account1Id = res1.accountId;
@@ -37,6 +47,16 @@ describe('Folders > Sharing > Grantee > Sharing Grantee COS', function () {
 		// We create it first then modify COS because `createAccountByNameAndEmailAddress` helper might limit options.
 		// Or we use createAccount directly. Let's use helper then modify.
 		const cosAccRes = await soap.createAccountByNameAndEmailAddress(adminAuth, cosAccount, cosAccount);
+		const acctInfoRes2 = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${cosAccount}</account></GetAccountRequest>`, adminAuth
+		);
+		assert.notExists(acctInfoRes2.Fault, 'GetAccountRequest should not fault');
+		const acctInfo2 = Array.isArray(acctInfoRes2.GetAccountResponse.account)
+			? acctInfoRes2.GetAccountResponse.account[0]
+			: acctInfoRes2.GetAccountResponse.account;
+		assert.exists(acctInfo2.id, 'Account ID should exist');
+		const host2 = acctInfo2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		const accId = cosAccRes.accountId;
 		const modifyAccountRequest =
 			`<ModifyAccountRequest xmlns="urn:zimbraAdmin">

@@ -33,6 +33,9 @@ describe('Rest Servlet > Calendar > Freebusy View Free Busy', function () {
 
 			// Verify response
 			assert.notExists(res.Fault, `Create ${label} should not fault`);
+			assert.exists(res.CreateAccountResponse.account[0].id, 'Account ID should exist');
+			const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+			assert.exists(host, 'zimbraMailHost should exist');
 			const token = await soap.getAccountAuthToken(email);
 			return { email, token };
 		};

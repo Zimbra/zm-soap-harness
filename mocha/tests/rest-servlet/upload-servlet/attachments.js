@@ -33,6 +33,8 @@ describe('Rest Servlet > Upload Servlet > Attachments', function () {
 		const acct1 = Array.isArray(createRes1.CreateAccountResponse.account)
 			? createRes1.CreateAccountResponse.account[0]
 			: createRes1.CreateAccountResponse.account;
+		const host = acct1.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Verify response
 		assert.exists(acct1.id, 'Account1 should have an id');
@@ -53,6 +55,8 @@ describe('Rest Servlet > Upload Servlet > Attachments', function () {
 		const acct2 = Array.isArray(createRes2.CreateAccountResponse.account)
 			? createRes2.CreateAccountResponse.account[0]
 			: createRes2.CreateAccountResponse.account;
+		const host2 = acct2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 
 		// Verify response
 		assert.exists(acct2.id, 'Account2 should have an id');

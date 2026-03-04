@@ -39,12 +39,19 @@ describe('Calendar > Free Busy > Calendar Get Free Busy', function () {
         const e2 = `acct2${common.getUniqueString()}@${testDomain}`;
         const e3 = `acct3${common.getUniqueString()}@${testDomain}`;
         for (const email of [e1, e2, e3]) {
-            await soap.makeSOAPEnvelopeAdmin(
+            const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
                 `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${email}</name>
 					<password>${config.accountPassword}</password>
 				</CreateAccountRequest>`, adminAuthToken
             );
+            assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+            const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+            	? createAcctRes.CreateAccountResponse.account[0]
+            	: createAcctRes.CreateAccountResponse.account;
+            assert.exists(acctInfo.id, 'Account ID should exist');
+            const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+            assert.exists(host, 'zimbraMailHost should exist');
         }
         const r1 = await soap.makeSOAPEnvelopeAdmin(
             `<GetAccountRequest xmlns="urn:zimbraAdmin">

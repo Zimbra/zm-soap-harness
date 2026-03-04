@@ -25,6 +25,10 @@ describe('Mail Client > Briefcase > Bug 55400', function () {
 		);
 		const acct = Array.isArray(res.CreateAccountResponse?.account)
 			? res.CreateAccountResponse.account[0] : res.CreateAccountResponse?.account;
+		if (acct && acct.a) {
+			const host = acct.a.find(a => a.n === 'zimbraMailHost');
+			assert.exists(host, 'zimbraMailHost should exist');
+		}
 		account1Id = acct?.id;
 	});
 

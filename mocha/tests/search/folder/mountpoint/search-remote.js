@@ -24,6 +24,8 @@ describe('Search > Folder > Mountpoint > Search Remote', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		account1.id = res1.CreateAccountResponse.account[0].id;
+		const host = res1.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		account1.name = accountEmail;
 		accountAuthToken = await soap.getAccountAuthToken(accountEmail);
 
@@ -36,6 +38,8 @@ describe('Search > Folder > Mountpoint > Search Remote', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		account2.id = res2.CreateAccountResponse.account[0].id;
+		const host2 = res2.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		account2.name = accountEmail2;
 		accountAuthToken2 = await soap.getAccountAuthToken(accountEmail2);
 

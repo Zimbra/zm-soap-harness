@@ -37,6 +37,9 @@ describe('Admin > Harness Self Check > Check Soap', function () {
 			</CreateAccountRequest>`, adminAuthToken
         );
         assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
+        assert.exists(createRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+        const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
 
         // Account namespace - AuthRequest (zimbraAccount)
         const acctToken = await soap.getAccountAuthToken(accountEmail);
@@ -79,6 +82,9 @@ describe('Admin > Harness Self Check > Check Soap', function () {
 			</CreateAccountRequest>`, adminAuthToken
         );
         assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
+        assert.exists(createRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+        const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
 
         // Auth as account
         const acctToken = await soap.getAccountAuthToken(accountEmail);
@@ -100,6 +106,9 @@ describe('Admin > Harness Self Check > Check Soap', function () {
 			</CreateAccountRequest>`, adminAuthToken
         );
         assert.notExists(createRes.Fault, 'CreateAccountRequest should not fault');
+        assert.exists(createRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+        const host = createRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
 
         // Auth as account
         const acctToken = await soap.getAccountAuthToken(accountEmail);

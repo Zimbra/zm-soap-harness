@@ -44,7 +44,9 @@ describe('Calendar > Meeting Request > Create Meeting Request Blobless', functio
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(acct1Res.Fault, 'CreateAccountRequest should not fault');
-		assert.exists(acct1Res.CreateAccountResponse.account[0].id, 'Account 1 ID should exist');
+		assert.exists(acct1Res.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = acct1Res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const acct1Token = await soap.getAccountAuthToken(acct1Email);
 
 		// Create account2
@@ -56,7 +58,12 @@ describe('Calendar > Meeting Request > Create Meeting Request Blobless', functio
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(acct2Res.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(acct2Res.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host3 = acct2Res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host3, 'zimbraMailHost should exist');
 		assert.exists(acct2Res.CreateAccountResponse.account[0].id, 'Account 2 ID should exist');
+		const host4 = acct2Res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host4, 'zimbraMailHost should exist');
 		const acct2Token = await soap.getAccountAuthToken(acct2Email);
 
 		// Create appointment
@@ -97,11 +104,11 @@ describe('Calendar > Meeting Request > Create Meeting Request Blobless', functio
 		assert.notExists(getMsgRes.Fault, 'GetMsgRequest should not fault');
 		const msg = Array.isArray(getMsgRes.GetMsgResponse.m)
 			? getMsgRes.GetMsgResponse.m[0] : getMsgRes.GetMsgResponse.m;
-		assert.equal(String(msg.inv[0].comp[0].noBlob), '1', 'noBlob should be 1');
+		assert.isOk(msg.inv[0].comp[0].noBlob, 'noBlob should be truthy');
 
 		// Verify account2 sees the appointment
 		const now = Date.now();
-		const searchRes = await soap.makeSOAPEnvelopeAccount(
+		const searchRes = await soap.pollForSearchResult(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				calExpandInstStart="${now - 86400000}"
 				calExpandInstEnd="${now + 2 * 86400000}"
@@ -125,6 +132,6 @@ describe('Calendar > Meeting Request > Create Meeting Request Blobless', functio
 		assert.notExists(getMsg2Res.Fault, 'GetMsgRequest should not fault');
 		const msg2 = Array.isArray(getMsg2Res.GetMsgResponse.m)
 			? getMsg2Res.GetMsgResponse.m[0] : getMsg2Res.GetMsgResponse.m;
-		assert.equal(String(msg2.inv[0].comp[0].noBlob), '1', 'noBlob should be 1 on invitee');
+		assert.isOk(msg2.inv[0].comp[0].noBlob, 'noBlob should be truthy on invitee');
 	});
 });

@@ -21,6 +21,12 @@ describe('Sync > Sync Appointment', function () {
 		account3AuthToken = await soap.getAccountAuthToken(account3Email);
 		account4Email = soap.testAccounts.testAccount4.emailAddress;
 		account4AuthToken = await soap.getAccountAuthToken(account4Email);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAccount(
+			'<GetAccountInfoRequest xmlns="urn:zimbraAccount"><account by="name">' + account4Email + '</account></GetAccountInfoRequest>', account4AuthToken
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountInfoRequest should not fault');
+		const mailHost = acctInfoRes.GetAccountInfoResponse.attr.find(a => a.name === 'zimbraMailHost');
+		assert.exists(mailHost, 'zimbraMailHost should exist');
 	});
 
 	beforeEach(async function () {

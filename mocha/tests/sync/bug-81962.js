@@ -27,6 +27,9 @@ describe('Sync > Bug 81962', function () {
 
 		// Verify response
 		assert.notExists(createRes1.Fault, 'Response should not be a Fault');
+		assert.exists(createRes1.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createRes1.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		account1Email = account1Name;
 		account1AuthToken = await soap.getAccountAuthToken(account1Email);
 
@@ -43,6 +46,9 @@ describe('Sync > Bug 81962', function () {
 
 		// Verify response
 		assert.notExists(createRes2.Fault, 'Response should not be a Fault');
+		assert.exists(createRes2.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host2 = createRes2.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		account2Email = account2Name;
 		account2AuthToken = await soap.getAccountAuthToken(account2Email);
 	});

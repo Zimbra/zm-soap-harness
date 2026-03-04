@@ -58,6 +58,9 @@ describe('Mail > Bugs > Bug 4349', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createAcct2Res.Fault, 'CreateAccountRequest for account2 should not fault');
+		assert.exists(createAcct2Res.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createAcct2Res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const account2Id = (Array.isArray(createAcct2Res.CreateAccountResponse.account) ? createAcct2Res.CreateAccountResponse.account[0] : createAcct2Res.CreateAccountResponse.account).id;
 
 		// Login to account1 and send mail to account2

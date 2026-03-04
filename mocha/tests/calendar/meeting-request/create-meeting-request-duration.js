@@ -45,6 +45,8 @@ describe('Calendar > Meeting Request > Create Meeting Request Duration', functio
 		);
 		assert.notExists(orgRes.Fault, 'CreateAccountRequest should not fault');
 		const orgId = orgRes.CreateAccountResponse.account[0].id;
+		const host = orgRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		assert.exists(orgId, 'Organizer ID should exist');
 		const orgToken = await soap.getAccountAuthToken(orgEmail);
 
@@ -102,7 +104,7 @@ describe('Calendar > Meeting Request > Create Meeting Request Duration', functio
 
 		// Verify invitee also sees the 3-hour duration
 		const now = Date.now();
-		const searchRes = await soap.makeSOAPEnvelopeAccount(
+		const searchRes = await soap.pollForSearchResult(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				calExpandInstStart="${now - 86400000}"
 				calExpandInstEnd="${now + 2 * 86400000}"
@@ -195,7 +197,7 @@ describe('Calendar > Meeting Request > Create Meeting Request Duration', functio
 
 		// Verify invitee sees the same duration
 		const now = Date.now();
-		const searchRes = await soap.makeSOAPEnvelopeAccount(
+		const searchRes = await soap.pollForSearchResult(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				calExpandInstStart="${now - 86400000}"
 				calExpandInstEnd="${now + 2 * 86400000}"
@@ -285,7 +287,7 @@ describe('Calendar > Meeting Request > Create Meeting Request Duration', functio
 
 		// Verify invitee sees 2-week duration
 		const now = Date.now();
-		const searchRes = await soap.makeSOAPEnvelopeAccount(
+		const searchRes = await soap.pollForSearchResult(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				calExpandInstStart="${now - 86400000}"
 				calExpandInstEnd="${now + 2 * 86400000}"
@@ -380,7 +382,7 @@ describe('Calendar > Meeting Request > Create Meeting Request Duration', functio
 
 		// Verify invitee sees the appointment
 		const now = Date.now();
-		const searchRes = await soap.makeSOAPEnvelopeAccount(
+		const searchRes = await soap.pollForSearchResult(
 			`<SearchRequest xmlns="urn:zimbraMail"
 				calExpandInstStart="${now - 86400000}"
 				calExpandInstEnd="${now + 60 * 86400000}"

@@ -31,12 +31,19 @@ describe('Calendar > Appointments > Calendar Mountpoint Loop', function () {
     it('Functional | Verify a shared calendar can be mounted in a loop', async () => {
         // Create account1
         const account1Email = `test${common.getUniqueString()}@${testDomain}`;
-        await soap.makeSOAPEnvelopeAdmin(
+        const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
             `<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 			</CreateAccountRequest>`, adminAuthToken
         );
+        assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+        const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+        	? createAcctRes.CreateAccountResponse.account[0]
+        	: createAcctRes.CreateAccountResponse.account;
+        assert.exists(acctInfo.id, 'Account ID should exist');
+        const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
         const account1Token = await soap.getAccountAuthToken(account1Email);
 
         // Get account1 folder info
@@ -60,6 +67,8 @@ describe('Calendar > Appointments > Calendar Mountpoint Loop', function () {
             );
             assert.notExists(accRes.Fault, 'CreateAccountRequest should not fault');
             const accountXId = accRes.CreateAccountResponse.account[0].id;
+            const host2 = accRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+            assert.exists(host2, 'zimbraMailHost should exist');
             const accountXToken = await soap.getAccountAuthToken(accountXEmail);
 
             // Get accountX calendar folder
@@ -92,8 +101,8 @@ describe('Calendar > Appointments > Calendar Mountpoint Loop', function () {
 				</CreateMountpointRequest>`, account1Token
             );
             assert.notExists(mountRes.Fault, 'CreateMountpointRequest should not fault');
-            assert.exists(
-                mountRes.CreateMountpointResponse,
+            assert.notExists(
+                mountRes.Fault,
                 'CreateMountpointResponse should exist'
             );
         }

@@ -31,6 +31,8 @@ describe('Admin > Accounts > Foreign Principal > Search Directory Request', func
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		account1Id = (Array.isArray(a1.CreateAccountResponse?.account) ? (Array.isArray(a1.CreateAccountResponse?.account) ? a1.CreateAccountResponse.account[0].id : a1.CreateAccountResponse?.account?.id) : a1.CreateAccountResponse?.account?.id);
+		const host1 = a1.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host1, 'zimbraMailHost should exist');
 
 		account2Fp1 = `test:${common.getUniqueString()}`;
 		account2Fp2 = `test:${common.getUniqueString()}`;
@@ -46,6 +48,8 @@ describe('Admin > Accounts > Foreign Principal > Search Directory Request', func
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		account2Id = (Array.isArray(a2.CreateAccountResponse?.account) ? (Array.isArray(a2.CreateAccountResponse?.account) ? a2.CreateAccountResponse.account[0].id : a2.CreateAccountResponse?.account?.id) : a2.CreateAccountResponse?.account?.id);
+		const host2 = a2.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 	});
 
 	beforeEach(async function () {

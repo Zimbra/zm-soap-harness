@@ -26,6 +26,8 @@ describe('Search > Delayed Indexing > ZCS 8515 8517', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		test_account1.id = res1.CreateAccountResponse.account[0].id;
+		const host = res1.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		test_account2.name = `test2${common.getUniqueString()}@${config.testDomain}`;
 		const res2 = await soap.makeSOAPEnvelopeAdmin(
@@ -35,6 +37,8 @@ describe('Search > Delayed Indexing > ZCS 8515 8517', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		test_account2.id = res2.CreateAccountResponse.account[0].id;
+		const host2 = res2.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 
 		test_account3.name = `test3${common.getUniqueString()}@${config.testDomain}`;
 		const res3 = await soap.makeSOAPEnvelopeAdmin(
@@ -44,6 +48,8 @@ describe('Search > Delayed Indexing > ZCS 8515 8517', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		test_account3.id = res3.CreateAccountResponse.account[0].id;
+		const host3 = res3.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host3, 'zimbraMailHost should exist');
 
 		test_account4.name = `test4${common.getUniqueString()}@${config.testDomain}`;
 		const res4 = await soap.makeSOAPEnvelopeAdmin(
@@ -53,6 +59,8 @@ describe('Search > Delayed Indexing > ZCS 8515 8517', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		test_account4.id = res4.CreateAccountResponse.account[0].id;
+		const host4 = res4.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host4, 'zimbraMailHost should exist');
 
 		// Send mail from account1 to account2, account3, account4
 		const authToken1 = await soap.getAccountAuthToken(test_account1.name);

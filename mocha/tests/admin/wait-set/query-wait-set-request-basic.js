@@ -39,6 +39,8 @@ describe('Admin > Wait Set > Query Wait Set Request Basic', function () {
 		assert.notExists(create1.Fault, 'CreateAccountRequest 1 should not fault');
 		const acct1 = Array.isArray(create1.CreateAccountResponse.account)
 			? create1.CreateAccountResponse.account[0] : create1.CreateAccountResponse.account;
+		const host = acct1.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		const account1Id = acct1.id;
 
 		const account2Email = `waitset.${common.getUniqueString()}@${config.testDomain}`;
@@ -51,6 +53,8 @@ describe('Admin > Wait Set > Query Wait Set Request Basic', function () {
 		assert.notExists(create2.Fault, 'CreateAccountRequest 2 should not fault');
 		const acct2 = Array.isArray(create2.CreateAccountResponse.account)
 			? create2.CreateAccountResponse.account[0] : create2.CreateAccountResponse.account;
+		const host2 = acct2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		const account2Id = acct2.id;
 
 		// Create a wait set with both accounts

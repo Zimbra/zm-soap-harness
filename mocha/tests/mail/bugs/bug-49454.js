@@ -34,20 +34,34 @@ describe('Mail > Bugs > Bug 49454', function () {
 		const account2Email = `test${common.getUniqueString()}@${testDomain}`;
 		const account3Email = `test${common.getUniqueString()}@${testDomain}`;
 
-		await soap.makeSOAPEnvelopeAdmin(
+		const createAcctRes = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account1Email}</name>
 				<password>${config.accountPassword}</password>
 				<a n="zimbraPrefMailSendReadReceipts">always</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
-		await soap.makeSOAPEnvelopeAdmin(
+		assert.notExists(createAcctRes.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo = Array.isArray(createAcctRes.CreateAccountResponse.account)
+			? createAcctRes.CreateAccountResponse.account[0]
+			: createAcctRes.CreateAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
+		const createAcctRes2 = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account2Email}</name>
 				<password>${config.accountPassword}</password>
 				<a n="zimbraPrefMailSendReadReceipts">always</a>
 			</CreateAccountRequest>`, adminAuthToken
 		);
+		assert.notExists(createAcctRes2.Fault, 'CreateAccountRequest should not fault');
+		const acctInfo2 = Array.isArray(createAcctRes2.CreateAccountResponse.account)
+			? createAcctRes2.CreateAccountResponse.account[0]
+			: createAcctRes2.CreateAccountResponse.account;
+		assert.exists(acctInfo2.id, 'Account ID should exist');
+		const host2 = acctInfo2.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host2, 'zimbraMailHost should exist');
 		const createAcct3Res = await soap.makeSOAPEnvelopeAdmin(
 			`<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${account3Email}</name>
@@ -56,6 +70,9 @@ describe('Mail > Bugs > Bug 49454', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createAcct3Res.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(createAcct3Res.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host3 = createAcct3Res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host3, 'zimbraMailHost should exist');
 		const account3Id = (Array.isArray(createAcct3Res.CreateAccountResponse.account) ? createAcct3Res.CreateAccountResponse.account[0] : createAcct3Res.CreateAccountResponse.account).id;
 
 		// Login to account3 and share inbox with account2

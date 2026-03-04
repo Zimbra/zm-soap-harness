@@ -31,6 +31,9 @@ describe('Mail Client > Mail > ZCS 1870', function () {
 				</CreateAccountRequest>`, adminAuthToken
 			);
 			assert.notExists(res.Fault, `Creating ${name} should not fault`);
+			assert.exists(res.CreateAccountResponse.account[0].id, 'Account ID should exist');
+			const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+			assert.exists(host, 'zimbraMailHost should exist');
 		}
 	});
 

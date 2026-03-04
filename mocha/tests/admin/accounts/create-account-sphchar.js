@@ -47,6 +47,8 @@ describe('Admin > Accounts > Create Account Sphchar', function () {
 			assert.notExists(res.Fault, 'Response should not be a Fault');
 			assert.exists(res.CreateAccountResponse.account[0].id,
 				`Should succeed creating ${testName}`);
+			const host = res.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+			assert.exists(host, 'zimbraMailHost should exist');
 		} else {
 			assert.isString(res.Fault.Detail.Error.Code, `Should fail creating ${testName}`);
 			assert.include(res.Fault.Detail.Error.Code, 'service.INVALID_REQUEST',

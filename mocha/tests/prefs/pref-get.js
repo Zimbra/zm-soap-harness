@@ -38,6 +38,9 @@ describe('Prefs > Pref Get', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createAccountRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(createAccountRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createAccountRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Get account auth token
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);
@@ -65,6 +68,9 @@ describe('Prefs > Pref Get', function () {
 			</CreateAccountRequest>`, adminAuthToken
 		);
 		assert.notExists(createAccountRes.Fault, 'CreateAccountRequest should not fault');
+		assert.exists(createAccountRes.CreateAccountResponse.account[0].id, 'Account ID should exist');
+		const host = createAccountRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Get account auth token
 		const accountAuthToken = await soap.getAccountAuthToken(accountEmail);

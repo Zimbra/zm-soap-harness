@@ -41,6 +41,8 @@ describe('Calendar > Appointments > Create Appointment Request Recurrence Daily'
 			</CreateAccountRequest>`, adminAuthToken
         );
         const accountId = accRes.CreateAccountResponse.account[0].id;
+        const host = accRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
         const accountToken = await soap.getAccountAuthToken(accountEmail);
         const subject = `Subject of meeting${common.getUniqueString()}`;
         const epoch = 1514808000000;
@@ -110,6 +112,8 @@ describe('Calendar > Appointments > Create Appointment Request Recurrence Daily'
 			</CreateAccountRequest>`, adminAuthToken
         );
         const accountId = accRes.CreateAccountResponse.account[0].id;
+        const host = accRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
         const accountToken = await soap.getAccountAuthToken(accountEmail);
         const subject = `Subject of meeting${common.getUniqueString()}`;
         const epoch = 1514808000000;
@@ -168,6 +172,8 @@ describe('Calendar > Appointments > Create Appointment Request Recurrence Daily'
 			</CreateAccountRequest>`, adminAuthToken
         );
         const accountId = accRes.CreateAccountResponse.account[0].id;
+        const host = accRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
         const accountToken = await soap.getAccountAuthToken(accountEmail);
         const subject = `Subject of meeting${common.getUniqueString()}`;
         const epoch = 1514808000000;
@@ -225,6 +231,8 @@ describe('Calendar > Appointments > Create Appointment Request Recurrence Daily'
 			</CreateAccountRequest>`, adminAuthToken
         );
         const accountId = accRes.CreateAccountResponse.account[0].id;
+        const host = accRes.CreateAccountResponse.account[0].a.find(a => a.n === 'zimbraMailHost');
+        assert.exists(host, 'zimbraMailHost should exist');
         const accountToken = await soap.getAccountAuthToken(accountEmail);
         const subject = `Subject of meeting${common.getUniqueString()}`;
         const epoch = 1514808000000;

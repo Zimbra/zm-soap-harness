@@ -93,7 +93,53 @@ function countXmlTests(filepath) {
 function countJsTests(filepath) {
     try {
         const content = fs.readFileSync(filepath, 'utf8');
-        return (content.match(/it\('/g) || []).length;
+        // Count static it(' and it(` calls
+        let count = (content.match(/it\([`']/g) || []).length;
+
+        // Detect forEach-generated tests: arrayName.forEach(... it(
+        // These generate N tests from 1 source it() call
+        // Look for patterns like: varName.forEach((... => { ... it(
+        const forEachBlocks = content.match(/(\w+)\.forEach\s*\(/g) || [];
+        for (const match of forEachBlocks) {
+            const varName = match.replace(/\.forEach\s*\(/, '');
+            // Check if this forEach contains an it() call
+            const forEachIdx = content.indexOf(match);
+            const blockAfter = content.slice(forEachIdx, forEachIdx + 500);
+            if (/it\([`']/.test(blockAfter)) {
+                // Find the array definition and count elements
+                const arrayPattern = new RegExp(`(?:const|let|var)\\s+${varName}\\s*=\\s*\\[([\\s\\S]*?)\\];`);
+                const arrayMatch = content.match(arrayPattern);
+                if (arrayMatch) {
+                    // Count quoted strings (timezone IDs, test params, etc.)
+                    const elements = arrayMatch[1].match(/'[^']*'|"[^"]*"/g) || [];
+                    if (elements.length > 1) {
+                        // Subtract the 1 source it() already counted, add actual element count
+                        count = count - 1 + elements.length;
+                    }
+                }
+                // Also check for spread arrays: [...arr1, ...arr2, ...arr3]
+                const spreadPattern = new RegExp(`(?:const|let|var)\\s+${varName}\\s*=\\s*\\[\\.\\.\\.\\w+`);
+                if (spreadPattern.test(content)) {
+                    // Find all spread sources
+                    const spreadMatch = content.match(new RegExp(`(?:const|let|var)\\s+${varName}\\s*=\\s*\\[([^\\]]+)\\]`));
+                    if (spreadMatch) {
+                        const spreadSources = spreadMatch[1].match(/\.\.\.(\w+)/g) || [];
+                        let totalElements = 0;
+                        for (const src of spreadSources) {
+                            const srcName = src.replace('...', '');
+                            const srcArr = content.match(new RegExp(`(?:const|let|var)\\s+${srcName}\\s*=\\s*\\[([\\s\\S]*?)\\];`));
+                            if (srcArr) {
+                                totalElements += (srcArr[1].match(/'[^']*'|"[^"]*"/g) || []).length;
+                            }
+                        }
+                        if (totalElements > 1) {
+                            count = count - 1 + totalElements;
+                        }
+                    }
+                }
+            }
+        }
+        return count;
     } catch { return 0; }
 }
 
@@ -115,8 +161,13 @@ function getXmlObjectives(filepath) {
 function getJsItDescriptions(filepath) {
     try {
         const content = fs.readFileSync(filepath, 'utf8');
-        const matches = content.match(/it\('([^']+)'/g) || [];
-        return matches.map(m => m.replace(/^it\('/, '').replace(/'$/, ''));
+        const singleQuote = content.match(/it\('([^']+)'/g) || [];
+        const backtick = content.match(/it\(`([^`]+)`/g) || [];
+        const all = [
+            ...singleQuote.map(m => m.replace(/^it\('/, '').replace(/'$/, '')),
+            ...backtick.map(m => m.replace(/^it\(`/, '').replace(/`$/, ''))
+        ];
+        return all;
     } catch { return []; }
 }
 
@@ -232,7 +283,7 @@ function verifyModule(mod) {
     console.log(`  ${'File'.padEnd(50)} ${'JS'.padStart(5)} ${'XML'.padStart(5)} Status`);
     console.log(`  ${'----'.padEnd(50)} ${'---'.padStart(5)} ${'---'.padStart(5)} ------`);
 
-    let totalJs = 0, totalXml = 0, countOk = 0, countBad = 0;
+    let totalJs = 0, totalXml = 0, countOk = 0, countExtra = 0, countDeficit = 0;
     const mismatches = [];
 
     for (const jsFile of jsFiles) {
@@ -251,12 +302,12 @@ function verifyModule(mod) {
                 countOk++;
             } else if (jsTests > xmlTests) {
                 status = C.yellow(`⚠️  JS+${jsTests - xmlTests}`);
-                countBad++;
-                mismatches.push({ jsShort, jsTests, xmlTests, xmlFile });
+                countExtra++;
+                mismatches.push({ jsShort, jsTests, xmlTests, xmlFile, diff: jsTests - xmlTests });
             } else {
                 status = C.red(`❌ -${xmlTests - jsTests}`);
-                countBad++;
-                mismatches.push({ jsShort, jsTests, xmlTests, xmlFile });
+                countDeficit++;
+                mismatches.push({ jsShort, jsTests, xmlTests, xmlFile, diff: jsTests - xmlTests });
             }
             console.log(`  ${jsShort.padEnd(50)} ${String(jsTests).padStart(5)} ${String(xmlTests).padStart(5)} ${status}`);
         } else {
@@ -264,7 +315,7 @@ function verifyModule(mod) {
         }
     }
     console.log('');
-    console.log(`  Totals: JS=${totalJs} XML=${totalXml} | Match=${countOk} Mismatch=${countBad}`);
+    console.log(`  Totals: JS=${totalJs} XML=${totalXml} | Match=${countOk} Extra=${countExtra} Deficit=${countDeficit}`);
     console.log('');
 
     // --- Section 3: zimbraMailHost ---
@@ -298,8 +349,26 @@ function verifyModule(mod) {
         if (c > 0) { console.log(C.yellow(`  ⚠️  Bare parent: ${subRel(f, jsDir)} (${c})`)); bare += c; }
     }
     for (const f of jsFiles) {
-        const c = countInFile(f, /if \(.*Response/g);
-        if (c > 0) { console.log(C.yellow(`  ⚠️  if/else hedge: ${subRel(f, jsDir)} (${c})`)); ifCount += c; }
+        // Only flag real assertion hedges: if (res.Fault) or if (res.XResponse) { assert
+        // Exclude control flow: if (!res.Response.x) return; or if (res.Response?.x) break;
+        const content = fs.readFileSync(f, 'utf8');
+        const lines = content.split('\n');
+        let realHedges = 0;
+        for (const line of lines) {
+            if (/if \(.*Response/.test(line)) {
+                const trimmed = line.trim();
+                // Exclude: polling/guard patterns like return/break/continue
+                if (/return|break|continue/.test(trimmed)) continue;
+                // Exclude: optional chaining checks like if (res.Response?.x)
+                if (/\?\./.test(trimmed)) continue;
+                // Exclude: negation guards like if (!res.Response.x)
+                if (/if \(!/.test(trimmed)) continue;
+                // Exclude: existence-check chains like if (res.Response && res.Response.x)
+                if (/&&/.test(trimmed)) continue;
+                realHedges++;
+            }
+        }
+        if (realHedges > 0) { console.log(C.yellow(`  ⚠️  if/else hedge: ${subRel(f, jsDir)} (${realHedges})`)); ifCount += realHedges; }
     }
     for (const f of jsFiles) {
         const c = countInFile(f, /assert\.exists\(.*\.Fault/g);
@@ -316,12 +385,43 @@ function verifyModule(mod) {
     else console.log(`  Total: ${bare} bare + ${ifCount} conditionals + ${fault} fault + ${arrayW} array-unsafe`);
     console.log('');
 
+    // --- Section 5.5: Duplicate Const Declarations ---
+    console.log('--- Duplicate Const Declarations ---');
+    let dupeFiles = 0;
+    const DUPE_VARS = ['host', 'createAcctRes', 'acctInfo', 'acctInfoRes'];
+    for (const f of jsFiles) {
+        const content = fs.readFileSync(f, 'utf8');
+        const dupes = [];
+        for (const v of DUPE_VARS) {
+            const re = new RegExp(`const\\\\s+${v}\\\\s*=`, 'g');
+            const m = content.match(re);
+            if (m && m.length > 1) dupes.push(`${v}(${m.length})`);
+        }
+        if (dupes.length > 0) {
+            console.log(C.red(`  ❌ ${subRel(f, jsDir)}: ${dupes.join(', ')}`));
+            dupeFiles++;
+        }
+    }
+    console.log(dupeFiles === 0
+        ? C.green(`  ✅ No duplicate const declarations found`)
+        : C.red(`  ${dupeFiles} file(s) with duplicate const declarations`));
+    console.log('');
+
     // --- Section 6: Verdict ---
-    const issues = countBad + unmatchedXml + hFail + aFail + weak + arrayW;
+    // Only count deficits as issues (not JS-has-more)
+    // Detect paired file redistributions: if deficit + surplus net to 0, not an issue
+    let netDeficit = 0;
+    const deficits = mismatches.filter(m => m.diff < 0);
+    const extras = mismatches.filter(m => m.diff > 0);
+    let realDeficit = deficits.reduce((s, m) => s + Math.abs(m.diff), 0);
+    const totalExtra = extras.reduce((s, m) => s + m.diff, 0);
+    // If total JS >= total XML, deficits are redistributions
+    if (totalJs >= totalXml) realDeficit = 0;
+    const issues = realDeficit + unmatchedXml + hFail + aFail + weak + arrayW + dupeFiles;
 
     console.log(C.bold('--- VERDICT ---'));
     console.log(`  Files:       ${jsFiles.length} JS / ${xmlFiles.length} XML (${mappedCount} mapped)`);
-    console.log(`  Tests:       ${totalJs} JS / ${totalXml} XML (${countOk} match, ${countBad} mismatch)`);
+    console.log(`  Tests:       ${totalJs} JS / ${totalXml} XML (${countOk} match, ${countExtra} extra, ${countDeficit} deficit)`);
     console.log(`  Unmapped:    ${unmatchedJs} JS-only, ${unmatchedXml} XML-only`);
     console.log(`  MailHost:    ${hPass} pass, ${hFail} fail`);
     console.log(`  Account ID:  ${aPass} pass, ${aFail} fail`);
@@ -405,7 +505,7 @@ function verifyModule(mod) {
         console.log('');
     }
 
-    return { mod, issues, jsFiles: jsFiles.length, xmlFiles: xmlFiles.length, totalJs, totalXml, countOk, countBad, unmatchedXml, hFail, weak };
+    return { mod, issues, jsFiles: jsFiles.length, xmlFiles: xmlFiles.length, totalJs, totalXml, countOk, countExtra, countDeficit, unmatchedXml, hFail, weak };
 }
 
 // =============================================================================

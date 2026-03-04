@@ -47,6 +47,16 @@ describe('Folders > Sharing > Bugs > Bug 77298', function () {
 
 		const adminAuth = await soap.getAdminAuthToken();
 		const res = await soap.createAccountByNameAndEmailAddress(adminAuth, testAccount1, testAccount1);
+		const acctInfoRes = await soap.makeSOAPEnvelopeAdmin(
+			`<GetAccountRequest xmlns="urn:zimbraAdmin"><account by="name">${testAccount1}</account></GetAccountRequest>`, adminAuth
+		);
+		assert.notExists(acctInfoRes.Fault, 'GetAccountRequest should not fault');
+		const acctInfo = Array.isArray(acctInfoRes.GetAccountResponse.account)
+			? acctInfoRes.GetAccountResponse.account[0]
+			: acctInfoRes.GetAccountResponse.account;
+		assert.exists(acctInfo.id, 'Account ID should exist');
+		const host = acctInfo.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		account1Id = res.accountId;
 
 		auth1 = await soap.getAccountAuthToken(testAccount1, config.accountPassword);

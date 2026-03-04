@@ -30,6 +30,8 @@ describe('Auth > Jwt > Jwt ZCS 3929', function () {
 			? createRes.CreateAccountResponse.account[0]
 			: createRes.CreateAccountResponse.account;
 		assert.exists(acct.id, 'Account ID should exist');
+		const host = acct.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 		assert.isString(acct.id, 'Account ID should be a string');
 	});
 

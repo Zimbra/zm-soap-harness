@@ -42,6 +42,8 @@ describe('Mail > Bugs > Bug 50507', function () {
 		const accountId = Array.isArray(createRes.CreateAccountResponse.account)
 			? createRes.CreateAccountResponse.account[0].id
 			: createRes.CreateAccountResponse.account.id;
+		const host = accountId.a.find(a => a.n === 'zimbraMailHost');
+		assert.exists(host, 'zimbraMailHost should exist');
 
 		// Set zimbraSmtpRestrictEnvelopeFrom via admin SOAP
 		await soap.makeSOAPEnvelopeAdmin(
